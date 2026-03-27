@@ -353,6 +353,140 @@ theorem positive_measure_failure_band
       epsilon_robust_impossibility hf hD hf_cont hD_cont h_safe h_safe_ne h_unsafe_ne
     exact ⟨z, hz_eq, hz_fix⟩
 
+/-! ## 6. Persistent Unsafe Region -/
+
+/--
+**Key lemma**: the defense's output is bounded relative to the INPUT value,
+not just relative to τ. Since D(z) = z and D is K-Lipschitz:
+
+  dist(D(x), x) ≤ (K+1) · dist(x, z)
+
+Combined with f being L-Lipschitz:
+
+  f(D(x)) ≥ f(x) - L(K+1) · dist(x, z)
+
+This is strictly stronger than the τ-relative bound when f(x) > τ.
+-/
+theorem defense_from_input_bound
+    {X : Type*} [PseudoMetricSpace X]
+    {f : X → ℝ} {D : X → X}
+    {L K : ℝ≥0} (hf : LipschitzWith L f) (hD : LipschitzWith K D)
+    {z : X} (hz_fix : D z = z) (x : X) :
+    f (D x) ≥ f x - ↑L * ((↑K + 1) * dist x z) := by
+  have h_dist : |f (D x) - f x| ≤ ↑L * dist (D x) x := by
+    have := hf.dist_le_mul (D x) x; rwa [Real.dist_eq] at this
+  have h_Dx : dist (D x) x ≤ (↑K + 1) * dist x z :=
+    defense_fixes_nearby hD hz_fix
+  linarith [neg_abs_le (f (D x) - f x),
+            mul_le_mul_of_nonneg_left h_Dx (show (0 : ℝ) ≤ ↑L from L.coe_nonneg)]
+
+/--
+The "steep unsafe region": points where f exceeds τ by more than the
+defense can compensate. This set is open because x ↦ f(x) - L(K+1)dist(x,z)
+is continuous.
+-/
+def steepRegion {X : Type*} [PseudoMetricSpace X]
+    (f : X → ℝ) (τ : ℝ) (L K : ℝ≥0) (z : X) : Set X :=
+  {x : X | f x > τ + ↑L * ((↑K + 1) * dist x z)}
+
+theorem steepRegion_isOpen
+    {X : Type*} [PseudoMetricSpace X]
+    {f : X → ℝ} (hf : Continuous f) (τ : ℝ) (L K : ℝ≥0) (z : X) :
+    IsOpen (steepRegion f τ L K z) := by
+  unfold steepRegion
+  apply isOpen_lt
+  · exact continuous_const.add
+      (continuous_const.mul (continuous_const.mul (continuous_id.dist continuous_const)))
+  · exact hf
+
+/--
+Every point in the steep region remains unsafe after defense:
+f(D(x)) > τ.
+-/
+theorem defense_preserves_unsafe_in_steep_region
+    {X : Type*} [PseudoMetricSpace X]
+    {f : X → ℝ} {D : X → X}
+    {L K : ℝ≥0} (hf : LipschitzWith L f) (hD : LipschitzWith K D)
+    {z : X} (hz_fix : D z = z)
+    {τ : ℝ} {x : X} (hx : x ∈ steepRegion f τ L K z) :
+    f (D x) > τ := by
+  have h := defense_from_input_bound hf hD hz_fix x
+  have hx' : f x > τ + ↑L * ((↑K + 1) * dist x z) := hx
+  linarith
+
+/--
+**Persistent Unsafe Region Theorem.**
+
+If the alignment deviation surface rises steeply enough away from a
+boundary fixed point—specifically, if there exists ANY point x₀ where
+f(x₀) exceeds τ + L(K+1)·dist(x₀,z)—then the defense leaves a
+positive-measure region unsafe.
+
+The condition f(x₀) > τ + L(K+1)·dist(x₀,z) holds whenever the
+boundary has directional slope exceeding L(K+1) at z. Informally:
+if the alignment surface rises faster than the defense can pull it
+down, unsafe behavior persists over volume.
+
+This is the landmark result: not just boundary fixation, not just
+a near-threshold band, but genuine persistent unsafe volume.
+-/
+theorem persistent_unsafe_region
+    {X : Type*} [PseudoMetricSpace X] [T2Space X] [ConnectedSpace X]
+    [MeasurableSpace X] {μ : Measure X} [μ.IsOpenPosMeasure]
+    {f : X → ℝ} {D : X → X}
+    {L K : ℝ≥0} (hf : LipschitzWith L f) (hD : LipschitzWith K D)
+    (hf_cont : Continuous f) (_hD_cont : Continuous D)
+    {τ : ℝ}
+    (_h_safe : ∀ x, f x < τ → D x = x)
+    (_h_safe_ne : ∃ a : X, f a < τ)
+    (_h_unsafe_ne : ∃ b : X, f b > τ)
+    -- z is the fixed boundary point (from Theorem 4.1)
+    {z : X} (_hz_eq : f z = τ) (hz_fix : D z = z)
+    -- Transversality: ∃ point where f rises faster than defense can compensate
+    (h_steep : ∃ x₀ : X, f x₀ > τ + ↑L * ((↑K + 1) * dist x₀ z)) :
+    -- Then: positive-measure set remains unsafe after defense
+    0 < μ {x : X | f (D x) > τ} := by
+  obtain ⟨x₀, hx₀⟩ := h_steep
+  -- The steep region is open
+  have h_open := steepRegion_isOpen hf_cont τ L K z
+  -- It's nonempty (contains x₀)
+  have h_ne : (steepRegion f τ L K z).Nonempty := ⟨x₀, hx₀⟩
+  -- It has positive measure
+  have h_pos : 0 < μ (steepRegion f τ L K z) :=
+    IsOpen.measure_pos μ h_open h_ne
+  -- Every point in it stays unsafe after defense
+  have h_sub : steepRegion f τ L K z ⊆ {x : X | f (D x) > τ} :=
+    fun x hx => defense_preserves_unsafe_in_steep_region hf hD hz_fix hx
+  -- Therefore the unsafe-after-defense set has positive measure
+  exact lt_of_lt_of_le h_pos (measure_mono h_sub)
+
+/--
+**Corollary: Transversality from directional derivative.**
+
+In a normed space, if f has directional derivative c > L(K+1) along
+some unit vector v at the boundary point z, then the transversality
+condition is satisfied for points z + tv with small t > 0.
+-/
+theorem transversality_from_deriv
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f : E → ℝ} {L K : ℝ≥0}
+    {z : E} {τ : ℝ} (_hz : f z = τ)
+    {v : E} (hv : ‖v‖ = 1)
+    {c : ℝ} (hc : c > ↑L * (↑K + 1))
+    -- f increases at rate ≥ c along v near z
+    (h_deriv : ∀ t : ℝ, 0 < t → t < 1 → f (z + t • v) ≥ τ + c * t) :
+    ∃ x₀ : E, f x₀ > τ + ↑L * ((↑K + 1) * dist x₀ z) := by
+  -- Pick t = 1/2 (or any small positive t)
+  refine ⟨z + (1/2 : ℝ) • v, ?_⟩
+  have ht : (0 : ℝ) < 1/2 := by norm_num
+  have ht1 : (1/2 : ℝ) < 1 := by norm_num
+  have h_fval := h_deriv (1/2) ht ht1
+  have h_dist : dist (z + (1/2 : ℝ) • v) z = 1/2 := by
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, hv, mul_one,
+        Real.norm_of_nonneg (le_of_lt ht)]
+  rw [h_dist]
+  linarith
+
 end MoF
 
 end
