@@ -40,6 +40,9 @@ import ManifoldProofs.MoF_Adv_10_MeasureBounds
 -- Continuous Relaxation Bridge (discrete data → continuous theory)
 import ManifoldProofs.MoF_ContinuousRelaxation
 
+-- ε-Robust Extension
+import ManifoldProofs.MoF_11_EpsilonRobust
+
 -- Capstone
 import ManifoldProofs.MoF_MasterTheorem
 import ManifoldProofs.MoF_Instantiation_Euclidean
