@@ -977,28 +977,30 @@ agree, or instances of a single underlying phenomenon.
 
 They are instances of a single phenomenon.
 
-\begin{theorem}[Representation-Independent Meta-Theorem]
+\begin{theorem}[Regularity Implies Spillover]
 \label{thm:meta}
 Let $X$ be any set, $S \subseteq X$ nonempty and proper (the safe
-region), and $D\colon X \to X$ a defense satisfying:
-\begin{enumerate}[nosep]
-  \item \emph{Utility preservation}: $D(x) = x$ for all $x \in S$.
-  \item \emph{Bounded regularity}: the fixed-point set
-    $\Fix(D) = \{x : D(x) = x\}$ strictly contains $S$.
-\end{enumerate}
-Then there exists $x \notin S$ with $D(x) = x$---the defense fixes a
-non-safe input.
+region), and $D\colon X \to X$ satisfying utility preservation:
+$D(x) = x$ for all $x \in S$. If $D$ has \emph{bounded regularity}---meaning
+$\Fix(D) = \{x : D(x) = x\}$ cannot equal $S$ exactly---then
+\[
+  \Fix(D) \supsetneq S.
+\]
 \end{theorem}
 
 \begin{proof}
-$\Fix(D) \supsetneq S$ implies $\Fix(D) \setminus S \neq \emptyset$.
-Any $x$ in this difference satisfies $x \notin S$ and $D(x) = x$.
+Utility preservation gives $S \subseteq \Fix(D)$. Bounded regularity
+gives $\Fix(D) \neq S$. Together: $S \subsetneq \Fix(D)$.
 \end{proof}
 
-The content is not in the conclusion---which is a triviality of set
-theory---but in the \emph{regularity condition} that forces
-$\Fix(D) \supsetneq S$. Each path through the theory provides a
-different proof that this condition holds:
+\begin{corollary}[Non-Safe Fixed Point]
+$\Fix(D) \supsetneq S$ implies $\exists\, x \notin S$ with
+$D(x) = x$. The defense fixes a non-safe input.
+\end{corollary}
+
+The hard work is not the corollary---which is pure set theory---but
+proving that bounded regularity holds, i.e., that $\Fix(D)$ cannot
+equal $S$. Each path through the theory provides a different proof:
 
 \begin{center}
 \small
