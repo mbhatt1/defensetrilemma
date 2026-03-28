@@ -641,7 +641,41 @@ of boundary fixation on the current alignment surface.
 
 The impossibility does not accumulate or diminish over turns---it
 simply recurs. Memory, context, and adaptive strategies do not change
-the topology of the current turn's alignment surface.
+the topology of the current turn's alignment surface. But the
+multi-turn setting is worse than ``the same problem repeated.'' The
+attacker gains several structural advantages.
+
+\paragraph{Information accumulation.}
+At each turn, the defense's response reveals whether the probed input
+is safe, unsafe, or on the boundary. Over $T$ turns with distinct
+probes, the attacker classifies $T$ points, progressively narrowing the
+boundary's location. The defense leaks information; the attacker
+consumes it.
+
+\paragraph{Monotone attacker improvement.}
+The attacker's best observed alignment deviation score across turns is
+non-decreasing: the running maximum of a sequence never drops
+(verified in Lean as \texttt{running\_max\_monotone}). Each turn either
+improves the attacker's best known exploit or leaves it unchanged.
+
+\paragraph{Steering toward transversality.}
+If the attacker can influence the alignment surface---for instance, by
+crafting conversation context that shifts the landscape---and the
+directional slope at the boundary varies continuously with the
+attacker's influence parameter~$\alpha$, then the intermediate value
+theorem guarantees the existence of $\alpha^*$ at which the slope
+crosses the transversality threshold $L(K+1)$. For $\alpha > \alpha^*$,
+Tier~3 applies: persistent unsafe volume. The attacker can find
+$\alpha^*$ by binary search (verified in Lean as
+\texttt{transversality\_reachable}).
+
+\paragraph{No progressive safety.}
+As long as both safe and unsafe regions exist at each turn, every turn
+produces a boundary fixed point---no turn is ``free.'' The only escape
+is to make $U_\tau = \emptyset$ at some turn, which requires changing
+the alignment surface~$f_t$ itself (e.g., via in-context learning that
+suppresses all unsafe behavior), not merely preprocessing inputs
+through~$D_t$.
 
 \subsection{Stochastic Defense Impossibility}
 
