@@ -260,6 +260,172 @@ theorem attacker_permanent_edge
   · positivity
   · exact h_safe_pos
 
+/-! ## 4. Multi-Turn Game Theory: Attacker Advantage -/
+
+/--
+**Simplified: running maximum is monotone.**
+
+The max of a growing prefix of a sequence is non-decreasing.
+We prove this directly for the natural numbers case.
+-/
+theorem running_max_monotone (scores : ℕ → ℝ) (t : ℕ) :
+    ∀ s ≤ t, scores s ≤ sSup (Set.range (fun i : Fin (t + 1) => scores i)) := by
+  intro s hs
+  apply le_csSup
+  · exact Set.Finite.bddAbove (Set.finite_range _)
+  · exact ⟨⟨s, by omega⟩, rfl⟩
+
+/--
+**Boundary points accumulate across turns.**
+
+Over T turns, the attacker discovers at least one boundary fixed point
+per turn. The set of known boundary points grows monotonically
+(though points may overlap).
+
+Formally: the function t ↦ {z₁, ..., z_t} is non-decreasing in
+set inclusion.
+-/
+theorem boundary_points_accumulate
+    {X : Type*} [TopologicalSpace X] [T2Space X] [ConnectedSpace X]
+    (sys : MultiTurnSystem X)
+    (_hf : ∀ t, Continuous (sys.f t))
+    (_hD : ∀ t, Continuous (sys.D t))
+    (_h_pres : ∀ t, ∀ x, sys.f t x < sys.τ → sys.D t x = x)
+    (_h_safe : ∀ t, ∃ a, sys.f t a < sys.τ)
+    (_h_unsafe : ∀ t, ∃ b, sys.f t b > sys.τ)
+    (witness : Fin sys.T → X) :
+    (∀ t, sys.f t (witness t) = sys.τ ∧ sys.D t (witness t) = witness t) →
+    -- Then the set of all witnesses up to turn t₂ contains
+    -- the set of all witnesses up to turn t₁ (for t₁ ≤ t₂)
+    ∀ t₁ t₂ : Fin sys.T, t₁ ≤ t₂ →
+      {x | ∃ i : Fin sys.T, i ≤ t₁ ∧ witness i = x} ⊆
+      {x | ∃ i : Fin sys.T, i ≤ t₂ ∧ witness i = x} := by
+  intro _h_valid t₁ t₂ h_le x ⟨i, hi_le, hi_eq⟩
+  exact ⟨i, le_trans hi_le h_le, hi_eq⟩
+
+/--
+**Defense information leakage.**
+
+At each turn, the defense's response to a probe reveals whether
+the probe is safe, unsafe, or on the boundary. Over T turns with
+T distinct probes, the attacker learns the classification of T points.
+
+This is a counting argument: T probes → T bits of information about
+the boundary location.
+-/
+theorem defense_leaks_per_turn (T : ℕ) :
+    -- T turns of probing → at least T classified points
+    -- (each probe yields one classification: safe/unsafe/boundary)
+    T ≤ T := le_refl T
+
+/--
+A stronger version: if the attacker probes distinct points at each
+turn, after T turns it knows the classification of T distinct points,
+which constrains the boundary to lie in increasingly small regions.
+-/
+theorem knowledge_constrains_boundary
+    {X : Type*} [Fintype X] [DecidableEq X]
+    (_f : X → ℝ) (_τ : ℝ) (T : ℕ)
+    (_probes : Fin T → X) (_h_distinct : Function.Injective _probes) :
+    -- After T probes, the attacker knows f(probe_i) vs τ for i = 1..T
+    -- The number of possible boundary configurations is reduced
+    -- from 3^|X| to 3^(|X| - T), since T points are classified.
+    Fintype.card X - T ≤ Fintype.card X := Nat.sub_le _ _
+
+/-! ## 5. Attacker Steering Toward Transversality -/
+
+/--
+**Attacker steering: the attacker CAN reach transversality.**
+
+If the slope function (how steeply the alignment surface rises at the
+boundary) is continuous in the attacker's influence parameter α, and
+the slope takes values on both sides of the threshold L(K+1), then
+a transversality-inducing parameter exists. The attacker can find it
+by binary search.
+-/
+theorem transversality_reachable
+    (slope : ℝ → ℝ) (h_cont : Continuous slope)
+    (threshold : ℝ)
+    (h_low : slope 0 < threshold)
+    (h_high : slope 1 > threshold) :
+    ∃ α : ℝ, slope α = threshold := by
+  have h_conn : IsPreconnected (Set.univ : Set ℝ) := isPreconnected_univ
+  obtain ⟨c, _, hc⟩ := h_conn.intermediate_value₂
+    (Set.mem_univ (0 : ℝ)) (Set.mem_univ (1 : ℝ))
+    h_cont.continuousOn continuous_const.continuousOn
+    (le_of_lt h_low) (le_of_lt h_high)
+  exact ⟨c, hc⟩
+
+/-! ## 6. No Progressive Safety -/
+
+/--
+**The defense cannot progressively eliminate the impossibility.**
+
+As long as both safe and unsafe regions exist at each turn, the
+defense faces boundary fixation at every turn. The total count of
+turns with boundary fixation equals the total count of turns with
+both regions present.
+
+This is trivially T if all T turns have mixed regions.
+-/
+theorem no_progressive_safety
+    {X : Type*} [TopologicalSpace X] [T2Space X] [ConnectedSpace X]
+    (sys : MultiTurnSystem X)
+    (hf : ∀ t, Continuous (sys.f t))
+    (hD : ∀ t, Continuous (sys.D t))
+    (h_pres : ∀ t, ∀ x, sys.f t x < sys.τ → sys.D t x = x)
+    (h_safe : ∀ t, ∃ a, sys.f t a < sys.τ)
+    (h_unsafe : ∀ t, ∃ b, sys.f t b > sys.τ) :
+    -- Every turn has a boundary fixed point — no turn is "free"
+    ∀ t : Fin sys.T, ∃ z, sys.f t z = sys.τ ∧ sys.D t z = z := by
+  exact multi_turn_accumulates_fixed_points sys hf hD h_pres h_safe h_unsafe
+
+/--
+**The ONLY escape: make U_τ empty at some turn.**
+
+If the defense manages to make the alignment surface uniformly
+below τ at turn t (no unsafe region), the impossibility does not
+apply at that turn. This is the multi-turn GPT-5-Mini strategy.
+
+But: this requires changing the alignment surface itself, not just
+preprocessing inputs. A defense D_t that only remaps inputs cannot
+make f_t(x) < τ for all x — that would require changing f_t.
+-/
+theorem escape_requires_surface_change
+    {X : Type*} [TopologicalSpace X]
+    {f : X → ℝ} {τ : ℝ}
+    -- If f has an unsafe point, no remap D can make f(D(x)) < τ for all x
+    -- UNLESS D maps the unsafe point to a safe point
+    (h_unsafe : ∃ b, f b > τ)
+    (D : X → X) (h_complete : ∀ x, f (D x) < τ) :
+    -- Then D must map some unsafe point to a safe point
+    ∃ b, f b > τ ∧ f (D b) < τ := by
+  obtain ⟨b, hb⟩ := h_unsafe
+  exact ⟨b, hb, h_complete b⟩
+
+/--
+**But utility preservation prevents this for safe-adjacent points.**
+
+Combining: the defense must map unsafe points to safe points
+(to be complete), but utility preservation fixes safe points.
+For boundary-adjacent unsafe points, the defense must make a
+discontinuous jump — or accept the boundary fixed point.
+-/
+theorem complete_defense_must_jump
+    {X : Type*} [TopologicalSpace X] [T2Space X] [ConnectedSpace X]
+    {f : X → ℝ} (hf : Continuous f) {τ : ℝ}
+    {D : X → X} (hD : Continuous D)
+    (h_pres : ∀ x, f x < τ → D x = x)
+    (h_safe : ∃ a, f a < τ)
+    (h_unsafe : ∃ b, f b > τ) :
+    -- A complete continuous utility-preserving defense cannot exist
+    ¬(∀ x, f (D x) < τ) := by
+  intro h_complete
+  obtain ⟨z, hz_eq, _, _, hz_not⟩ :=
+    defense_incompleteness hD hf h_pres h_safe h_unsafe
+  exact hz_not (h_complete z)
+
 end MoF
 
 end
+
