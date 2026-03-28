@@ -40,25 +40,25 @@ def attackBudget (cp : CostParameters) : ℝ := 1 / cp.δ
 /-- Number of cells the defender must cover: N^d. -/
 def defenseBudget (cp : CostParameters) : ℝ := (cp.N : ℝ) ^ cp.d
 
-/-! ## 4. costRatio -/
+/-! ## 4. unifiedCostRatio -/
 
 /-- The defense-to-attack cost ratio. -/
-def costRatio (cp : CostParameters) : ℝ := defenseBudget cp / attackBudget cp
+def unifiedCostRatio (cp : CostParameters) : ℝ := defenseBudget cp / attackBudget cp
 
-/-! ## 5. costRatio simplification -/
+/-! ## 5. unifiedCostRatio simplification -/
 
 /-- The cost ratio simplifies to δ · N^d. -/
-theorem costRatio_eq (cp : CostParameters) :
-    costRatio cp = cp.δ * (cp.N : ℝ) ^ cp.d := by
-  unfold costRatio defenseBudget attackBudget
+theorem unifiedCostRatio_eq (cp : CostParameters) :
+    unifiedCostRatio cp = cp.δ * (cp.N : ℝ) ^ cp.d := by
+  unfold unifiedCostRatio defenseBudget attackBudget
   have hδ : cp.δ ≠ 0 := ne_of_gt cp.hδ
   field_simp
 
-/-! ## 6. costRatio positivity -/
+/-! ## 6. unifiedCostRatio positivity -/
 
 /-- The cost ratio is positive. -/
-theorem costRatio_pos (cp : CostParameters) : 0 < costRatio cp := by
-  rw [costRatio_eq]
+theorem unifiedCostRatio_pos (cp : CostParameters) : 0 < unifiedCostRatio cp := by
+  rw [unifiedCostRatio_eq]
   apply mul_pos cp.hδ
   apply pow_pos
   exact_mod_cast Nat.lt_of_lt_of_le (by norm_num : 0 < 2) cp.hN
@@ -92,7 +92,7 @@ theorem MASTER_THEOREM_cost_asymmetry
     (L : ℝ) (hL : 0 < L) (τ : ℝ) (r : ℝ) (hr_pos : 0 < r) (hr_lt : r < 1)
     (R : ℝ) (_hR : 0 < R) :
     ∃ d₀ : ℕ, ∀ d : ℕ, d₀ ≤ d →
-      costRatio ⟨N, hN, d, δ, hδ, L, hL, τ, r, hr_pos, hr_lt⟩ > R := by
+      unifiedCostRatio ⟨N, hN, d, δ, hδ, L, hL, τ, r, hr_pos, hr_lt⟩ > R := by
   -- The cost ratio equals δ * N^d, which tends to ∞.
   have hN1 : (1 : ℝ) < (N : ℝ) := by
     exact_mod_cast Nat.lt_of_lt_of_le (by norm_num : 1 < 2) hN
@@ -103,7 +103,7 @@ theorem MASTER_THEOREM_cost_asymmetry
   obtain ⟨d₀, hd₀⟩ := htend (R + 1)
   refine ⟨d₀, fun d hd => ?_⟩
   have key : R + 1 ≤ δ * (N : ℝ) ^ d := hd₀ d hd
-  rw [costRatio_eq]
+  rw [unifiedCostRatio_eq]
   linarith
 
 /-! ## 10. Attack budget is dimension-independent -/
