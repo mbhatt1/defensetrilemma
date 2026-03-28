@@ -49,6 +49,9 @@ import ManifoldProofs.MoF_12_Discrete
 -- Multi-Turn, Stochastic, Capacity Parity
 import ManifoldProofs.MoF_13_MultiTurn
 
+-- Representation-Independent Meta-Theorem
+import ManifoldProofs.MoF_14_MetaTheorem
+
 -- Capstone
 import ManifoldProofs.MoF_MasterTheorem
 import ManifoldProofs.MoF_Instantiation_Euclidean
