@@ -82,7 +82,12 @@ data, or optimization procedure. The Tietze extension theorem ensures
 that any finite set of behavioral observations admits continuous
 extensions for which all three impossibilities hold.
 
-The paper defines the theoretical speed limit for AI safety. It proves we can't build a `Perfect Shield' in a continuous space. However, by using multi-layered, discontinuous defenses and ensuring our boundary behavior is benign, we can operate safely within those limits. The `Manifold of Failure' exists, but we can ensure it's empty of actual harm. The full theory is machine-verified in Lean~4 with Mathlib (35~files,
+We also prove a parallel set of discrete impossibility results---boundary
+crossings, defense fixation, and capacity exhaustion---that require no
+topology or continuous relaxation, addressing the objection that real
+prompts are discrete tokens.
+
+The paper defines the theoretical speed limit for AI safety. It proves we can't build a `Perfect Shield' in a continuous space. However, by using multi-layered, discontinuous defenses and ensuring our boundary behavior is benign, we can operate safely within those limits. The `Manifold of Failure' exists, but we can ensure it's empty of actual harm. The full theory is machine-verified in Lean~4 with Mathlib (36~files,
 $\sim$300 theorems, zero \texttt{sorry}, three standard axioms) and
 validated against empirical findings from three frontier LLMs. \url{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}
 \end{abstract}
@@ -188,6 +193,8 @@ for each.
     (\Cref{thm:persistent}).
   \item A formally verified bridge from discrete data to continuous
     theory via Tietze extension (\Cref{thm:tietze}).
+  \item Direct discrete impossibility results requiring no topology
+    (\Cref{sec:discrete}).
   \item Counterexamples proving each hypothesis is necessary
     (\Cref{sec:counterexamples}).
   \item Supporting theorems: basin structure, fragmentation,
@@ -196,7 +203,7 @@ for each.
     (\Cref{sec:landscape,sec:attacks,sec:stability,sec:cost}).
   \item Theory--experiment correspondence with three LLMs
     (\Cref{sec:experiments}).
-  \item Lean~4 artifact: 35 files, $\sim$300 theorems, zero
+  \item Lean~4 artifact: 36 files, $\sim$300 theorems, zero
     \texttt{sorry}, three standard axioms (\Cref{sec:artifact}).
 \end{itemize}
 
@@ -529,6 +536,77 @@ directly, but for every continuous model consistent with the observations.
 
 
 % ============================================================
+\section{Direct Discrete Impossibility}
+\label{sec:discrete}
+
+The Tietze bridge connects discrete data to continuous theory, but a
+natural objection remains: perhaps the impossibility is an artifact of
+the continuous relaxation, not a property of the discrete system. To
+address this, we prove a parallel set of results that work directly on
+finite sets with no topology, no continuity, and no Tietze extension.
+These are verified in Lean as \texttt{MoF\_12\_Discrete}.
+
+\begin{theorem}[Discrete IVT]
+\label{thm:disc-ivt}
+Let $f\colon \{0,\ldots,n\!+\!1\} \to \R$ with $f(0) < \tau$ and
+$f(n\!+\!1) \geq \tau$. Then there exists~$i$ with $f(i) < \tau$ and
+$f(i\!+\!1) \geq \tau$.
+\end{theorem}
+
+\begin{proof}
+By induction: if no consecutive crossing exists and $f(0) < \tau$,
+then $f(k) < \tau$ for all~$k$, contradicting $f(n\!+\!1) \geq \tau$.
+\end{proof}
+
+This is the discrete analogue of boundary existence. The next result
+is the discrete analogue of boundary fixation.
+
+\begin{theorem}[Discrete Defense Fixation]
+\label{thm:disc-defense}
+If $D$ fixes all safe vertices ($f(v) < \tau \Rightarrow D(v) = v$),
+the boundary crossing from \Cref{thm:disc-ivt} has its safe endpoint
+fixed: $D(i) = i$.
+\end{theorem}
+
+The proof is immediate: $f(i) < \tau$, so $D(i) = i$ by
+utility preservation. No continuity is needed---just the identity
+constraint on safe inputs.
+
+Where the continuous and discrete paths diverge is in what replaces
+continuity as the bottleneck. In the continuous setting, the defense is
+limited by its Lipschitz constant. In the discrete setting, it is
+limited by its \emph{capacity}---the number of distinct output
+behaviors it can realize.
+
+\begin{theorem}[Capacity Exhaustion]
+\label{thm:pigeonhole}
+If there are $m$ adversarial configurations and the defense can realize
+fewer than $m$ distinct behaviors, at least two configurations receive
+the same treatment---so at least one is mishandled.
+\end{theorem}
+
+\begin{proof}
+Pigeonhole principle, verified in Lean via
+\texttt{Fintype.exists\_ne\_map\_eq\_of\_card\_lt}.
+\end{proof}
+
+\begin{theorem}[Exponential Attack Surface]
+\label{thm:budget}
+The attack surface grows as $2^d \geq d + 1$. For any fixed budget~$B$,
+there exists $d_0$ such that $2^d > B$ for all $d \geq d_0$. No
+fixed-capacity defense suffices against an exponentially growing
+configuration space.
+\end{theorem}
+
+Together, these results form a \emph{discrete defense trilemma}: on any
+finite ordered set where $f$ crosses~$\tau$, a utility-preserving
+defense must leave the safe side of the crossing fixed, and a
+bounded-capacity defense must eventually be overwhelmed by the attack
+surface. The continuous and discrete paths arrive at the same conclusion
+by different routes.
+
+
+% ============================================================
 \section{The Vulnerability Landscape}
 \label{sec:landscape}
 
@@ -728,7 +806,7 @@ boundary.
 \label{sec:artifact}
 
 The complete theory is verified in Lean~4.28.0 with Mathlib~v4.28.0.
-The artifact comprises 35 files:
+The artifact comprises 36 files:
 \begin{itemize}[nosep]
   \item 10 core theory files (MoF\_01--MoF\_10)
   \item 10 cost theory files (MoF\_Cost\_01--MoF\_Cost\_10)
@@ -736,6 +814,7 @@ The artifact comprises 35 files:
   \item 1 continuous relaxation (MoF\_ContinuousRelaxation)
   \item 1 $\varepsilon$-robust + persistent unsafe region
     (MoF\_11\_EpsilonRobust)
+  \item 1 discrete impossibility (MoF\_12\_Discrete)
   \item 3 capstone files (MasterTheorem, Euclidean instantiation,
     verification)
 \end{itemize}
@@ -811,9 +890,12 @@ preservation together create an anchor at the boundary that constrains
 what the defense can do in its neighborhood, and metric structure
 (Lipschitz bounds) makes this constraint quantitative and volumetric.
 
-The discrete-continuous gap is addressed via Tietze extension: every
-continuous interpolant of discrete data inherits all three
-impossibilities. Supporting theorems show that vulnerabilities come in
+The discrete-continuous gap is addressed in two ways: the Tietze
+extension shows every continuous interpolant inherits all three
+impossibilities, and a parallel set of discrete results
+(\Cref{sec:discrete}) establishes boundary fixation and capacity
+exhaustion directly on finite sets with no topology at all.
+Supporting theorems show that vulnerabilities come in
 basins, attacks converge and transfer, vulnerabilities survive
 fine-tuning, and defense cost grows exponentially. Each result is
 validated against empirical data from three frontier LLMs.
@@ -822,7 +904,7 @@ The practical prescription: make the boundary shallow (raise~$\tau$),
 smooth (reduce~$L$), and low-dimensional (constrain the interface).
 GPT-5-Mini's ceiling at $\AD = 0.50$ shows this working in practice.
 
-The full theory is machine-verified in Lean~4: 35 files, approximately
+The full theory is machine-verified in Lean~4: 36 files, approximately
 300 theorems, zero \texttt{sorry}, three standard axioms.
 
 
