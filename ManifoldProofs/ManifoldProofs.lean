@@ -46,6 +46,9 @@ import ManifoldProofs.MoF_11_EpsilonRobust
 -- Discrete Impossibility (no Tietze needed)
 import ManifoldProofs.MoF_12_Discrete
 
+-- Multi-Turn, Stochastic, Capacity Parity
+import ManifoldProofs.MoF_13_MultiTurn
+
 -- Capstone
 import ManifoldProofs.MoF_MasterTheorem
 import ManifoldProofs.MoF_Instantiation_Euclidean
