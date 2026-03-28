@@ -88,7 +88,7 @@ require no topology, and extend the theory to multi-turn interactions
 (randomization does not help), and capacity parity (utility preservation
 taxes the defense even under equal resources).
 
-The paper defines the theoretical speed limit for AI safety. It proves we can't build a `Perfect Shield' in a continuous space. However, by using multi-layered, discontinuous defenses and ensuring our boundary behavior is benign, we can operate safely within those limits. The `Manifold of Failure' exists, but we can ensure it's empty of actual harm. The full theory is machine-verified in Lean~4 with Mathlib (38~files,
+The paper defines the theoretical speed limit for AI safety. It proves we can't build a `Perfect Shield' in a continuous space. However, by using multi-layered, discontinuous defenses and ensuring our boundary behavior is benign, we can operate safely within those limits. The `Manifold of Failure' exists, but we can ensure it's empty of actual harm. The full theory is machine-verified in Lean~4 with Mathlib (39~files,
 $\sim$300 theorems, zero \texttt{sorry}, three standard axioms) and
 validated against empirical findings from three frontier LLMs. \url{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}
 \end{abstract}
@@ -196,8 +196,8 @@ for each.
     theory via Tietze extension (\Cref{thm:tietze}).
   \item Direct discrete impossibility results requiring no topology
     (\Cref{sec:discrete}).
-  \item Multi-turn, stochastic, and capacity parity extensions
-    (\Cref{sec:extensions}).
+  \item Multi-turn, stochastic, capacity parity, and nonlinear
+    pipeline extensions (\Cref{sec:extensions}).
   \item Counterexamples proving each hypothesis is necessary
     (\Cref{sec:counterexamples}).
   \item Supporting theorems: basin structure, fragmentation,
@@ -206,7 +206,7 @@ for each.
     (\Cref{sec:landscape,sec:attacks,sec:stability,sec:cost}).
   \item Theory--experiment correspondence with three LLMs
     (\Cref{sec:experiments}).
-  \item Lean~4 artifact: 38 files, $\sim$300 theorems, zero
+  \item Lean~4 artifact: 39 files, $\sim$300 theorems, zero
     \texttt{sorry}, three standard axioms (\Cref{sec:artifact}).
 \end{itemize}
 
@@ -726,6 +726,44 @@ safe input the defense must leave untouched is one fewer degree of
 freedom available for remapping unsafe inputs. The attacker, who has
 no obligation to preserve anything, retains full capacity.
 
+\subsection{Nonlinear Agent Pipelines}
+
+Agentic LLM systems process inputs through multi-stage pipelines:
+defense $\to$ model inference $\to$ tool call $\to$ tool call $\to
+\cdots$ Each stage is a nonlinear map. The natural question is whether
+the pipeline structure helps the defense.
+
+It does not. It makes things worse.
+
+\begin{theorem}[Pipeline Lipschitz Degradation]
+\label{thm:pipeline}
+If stages $T_1, \ldots, T_n$ are $K_1, \ldots, K_n$-Lipschitz
+respectively, the composed pipeline $T_n \circ \cdots \circ T_1$ is
+$(K_1 \cdot K_2 \cdots K_n)$-Lipschitz. For $n$ stages each with
+constant $K \geq 2$, the effective constant is $K^n$---exponential
+in pipeline depth.
+\end{theorem}
+
+\begin{proof}
+Composition of Lipschitz maps is Lipschitz with product constant
+(standard; verified in Lean via \texttt{LipschitzWith.comp}).
+\end{proof}
+
+\begin{theorem}[Pipeline Impossibility]
+\label{thm:pipeline-impossible}
+If the composed pipeline $P = T_n \circ \cdots \circ T_1 \circ D$ is
+continuous and preserves safe inputs ($f(x) < \tau \Rightarrow
+P(x) = x$), then $P$ has boundary fixed points.
+\end{theorem}
+
+The $\varepsilon$-robust band width for the pipeline scales as
+$L(K^n + 1)\delta$, where $K^n$ is the effective Lipschitz constant.
+Each tool call \emph{multiplicatively} degrades the defense's
+effectiveness: a 5-stage pipeline with $K = 2$ per stage has
+effective constant $32$, making the failure band $33\times$ wider than
+a single-stage defense. Deeper agent architectures are exponentially
+harder to defend, not easier.
+
 
 % ============================================================
 \section{The Vulnerability Landscape}
@@ -872,7 +910,10 @@ Interior Stability (\ref{thm:interior-stable})
   & Vulnerability persists across variants \\[3pt]
 Cost (\ref{thm:cost})
   & 2D tractable, high-$d$ intractable
-  & 15K queries fill 63\% at $d\!=\!2$ \\
+  & 15K queries fill 63\% at $d\!=\!2$ \\[3pt]
+Pipeline (\ref{thm:pipeline})
+  & Deeper pipelines $\to$ wider failure band
+  & Tool-using agents harder to defend than single-turn \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1051,7 +1092,7 @@ fixed-point set to spill beyond the safe region.
 \label{sec:artifact}
 
 The complete theory is verified in Lean~4.28.0 with Mathlib~v4.28.0.
-The artifact comprises 38 files:
+The artifact comprises 39 files:
 \begin{itemize}[nosep]
   \item 10 core theory files (MoF\_01--MoF\_10)
   \item 10 cost theory files (MoF\_Cost\_01--MoF\_Cost\_10)
@@ -1064,6 +1105,7 @@ The artifact comprises 38 files:
     (MoF\_13\_MultiTurn)
   \item 1 representation-independent meta-theorem
     (MoF\_14\_MetaTheorem)
+  \item 1 nonlinear agent pipelines (MoF\_15\_NonlinearAgents)
   \item 3 capstone files (MasterTheorem, Euclidean instantiation,
     verification)
 \end{itemize}
@@ -1230,7 +1272,7 @@ The practical prescription: make the boundary shallow (raise~$\tau$),
 smooth (reduce~$L$), and low-dimensional (constrain the interface).
 GPT-5-Mini's ceiling at $\AD = 0.50$ shows this working in practice.
 
-The full theory is machine-verified in Lean~4: 38 files, approximately
+The full theory is machine-verified in Lean~4: 39 files, approximately
 300 theorems, zero \texttt{sorry}, three standard axioms.
 
 
