@@ -1,5 +1,5 @@
 -- Manifold of Failure: Formal Theory of Prompt Injection Defense Impossibility
--- 34 files, ~200 theorems, zero sorry, three standard axioms (propext, Classical.choice, Quot.sound)
+-- 40 files, ~300 theorems, zero sorry, three standard axioms (propext, Classical.choice, Quot.sound)
 
 -- Core Theory (10 files)
 import ManifoldProofs.MoF_01_Foundations
@@ -54,6 +54,9 @@ import ManifoldProofs.MoF_14_MetaTheorem
 
 -- Nonlinear Agent Pipelines
 import ManifoldProofs.MoF_15_NonlinearAgents
+
+-- Relaxed Utility Preservation
+import ManifoldProofs.MoF_16_RelaxedUtility
 
 -- Capstone
 import ManifoldProofs.MoF_MasterTheorem

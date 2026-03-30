@@ -199,13 +199,12 @@ is C - |S|, while the attacker retains full capacity C.
 -/
 theorem capacity_parity_disadvantage
     {n_safe n_unsafe : ℕ}
-    (_h_safe_pos : 0 < n_safe)
+    (h_safe_pos : 0 < n_safe)
     (_h_unsafe_pos : 0 < n_unsafe) :
     let n_total := n_safe + n_unsafe
-    n_safe + n_unsafe = n_total ∧ n_unsafe = n_total - n_safe := by
-  constructor
-  · ring
-  · omega
+    n_safe > 0 → n_unsafe < n_total := by
+  intro _
+  omega
 
 /--
 **Defense effective capacity is strictly less than total capacity.**

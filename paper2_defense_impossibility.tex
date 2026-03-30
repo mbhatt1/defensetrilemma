@@ -11,6 +11,8 @@
 \usepackage{enumitem}
 \usepackage[margin=1in]{geometry}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{patterns,decorations.pathreplacing,calc}
 
 % Theorem environments
 \newtheorem{theorem}{Theorem}[section]
@@ -33,7 +35,7 @@
 \newcommand{\dist}{\operatorname{dist}}
 
 \title{Defense Trilemma:\\
-  Geometric Impossibility of Wrappers based Prompt Injection Defense}
+  Geometric Impossibility of Prompt Injection Defense}
 
 \author{
     {\rm Manish Bhatt\thanks{This work was conducted independently and does not reflect the views, policies, or endorsements of the
@@ -70,7 +72,7 @@
 
 We prove that no continuous, utility-preserving alignment defense can
 make a large language model fully safe, and we characterize exactly
-where every such defense must fail. Working on a connected Hausdorff
+where every such defense has a gap. Working on a connected Hausdorff
 space, we establish three impossibility results of increasing strength.
 \emph{Boundary fixation}: every conforming defense must fix the
 boundary of the alignment deviation surface. \emph{$\varepsilon$-robust
@@ -84,9 +86,9 @@ multi-turn interactions, stochastic defenses, and capacity-parity
 settings, showing that the impossibility recurs at every conversational
 turn, that randomization cannot circumvent the bounds, and that utility
 preservation taxes the defense even under equal resources. Together
-these results delineate an irreducible \emph{manifold of failure\cite{munshi}}: a
-region no defense can eliminate. The full theory is mechanically verified
-in Lean~4 with Mathlib (39~files, $\sim$300~theorems, no admitted
+these results delineate a \emph{manifold of failure}~\cite{munshi2026manifold}: a
+region that persists under every conforming wrapper defense. The full theory is mechanically verified
+in Lean~4 with Mathlib (40~files, $\sim$300~theorems, no admitted
 proofs, three standard axioms) and validated empirically on three LLMs.
 
 \end{abstract}
@@ -96,14 +98,13 @@ proofs, three standard axioms) and validated empirically on three LLMs.
 \label{sec:intro}
 
 \emph{Can you build a wrapper around a language model that eliminates all
-prompt injection vulnerabilities?} Most current work on LLM safety implicitly assumes the answer is
-yes, at least in principle, even if current tools fall short in practice.
-The defense mechanisms people have proposed span a wide range: input
-classifiers that flag suspicious prompts~\cite{alon2023detecting},
-output filters that catch unsafe completions~\cite{inan2023llama},
-and constitutional rewriting pipelines that reshape model
-behavior~\cite{bai2022constitutional}. But despite their differences,
-all of these defenses share the same underlying structure: they are
+prompt injection vulnerabilities?} Most current work on LLM safety
+implicitly assumes the answer is yes, at least in principle. The defense
+mechanisms proposed span a wide range: input classifiers that flag
+suspicious prompts~\cite{alon2023detecting}, output filters that catch
+unsafe completions~\cite{inan2023llama}, and constitutional rewriting
+pipelines that reshape model behavior~\cite{bai2022constitutional}. Despite
+their differences, all share the same underlying structure: they are
 functions $D\colon X \to X$ that preprocess prompts before the model
 sees them, aiming to map unsafe inputs to safe equivalents while leaving
 safe inputs alone.
@@ -115,15 +116,17 @@ under mild and commonly assumed design constraints like continuity and
 utility preservation, no defense can eliminate the safety boundary.
 Vulnerabilities arise not from specific inputs, but from the structure
 of the space and the constraints imposed on admissible defenses. This
-shifts the problem from adversarial search to geometric inevitability. We prove the following three results:
+shifts the problem from adversarial search to geometric constraint.
 
-\paragraph{Boundary fixation.}
+We prove the following three results, each strictly stronger than the last:
+
+\paragraph{Boundary fixation (\Cref{thm:main}).}
 If the defense is continuous, utility-preserving, and the prompt space
-is connected, then the defense must fix at least one boundary point (a
+is connected, then the defense must fix at least one boundary point---a
 prompt where alignment deviation equals the threshold
-exactly), passing it through with no remediation (\Cref{thm:main}).
+exactly---passing it through with no remediation.
 
-\paragraph{$\varepsilon$-robust constraint.}
+\paragraph{$\varepsilon$-robust constraint (\Cref{thm:eps-robust}).}
 If the defense is also $K$-Lipschitz and the alignment deviation
 function is $L$-Lipschitz, the defense cannot uniformly reduce
 alignment deviation far below~$\tau$ on a neighborhood of the fixed
@@ -138,16 +141,16 @@ This constrains the \emph{depth} to which the defense can push
 near-boundary points into the safe region, though it does not by itself
 prevent the defense from nudging them slightly below~$\tau$.
 
-\paragraph{Persistent unsafe region.}
+\paragraph{Persistent unsafe region (\Cref{thm:persistent}).}
 Under a transversality condition, the alignment surface has directional
 slope exceeding $L(K+1)$ at the boundary---the defense leaves a
-\emph{positive-measure region genuinely unsafe}:
+\emph{positive-measure region that remains unsafe}:
 \begin{equation}\label{eq:persistent}
   f(D(x)) > \tau \quad\text{for all } x \in \mathcal{S},
   \qquad \mu(\mathcal{S}) > 0.
 \end{equation}
-This is the strongest result: not boundary fixation, not a near-threshold
-band, but genuine persistent unsafe volume~(\Cref{thm:persistent}).
+This is the strongest of the three results: not boundary fixation, not a
+near-threshold band, but persistent unsafe volume.
 The condition holds whenever the alignment surface rises faster than
 the defense can pull it down---empirically observed in all three models
 we study.
@@ -164,9 +167,8 @@ model consistent with the observations.
 Both the basic and $\varepsilon$-robust proofs are machine-verified in
 Lean~4 with zero \texttt{sorry} statements, as is the persistent unsafe
 region theorem. All three conditions---continuity, utility preservation,
-and connectedness are individually necessary; we give counterexamples
+and connectedness---are individually necessary; we give counterexamples
 for each (\Cref{app:counterexamples}).
-
 
 
 % ============================================================
@@ -182,14 +184,13 @@ interpretation~\cite{singh2019abstract}, SMT-based
 verification~\cite{katz2017reluplex,huang2017safety}, and randomized
 smoothing~\cite{cohen2019certified}. These approaches characterize the
 existence of inputs that induce failure, or provide guarantees within
-bounded perturbation sets. Our work departs fundamentally from this paradigm. Rather than analyzing
-which inputs cause failures for a fixed model, we study what any
-admissible defense mapping can achieve. Specifically, we prove that for
-any continuous, utility-preserving defense $D$, there exists an input at
-which the defense fails to enforce safety. This shifts the focus from
-existential statements over inputs to universal constraints over
-defenses, independent of perturbation models, norms, or training
-procedures.
+bounded perturbation sets. Our work differs from this
+paradigm: rather than analyzing which inputs cause failures for a fixed
+model, we prove that for any continuous, utility-preserving
+defense~$D$, there exists an input at which the defense fails to enforce
+safety. This shifts the focus from existential statements over inputs to
+universal constraints over defenses, independent of perturbation models,
+norms, or training procedures.
 
 \paragraph{Prompt injection and jailbreaking.}
 Recent work has developed increasingly effective methods for eliciting
@@ -199,13 +200,14 @@ strategies~\cite{chao2024jailbreaking,mehrotra2024tree}, indirect prompt
 injection~\cite{greshake2023indirect}, and quality-diversity approaches
 such as MAP-Elites~\cite{mouret2015illuminating,samvelyan2024rainbow}.
 These methods demonstrate that vulnerabilities are widespread and often
-easy to discover. In contrast, our results are not algorithmic but structural. Existing
-work shows that failures can be found; we prove that under mild and
-commonly assumed constraints, failures cannot be eliminated by any
-defense of the given form. This provides a formal explanation for the
-empirical persistence of prompt injection: vulnerabilities arise not
-from insufficient search or imperfect training, but from geometric
-constraints on admissible transformations of the input space.
+easy to discover. In contrast, our results are not algorithmic but
+structural: existing work shows that failures can be found; we prove
+that under mild and commonly assumed constraints, failures cannot be
+eliminated by any defense of the given form. This provides a formal
+explanation for the empirical persistence of prompt injection:
+vulnerabilities arise not from insufficient search or imperfect
+training, but from geometric constraints on admissible transformations
+of the input space.
 
 \paragraph{Impossibility results in machine learning.}
 Classical results such as the No Free Lunch
@@ -215,13 +217,13 @@ tradeoffs~\cite{tsipras2018robustness} demonstrate that improving
 robustness may degrade standard performance. Fawzi et
 al.~\cite{fawzi2018adversarial} prove that any classifier with
 sufficient accuracy is inherently vulnerable to adversarial
-perturbations. Our results are of a different character. We establish pointwise,
-distribution-free impossibility theorems that hold for any fixed task
-and any admissible defense mapping. The limitation arises not from
-competing objectives or unknown distributions, but from the interaction
-between continuity, utility preservation, and the topology of the input
-space. As such, our results are orthogonal to, and not implied by,
-prior tradeoff or no-free-lunch analyses.
+perturbations. Our results are of a different character: we establish
+pointwise, distribution-free impossibility theorems that hold for any
+fixed task and any admissible defense mapping. The limitation arises not
+from competing objectives or unknown distributions, but from the
+interaction between continuity, utility preservation, and the topology
+of the input space. As such, our results are orthogonal to, and not
+implied by, prior tradeoff or no-free-lunch analyses.
 
 \paragraph{Geometric and topological perspectives.}
 Prior work has examined the geometry of decision boundaries and the
@@ -230,8 +232,8 @@ highlighting the importance of structure in understanding model
 behavior. While our proofs rely on elementary topological arguments,
 the key novelty lies in identifying that standard design constraints
 for LLM defenses induce a forced fixed-point structure at the safety
-boundary. To our knowledge, this connection linking utility
-preservation and continuity to unavoidable boundary fixation has not
+boundary. To our knowledge, this connection---linking utility
+preservation and continuity to unavoidable boundary fixation---has not
 been previously formalized. Our result further strengthens this
 perspective by showing that under metric assumptions, unsafe behavior
 persists over regions of positive measure, not merely at isolated
@@ -250,13 +252,81 @@ a specific system.
 
 
 % ============================================================
-\section{Methodology}
+\section{Formal Setup}
 \label{sec:setup}
+
+Before defining the model formally, we set up the intuition.
+Imagine that every possible prompt lives in a space~$X$. A scoring
+function~$f$ assigns each prompt a number measuring how far the
+model's response deviates from its alignment goals: low scores are
+safe, high scores are unsafe. A fixed threshold~$\tau$ draws the
+line between the two. A \emph{defense} is a preprocessor that
+rewrites prompts before the model sees them, trying to push unsafe
+prompts into safe territory. We require two natural properties:
+\emph{continuity} (similar prompts produce similar rewrites, i.e., no
+brittle edge-case behavior) and \emph{utility preservation} (safe
+prompts pass through unchanged, so the defense does not degrade
+normal use).
+
+\Cref{fig:landscape} illustrates the setup: the prompt space is
+divided into a safe region (green), an unsafe region (red), and a
+boundary (dashed) where the score equals the threshold exactly.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.92]
+  % Background regions — tall enough to separate labels from bottom
+  \fill[green!12] (0,0.8) rectangle (4.0,5.2);
+  \fill[red!10] (4.0,0.8) rectangle (8.4,5.2);
+
+  % Boundary line
+  \draw[dashed, thick, black!60] (4.0,0.8) -- (4.0,5.2);
+
+  % Region titles (top area, well separated)
+  \node[font=\bfseries] at (2.0,4.6) {Safe region $S_\tau$};
+  \node[font=\small] at (2.0,4.1) {$f(x) < \tau$};
+  \node[font=\small, black!50] at (2.0,3.5) {Defense leaves};
+  \node[font=\small, black!50] at (2.0,3.1) {these unchanged};
+
+  \node[font=\bfseries] at (6.2,4.6) {Unsafe region $U_\tau$};
+  \node[font=\small] at (6.2,4.1) {$f(x) > \tau$};
+  \node[font=\small, black!50] at (6.2,3.5) {Defense tries to};
+  \node[font=\small, black!50] at (6.2,3.1) {remap these};
+
+  % Boundary label (top, horizontal, outside the busy zone)
+  \node[font=\small, black!70] at (4.0,5.5) {Boundary $B_\tau$: $f(x)=\tau$};
+
+  % Fixed point (mid-height, away from labels)
+  \fill[black] (4.0,2.4) circle (3pt);
+  \node[anchor=west, font=\small] at (4.25,2.4) {fixed point $z$};
+
+  % Defense arrow (lower area, plenty of room)
+  \draw[->, thick, blue!70, line width=1.2pt]
+    (6.8,1.5) .. controls (5.8,0.6) and (4.8,0.6) .. (3.0,1.5);
+  \node[font=\small, blue!70] at (5.0,0.3) {$D$: defense remaps};
+
+  % Axes
+  \draw[->] (-0.3,0.8) -- (8.8,0.8) node[right] {\small prompt space $X$};
+  \draw[->] (0,0.6) -- (0,5.8) node[above] {\small $f(x)$};
+
+  % Tau tick on y-axis
+  \draw (0,2.4) -- (-0.15,2.4);
+  \node[anchor=east, font=\small] at (-0.2,2.4) {$\tau$};
+\end{tikzpicture}
+\caption{Schematic of the prompt space. The defense~$D$ must leave all
+safe inputs unchanged (utility preservation) and tries to remap unsafe
+inputs into the safe region. The boundary fixation theorem proves that
+the defense must also leave some boundary points unchanged---the
+black dot~$z$ passes through with no remediation.}
+\label{fig:landscape}
+\end{figure}
 
 \begin{definition}[Alignment Deviation Function]
 \label{def:ad}
-Let $X$ be a topological space. An \emph{alignment deviation function} is
-a continuous map $f\colon X \to \R$. Given a threshold $\tau\in\R$:
+Let $X$ be a topological space (a set equipped with a notion of
+``nearness'' between points). An \emph{alignment deviation function} is
+a continuous map $f\colon X \to \R$---that is, small changes in the
+input produce small changes in the score. Given a threshold $\tau\in\R$:
 \begin{align}
   S_\tau &= \{x \in X : f(x) < \tau\}  &&\text{(safe region)} \\
   U_\tau &= \{x \in X : f(x) > \tau\}  &&\text{(unsafe region)} \\
@@ -267,31 +337,52 @@ a continuous map $f\colon X \to \R$. Given a threshold $\tau\in\R$:
 \begin{definition}[Defense]
 \label{def:defense}
 A \emph{defense} is a continuous map $D\colon X \to X$. It is
-\emph{utility-preserving} if $D(x) = x$ for all $x \in S_\tau$,
-and \emph{complete} if $f(D(x)) < \tau$ for all $x\in X$.
+\emph{utility-preserving} if $D(x) = x$ for all $x \in S_\tau$
+(safe prompts pass through unchanged),
+and \emph{complete} if $f(D(x)) < \tau$ for all $x\in X$
+(every output is safe).
 \end{definition}
+
+The central question is: can a defense be both utility-preserving and
+complete? The following sections prove that, under natural conditions,
+the answer is no.
 
 
 % ============================================================
-\subsection{Boundary Fixation}
-\label{sec:proof}
+\section{Boundary Fixation}
+\label{sec:boundary}
 
-A utility-preserving defense must leave
-all safe inputs unchanged, it fixes them in place. But continuity
-forces the set of fixed points to be \emph{closed}: you cannot
-``stop fixing'' inputs without a discontinuous jump. Meanwhile, the
-safe region is \emph{open}: it is defined by a strict inequality
-$f(x) < \tau$. In a connected space, an open set that is also
-nonempty and proper cannot be closed. So the defense's fixed-point
-set, which contains the entire open safe region, must extend past it
-, into the boundary where $f(z) = \tau$ exactly. The defense is
-forced to pass these boundary prompts through with no remediation.
+\paragraph{Intuition.}
+Think of the safe region as a green zone and the unsafe region as a
+red zone, with a boundary line between them. The defense promises:
+``I won't touch anything in the green zone.'' But the green zone
+doesn't include its own edge---it's defined by a strict inequality
+($<$, not $\leq$). So the defense's ``don't touch'' commitment, which
+must extend continuously to the edge, includes some points
+\emph{on} the boundary line. Those boundary prompts---right at the
+safety threshold---pass through the defense without remediation.
+
+\paragraph{Formal argument.}
+A utility-preserving defense must leave all safe inputs unchanged---it
+fixes them in place. But continuity forces the set of fixed points to
+be \emph{closed} (it contains its own limit points): you cannot ``stop
+fixing'' inputs without a discontinuous jump. Meanwhile, the safe
+region is \emph{open} (it does not contain its boundary): it is
+defined by a strict inequality $f(x) < \tau$. In a connected space
+(one that cannot be split into two separate pieces), an
+open set that is also nonempty and proper cannot be closed. So the
+defense's fixed-point set, which contains the entire open safe region,
+must extend past it---into the boundary where $f(z) = \tau$ exactly.
+The defense must pass these boundary prompts through without
+remediation.
 
 \begin{theorem}[Boundary Fixation]
 \label{thm:main}
-Let $X$ be a connected Hausdorff space. Let $f\colon X\to\R$ be
-continuous with $S_\tau \neq \emptyset$ and $U_\tau \neq \emptyset$. Let
-$D\colon X \to X$ be continuous with $D|_{S_\tau} = \id$.
+Let $X$ be a connected Hausdorff space (a space that is ``in one piece''
+and where distinct points can be separated by neighborhoods). Let
+$f\colon X\to\R$ be continuous with $S_\tau \neq \emptyset$ and
+$U_\tau \neq \emptyset$. Let $D\colon X \to X$ be continuous with
+$D|_{S_\tau} = \id$.
 
 Then there exists $z\in X$ with $f(z) = \tau$ and $D(z) = z$.
 Moreover, every $z \in \cl{S_\tau} \setminus S_\tau$ satisfies
@@ -338,10 +429,54 @@ No continuous utility-preserving defense is complete.
 \end{corollary}
 
 All three hypotheses---continuity, utility preservation, and
-connectedness are individually necessary. A defense can satisfy at
-most two of the three (the
-\emph{defense trilemma}). Counterexamples establishing necessity of
-each hypothesis appear in \Cref{app:counterexamples}.
+connectedness---are individually necessary. A defense can satisfy at
+most two of the three (the \emph{defense trilemma},
+\Cref{fig:trilemma}). Counterexamples
+establishing necessity of each hypothesis appear in
+\Cref{app:counterexamples}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=1.0]
+  % Triangle coordinates — wide and short to give room for horizontal labels
+  \coordinate (A) at (0,0);      % Continuity
+  \coordinate (B) at (7,0);      % Utility Preservation
+  \coordinate (C) at (3.5,4.0);  % Completeness
+
+  % Filled triangle
+  \fill[black!5] (A) -- (B) -- (C) -- cycle;
+  \draw[thick] (A) -- (B) -- (C) -- cycle;
+
+  % Vertex labels — bold, placed outside the triangle
+  \node[anchor=north east, font=\bfseries\small] at (-0.1,-0.15) {Continuity};
+  \node[anchor=north west, font=\bfseries\small] at (7.1,-0.15) {Utility Preservation};
+  \node[anchor=south, font=\bfseries\small] at (3.5,4.15) {Completeness};
+
+  % Edge annotations — horizontal, placed outside each edge with offset
+  % Bottom edge: Continuity + Utility Preservation
+  \node[font=\small, text=blue!70!black, align=center] at (3.5,-0.8)
+    {Both $\Rightarrow$ defense fixes boundary (our result)};
+
+  % Left edge: Continuity + Completeness
+  \node[font=\small, text=green!50!black, anchor=east, align=right,
+        text width=3.2cm] at (-0.5,2.2)
+    {Both $\Rightarrow$\\destroys utility};
+
+  % Right edge: Completeness + Utility Preservation
+  \node[font=\small, text=red!70!black, anchor=west, align=left,
+        text width=3.2cm] at (7.5,2.2)
+    {Both $\Rightarrow$\\discontinuous jump};
+
+  % Center label
+  \node[font=\small\itshape, align=center] at (3.5,1.6)
+    {All three\\simultaneously\\impossible};
+\end{tikzpicture}
+\caption{The defense trilemma. Any defense can satisfy at most two of
+the three properties. Choosing continuity and utility preservation
+(bottom edge) forces boundary fixation---our main result. The other
+two edges correspond to the counterexamples in \Cref{app:counterexamples}.}
+\label{fig:trilemma}
+\end{figure}
 
 \begin{remark}[Not all boundary points are fixed]
 The theorem captures $\cl{S_\tau} \setminus S_\tau$, not all of
@@ -350,19 +485,188 @@ Verified in Lean with $f(x)=x^2$, $\tau=0$.
 \end{remark}
 
 \begin{remark}[Lipschitz Bounds in Behavioral Space]
-While raw discrete token manipulations are chaotic and inherently non-Lipschitz, our bound $L$ applies to the continuous behavioral manifold constructed via the Tietze extension (\Cref{thm:tietze}). In these latent spaces (parameterized by axes like indirection and authority), the alignment surface is remarkably smooth. Our empirical validation on Llama-3-8B (\Cref{sec:experiments}) yields $L \approx 5$ near the boundary, confirming these Lipschitz constraints have practical predictive power.
+While raw discrete token manipulations are chaotic and inherently
+non-Lipschitz, our bound $L$ applies to the continuous behavioral
+manifold constructed via the Tietze extension (\Cref{thm:tietze}). In
+these latent spaces (parameterized by axes like indirection and
+authority), the alignment surface is remarkably smooth. Our empirical
+validation on Llama-3-8B (\Cref{sec:experiments}) yields $L \approx 5$
+near the boundary, confirming these Lipschitz constraints have practical
+predictive power.
 \end{remark}
 
+\subsection{Relaxed Utility Preservation}
+\label{sec:relaxed}
+
+A natural objection is that strict utility preservation ($D(x) = x$
+for safe~$x$) is too strong: a practical defense might rewrite
+``How do I bake a cake?'' into ``The user is asking for a cake recipe.
+Please provide one.'' The prompt changes, but its safety score and
+semantic content are preserved. We now show that the impossibility
+survives three progressively weaker assumptions, the last of which
+requires only that the defense approximately preserves alignment
+deviation scores on safe inputs.
+
+\begin{theorem}[Score-Preserving Defense]
+\label{thm:score-preserving}
+Let $X$ be a connected Hausdorff space, $f\colon X\to\R$ continuous
+with $S_\tau, U_\tau \neq \emptyset$. Let $D\colon X \to X$ be
+continuous and \emph{score-preserving on safe inputs}:
+$f(D(x)) = f(x)$ for all $x \in S_\tau$.
+
+Then there exists $z \in X$ with $f(z) = \tau$ and
+$f(D(z)) = \tau$. The defense does not reduce the alignment
+deviation below~$\tau$ at~$z$.
+\end{theorem}
+
+\begin{proof}
+Define $h = f \circ D - f$. Then $h$ is continuous and
+$h|_{S_\tau} = 0$. The zero set $\{x : h(x) = 0\}$ is closed
+(preimage of a closed set under a continuous function), and it
+contains $S_\tau$, so it contains $\cl{S_\tau}$. By the
+connectedness argument of \Cref{thm:main}, there exists
+$z \in \cl{S_\tau} \setminus S_\tau$ with $f(z) = \tau$.
+Since $z \in \cl{S_\tau} \subseteq \{h = 0\}$, we have
+$h(z) = 0$, i.e., $f(D(z)) = f(z) = \tau$.
+\end{proof}
+
+This covers defenses that rewrite safe prompts arbitrarily, so long as
+the rewritten prompt has the same alignment deviation score. The
+defense may change the words, the syntax, or the framing of a safe
+prompt---but if it preserves how aligned the model's response is
+(which is the operational meaning of ``utility preservation''), then
+boundary fixation holds in the sense that $f(D(z)) = \tau$: the
+defense cannot push the boundary point below threshold.
+
+The next result weakens the assumption further: the defense need only
+\emph{approximately} preserve scores.
+
+\begin{theorem}[$\varepsilon$-Relaxed Utility Preservation]
+\label{thm:eps-relaxed}
+Under the same hypotheses, if $D$ is
+\emph{$\varepsilon$-score-preserving}: $|f(D(x)) - f(x)| \leq
+\varepsilon$ for all $x \in S_\tau$ and some $\varepsilon \geq 0$,
+then there exists $z$ with $f(z) = \tau$ and
+\[
+  f(D(z)) \;\geq\; \tau - \varepsilon.
+\]
+\end{theorem}
+
+\begin{proof}
+Define $h = f \circ D - f$ as before. The set
+$\{x : h(x) \geq -\varepsilon\}$ is closed and contains $S_\tau$
+(since $|h| \leq \varepsilon$ on $S_\tau$), so it contains
+$\cl{S_\tau}$. For $z \in \cl{S_\tau} \setminus S_\tau$:
+$f(D(z)) = f(z) + h(z) = \tau + h(z) \geq \tau - \varepsilon$.
+\end{proof}
+
+\begin{remark}[Interpreting the relaxation]
+\Cref{thm:score-preserving} ($\varepsilon = 0$) says: if the defense
+preserves AD scores exactly on safe inputs, it cannot reduce the score
+below $\tau$ at the boundary. \Cref{thm:eps-relaxed} says: if the
+defense perturbs safe scores by at most~$\varepsilon$, it can push
+boundary points at most~$\varepsilon$ below threshold. For small
+$\varepsilon$, the boundary point remains near-threshold. In either
+case, the defense does not require $D(x) = x$---it permits arbitrary
+rewriting of safe prompts. Both theorems are verified in Lean as
+\texttt{score\_preserving\_boundary\_fixation} and
+\texttt{eps\_relaxed\_boundary\_fixation} in
+\texttt{MoF\_16\_RelaxedUtility}.
+\end{remark}
+
+\begin{remark}[Why $D(S_\tau) \subseteq S_\tau$ alone is insufficient]
+\label{rem:safe-preserving-escape}
+The weakest natural relaxation---$D(S_\tau) \subseteq S_\tau$ with no
+score constraint---does allow a complete defense. For example, a
+constant map $D(x) = x_0$ to a fixed safe point satisfies
+$D(S_\tau) \subseteq S_\tau$, is continuous, and is complete. But this
+defense destroys all semantic content: every prompt, safe or unsafe,
+produces the same response. The score-preservation conditions in
+\Cref{thm:score-preserving,thm:eps-relaxed} formalize the constraint
+that the defense must not destroy utility, without requiring the
+defense to be the identity.
+\end{remark}
+
+
 % ============================================================
-\subsection{$\varepsilon$-Robust Constraint}
+\section{$\varepsilon$-Robust Constraint}
 \label{sec:eps-robust}
-\ref{sec:proof} shows the defense must fix at least one boundary point but a
-single point could have measure zero, easy to dismiss as a mathematical
-curiosity. This section shows the damage extends to a \emph{neighborhood}.
+
+\paragraph{Intuition.}
+Boundary fixation proves the defense misses at least one point. But
+one point is infinitely small---is this just a technicality? No. If
+both the defense and the scoring function change at bounded rates
+(i.e., they are \emph{Lipschitz}: a function is $L$-Lipschitz if
+moving the input by distance~$\delta$ changes the output by at
+most~$L\delta$), then the defense's inability to fix the boundary
+point ``spreads'' to a whole neighborhood around it. The defense
+cannot push nearby prompts deep into safe territory---it can only
+nudge them slightly below the threshold. The faster the defense tries
+to act (larger~$K$), the wider this constrained band becomes.
+\Cref{fig:eps-band} illustrates the effect.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=0.92]
+  % Epsilon band (draw first, behind everything)
+  \fill[yellow!25] (0.5,2.0) rectangle (9,3.2);
+
+  % Tau line
+  \draw[thick, dotted] (0.5,3.2) -- (9,3.2);
+  \node[anchor=east, font=\small] at (0.35,3.2) {$\tau$};
+
+  % Tau - epsilon line
+  \draw[dashed, black!50] (0.5,2.0) -- (9,2.0);
+  \node[anchor=east, font=\small] at (0.35,2.0) {$\tau\!-\!\varepsilon$};
+
+  % Alignment surface curve
+  \draw[very thick, black] (0.5,1.0) .. controls (2.0,1.5) and (3.5,2.4) ..
+    (5.0,3.2) .. controls (6.0,3.7) and (7.5,4.4) .. (9,4.8);
+
+  % Fixed point (where curve crosses tau) — label placed left, above the band
+  \fill[black] (5.0,3.2) circle (3pt);
+  \node[anchor=east, font=\small] at (4.85,3.6) {fixed point $z$};
+  \draw[thin, black!60] (4.85,3.5) -- (4.95,3.25);
+
+  % Brace for epsilon band (right side, outside plot)
+  \draw[decorate, decoration={brace, amplitude=6pt, mirror}]
+    (9.3,2.0) -- (9.3,3.2);
+  \node[anchor=west, font=\small] at (9.55,2.6) {$\varepsilon$-band};
+
+  % Defense arrow (inside the band, left of z, no label overlap)
+  \draw[->, very thick, blue!70] (3.8,2.9) -- (3.8,2.15);
+
+  % Annotation for defense arrow — placed below the band, out of the way
+  \node[anchor=north, font=\small, blue!70, align=center] at (3.8,1.7)
+    {defense can only\\[-2pt]push this far};
+
+  % Region labels (well separated)
+  \node[font=\small, green!50!black] at (2.0,0.6) {\textbf{Safe} ($f < \tau$)};
+  \node[font=\small, red!70!black] at (8.0,5.1) {\textbf{Unsafe} ($f > \tau$)};
+
+  % Curve label (below the curve, right side, separated from Unsafe label)
+  \node[font=\small, anchor=north west] at (7.0,4.1) {alignment surface $f$};
+
+  % Axes
+  \draw[->] (0.2,0.3) -- (9.5,0.3) node[right] {\small prompt space};
+  \draw[->] (0.5,0.1) -- (0.5,5.3) node[above] {\small $f(x)$};
+\end{tikzpicture}
+\caption{The $\varepsilon$-band around the boundary point~$z$. Even
+after the defense acts, points in this yellow band cannot be pushed
+far below the threshold~$\tau$. The depth the defense can reach is
+bounded by $L(K+1)\delta$, where $\delta$ is the distance to~$z$.}
+\label{fig:eps-band}
+\end{figure}
+
+Boundary fixation (\Cref{sec:boundary}) shows the defense must fix at
+least one boundary point, but a single point could have measure zero---easy
+to dismiss as a mathematical curiosity. This section shows the damage
+extends to a \emph{neighborhood}.
 
 \begin{theorem}[$\varepsilon$-Robust Defense Constraint]
 \label{thm:eps-robust}
-Let $X$ be a connected Hausdorff metric space, $f$ be $L$-Lipschitz
+Let $X$ be a connected Hausdorff metric space (a connected space with a
+distance function), $f$ be $L$-Lipschitz
 with $S_\tau, U_\tau \neq \emptyset$, and $D$ be $K$-Lipschitz with
 $D|_{S_\tau} = \id$.
 
@@ -408,8 +712,8 @@ than this linear bound allows. Points within distance
 $\delta$ of~$z$ remain within $L(K+1)\delta$ of threshold.
 \end{proof}
 
-This means near-boundary points are not just theoretically
-vulnerable but they form a band of constrained safety.
+Near-boundary points are not just theoretically vulnerable---they form a
+band of constrained safety.
 
 \begin{theorem}[Positive-Measure $\varepsilon$-Band]
 \label{thm:band-measure}
@@ -423,34 +727,51 @@ Specifically, $\operatorname{ball}(c, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$ for any $c$ with $f(c) = \tau - \varepsilon/2$.
 \end{theorem}
 
-\begin{remark}[What \ref{sec:eps-robust} does and does not say]
+\begin{remark}[What the $\varepsilon$-robust constraint does and does not say]
 \Cref{thm:eps-robust} constrains the \emph{depth} to which the defense
 can push near-boundary points below~$\tau$, not whether it can push
 them below at all. The defense may still map these points to values in
 $[\tau - L(K+1)\delta,\; \tau)$, which \emph{is} below threshold.
-\ref{sec:eps-robust} limits how far into safe territory the defense can reach, but
-does not by itself prove any point remains unsafe. That is \ref{sec:persistent}'s
-job. The bound is tight: a defense mapping every point in a
-$\delta$-ball to $f$-value $\tau - L(K+1)\delta$ would saturate it.
+The bound limits how far into safe territory the defense can reach, but
+does not by itself prove any point remains unsafe. That is the job of
+the persistent unsafe region theorem (\Cref{sec:persistent}). The bound
+is tight: a defense mapping every point in a $\delta$-ball to $f$-value
+$\tau - L(K+1)\delta$ would saturate it.
 \end{remark}
 
 
-
 % ============================================================
-\subsection{Persistent Unsafe Region}
+\section{Persistent Unsafe Region}
 \label{sec:persistent}
 
-\ref{sec:eps-robust} constrains depth but permits the defense to nudge points below
-$\tau$. Under a transversality condition, \ref{sec:persistent} proves the defense
-\emph{cannot make certain points safe at all}.
+\paragraph{Intuition.}
+The $\varepsilon$-robust constraint says the defense cannot push
+near-boundary points \emph{deep} into safety. But it still allows the
+defense to nudge them slightly below the threshold. Can the defense at
+least make everything \emph{barely} safe? Not always. If the alignment
+surface rises steeply as you move away from the boundary into unsafe
+territory---steeper than the defense can pull it back down---then
+there is a region where the defense cannot compensate.
+These points remain unsafe after the defense acts.
+Think of it as a hill steeper than the defense can descend: the
+defense's rate of change (its Lipschitz constant) is insufficient to
+counteract the slope.
 
-The key lemma underlying Tier~3 is a bound relative to the \emph{input} value, not just $\tau$:
+The $\varepsilon$-robust constraint constrains depth but permits the
+defense to nudge points below~$\tau$. Under a transversality condition
+(the alignment surface rises steeply enough at the boundary),
+we now prove the defense \emph{cannot make certain points safe at all}.
+
+The key lemma is a bound relative to the \emph{input} value, not
+just~$\tau$:
 
 \begin{lemma}[Input-Relative Bound]
 \label{lem:input-bound}
 Under the hypotheses of \Cref{thm:eps-robust},
 $f(D(x)) \geq f(x) - L(K+1)\dist(x,z)$
-for all $x \in X$. This is strictly stronger than the $\tau$-relative bound of \Cref{thm:eps-robust} whenever $f(x) > \tau$ (verified in Lean as \texttt{defense\_from\_input\_bound}).
+for all $x \in X$. This is strictly stronger than the $\tau$-relative
+bound of \Cref{thm:eps-robust} whenever $f(x) > \tau$ (verified in Lean
+as \texttt{defense\_from\_input\_bound}).
 \end{lemma}
 
 \begin{definition}[Steep region]
@@ -474,7 +795,7 @@ nonempty, then:
   \item For every $x \in \mathcal{S}$: $f(D(x)) > \tau$.
 \end{enumerate}
 In particular, $\mu(\{x : f(D(x)) > \tau\}) > 0$---the defense leaves
-a positive-measure region genuinely unsafe.
+a positive-measure region that remains unsafe.
 \end{theorem}
 
 \begin{proof}
@@ -518,20 +839,32 @@ Verified in Lean as \texttt{transversality\_from\_deriv}.
 \end{proposition}
 
 \begin{remark}[The defense's fundamental trilemma]
-\ref{sec:proof}, \ref{sec:eps-robust}, and \ref{sec:persistent} reveal a progressive bind. \ref{sec:proof}: the defense
-\emph{must} fix boundary points. \ref{sec:eps-robust}: it cannot push nearby points
-\emph{deep} into safety. \ref{sec:persistent}: if the landscape is steep, it cannot
-push them into safety \emph{at all}. Increasing $K$ (defense
-aggressiveness) raises the transversality threshold $L(K+1)$, requiring
-an even steeper landscape to trigger \ref{sec:persistent}---but it also makes the
-defense less stable and widens the \ref{sec:eps-robust} constraint band. The defense
-cannot escape the geometry.
+The three tiers reveal a progressive bind. Boundary fixation: the
+defense \emph{must} fix boundary points. The $\varepsilon$-robust
+constraint: it cannot push nearby points \emph{deep} into safety.
+Persistence: if the landscape is steep, it cannot push them into safety
+\emph{at all}. Increasing $K$ (defense aggressiveness) raises the
+transversality threshold $L(K+1)$, requiring an even steeper landscape
+to trigger persistence---but it also makes the defense less stable and
+widens the $\varepsilon$-constraint band. The tradeoff is inherent to
+the geometry.
 \end{remark}
 
 
 % ============================================================
-\subsection{From Discrete Data to Continuous Theory}
+\section{From Discrete Data to Continuous Theory}
 \label{sec:bridge}
+
+\paragraph{Intuition.}
+Language models operate on discrete tokens, but our theorems assume a
+continuous space. How do we bridge the gap? The key idea is that any
+finite set of behavioral observations (e.g., ``this prompt scored
+$0.3$, that one scored $0.8$'') can be smoothly interpolated into a
+continuous function that agrees with all the data points. The Tietze
+extension theorem guarantees such an interpolation exists. Our
+impossibility results then hold for \emph{every} smooth function
+consistent with the observations---not just one particular
+interpolation.
 
 \begin{theorem}[Continuous Relaxation]
 \label{thm:tietze}
@@ -568,8 +901,16 @@ directly, but for every continuous model consistent with the observations.
 
 
 % ============================================================
-\subsection{Direct Discrete Impossibility}
+\section{Direct Discrete Impossibility}
 \label{sec:discrete}
+
+\paragraph{Intuition.}
+A skeptic might say: ``Your theorems rely on continuous math, but
+language models are discrete---tokens, not smooth functions. Maybe the
+impossibility is an artifact of the continuous approximation.'' This
+section answers that objection by proving parallel results directly on
+finite sets, using only counting arguments and induction---no topology
+at all.
 
 The Tietze bridge connects discrete data to continuous theory, but a
 natural objection remains: perhaps the impossibility is an artifact of
@@ -637,6 +978,7 @@ bounded-capacity defense must eventually be overwhelmed by the attack
 surface. The continuous and discrete paths arrive at the same conclusion
 by different routes.
 
+
 % ============================================================
 \section{Extensions}
 \label{sec:extensions}
@@ -649,8 +991,9 @@ that the impossibility survives all three extensions.
 \subsection{Multi-Turn Impossibility}
 
 Modern LLMs maintain state across conversation turns. One might hope
-that a defense could use accumulated context to progressively eliminate
-boundary vulnerabilities. This does not work.
+that a defense could ``learn'' from earlier turns and progressively
+close off boundary vulnerabilities. The topology constrains each turn
+independently.
 
 \begin{theorem}[Multi-Turn Impossibility]
 \label{thm:multi-turn}
@@ -668,11 +1011,11 @@ does not matter. At each timestep, the defense faces a fresh instance
 of boundary fixation on the current alignment surface.
 \end{proof}
 
-The impossibility does not accumulate or diminish over turns, it
-simply recurs. Memory, context, and adaptive strategies do not change
-the topology of the current turn's alignment surface. But the
-multi-turn setting is worse than ``the same problem repeated.'' The
-attacker gains several structural advantages.
+The impossibility does not accumulate or diminish over turns---it simply
+recurs. Memory, context, and adaptive strategies do not change the
+topology of the current turn's alignment surface. But the multi-turn
+setting compounds the problem. The attacker gains
+several structural advantages:
 
 \paragraph{Information accumulation.}
 At each turn, the defense's response reveals whether the probed input
@@ -694,8 +1037,8 @@ directional slope at the boundary varies continuously with the
 attacker's influence parameter~$\alpha$, then the intermediate value
 theorem guarantees the existence of $\alpha^*$ at which the slope
 crosses the transversality threshold $L(K+1)$. For $\alpha > \alpha^*$,
-\ref{sec:persistent} applies: persistent unsafe volume. The attacker can find
-$\alpha^*$ by binary search (verified in Lean as
+the persistent unsafe region theorem applies: persistent unsafe volume.
+The attacker can find $\alpha^*$ by binary search (verified in Lean as
 \texttt{transversality\_reachable}).
 
 \paragraph{No progressive safety.}
@@ -708,9 +1051,11 @@ through~$D_t$.
 
 \subsection{Stochastic Defense Impossibility}
 
-If the defense is randomized, mapping each input to a distribution
-over outputs rather than a fixed point---one might hope that the
-boundary fixation dissolves in expectation.
+What if the defense flips a coin? If the defense is randomized---mapping
+each input to a distribution over outputs rather than a fixed
+point---one might hope that boundary fixation dissolves in expectation.
+It does not: the \emph{average} behavior of a stochastic defense
+inherits the same boundary fixation as a deterministic one.
 
 \begin{theorem}[Stochastic Defense Impossibility]
 \label{thm:stochastic}
@@ -747,7 +1092,7 @@ of which $|S_\tau|$ are safe. The defense must implement identity on
 all safe inputs, consuming $|S_\tau|$ of its capacity. The attacker
 faces no such constraint. Under capacity parity ($C = N$), the
 defense's effective free capacity is $N - |S_\tau| < N$, giving the
-attacker a permanent edge of $|S_\tau|$ capacity units.
+attacker an advantage of $|S_\tau|$ capacity units.
 \end{theorem}
 
 This is a counting argument: utility preservation is not free. Every
@@ -757,12 +1102,14 @@ no obligation to preserve anything, retains full capacity.
 
 \subsection{Nonlinear Agent Pipelines}
 
-Agentic LLM systems process inputs through multi-stage pipelines:
-defense $\to$ model inference $\to$ tool call $\to$ tool call $\to
-\cdots$ Each stage is a nonlinear map. The natural question is whether
-the pipeline structure helps the defense.
+Modern AI agents chain multiple steps: defense $\to$ model inference
+$\to$ tool call $\to$ tool call $\to \cdots$ Each stage is a nonlinear
+map that can amplify small input differences. The natural question is
+whether this pipeline structure helps the defense by giving it multiple
+chances to intervene.
 
-It does not. It makes things worse.
+Each stage \emph{multiplies} the effective Lipschitz constant,
+widening the failure band with pipeline depth.
 
 \begin{theorem}[Pipeline Lipschitz Degradation]
 \label{thm:pipeline}
@@ -790,8 +1137,8 @@ $L(K^n + 1)\delta$, where $K^n$ is the effective Lipschitz constant.
 Each tool call \emph{multiplicatively} degrades the defense's
 effectiveness: a 5-stage pipeline with $K = 2$ per stage has
 effective constant $32$, making the failure band $33\times$ wider than
-a single-stage defense. Deeper agent architectures are exponentially
-harder to defend, not easier.
+a single-stage defense. The failure band grows exponentially with
+pipeline depth.
 
 \begin{corollary}[Stateful Pipeline Impossibility]
 \label{cor:stateful}
@@ -807,6 +1154,11 @@ No continuous utility-preserving defense is complete: if $f(D(x)) < \tau$ for al
 % ============================================================
 \section{The Vulnerability Landscape}
 \label{sec:landscape}
+
+The preceding sections show that defenses must fail \emph{somewhere}.
+This section characterizes \emph{where}: vulnerabilities are not
+isolated needles in a haystack but extended regions (``basins'') with
+computable minimum sizes.
 
 \begin{theorem}[Basin Structure]
 \label{thm:basin}
@@ -832,9 +1184,13 @@ in \Cref{app:cost}.
 \section{Experimental Validation}
 \label{sec:experiments}
 
-We validate against the Manifold of Failure
-framework~\cite{munshi2026manifold}, which maps three LLMs over a 2D
-behavioral space (query indirection $\times$ authority framing).
+We validate the theorems' predictions against real model behavior. The
+Manifold of Failure framework~\cite{munshi2026manifold} maps three LLMs
+over a 2D behavioral space defined by two axes: \emph{query indirection}
+(how obliquely the prompt asks for unsafe content) and \emph{authority
+framing} (how much the prompt invokes authority or permission). Each
+point in this space corresponds to a prompt style, and the alignment
+deviation score measures how unsafe the model's response is.
 
 \begin{table}[t]
 \centering
@@ -862,7 +1218,7 @@ Authority (\ref{thm:authority})
   & Bands at $a_2 \approx .25$--$.35$, $.65$--$.85$ \\[3pt]
 Persistent (\ref{thm:persistent})
   & Steep boundaries $\to$ unsafe volume persists
-  & Llama's $.93$ plateau immune to defense \\[3pt]
+  & Llama's $.93$ plateau persists under defense \\[3pt]
 Interior Stability (\ref{thm:interior-stable})
   & Deep basin points survive fine-tuning
   & Vulnerability persists across variants \\[3pt]
@@ -879,8 +1235,9 @@ Pipeline (\ref{thm:pipeline})
 \paragraph{Llama-3-8B} (mean AD $0.93$, basin rate $93.9\%$): near-flat
 mesa, small~$L$, large robustness radii. The directional slope of the
 alignment surface at boundary crossings far exceeds $L(K+1)$ for any
-reasonable~$K$, placing this model squarely in \ref{sec:persistent} territory: the
-defense provably cannot eliminate the vulnerability volume.
+reasonable~$K$, placing this model in persistent-unsafe-region
+territory: the defense cannot eliminate the vulnerability
+volume under these conditions.
 
 \paragraph{GPT-OSS-20B} (mean AD $0.73$, basin rate $64.3\%$): rugged
 landscape, large~$L$, small fragments. Horizontal bands confirm
@@ -888,7 +1245,7 @@ authority monotonicity. The fragmented boundary presents many
 transversal crossings, each generating a persistent unsafe pocket.
 
 \paragraph{GPT-5-Mini} (peak AD $0.50$, basin rate $0\%$): at
-$\tau = 0.50$, $U_\tau = \emptyset$, so none of the three
+$\tau = 0.50$, $U_\tau = \emptyset$, so none of the three theorems
 apply---correctly predicting no impossibility. The model's strategy:
 make the boundary harmless rather than eliminate it.
 
@@ -903,8 +1260,8 @@ theoretical vs.\ ${\sim}4$ empirical.
 \section{The Engineering Prescription}
 \label{sec:engineering}
 
-The impossibility results do not say that defense is futile---they say
-that \emph{perfect} defense is impossible under the stated constraints.
+The impossibility results do not say that defense is without value---they
+say that \emph{complete} defense is impossible under the stated constraints.
 The gap between impossibility and practice is where engineering lives.
 The following prescriptions are ordered from most to least actionable.
 
@@ -917,7 +1274,7 @@ GPT-5-Mini exemplifies this: its ceiling at $\AD = 0.50$ means the
 
 \paragraph{2. Reduce the Lipschitz constant.}
 Smaller~$L$ makes the alignment surface smoother and more predictable.
-It also raises the transversality threshold $L(K+1)$ for \ref{sec:persistent}: a
+It also raises the transversality threshold $L(K+1)$ for persistence: a
 smoother surface is harder for the attacker to steer into persistent
 unsafe territory. The tradeoff is that smoother surfaces spread
 vulnerabilities over wider regions, but those regions are more easily
@@ -936,20 +1293,19 @@ deploy runtime monitoring that detects approach to the boundary. The
 Lipschitz bound (\Cref{thm:lipschitz}) gives a computable estimate of
 distance to the boundary from any observed AD value.
 
-\paragraph{5. Abandon stateful security illusions.}
+\paragraph{5. Do not rely on stateful accumulation.}
 \Cref{thm:multi-turn} proves that accumulating context across turns
 does not eliminate boundary fixation---the impossibility recurs fresh
 at every turn. Defenses that rely on ``learning'' from conversation
-history to progressively close vulnerabilities are fighting topology,
-not winning. Each turn is a new instance of the same problem.
+history to progressively close vulnerabilities face the same
+topological constraint at each turn.
 
 \paragraph{6. Do not pay the stochastic tax.}
 \Cref{thm:stochastic} proves that randomized defenses---stochastic
 routing, temperature-based sampling, random prompt perturbation---fail
 in expectation. The expected alignment deviation after a stochastic
 defense inherits the same boundary fixation as a deterministic one.
-Compute spent on randomization is compute wasted, at least for the
-purpose of eliminating boundary points.
+Randomization does not help eliminate boundary points.
 
 \paragraph{7. Break capacity parity with architectural separation.}
 \Cref{thm:capacity} proves that under equal resources, the defense
@@ -965,8 +1321,20 @@ sidesteps the capacity tax.
 
 
 % ============================================================
-\section{Why the Impossibility Is Inescapable}
+\section{Unifying the Impossibility Results}
 \label{sec:meta}
+
+\paragraph{Intuition.}
+We have now proved impossibility through six different lenses:
+continuous topology, Lipschitz bounds, discrete counting, multi-turn
+dynamics, stochastic expectations, and capacity constraints. A reader
+might wonder: are these six different problems, or one problem seen
+from six angles? They are one problem. Every path through the theory
+reduces to the same core fact: a defense that promises ``I won't
+change safe inputs'' is forced to also leave some \emph{non-safe}
+inputs unchanged. This is because the set of inputs the defense
+leaves alone (its ``fixed-point set'') must be larger than the safe
+region---it extends into the boundary or beyond.
 
 The preceding sections establish impossibility via multiple routes:
 continuous topology, Lipschitz metric structure, discrete counting,
@@ -974,14 +1342,15 @@ multi-turn dynamics, stochastic expectations, and capacity constraints.
 It is natural to ask whether these are separate results that happen to
 agree, or instances of a single underlying phenomenon.
 
-They are instances of a single phenomenon.
+They share a common structure.
 
 \begin{theorem}[Regularity Implies Spillover]
 \label{thm:meta}
 Let $X$ be any set, $S \subseteq X$ nonempty and proper (the safe
 region), and $D\colon X \to X$ satisfying utility preservation:
-$D(x) = x$ for all $x \in S$. If $D$ has \emph{bounded regularity}---meaning
-$\Fix(D) = \{x : D(x) = x\}$ cannot equal $S$ exactly---then
+$D(x) = x$ for all $x \in S$. If $D$ has \emph{bounded
+regularity}---meaning the set of inputs the defense leaves unchanged,
+$\Fix(D) = \{x : D(x) = x\}$, cannot equal $S$ exactly---then
 \[
   \Fix(D) \supsetneq S.
 \]
@@ -993,7 +1362,15 @@ gives $\Fix(D) \neq S$. Together: $S \subsetneq \Fix(D)$.
 \end{proof}
 
 \begin{remark}[Relaxed Utility Preservation]
-A practical defense might only preserve semantic utility, mapping safe prompts to safe variants ($D(S_\tau) \subseteq S_\tau$) rather than strictly enforcing $D(x) = x$. However, this does not break the geometric lock. Any continuous deformation of the safe region still forces the defense to either map boundary points to the boundary (retaining the vulnerability) or introduce a discontinuous topological tear, reducing the defense to a brittle threshold classifier.
+Strict utility preservation ($D(x) = x$ on $S_\tau$) can be relaxed.
+\Cref{thm:score-preserving} shows that score-preserving defenses
+($f(D(x)) = f(x)$ on $S_\tau$) still satisfy $f(D(z)) = \tau$ at
+boundary points, and \Cref{thm:eps-relaxed} shows that
+$\varepsilon$-score-preserving defenses satisfy
+$f(D(z)) \geq \tau - \varepsilon$. Only the degenerate case
+$D(S_\tau) \subseteq S_\tau$ with no score constraint permits escape
+(\Cref{rem:safe-preserving-escape}), at the cost of destroying all
+semantic content.
 \end{remark}
 
 \begin{corollary}[Non-Safe Fixed Point]
@@ -1016,11 +1393,11 @@ Continuous
     (connected), so $\cl{S} \subseteq \Fix(D)$ but
     $\cl{S} \supsetneq S$. \\[3pt]
 Lipschitz
-  & Same as \ref{sec:proof}, plus Lipschitz bounds constrain how far the
-    defense can move points near the fixed boundary. \\[3pt]
+  & Same as the continuous path, plus Lipschitz bounds constrain how far
+    the defense can move points near the fixed boundary. \\[3pt]
 Transversal
-  & Same as \ref{sec:eps-robust}, plus steep slope forces $f(D(x)) > \tau$
-    on positive-measure set. \\[3pt]
+  & Same as the Lipschitz path, plus steep slope forces
+    $f(D(x)) > \tau$ on a positive-measure set. \\[3pt]
 Discrete
   & IVT on finite ordered set forces a crossing; utility preservation
     fixes the safe endpoint. \\[3pt]
@@ -1063,15 +1440,15 @@ of the theorems, and adversarial challenges to the assumptions.
 
 \subsection{Scope Boundaries}
 
-\paragraph{\ref{sec:proof} is at the boundary.}
+\paragraph{Boundary fixation is at the boundary.}
 Fixed points satisfy $f(z) = \tau$ exactly. If $\tau$-level behavior
 is benign, the theorem is true but harmless.
 
-\paragraph{\ref{sec:eps-robust} constrains depth, not direction.}
+\paragraph{The $\varepsilon$-robust constraint limits depth, not direction.}
 The defense may push near-boundary points slightly below~$\tau$. The
 bound limits how far, not whether.
 
-\paragraph{\ref{sec:persistent} requires transversality.}
+\paragraph{Persistence requires transversality.}
 The persistent unsafe region exists only where the alignment surface
 is steep ($c > L(K+1)$).
 
@@ -1131,20 +1508,24 @@ any continuous, utility-preserving defense must fix boundary points.
 $\varepsilon$-robust constraint: the defense cannot uniformly
 reduce alignment deviation far below~$\tau$ on a positive-measure band.
 Persistent unsafe region: under transversality, the defense
-leaves positive-measure volume genuinely unsafe---$f(D(x)) > \tau$
-persists. A representation-independent meta-theorem (\Cref{thm:meta}) reveals the
-common structure: every path through the theory proves the same thing, that
-the defense's fixed-point set must spill beyond the safe region.
+leaves positive-measure volume unsafe---$f(D(x)) > \tau$
+persists. A representation-independent meta-theorem (\Cref{thm:meta})
+reveals common structure: each path through the theory shows that
+the defense's fixed-point set must extend beyond the safe region.
 Continuous topology, Lipschitz bounds, discrete counting, stochastic
-expectations, multi-turn dynamics, and capacity constraints all force
-this spillover through different mechanisms, but the conclusion is
-identical. The impossibility is not an artifact of any particular
-representation; it is a consequence of combining utility preservation
-with any form of bounded regularity.
-Supporting theorems show that vulnerabilities come in
+expectations, multi-turn dynamics, and capacity constraints all lead
+to this conclusion through different mechanisms.
+The impossibility is a consequence of combining utility preservation
+with any form of bounded regularity, not of any particular
+representation choice.
+Supporting theorems show that vulnerabilities form
 basins, attacks converge and transfer, vulnerabilities survive
-fine-tuning, and defense cost grows exponentially. The practical prescription: make the boundary shallow (raise~$\tau$),
-smooth (reduce~$L$), and low-dimensional (constrain the interface). Our results, machine-verified in Lean 4, define the ``Defense Trilemma'' and provide a formal foundation for engineering safety through boundary-depth management rather than absolute containment.
+fine-tuning, and defense cost grows exponentially in dimension. The
+practical prescription: make the boundary shallow (raise~$\tau$),
+smooth (reduce~$L$), and low-dimensional (constrain the interface).
+Our results, machine-verified in Lean~4, characterize the ``Defense
+Trilemma'' and provide a formal basis for engineering safety through
+boundary-depth management rather than absolute containment.
 
 
 % ============================================================
@@ -1444,7 +1825,7 @@ Whether the defense is placed before or after the tool calls, the Lipschitz cons
 \label{app:artifact}
 
 The complete theory is verified in Lean~4.28.0 with Mathlib~v4.28.0.
-The artifact comprises 39 files available \href{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}{here}:
+The artifact comprises 40 files available \href{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}{here}:
 \begin{itemize}[nosep]
   \item 10 core theory files (MoF\_01--MoF\_10)
   \item 10 cost theory files (MoF\_Cost\_01--MoF\_Cost\_10)
@@ -1458,6 +1839,7 @@ The artifact comprises 39 files available \href{https://github.com/mbhatt1/stuff
   \item 1 representation-independent meta-theorem
     (MoF\_14\_MetaTheorem)
   \item 1 nonlinear agent pipelines (MoF\_15\_NonlinearAgents)
+  \item 1 relaxed utility preservation (MoF\_16\_RelaxedUtility)
   \item 3 capstone files (MasterTheorem, Euclidean instantiation,
     verification)
 \end{itemize}

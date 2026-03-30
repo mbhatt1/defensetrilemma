@@ -24,10 +24,10 @@ in pipeline depth. Deeper pipelines are HARDER to defend, not easier.
 
 1. `lipschitz_comp` — Composition of Lipschitz maps is Lipschitz
    with product constant.
-2. `pipeline_lipschitz` — n-stage pipeline has Lipschitz constant
-   K₁ · K₂ · ... · Kₙ.
+2. `two_stage_lipschitz` / `three_stage_lipschitz` — Explicit 2- and
+   3-stage pipeline Lipschitz bounds via `LipschitzWith.comp`.
 3. `pipeline_impossibility` — Boundary fixation for composed systems.
-4. `pipeline_band_widens` — The ε-robust band grows with pipeline depth.
+4. `band_grows_with_depth` — The ε-robust band grows with pipeline depth.
 5. `tool_call_amplifies` — Each tool call multiplicatively degrades
    the defense's effectiveness.
 -/

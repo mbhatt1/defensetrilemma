@@ -237,8 +237,9 @@ On a connected Hausdorff metric space, if:
 - `f` is `L`-Lipschitz continuous with values both below `τ - ε` and above `τ`
 - `D` is a `K`-Lipschitz continuous defense with `D = id` on `{f < τ}`
 
-Then there exists a point `x` in the ε-band `{τ - ε ≤ f(x) ≤ τ}` such that
-`f(D(x)) ≥ τ - ε`. The defense cannot push this point below `τ - ε`.
+Then there exists a boundary fixed point `z` with `f(z) = τ`, `D(z) = z`, and
+for ALL `x : X`, `f(D(x)) ≥ τ - L(K+1)·dist(x,z)`. No distance guard is needed:
+the Lipschitz chain bound holds globally.
 
 This upgrades the basic impossibility: instead of just fixing measure-zero
 boundary points, the defense fails to clear an entire positive-measure band
@@ -254,7 +255,7 @@ theorem epsilon_robust_impossibility
     (h_safe_ne : ∃ a : X, f a < τ)
     (h_unsafe_ne : ∃ b : X, f b > τ) :
     ∃ z : X, f z = τ ∧ D z = z ∧
-      ∀ x : X, dist x z ≤ 1 →
+      ∀ x : X,
         f (D x) ≥ τ - ↑L * ((↑K + 1) * dist x z) := by
   -- From MoF_08: there exists a fixed boundary point
   have h_strict : {x : X | f x < τ} ⊂ closure {x : X | f x < τ} := by
@@ -291,7 +292,7 @@ theorem epsilon_robust_impossibility
     h_fix_closed.closure_subset_iff.mpr h_safe_sub
   have hz_fix : D z = z := h_clos_sub hz_clos
   -- Now prove the quantitative bound
-  refine ⟨z, hz_eq, hz_fix, fun x hxz => ?_⟩
+  refine ⟨z, hz_eq, hz_fix, fun x => ?_⟩
   -- f(D(x)) ≥ f(z) - L · dist(D(x), z)
   --         = τ - L · dist(D(x), D(z))     [since D(z) = z]
   --         ≥ τ - L · K · dist(x, z)        [D is K-Lipschitz]
