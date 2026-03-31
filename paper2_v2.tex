@@ -39,7 +39,7 @@
   Impossibility of Continuous Utility-Preserving Wrapper Defenses}
 
 \author{
-    {\rm Manish Bhatt\thanks{Corresponding author: manish.bhatt13212@gmail.com}}\textsuperscript{\space}\footnotemark[2]\\
+    {\rm Manish Bhatt\thanks{Corresponding author: manish.bhatt13212@gmail.com}}\hspace{0.5em}\footnotemark[2]\\
     OWASP
     \and
     {\rm Sarthak Munshi}\footnotemark[2]\\
@@ -91,7 +91,7 @@ preclude training-time alignment, architectural changes, or defenses
 that sacrifice utility. The full theory is mechanically verified in
 Lean~4 with Mathlib
 \url{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}
-(44 files, ${\sim}340$ theorems, no admitted proofs, three standard
+(45 files, ${\sim}350$ theorems, no admitted proofs, three standard
 axioms) and validated empirically on three LLMs~\cite{munshi2026manifold}.
 \end{abstract}
 
@@ -329,7 +329,11 @@ $f(z) \geq \tau$) and $D(z) = z$. Full proof in \Cref{app:proofs}.
 The defense's fixed-point set is too large to avoid the
 boundary. Utility preservation forces it to contain the safe region;
 closure forces it to contain the boundary; connectedness ensures the
-boundary is nonempty.
+boundary is nonempty. Equivalently: a complete utility-preserving
+defense would be a continuous retraction $D\colon X \to S_\tau$
+(since $D|_{S_\tau} = \id$ and $D(X) \subseteq S_\tau$), but a
+retract of a connected space is closed, while~$S_\tau$ is open and
+proper---a contradiction.
 
 \begin{corollary}
 No continuous utility-preserving defense is complete.
@@ -456,14 +460,14 @@ the fixed boundary point~$z$:
   \qquad \text{for all } x \in X.
 \end{equation}
 Points within distance~$\delta$ of~$z$ remain within
-$L(K{+}1)\delta$ of threshold.
+$L(K+1)\delta$ of threshold.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
 Since $D(z)=z$ and $D$ is $K$-Lipschitz:
 $\dist(D(x),z) \leq K\,\dist(x,z)$. Since $f(z)=\tau$ and $f$ is
 $L$-Lipschitz:
-$|f(D(x)) - \tau| \leq L \cdot K\,\dist(x,z) \leq L(K{+}1)\dist(x,z)$.
+$|f(D(x)) - \tau| \leq L \cdot K\,\dist(x,z) \leq L(K+1)\dist(x,z)$.
 Full proof in \Cref{app:proofs}.
 \end{proof}
 
@@ -479,8 +483,9 @@ The next result shows the constrained band has positive volume:
 For every $\varepsilon > 0$ such that $f$ takes values below
 $\tau - \varepsilon$, the band
 $\mathcal{B}_\varepsilon = \{x : \tau - \varepsilon \leq f(x)
-\leq \tau\}$ has positive measure.
-Specifically, $\operatorname{ball}(c, \varepsilon/(4L)) \subseteq
+\leq \tau\}$ has positive measure (under any measure positive on
+nonempty open sets).
+Specifically, $B(c, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$ for any $c$ with $f(c) = \tau - \varepsilon/2$.
 \end{theorem}
 
@@ -501,34 +506,53 @@ necessarily. When the alignment surface rises away from the boundary
 faster than the defense can pull it down, some points are stuck above
 threshold no matter what.
 
-The key insight is a bound relative to the \emph{input} value, not just
-the threshold~$\tau$. While the $\varepsilon$-robust bound measures
-distance from~$\tau$, the input-relative bound measures how much the
-defense can change a point's \emph{own} score:
+\paragraph{Decoupling global and directional Lipschitz constants.}
+The $\varepsilon$-robust bound (\Cref{thm:eps-robust}) uses the
+\emph{global} Lipschitz constant~$L$ of~$f$, which bounds~$f$
+uniformly in all directions. The persistence argument, however,
+compares $f$'s growth rate in the \emph{steep direction} to how much
+the defense can reduce~$f$ along the \emph{displacement direction}
+$D(x) - x$. In anisotropic settings these directions differ: $f$ may
+rise steeply toward the unsafe region while varying slowly in the
+direction the defense pulls.
+
+We write $\ell$ for the \emph{defense-path Lipschitz constant}:
+\[
+  \ell \;=\; \sup_{x \neq D(x)}
+    \frac{|f(D(x)) - f(x)|}{\dist(D(x),\, x)}.
+\]
+Since $f$ is $L$-Lipschitz globally, $\ell \leq L$ always. When the
+alignment surface is \textbf{isotropic} ($\ell = L$), the steep region
+is empty for every $K \geq 0$ (verified in Lean as
+\texttt{shallow\_boundary\_no\_persistence}). The result is
+non-vacuous precisely when the surface is \textbf{anisotropic}:
+$\ell < L$, with directional gradient~$G$ satisfying
+$G > \ell(K+1)$.
 
 \begin{lemma}[Input-Relative Bound]
 \label{lem:input-bound}
-Under the hypotheses of \Cref{thm:eps-robust},
-$f(D(x)) \geq f(x) - L(K{+}1)\dist(x,z)$
-for all $x \in X$. This is strictly stronger than the $\tau$-relative
-bound of \Cref{thm:eps-robust} whenever $f(x) > \tau$.
+Under the hypotheses of \Cref{thm:eps-robust}, if $f$ has
+defense-path Lipschitz constant~$\ell$, then
+$f(D(x)) \geq f(x) - \ell(K+1)\dist(x,z)$
+for all $x \in X$.
 \end{lemma}
 
 \begin{proof}[Proof sketch]
 Triangle inequality:
 $\dist(D(x), x) \leq \dist(D(x), z) + \dist(z, x)
-\leq (K{+}1)\dist(x, z)$.
-Lipschitz: $|f(D(x)) - f(x)| \leq L(K{+}1)\dist(x, z)$.
+\leq (K+1)\dist(x, z)$.
+Defense-path Lipschitz: $|f(D(x)) - f(x)| \leq \ell\,\dist(D(x), x)
+\leq \ell(K+1)\dist(x, z)$.
 \end{proof}
 
-In plain terms: the defense can reduce any point's score by at most
-$L(K{+}1)$ times its distance from~$z$. If the score rises faster
+The defense can reduce any point's score by at most
+$\ell(K+1)$ times its distance from~$z$. If the score rises faster
 than that, the defense loses.
 
 \begin{definition}[Steep region]
 \label{def:steep}
 Given a fixed boundary point $z$, the \emph{steep region} is
-$\mathcal{S} = \{x \in X : f(x) > \tau + L(K{+}1)\,\dist(x, z)\}$---the
+$\mathcal{S} = \{x \in X : f(x) > \tau + \ell(K+1)\,\dist(x, z)\}$---the
 set of points where alignment deviation exceeds~$\tau$ by more than
 the defense's Lipschitz budget can compensate.
 \end{definition}
@@ -549,17 +573,17 @@ The defense leaves a positive-measure region that remains unsafe.
 \begin{proof}[Proof sketch]
 $\mathcal{S}$ is a strict superlevel set of a continuous function,
 hence open. For $x \in \mathcal{S}$:
-$f(D(x)) \geq f(x) - L(K{+}1)\dist(x,z) > \tau$
+$f(D(x)) \geq f(x) - \ell(K+1)\dist(x,z) > \tau$
 by \Cref{lem:input-bound} and the definition of~$\mathcal{S}$.
 Full proof in \Cref{app:proofs}.
 \end{proof}
 
 When does the steep region exist? Whenever the alignment surface has
-directional slope exceeding~$L(K{+}1)$ at the boundary:
+directional slope exceeding~$\ell(K+1)$ at the boundary:
 
 \begin{proposition}[Transversality from Directional Derivative]
 \label{prop:transversality}
-In a normed space, if $f$ has directional derivative $c > L(K{+}1)$
+In a normed space, if $f$ has directional derivative $c > \ell(K+1)$
 along a unit vector $v$ at boundary point $z$ (i.e.,
 $f(z + tv) \geq \tau + ct$ for small $t > 0$), then
 $z + tv \in \mathcal{S}$ for sufficiently small $t$.
@@ -567,7 +591,9 @@ Verified in Lean as \texttt{transversality\_from\_deriv}.
 \end{proposition}
 
 This condition is observed empirically in all three models we study
-(\Cref{sec:experiments}).
+(\Cref{sec:experiments}): the alignment surface rises steeply toward
+the unsafe region ($G$ large) while the defense operates in a
+smoother subspace ($\ell \ll L$).
 
 
 \begin{figure}[t]
@@ -640,7 +666,7 @@ This condition is observed empirically in all three models we study
     \draw[dashed, red!70!black, line width=0.8pt]
       (2.4,1.8) -- (4.8,3.1);
     \node[right, font=\scriptsize, red!70!black] at (4.2,2.7)
-      {$\tau {+} L(K{+}1)\delta$};
+      {$\tau + \ell(K+1)\delta$};
     % f(x) curve — rises ABOVE the cone
     \draw[thick, blue!80!black] (0,0.3) .. controls (1.2,1.0)
       and (1.8,1.5) .. (2.4,1.8) .. controls (3.0,2.3)
@@ -665,7 +691,7 @@ This condition is observed empirically in all three models we study
 \textbf{(b)}~Near~$z$, Lipschitz regularity constrains the defense to
 a shallow $\varepsilon$-band (yellow; Thm.~\ref{thm:eps-robust}).
 \textbf{(c)}~Where $f$ rises faster than the defense budget
-$L(K{+}1)\delta$ (dashed red), the region above~$\tau$ persists
+$\ell(K+1)\delta$ (dashed red), the region above~$\tau$ persists
 (red shading; Thm.~\ref{thm:persistent}).}
 \label{fig:escalation}
 \end{figure}
@@ -684,7 +710,7 @@ the defense's aggressiveness.
 \label{thm:coarea}
 Let $f\colon \R^n \to \R$ be $L$-Lipschitz with $L > 0$. If there
 exists $c$ with $f(c) = \tau - \varepsilon/2$, then
-$\operatorname{ball}(c,\, \varepsilon/(4L)) \subseteq
+$B(c,\, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$, giving:
 \begin{equation}
   \mu(\mathcal{B}_\varepsilon)
@@ -699,7 +725,7 @@ $\varepsilon$-bands, but the band always has positive volume.
 
 \begin{theorem}[Cone Measure Bound]
 \label{thm:cone}
-In $\R$, if $f$ has directional growth rate $c > L(K{+}1)$ at
+In $\R$, if $f$ has directional growth rate $c > \ell(K+1)$ at
 boundary point~$z$ on $(z, z + \delta_0)$, then
 $\mu(\{x : f(D(x)) > \tau\}) \geq \delta_0$.
 \end{theorem}
@@ -713,16 +739,19 @@ constant~$K$ of the defense:
 
 \begin{theorem}[Defense Dilemma]
 \label{thm:dilemma}
-Let $G = |\nabla f(z)|$ at boundary point~$z$, and define
-$K^* = G/L - 1$. Then:
+Let $G = |\nabla f(z)|$ at boundary point~$z$, and let $\ell$ be
+the defense-path Lipschitz constant (\Cref{sec:persistent}). Define
+$K^* = G/\ell - 1$. Then:
 \begin{enumerate}[nosep]
   \item If $K < K^*$: the persistent unsafe region exists
-    ($G > L(K{+}1)$, \Cref{thm:persistent} applies).
+    ($G > \ell(K+1)$, \Cref{thm:persistent} applies).
   \item If $K \geq K^*$: the defense distorts space at least as much
-    as the alignment gradient.
+    as the alignment gradient ($\ell(K+1) \geq G$).
 \end{enumerate}
-No value of $K$ avoids both failure modes simultaneously. The two
-regimes meet at $K^*$, the optimal defense aggressiveness.
+No value of $K$ avoids both failure modes simultaneously. Since
+$\ell \leq L$, the dilemma is sharpest when $\ell \ll L$
+(anisotropic surfaces). When $\ell = L$ (isotropic), $K^* \leq 0$
+and only the wide-band failure mode applies.
 \end{theorem}
 
 A gentle defense ($K$ small) cannot compensate for steep alignment
@@ -777,9 +806,9 @@ topology is required; all results are verified in Lean as
 
 \begin{theorem}[Discrete IVT]
 \label{thm:disc-ivt}
-Let $f\colon \{0,\ldots,n{+}1\} \to \R$ with $f(0) < \tau$ and
-$f(n{+}1) \geq \tau$. Then there exists~$i$ with $f(i) < \tau$ and
-$f(i{+}1) \geq \tau$.
+Let $f\colon \{0,\ldots,n+1\} \to \R$ with $f(0) < \tau$ and
+$f(n+1) \geq \tau$. Then there exists~$i$ with $f(i) < \tau$ and
+$f(i+1) \geq \tau$.
 \end{theorem}
 
 \begin{theorem}[Discrete Defense Fixation]
@@ -996,7 +1025,7 @@ Pipeline (\ref{thm:pipeline})
 \paragraph{Llama-3-8B} (mean AD $0.93$, basin rate $93.9\%$): a
 near-flat alignment surface (small~$L$) producing large robustness
 radii, a gently sloping mesa. The directional slope at boundary
-crossings far exceeds $L(K{+}1)$ for any reasonable~$K$, placing
+crossings far exceeds $\ell(K+1)$ for any reasonable~$K$, placing
 this model firmly in persistent-unsafe territory: the defense cannot
 eliminate the vulnerability volume.
 
@@ -1030,7 +1059,7 @@ failure manifold exists but contains no actual harm.
 
 \paragraph{2. Reduce the Lipschitz constant.}
 Smaller~$L$ makes the alignment surface smoother, raises the
-transversality threshold $L(K{+}1)$ for persistence, and shrinks the
+transversality threshold $\ell(K+1)$ for persistence, and shrinks the
 persistent region. The tradeoff: smoother surfaces spread
 vulnerabilities over wider but more easily monitored regions.
 
@@ -1068,7 +1097,9 @@ bound limits how far, not whether.
 
 \paragraph{Persistence requires transversality.}
 The persistent unsafe region exists only where the alignment surface
-is steep ($c > L(K{+}1)$).
+is steep ($c > \ell(K+1)$, where $\ell$ is the defense-path
+Lipschitz constant). For isotropic $f$ ($\ell = L$), $\mathcal{S}$
+is empty for all $K \geq 0$.
 
 \paragraph{Grid-based cost asymmetry.}
 \Cref{thm:cost} assumes exhaustive grid enumeration. Learning-based
@@ -1270,20 +1301,20 @@ $\dist(D(x), z) = \dist(D(x), D(z)) \leq K\,\dist(x, z)$.
 
 \textbf{Step~2.} Since $f(z) = \tau$ and $f$ is $L$-Lipschitz:
 $|f(D(x)) - \tau| = |f(D(x)) - f(z)| \leq L\,\dist(D(x), z) \leq
-LK\,\dist(x, z) \leq L(K{+}1)\,\dist(x,z)$.
-The last uses $K \leq K{+}1$; we keep the uniform constant since it
+LK\,\dist(x, z) \leq L(K+1)\,\dist(x,z)$.
+The last uses $K \leq K+1$; we keep the uniform constant since it
 matches the displacement bound from the triangle inequality.
 \end{proof}
 
 \begin{proof}[Proof of \Cref{thm:persistent} (Persistent Unsafe Region)]
 \textbf{(1)} $\mathcal{S}$ is the strict superlevel set of
-$x \mapsto f(x) - L(K{+}1)\dist(x,z)$ at level~$\tau$, hence open.
+$x \mapsto f(x) - \ell(K+1)\dist(x,z)$ at level~$\tau$, hence open.
 
 \textbf{(2)} Open and nonempty implies positive measure.
 
 \textbf{(3)} For $x \in \mathcal{S}$:
-$f(x) > \tau + L(K{+}1)\dist(x,z)$. By \Cref{lem:input-bound}:
-$f(D(x)) \geq f(x) - L(K{+}1)\dist(x,z) > \tau$.
+$f(x) > \tau + \ell(K+1)\dist(x,z)$. By \Cref{lem:input-bound}:
+$f(D(x)) \geq f(x) - \ell(K+1)\dist(x,z) > \tau$.
 \end{proof}
 
 
@@ -1313,7 +1344,7 @@ but destroys all inputs.
 \begin{theorem}[Perturbation Robustness]
 \label{thm:lipschitz}
 If $f$ is $L$-Lipschitz and $f(p)>\tau$, then
-$\operatorname{ball}(p,\, (f(p)-\tau)/L) \subseteq U_\tau$.
+$B(p,\, (f(p)-\tau)/L) \subseteq U_\tau$.
 The radius is monotone in~$f(p)$.
 \end{theorem}
 
@@ -1394,7 +1425,7 @@ At $d=10$, it climbs to $\sim 10^{12}$.
 
 \paragraph{Lipschitz displacement bound.}
 $D$ is $K$-Lipschitz with $D(z) = z \implies
-\dist(D(x), x) \leq (K{+}1)\dist(x,z)$.
+\dist(D(x), x) \leq (K+1)\dist(x,z)$.
 
 \paragraph{Tool calls amplify failure.}
 Each non-contractive tool call multiplicatively increases the pipeline's
@@ -1409,7 +1440,7 @@ are classified.
 
 \paragraph{Attacker steering.}
 If directional slope varies continuously with attacker parameter $\alpha$
-and crosses $L(K{+}1)$, transversality is reachable by IVT.
+and crosses $\ell(K+1)$, transversality is reachable by IVT.
 
 \paragraph{Stochastic regularity.}
 $g(x) = \mathbb{E}[f(D(x))]$ satisfies $g - f = 0$ on $\cl{S_\tau}$.
@@ -1429,7 +1460,7 @@ $K_D \cdot K_T^n$.
 The complete theory is verified in Lean~4.28.0 with Mathlib~v4.28.0,
 available at
 \url{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}.
-The artifact comprises 44 files:
+The artifact comprises 45 files:
 \begin{itemize}[nosep]
   \item 10 core theory files (MoF\_01--MoF\_10)
   \item 10 cost theory files (MoF\_Cost\_01--MoF\_Cost\_10)
@@ -1450,6 +1481,8 @@ The artifact comprises 44 files:
     (MoF\_18\_ConeBound)
   \item 1 optimal defense characterization
     (MoF\_19\_OptimalDefense)
+  \item 1 refined persistence with defense-path Lipschitz
+    (MoF\_20\_RefinedPersistence)
   \item 3 capstone files (MasterTheorem, Euclidean instantiation,
     verification)
   \item 1 root import file (ManifoldProofs.lean)
