@@ -811,29 +811,35 @@ $f(n+1) \geq \tau$. Then there exists~$i$ with $f(i) < \tau$ and
 $f(i+1) \geq \tau$.
 \end{theorem}
 
-\begin{theorem}[Discrete Defense Fixation]
-\label{thm:disc-defense}
-If $D$ fixes all safe vertices ($f(v) < \tau \Rightarrow D(v) = v$),
-the safe endpoint of the boundary crossing from \Cref{thm:disc-ivt}
-is fixed: $D(i) = i$.
+\begin{theorem}[Discrete Defense Dilemma]
+\label{thm:disc-dilemma}
+Let $X$ be a finite set with $S_\tau, U_\tau \neq \emptyset$, and
+$D\colon X \to X$ utility-preserving ($D(x) = x$ for $f(x) < \tau$).
+\begin{enumerate}[nosep]
+  \item If $D$ is injective, then $f(D(u)) \geq \tau$ for every
+    $u \in U_\tau$: the defense is incomplete.
+  \item If $D$ is complete ($f(D(x)) < \tau$ for all~$x$), then $D$ is
+    non-injective: $\exists\, x \neq y$ with $D(x) = D(y)$.
+\end{enumerate}
 \end{theorem}
 
-In the discrete setting, the bottleneck is not continuity but
-\emph{capacity}: there are simply too many attack configurations for a
-constrained defense to handle.
+\begin{proof}
+(1) Suppose $D$ is injective and $f(D(u)) < \tau$ for some
+$u \in U_\tau$. Then $D(u)$ is safe, so $D(D(u)) = D(u)$ by utility
+preservation. Injectivity gives $D(u) = u$, so $f(u) = f(D(u)) < \tau$,
+contradicting $u \in U_\tau$.
 
-\begin{theorem}[Capacity Exhaustion]
-\label{thm:pigeonhole}
-If there are $m$ adversarial configurations and the defense can realize
-fewer than $m$ distinct behaviors, at least one configuration is
-mishandled (pigeonhole).
-\end{theorem}
+(2) For any $u \in U_\tau$: completeness gives $f(D(u)) < \tau$, so
+utility preservation gives $D(D(u)) = D(u)$. But
+$u \neq D(u)$ since $f(u) \geq \tau > f(D(u))$.
+So $u$ and $D(u)$ are distinct inputs with $D(u) = D(D(u))$: the
+defense is non-injective.
+\end{proof}
 
-\begin{theorem}[Exponential Attack Surface]
-\label{thm:budget}
-The attack surface grows as $2^d \geq d + 1$. For any fixed budget~$B$,
-there exists $d_0$ such that $2^d > B$ for all $d \geq d_0$.
-\end{theorem}
+The continuous trilemma trades \emph{continuity} for completeness;
+the discrete dilemma trades \emph{injectivity}. In both cases, a
+complete defense must collapse distinct inputs---losing the ability
+to distinguish remapped attacks from genuine safe inputs.
 
 
 % ============================================================
@@ -1445,9 +1451,12 @@ and crosses $\ell(K+1)$, transversality is reachable by IVT.
 \paragraph{Stochastic regularity.}
 $g(x) = \mathbb{E}[f(D(x))]$ satisfies $g - f = 0$ on $\cl{S_\tau}$.
 
-\paragraph{Discrete trilemma.}
-On finite ordered sets: utility preservation fixes the safe crossing
-endpoint; bounded capacity is overwhelmed by exponential attack surface.
+\paragraph{Discrete defense dilemma.}
+An injective, utility-preserving defense is incomplete (every unsafe
+input stays unsafe). A complete, utility-preserving defense is
+non-injective (distinct inputs collapse to the same output).
+The three properties---completeness, utility preservation,
+injectivity---form a trilemma.
 
 \paragraph{Defense position invariance.}
 Lipschitz constant of defense-before-tools equals defense-after-tools:

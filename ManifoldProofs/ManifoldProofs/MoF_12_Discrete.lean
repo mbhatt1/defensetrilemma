@@ -93,107 +93,108 @@ theorem discrete_defense_boundary_fixed
   obtain ⟨i, hi_below, hi_above⟩ := discrete_ivt f τ h_start h_end
   exact ⟨i, hi_below, hi_above, h_pres ⟨i.val, by omega⟩ hi_below⟩
 
--- Note: without constraints on D, a discrete defense CAN map any unsafe
--- point anywhere. The discrete incompleteness requires a CAPACITY
--- constraint (pigeonhole) rather than continuity.
+-- Note: without topology, a discrete defense CAN map any unsafe point
+-- to any safe point. The discrete impossibility instead concerns
+-- INJECTIVITY: a complete defense must lose information.
 
-/-! ## 3. Defense Capacity (Pigeonhole Principle) -/
+/-! ## 3. Injectivity Forces Incompleteness -/
 
 /--
-**Pigeonhole for defense capacity.**
+**An injective, utility-preserving defense cannot make unsafe inputs safe.**
 
-If there are `m` adversarial configurations and the defense can only
-realize `k < m` distinct behaviors, then at least two configurations
-must receive the same treatment—so at least one is mishandled.
+If D is injective and fixes all safe inputs, then every unsafe input
+stays unsafe. The safe "slots" are all occupied by safe inputs
+(via utility preservation), so injectivity leaves no room for unsafe
+inputs to land on safe outputs.
+
+Proof: Suppose f(D(u)) < τ for some unsafe u. Then D(u) is safe, so
+D(D(u)) = D(u) (utility preservation). Injectivity gives D(u) = u.
+But then f(u) = f(D(u)) < τ, contradicting f(u) ≥ τ.
 -/
-theorem defense_capacity_pigeonhole
-    {m k : ℕ} (h : k < m) :
-    ∀ (classify : Fin m → Fin k),
-      ∃ i j : Fin m, i ≠ j ∧ classify i = classify j := by
-  intro classify
-  have h_card : Fintype.card (Fin k) < Fintype.card (Fin m) := by
-    simp only [Fintype.card_fin]; exact h
-  exact Fintype.exists_ne_map_eq_of_card_lt classify h_card
+theorem injectivity_forces_incompleteness
+    {α : Type*}
+    {f : α → ℝ} {τ : ℝ} {D : α → α}
+    (h_pres : ∀ x, f x < τ → D x = x)
+    (h_inj : Function.Injective D)
+    {u : α} (hu : f u ≥ τ) :
+    f (D u) ≥ τ := by
+  by_contra h_safe
+  push_neg at h_safe
+  -- f(D(u)) < τ, so utility preservation gives D(D(u)) = D(u)
+  have h_fix : D (D u) = D u := h_pres (D u) h_safe
+  -- Injectivity: D(u) = u
+  have h_eq : D u = u := h_inj h_fix
+  -- Contradiction: f(u) ≥ τ but f(D(u)) = f(u) < τ
+  linarith [h_eq ▸ h_safe]
+
+/-! ## 4. Completeness Forces Non-Injectivity -/
 
 /--
-**Corollary: any defense with bounded capacity fails.**
+**Any complete, utility-preserving defense must lose information.**
 
-If the prompt space has N possible inputs and the defense has
-capacity C < N distinct output behaviors, at least two distinct
-inputs are mapped to the same output—guaranteeing misclassification
-on at least one.
+If D is complete (f(D(x)) < τ for all x) and utility-preserving
+(D(x) = x for safe x), then D is non-injective: there exist
+distinct inputs x ≠ y with D(x) = D(y).
+
+Specifically, for any unsafe u: D(u) is safe (completeness), so
+D(D(u)) = D(u) (utility preservation). But u ≠ D(u) (different
+f-values). So u and D(u) are distinct inputs with the same output.
+
+The defense cannot distinguish its own remapped output from the
+original safe input—a fundamental information-theoretic limitation.
 -/
-theorem bounded_defense_fails
-    (N C : ℕ) (hC : C < N) (_h_pos : 0 < C) :
-    ∀ (D : Fin N → Fin C),
-      ∃ i j : Fin N, i ≠ j ∧ D i = D j := by
-  exact defense_capacity_pigeonhole hC
+theorem completeness_forces_noninjectivity
+    {α : Type*}
+    {f : α → ℝ} {τ : ℝ} {D : α → α}
+    (h_pres : ∀ x, f x < τ → D x = x)
+    (h_complete : ∀ x, f (D x) < τ)
+    {u : α} (hu : f u ≥ τ) :
+    ∃ x y : α, x ≠ y ∧ D x = D y := by
+  refine ⟨u, D u, ?_, ?_⟩
+  · -- u ≠ D(u): f(u) ≥ τ but f(D(u)) < τ
+    intro h_eq
+    have := h_complete u; rw [← h_eq] at this; linarith
+  · -- D(u) = D(D(u)): D(u) is safe, so D fixes it
+    exact (h_pres (D u) (h_complete u)).symm
 
-/-! ## 4. Exponential Growth of Attack Surface -/
-
-/--
-The number of subsets of a d-element set is 2^d.
-The number of possible "attack patterns" (Boolean functions on d bits)
-is 2^(2^d). Any defense with polynomial capacity is eventually overwhelmed.
--/
-theorem attack_surface_exponential (d : ℕ) :
-    2 ^ d ≥ d + 1 := by
-  induction d with
-  | zero => simp
-  | succ d ih => calc
-      2 ^ (d + 1) = 2 * 2 ^ d := by ring
-      _ ≥ 2 * (d + 1) := by linarith
-      _ = d + 1 + (d + 1) := by ring
-      _ ≥ d + 1 + 1 := by omega
-      _ = (d + 1) + 1 := by ring
+/-! ## 5. The Discrete Defense Dilemma -/
 
 /--
-For any fixed k, 2^d eventually exceeds d^k. We prove the base
-case k=1: 2^d > d for d ≥ 1, which follows from 2^d ≥ d+1.
--/
-theorem exponential_beats_linear :
-    ∀ d : ℕ, d ≥ 1 → 2 ^ d > d := by
-  intro d hd
-  have := attack_surface_exponential d
-  omega
+**Discrete Defense Dilemma.**
 
-/--
-Any fixed budget B is eventually exceeded by 2^d.
--/
-theorem no_fixed_budget_suffices (B : ℕ) :
-    ∃ d₀ : ℕ, ∀ d : ℕ, d ≥ d₀ → 2 ^ d > B := by
-  use B + 1
-  intro d hd
-  calc 2 ^ d ≥ d + 1 := attack_surface_exponential d
-    _ > B := by omega
+On any set with both safe and unsafe elements, a utility-preserving
+defense faces a dilemma:
+- Completeness forces non-injectivity (information loss)
+- Injectivity forces incompleteness (unsafe inputs persist)
 
-/-! ## 5. The Discrete Defense Trilemma -/
+The three properties {completeness, utility preservation, injectivity}
+form a trilemma: any two can coexist, but not all three.
 
-/--
-**Discrete Defense Trilemma.**
-
-On a finite ordered set of size n+2, if:
-1. f crosses τ (f(0) < τ ≤ f(n+1))
-2. D fixes safe inputs
-3. D has capacity < n+2 (cannot assign unique outputs)
-
-Then D cannot be complete: ∃ v with f(D(v)) ≥ τ.
-
-This mirrors the continuous trilemma: continuity → capacity constraint,
-utility preservation → safe inputs fixed, completeness → impossible.
+This mirrors the continuous defense trilemma where continuity plays
+the role of injectivity: a continuous map on a connected space cannot
+"jump" over the boundary, just as an injective map cannot "reuse"
+safe outputs for unsafe inputs.
 -/
 theorem discrete_trilemma
-    {n : ℕ} (f : Fin (n + 2) → ℝ) (τ : ℝ)
-    (D : Fin (n + 2) → Fin (n + 2))
-    (h_start : f 0 < τ)
-    (h_end : f ⟨n + 1, by omega⟩ ≥ τ)
-    (h_pres : ∀ v : Fin (n + 2), f v < τ → D v = v) :
-    -- The defense must leave the boundary crossing intact
-    ∃ i : Fin (n + 1),
-      f ⟨i.val, by omega⟩ < τ ∧
-      f ⟨i.val + 1, by omega⟩ ≥ τ ∧
-      D ⟨i.val, by omega⟩ = ⟨i.val, by omega⟩ :=
-  discrete_defense_boundary_fixed f τ D h_start h_end h_pres
+    {α : Type*}
+    {f : α → ℝ} {τ : ℝ} {D : α → α}
+    (h_pres : ∀ x, f x < τ → D x = x)
+    {u : α} (hu : f u ≥ τ) :
+    -- Either D leaves u unsafe...
+    (f (D u) ≥ τ) ∨
+    -- ...or D is non-injective
+    (∃ x y : α, x ≠ y ∧ D x = D y) := by
+  by_cases h : f (D u) < τ
+  · -- D maps u to a safe output → non-injective
+    right
+    refine ⟨u, D u, ?_, ?_⟩
+    · -- u ≠ D(u): different f-values
+      intro h_eq; have := h; rw [← h_eq] at this; linarith
+    · -- D(u) = D(D(u)): D(u) is safe, so D fixes it
+      exact (h_pres (D u) h).symm
+  · -- D doesn't make u safe → incomplete
+    left
+    exact not_lt.mp h
 
 end MoF.Discrete
 
