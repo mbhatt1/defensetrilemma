@@ -837,9 +837,16 @@ defense is non-injective.
 \end{proof}
 
 The continuous trilemma trades \emph{continuity} for completeness;
-the discrete dilemma trades \emph{injectivity}. In both cases, a
-complete defense must collapse distinct inputs---losing the ability
-to distinguish remapped attacks from genuine safe inputs.
+the discrete dilemma trades \emph{injectivity}. Part~(1) is the
+genuine constraint: an information-preserving defense \emph{cannot}
+eliminate unsafe outputs. Any complete defense must destroy
+information---collapsing distinct inputs to the same output. This is
+not a failure of the defense; it is the \emph{mechanism} by which it
+operates. But the information loss has structural consequences: the
+defense erases the distinction between a genuine safe input and a
+remapped attack, precluding downstream auditing of which inputs were
+intercepted and preventing the system from learning which attacks
+were attempted.
 
 
 % ============================================================
@@ -901,19 +908,21 @@ Randomization cannot beat the topology.
 \subsection{Capacity Parity}
 
 Even when the defense has equal computational resources to the
-attacker, it starts at a structural disadvantage:
+attacker, it faces a structural asymmetry:
 
 \begin{theorem}[Capacity Parity Disadvantage]
 \label{thm:capacity}
-Let the defense and attacker both operate on $N$ inputs, of which
-$|S_\tau|$ are safe. The defense must implement identity on all safe
-inputs, consuming $|S_\tau|$ of its capacity. Under capacity parity,
-the defense's effective free capacity is $N - |S_\tau| < N$, giving
-the attacker an advantage of $|S_\tau|$ units.
+The defense must satisfy two constraints simultaneously---correct
+classification (distinguishing $S_\tau$ from $U_\tau$) and utility
+preservation (identity on $S_\tau$)---while the attacker need only
+find one input in $U_\tau$. The defense's hypothesis class must
+represent both the decision boundary and the identity function on
+the safe side, while the attacker's search is unconstrained.
 \end{theorem}
 
-Utility preservation is a tax on the defense that the attacker does
-not pay.
+Utility preservation is a structural tax on the defense that the
+attacker does not pay: the attacker explores freely, while the
+defense must simultaneously preserve and filter.
 
 \subsection{Nonlinear Agent Pipelines}
 
@@ -1082,11 +1091,12 @@ boundary. The Lipschitz bound (\Cref{thm:lipschitz}) gives a
 computable estimate of distance to the boundary from any observed AD
 value.
 
-\paragraph{5. Break capacity parity with architectural separation.}
-Under equal resources, the defense loses capacity to utility
-preservation (\Cref{thm:capacity}). Separate the defense from the
-utility pipeline---e.g., a lightweight classifier that flags, paired
-with a separate response generator---to sidestep the capacity tax.
+\paragraph{5. Break the asymmetry with architectural separation.}
+The defense must simultaneously classify and preserve
+(\Cref{thm:capacity}), while the attacker only searches. Separate
+the defense from the utility pipeline---e.g., a lightweight
+classifier that flags, paired with a separate response
+generator---to decouple the two tasks.
 
 
 % ============================================================
