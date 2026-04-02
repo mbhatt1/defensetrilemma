@@ -72,9 +72,9 @@
  \footnotetext[3]{This work was conducted independently and does not reflect the views, policies, or endorsements of the
   authors' respective employers.}
 \begin{abstract}
-We prove that no continuous, utility-preserving wrapper defense 
+We prove that no continuous, utility-preserving wrapper defense---a
 function $D\colon X\to X$ that preprocesses inputs before the model
-sees them, can eliminate all safety violations from a language model
+sees them---can make all outputs strictly safe for a language model
 with connected prompt space, and we characterize exactly where every
 such defense must fail. We establish three results under
 successively stronger hypotheses: \emph{boundary fixation}---the defense must leave some
@@ -329,7 +329,7 @@ $f(z) \geq \tau$) and $D(z) = z$. Full proof in \Cref{app:proofs}.
 The defense's fixed-point set is too large to avoid the
 boundary. Utility preservation forces it to contain the safe region;
 closure forces it to contain the boundary; connectedness ensures the
-boundary is nonempty. Equivalently: a complete utility-preserving
+boundary is nonempty. Alternatively: a complete utility-preserving
 defense would be a continuous retraction $D\colon X \to S_\tau$
 (since $D|_{S_\tau} = \id$ and $D(X) \subseteq S_\tau$), but a
 retract of a Hausdorff space is closed (the fixed-point set is
@@ -718,7 +718,8 @@ constant~$K$ of the defense:
 
 \begin{theorem}[Defense Dilemma]
 \label{thm:dilemma}
-Let $G = |\nabla f(z)|$ at boundary point~$z$, and let $\ell$ be
+Assume $f$ is differentiable at boundary point~$z$ with
+$G = \|\nabla f(z)\|$, and let $\ell$ be
 the defense-path Lipschitz constant (\Cref{sec:persistent}). Define
 $K^* = G/\ell - 1$. Then:
 \begin{enumerate}[nosep]
@@ -825,11 +826,9 @@ genuine constraint: an information-preserving defense \emph{cannot}
 eliminate unsafe outputs. Any complete defense must destroy
 information---collapsing distinct inputs to the same output. This is
 not a failure of the defense; it is the \emph{mechanism} by which it
-operates. But the information loss has structural consequences: the
-defense erases the distinction between a genuine safe input and a
-remapped attack, precluding downstream auditing of which inputs were
-intercepted and preventing the system from learning which attacks
-were attempted.
+operates. The downstream model receives the same input regardless
+of whether the original was safe or an attack; any audit or
+attack-detection logic must act \emph{before} $D$ is applied.
 
 
 % ============================================================
@@ -851,9 +850,10 @@ independently:
 \begin{theorem}[Multi-Turn Impossibility]
 \label{thm:multi-turn}
 Let $\{f_t, D_t\}_{t=1}^T$ be alignment functions and defenses over
-$T$ turns, each continuous and utility-preserving. Then for every
-turn~$t$, there exists $z_t$ with $f_t(z_t) = \tau$ and
-$D_t(z_t) = z_t$.
+$T$ turns on a connected Hausdorff space, each continuous and
+utility-preserving, with $S_\tau^{(t)}, U_\tau^{(t)} \neq \emptyset$
+at every turn. Then for every turn~$t$, there exists $z_t$ with
+$f_t(z_t) = \tau$ and $D_t(z_t) = z_t$.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
@@ -1031,10 +1031,10 @@ GPT-5-Mini exemplifies this: its ceiling at $\AD = 0.50$ means the
 failure manifold exists but contains no actual harm.
 
 \paragraph{2. Reduce the Lipschitz constant.}
-Smaller~$L$ makes the alignment surface smoother, raises the
-transversality threshold $\ell(K+1)$ for persistence, and shrinks the
-persistent region. The tradeoff: smoother surfaces spread
-vulnerabilities over wider but more easily monitored regions.
+Smaller~$L$ tightens the bound $\ell \leq L$, potentially reducing
+the defense-path constant~$\ell$ and narrowing the persistent region.
+The tradeoff: smoother surfaces spread vulnerabilities over wider but
+more easily monitored regions.
 
 \paragraph{3. Reduce the effective dimension.}
 Defense cost grows as $N^d$ (\Cref{thm:cost}). Constraining the prompt
