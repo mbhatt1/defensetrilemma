@@ -131,7 +131,7 @@ Under Lipschitz regularity, the defense cannot uniformly reduce
 alignment deviation far below~$\tau$ near the fixed boundary point.
 For any $x$ within distance $\delta$ of the fixed point~$z$:
 \begin{equation}
-  f(D(x)) \;\geq\; \tau - L(K+1)\,\delta.
+  f(D(x)) \;\geq\; \tau - LK\,\delta.
 \end{equation}
 
 \paragraph{Persistent unsafe region (\Cref{thm:persistent}).}
@@ -180,7 +180,7 @@ for each (\Cref{app:counterexamples}).
     $\varepsilon$-approximate variants
     (\Cref{thm:score-preserving,thm:eps-relaxed}).
   \item \textbf{$\varepsilon$-robust constraint} (\Cref{thm:eps-robust}):
-    under Lipschitz regularity, $f(D(x)) \geq \tau - L(K+1)\dist(x,z)$
+    under Lipschitz regularity, $f(D(x)) \geq \tau - LK\dist(x,z)$
     for all~$x$. A positive-measure band near~$z$ is constrained
     (\Cref{thm:band-measure}).
   \item \textbf{Persistent unsafe region} (\Cref{thm:persistent}):
@@ -452,18 +452,18 @@ Under the hypotheses of \Cref{thm:main}, if $(X,d)$ is a metric
 space, $f$ is $L$-Lipschitz, and $D$ is $K$-Lipschitz, then for
 the fixed boundary point~$z$:
 \begin{equation}
-  f(D(x)) \;\geq\; \tau - L(K+1)\dist(x, z)
+  f(D(x)) \;\geq\; \tau - LK\dist(x, z)
   \qquad \text{for all } x \in X.
 \end{equation}
 Points within distance~$\delta$ of~$z$ remain within
-$L(K+1)\delta$ of threshold.
+$LK\delta$ of threshold.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
 Since $D(z)=z$ and $D$ is $K$-Lipschitz:
 $\dist(D(x),z) \leq K\dist(x,z)$. Since $f(z)=\tau$ and $f$ is
 $L$-Lipschitz:
-$|f(D(x)) - \tau| \leq L \cdot K\dist(x,z) \leq L(K+1)\dist(x,z)$.
+$|f(D(x)) - \tau| \leq L \cdot K\dist(x,z)$.
 Full proof in \Cref{app:proofs}.
 \end{proof}
 
@@ -479,6 +479,9 @@ Specifically, $B(c, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$ for the midpoint $c$ with
 $f(c) = \tau - \varepsilon/2$ (which exists by the intermediate
 value theorem).
+By \Cref{thm:eps-robust}, every $x \in \mathcal{B}_\varepsilon$
+satisfies $|f(D(x)) - \tau| \leq LK\dist(x, z)$: the defense is
+constrained to near-threshold output on this entire region.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
@@ -730,7 +733,11 @@ $\mu(\{x : f(D(x)) > \tau\}) \geq \delta_0$.
 
 This gives a concrete lower bound on the persistent region: if the
 alignment surface is steep over an interval of length~$\delta_0$, the
-defense fails on at least that much volume.
+defense fails on at least that much volume. The bound $\geq \delta_0$
+is tight: equality holds when the cone condition fails exactly at
+$z + \delta_0$ (i.e., $f(z+\delta_0) = \tau + c\,\delta_0$ and
+$f(x) < \tau + c(x-z)$ for $x > z + \delta_0$). If the cone extends
+beyond $\delta_0$, the persistent region is strictly larger.
 
 The defense designer faces a dilemma in choosing the Lipschitz
 constant~$K$ of the defense:
@@ -890,6 +897,15 @@ so $h$ vanishes on $\cl{S_\tau}$ (same closure argument as
 $z \in \cl{S_\tau} \setminus S_\tau$: $g(z) = f(z) = \tau$.
 \end{proof}
 
+\noindent\textit{Remark (stochastic dichotomy).}
+Since $\mathbb{E}[f(D(z))] = \tau$, either $f(D(z)) = \tau$ almost
+surely (the defense is deterministic at~$z$), or the random variable
+$f(D(z))$ has positive probability of exceeding~$\tau$---i.e., the
+defense \emph{actively produces unsafe outputs} with positive
+probability. The stochastic case is therefore strictly harder than
+the deterministic one: a genuinely random defense at boundary points
+must sometimes make things worse.
+
 \noindent\textit{Remark.}
 The continuity of $g$ is a nontrivial assumption: it requires the
 distribution $D(x)$ to vary continuously with~$x$ in a suitable sense.
@@ -978,7 +994,13 @@ Pipeline (\ref{thm:pipeline})
 
 \paragraph{Llama-3-8B} (mean AD $0.93$, basin rate $93.9\%$):
 near-flat alignment surface (small~$L$), large robustness radii.
-Estimated from the 2D behavioral surface in~\cite{munshi2026manifold}: directional slope $G \approx 5$ at the steepest boundary crossing, defense-path Lipschitz constant $\ell \approx 1$ (estimated from grid-adjacent score differences along the defense direction), and $K = 1$ (identity-rate defense). These satisfy $G > \ell(K+1) = 2$.
+Estimated from the 2D behavioral surface in~\cite{munshi2026manifold}: directional slope $G \approx 5$ at the steepest boundary crossing.
+For the defense-path Lipschitz constant we assume a hypothetical
+nearest-safe-projection defense ($D(x)$ maps each point to the closest
+$x' \in S_\tau$) and estimate $\ell \approx 1$ from grid-adjacent
+score differences in the direction orthogonal to the boundary
+(the projection direction on the 2D grid). Setting $K = 1$
+(identity-rate defense), these satisfy $G > \ell(K+1) = 2$.
 
 \paragraph{GPT-OSS-20B} (mean AD $0.73$, basin rate $64.3\%$): a
 rugged landscape (large~$L$) with many small fragments. Horizontal
@@ -1276,8 +1298,7 @@ $\dist(D(x), z) = \dist(D(x), D(z)) \leq K\dist(x, z)$.
 
 \textbf{Step~2.} Since $f(z) = \tau$ and $f$ is $L$-Lipschitz:
 $|f(D(x)) - \tau| = |f(D(x)) - f(z)| \leq L\dist(D(x), z) \leq
-LK\dist(x, z) \leq L(K+1)\dist(x,z)$.
-The last uses $K \leq K+1$; we keep the uniform constant $K+1$ for consistency with the displacement bound in \Cref{lem:input-bound}.
+LK\dist(x, z)$.
 \end{proof}
 
 \begin{proof}[Proof of \Cref{thm:persistent} (Persistent Unsafe Region)]
@@ -1366,10 +1387,11 @@ Only the band $|f(x) - \tau| \leq \varepsilon$ is uncertain.
 
 \begin{theorem}[Crossing Preservation]
 \label{thm:crossing}
-If $f$ crosses $\tau$ on $[a,b]$ with margin $m$ (i.e.,
-$f(a') < \tau - m$ and $f(b') > \tau + m$ for some
-$a', b' \in [a,b]$) and $\|f - g\|_\infty \leq \varepsilon < m$,
-then $g$ also crosses $\tau$ on $[a,b]$.
+Let $f, g\colon [a,b] \to \R$ be continuous. If $f$ crosses $\tau$
+on $[a,b]$ with margin $m$ (i.e., $f(a') < \tau - m$ and
+$f(b') > \tau + m$ for some $a', b' \in [a,b]$) and
+$\|f - g\|_\infty \leq \varepsilon < m$, then $g$ also crosses
+$\tau$ on $[a,b]$.
 \end{theorem}
 
 \begin{theorem}[Patching Is Nonlocal]

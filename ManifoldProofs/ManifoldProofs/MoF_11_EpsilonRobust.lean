@@ -15,7 +15,7 @@ BAND of near-boundary points essentially unchanged.**
 
 2. `defense_output_near_threshold` — For Lipschitz f and D, points
    near a fixed boundary point z have f(D(x)) close to τ:
-   |f(D(x)) - τ| ≤ L(K+1) · dist(x, z).
+   |f(D(x)) - τ| ≤ LK · dist(x, z).
 
 3. `epsilon_band_nonempty` — The ε-band {x | τ - ε ≤ f(x) ≤ τ} around
    the boundary is nonempty for all ε > 0.
@@ -23,13 +23,13 @@ BAND of near-boundary points essentially unchanged.**
 4. `epsilon_band_positive_measure` — The ε-band has positive measure.
 
 5. `defense_cannot_clear_band` — For any point x with f(x) = τ - ε
-   that lies within ε/(L(K+1)) of a fixed boundary point, the defense
-   maps it to f(D(x)) > τ - ε - L(K+1)·dist(x,z). The defense
+   that lies within ε/(LK) of a fixed boundary point, the defense
+   maps it to f(D(x)) > τ - ε - LK·dist(x,z). The defense
    CANNOT push such points far below threshold.
 
 6. `epsilon_robust_impossibility` — **MASTER THEOREM**: For any ε > 0,
    there exist points with f(x) in [τ - ε, τ] such that the defense
-   leaves f(D(x)) ≥ τ - ε(1 + LK + L). The defense cannot clear
+   leaves f(D(x)) ≥ τ - LK·dist(x,z). The defense cannot clear
    a positive-measure neighborhood of the boundary.
 -/
 
@@ -71,7 +71,7 @@ theorem defense_fixes_nearby
 If `f` is `L`-Lipschitz, `D` is `K`-Lipschitz, `D(z) = z`, and
 `f(z) = τ`, then for any `x`:
 
-  `|f(D(x)) - τ| ≤ L · (K + 1) · dist(x, z)`
+  `|f(D(x)) - τ| ≤ L · K · dist(x, z)`
 
 The defense cannot push the alignment deviation far from τ for
 points near a fixed boundary point.
@@ -81,24 +81,19 @@ theorem defense_output_near_threshold
     {f : X → ℝ} {D : X → X}
     {L K : ℝ≥0} (hf : LipschitzWith L f) (hD : LipschitzWith K D)
     {z : X} (hz_fix : D z = z) {τ : ℝ} (hz_val : f z = τ) (x : X) :
-    |f (D x) - τ| ≤ ↑L * ((↑K + 1) * dist x z) := by
-  have h1 : |f (D x) - f (D z)| ≤ ↑L * dist (D x) (D z) := by
-    have := hf.dist_le_mul (D x) (D z); rwa [Real.dist_eq] at this
-  have h2 : dist (D x) (D z) ≤ ↑K * dist x z := hD.dist_le_mul x z
+    |f (D x) - τ| ≤ ↑L * (↑K * dist x z) := by
   have h_fDx : |f (D x) - f z| ≤ ↑L * dist (D x) z := by
     have h := hf.dist_le_mul (D x) z; rwa [Real.dist_eq] at h
-  have h_Dxz : dist (D x) z ≤ (↑K + 1) * dist x z := by
+  have h_Dxz : dist (D x) z ≤ ↑K * dist x z := by
     calc dist (D x) z = dist (D x) (D z) := by rw [hz_fix]
       _ ≤ ↑K * dist x z := hD.dist_le_mul x z
-      _ ≤ (↑K + 1) * dist x z := by
-          gcongr; linarith [show (0 : ℝ) ≤ ↑K from K.coe_nonneg]
   rw [hz_val] at h_fDx
   linarith [neg_abs_le (f (D x) - τ),
             mul_le_mul_of_nonneg_left h_Dxz (show (0 : ℝ) ≤ ↑L from L.coe_nonneg)]
 
 /--
 **Lower bound version**: if `f(z) = τ` and `x` is close to `z`,
-then `f(D(x)) ≥ τ - L(K+1) · dist(x, z)`.
+then `f(D(x)) ≥ τ - LK · dist(x, z)`.
 
 This is the key: the defense CANNOT push near-boundary points
 far below threshold.
@@ -108,13 +103,13 @@ theorem defense_output_lower_bound
     {f : X → ℝ} {D : X → X}
     {L K : ℝ≥0} (hf : LipschitzWith L f) (hD : LipschitzWith K D)
     {z : X} (hz_fix : D z = z) {τ : ℝ} (hz_val : f z = τ) (x : X) :
-    f (D x) ≥ τ - ↑L * ((↑K + 1) * dist x z) := by
+    f (D x) ≥ τ - ↑L * (↑K * dist x z) := by
   have h := defense_output_near_threshold hf hD hz_fix hz_val x
   linarith [neg_abs_le (f (D x) - τ)]
 
 /--
 Simplified lower bound: if `dist(x, z) ≤ δ`, then
-`f(D(x)) ≥ τ - L(K+1)δ`.
+`f(D(x)) ≥ τ - LKδ`.
 -/
 theorem defense_output_lower_bound_ball
     {X : Type*} [PseudoMetricSpace X]
@@ -122,15 +117,14 @@ theorem defense_output_lower_bound_ball
     {L K : ℝ≥0} (hf : LipschitzWith L f) (hD : LipschitzWith K D)
     {z : X} (hz_fix : D z = z) {τ : ℝ} (hz_val : f z = τ)
     {x : X} {δ : ℝ} (hxz : dist x z ≤ δ) :
-    f (D x) ≥ τ - ↑L * ((↑K + 1) * δ) := by
+    f (D x) ≥ τ - ↑L * (↑K * δ) := by
   have h := defense_output_lower_bound hf hD hz_fix hz_val x
   have hK : (0 : ℝ) ≤ ↑K := K.coe_nonneg
   have hL : (0 : ℝ) ≤ ↑L := L.coe_nonneg
-  have hK1 : (0 : ℝ) ≤ ↑K + 1 := by linarith
   have hdist : dist x z ≤ δ := hxz
-  have : ↑L * ((↑K + 1) * dist x z) ≤ ↑L * ((↑K + 1) * δ) := by
+  have : ↑L * (↑K * dist x z) ≤ ↑L * (↑K * δ) := by
     apply mul_le_mul_of_nonneg_left _ hL
-    exact mul_le_mul_of_nonneg_left hdist hK1
+    exact mul_le_mul_of_nonneg_left hdist hK
   linarith
 
 /-! ## 3. The ε-band around the boundary -/
@@ -238,7 +232,7 @@ On a connected Hausdorff metric space, if:
 - `D` is a `K`-Lipschitz continuous defense with `D = id` on `{f < τ}`
 
 Then there exists a boundary fixed point `z` with `f(z) = τ`, `D(z) = z`, and
-for ALL `x : X`, `f(D(x)) ≥ τ - L(K+1)·dist(x,z)`. No distance guard is needed:
+for ALL `x : X`, `f(D(x)) ≥ τ - LK·dist(x,z)`. No distance guard is needed:
 the Lipschitz chain bound holds globally.
 
 This upgrades the basic impossibility: instead of just fixing measure-zero
@@ -256,7 +250,7 @@ theorem epsilon_robust_impossibility
     (h_unsafe_ne : ∃ b : X, f b > τ) :
     ∃ z : X, f z = τ ∧ D z = z ∧
       ∀ x : X,
-        f (D x) ≥ τ - ↑L * ((↑K + 1) * dist x z) := by
+        f (D x) ≥ τ - ↑L * (↑K * dist x z) := by
   -- From MoF_08: there exists a fixed boundary point
   have h_strict : {x : X | f x < τ} ⊂ closure {x : X | f x < τ} := by
     rw [Set.ssubset_iff_subset_ne]
@@ -296,16 +290,13 @@ theorem epsilon_robust_impossibility
   -- f(D(x)) ≥ f(z) - L · dist(D(x), z)
   --         = τ - L · dist(D(x), D(z))     [since D(z) = z]
   --         ≥ τ - L · K · dist(x, z)        [D is K-Lipschitz]
-  --         ≥ τ - L · (K+1) · dist(x, z)    [weaker but clean bound]
   have h1 : |f (D x) - τ| ≤ ↑L * dist (D x) z := by
     have h := hf.dist_le_mul (D x) z
     rw [Real.dist_eq] at h
     rwa [hz_eq] at h
-  have h2 : dist (D x) z ≤ (↑K + 1) * dist x z := by
+  have h2 : dist (D x) z ≤ ↑K * dist x z := by
     calc dist (D x) z = dist (D x) (D z) := by rw [hz_fix]
       _ ≤ ↑K * dist x z := hD.dist_le_mul x z
-      _ ≤ (↑K + 1) * dist x z := by
-          gcongr; linarith [show (0 : ℝ) ≤ ↑K from K.coe_nonneg]
   linarith [neg_abs_le (f (D x) - τ),
             mul_le_mul_of_nonneg_left h2 (show (0 : ℝ) ≤ ↑L from L.coe_nonneg)]
 
@@ -314,11 +305,11 @@ theorem epsilon_robust_impossibility
 
 Combining the ε-robust impossibility with the ε-band measure result:
 for any ε > 0, there exists a positive-measure set of points that
-the defense cannot push below `τ - Cε` where `C = L(K+1)/(L) = K+1`
+the defense cannot push below `τ - Cε` where `C = LK/(L) = K`
 depends only on the defense's Lipschitz constant.
 
 Informally: the "unfixable band" around the boundary has width
-proportional to 1/(L(K+1)) and positive measure. The more aggressive
+proportional to 1/(LK) and positive measure. The more aggressive
 the defense (larger K), the wider the band it fails to clear.
 -/
 theorem positive_measure_failure_band
