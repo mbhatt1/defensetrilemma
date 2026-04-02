@@ -169,11 +169,37 @@ $D\colon X \to X$ that preprocesses inputs; any mechanism outside this
 class is not constrained by our results.
 
 All three conditions---continuity, utility preservation, and
-connectedness, are individually necessary; we give counterexamples for
-each (\Cref{app:counterexamples}). The core theory and all extensions
-are mechanically verified in Lean~4 with zero \texttt{sorry} statements.
-Full proofs appear in \Cref{app:proofs}; the Lean artifact is described
-in \Cref{app:artifact}.
+connectedness---are individually necessary; we give counterexamples
+for each (\Cref{app:counterexamples}).
+
+\paragraph{Contributions.}
+\begin{enumerate}[nosep]
+  \item \textbf{Boundary fixation} (\Cref{thm:main}): any continuous,
+    utility-preserving defense on a connected Hausdorff space must fix
+    a point $z$ with $f(z) = \tau$. Relaxed to score-preserving and
+    $\varepsilon$-approximate variants
+    (\Cref{thm:score-preserving,thm:eps-relaxed}).
+  \item \textbf{$\varepsilon$-robust constraint} (\Cref{thm:eps-robust}):
+    under Lipschitz regularity, $f(D(x)) \geq \tau - L(K+1)\dist(x,z)$
+    for all~$x$. A positive-measure band near~$z$ is constrained
+    (\Cref{thm:band-measure}).
+  \item \textbf{Persistent unsafe region} (\Cref{thm:persistent}):
+    under a transversality condition ($G > \ell(K+1)$, where $\ell$ is
+    the defense-path Lipschitz constant), a positive-measure set
+    remains strictly above~$\tau$ after defense.
+  \item \textbf{Quantitative bounds}: explicit volume lower bound
+    (\Cref{thm:coarea}), cone measure bound (\Cref{thm:cone}), and
+    an asymmetric defense dilemma (\Cref{thm:dilemma}).
+  \item \textbf{Discrete defense dilemma} (\Cref{thm:disc-dilemma}):
+    on finite sets, completeness forces non-injectivity (information
+    loss); injectivity forces incompleteness.
+  \item \textbf{Extensions}: multi-turn (\Cref{thm:multi-turn}),
+    stochastic (\Cref{thm:stochastic}), and pipeline
+    (\Cref{thm:pipeline}) settings.
+  \item \textbf{Lean~4 formalization}: 45 files, ${\sim}350$ theorems,
+    zero \texttt{sorry} statements, three standard axioms. Full proofs
+    in \Cref{app:proofs}; artifact in \Cref{app:artifact}.
+\end{enumerate}
 
 
 % ============================================================
