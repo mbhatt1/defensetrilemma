@@ -69,8 +69,6 @@
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
  \footnotetext[2]{Equal contribution. This work was conducted independently and does not reflect the views, policies, or endorsements of the
   authors' respective employers.}
- \footnotetext[3]{This work was conducted independently and does not reflect the views, policies, or endorsements of the
-  authors' respective employers.}
 \begin{abstract}
 We prove that no continuous, utility-preserving wrapper defense---a
 function $D\colon X\to X$ that preprocesses inputs before the model
@@ -132,7 +130,7 @@ with no remediation.
 Under Lipschitz regularity, the defense cannot uniformly reduce
 alignment deviation far below~$\tau$ near the fixed boundary point.
 For any $x$ within distance $\delta$ of the fixed point~$z$:
-\begin{equation}\label{eq:eps-bound}
+\begin{equation}
   f(D(x)) \;\geq\; \tau - L(K+1)\,\delta.
 \end{equation}
 
@@ -140,7 +138,7 @@ For any $x$ within distance $\delta$ of the fixed point~$z$:
 Under a transversality condition, the alignment surface rises faster
 than the defense can pull it down, leaving a positive-measure region
 that remains unsafe:
-\begin{equation}\label{eq:persistent}
+\begin{equation}
   f(D(x)) > \tau \quad\text{for all } x \in \mathcal{S},
   \qquad \mu(\mathcal{S}) > 0.
 \end{equation}
@@ -161,9 +159,14 @@ preclude effective safety through other mechanisms, including:
   \item training-time alignment (RLHF, DPO, constitutional AI training),
   \item architectural changes to the model itself,
   \item discontinuous defenses (e.g., hard blocklists or discrete classifiers),
+  \item output-side filters, ensemble defenses, or human-in-the-loop review,
+  \item adaptive-threshold systems,
   \item multi-component systems whose classifiers may reject or redirect
         inputs rather than preserving utility on every prompt.
 \end{itemize}
+In short, our theorems cover only a single continuous wrapper
+$D\colon X \to X$ that preprocesses inputs; any mechanism outside this
+class is not constrained by our results.
 
 All three conditions---continuity, utility preservation, and
 connectedness, are individually necessary; we give counterexamples for
@@ -444,7 +447,7 @@ Under the hypotheses of \Cref{thm:main}, if $(X,d)$ is a metric
 space, $f$ is $L$-Lipschitz, and $D$ is $K$-Lipschitz, then for
 the fixed boundary point~$z$:
 \begin{equation}
-  f(D(x)) \;\geq\; \tau - L(K+1)\,\dist(x, z)
+  f(D(x)) \;\geq\; \tau - L(K+1)\dist(x, z)
   \qquad \text{for all } x \in X.
 \end{equation}
 Points within distance~$\delta$ of~$z$ remain within
@@ -453,9 +456,9 @@ $L(K+1)\delta$ of threshold.
 
 \begin{proof}[Proof sketch]
 Since $D(z)=z$ and $D$ is $K$-Lipschitz:
-$\dist(D(x),z) \leq K\,\dist(x,z)$. Since $f(z)=\tau$ and $f$ is
+$\dist(D(x),z) \leq K\dist(x,z)$. Since $f(z)=\tau$ and $f$ is
 $L$-Lipschitz:
-$|f(D(x)) - \tau| \leq L \cdot K\,\dist(x,z) \leq L(K+1)\dist(x,z)$.
+$|f(D(x)) - \tau| \leq L \cdot K\dist(x,z) \leq L(K+1)\dist(x,z)$.
 Full proof in \Cref{app:proofs}.
 \end{proof}
 
@@ -477,6 +480,10 @@ Specifically, $B(c, \varepsilon/(4L)) \subseteq
 $f(c) = \tau - \varepsilon/2$ (which exists by the intermediate
 value theorem).
 \end{theorem}
+
+\begin{proof}[Proof sketch]
+For $y \in B(c, \varepsilon/(4L))$: $|f(y) - f(c)| \leq L \cdot \varepsilon/(4L) = \varepsilon/4$. Since $f(c) = \tau - \varepsilon/2$, we get $\tau - 3\varepsilon/4 \leq f(y) \leq \tau - \varepsilon/4$, so $y \in \mathcal{B}_\varepsilon$.
+\end{proof}
 
 % ============================================================
 \section{Persistent Unsafe Region}
@@ -522,7 +529,7 @@ for all $x \in X$.
 Triangle inequality:
 $\dist(D(x), x) \leq \dist(D(x), z) + \dist(z, x)
 \leq (K+1)\dist(x, z)$.
-Defense-path Lipschitz: $|f(D(x)) - f(x)| \leq \ell\,\dist(D(x), x)
+Defense-path Lipschitz: $|f(D(x)) - f(x)| \leq \ell\dist(D(x), x)
 \leq \ell(K+1)\dist(x, z)$.
 \end{proof}
 
@@ -533,7 +540,7 @@ than that, the defense loses.
 \begin{definition}[Steep region]
 \label{def:steep}
 Given a fixed boundary point $z$, the \emph{steep region} is
-$\mathcal{S} = \{x \in X : f(x) > \tau + \ell(K+1)\,\dist(x, z)\}$---the
+$\mathcal{S} = \{x \in X : f(x) > \tau + \ell(K+1)\dist(x, z)\}$---the
 set of points where alignment deviation exceeds~$\tau$ by more than
 the defense's Lipschitz budget can compensate.
 \end{definition}
@@ -700,6 +707,8 @@ where $V_n$ is the unit ball volume in $\R^n$. In $\R^1$, this
 simplifies to $\mu(\mathcal{B}_\varepsilon) \geq \varepsilon/(2L)$.
 \end{theorem}
 
+\noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_17\_CoareaBound}}.}
+
 Smoother surfaces (smaller~$L$) produce wider $\varepsilon$-bands.
 
 \begin{theorem}[Cone Measure Bound]
@@ -708,6 +717,8 @@ In $\R$, if $f(x) \geq \tau + c(x - z)$ for all
 $x \in (z,\, z + \delta_0)$ with $c > \ell(K+1)$, then
 $\mu(\{x : f(D(x)) > \tau\}) \geq \delta_0$.
 \end{theorem}
+
+\noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_18\_ConeBound}}.}
 
 This gives a concrete lower bound on the persistent region: if the
 alignment surface is steep over an interval of length~$\delta_0$, the
@@ -734,6 +745,8 @@ Since $\ell \leq L$, the dilemma is sharpest when $\ell \ll L$
 (anisotropic surfaces). When $\ell = L$ (isotropic), $K^* \leq 0$
 and horn~(1) is vacuous.
 \end{theorem}
+
+\noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_19\_OptimalDefense}}.}
 
 The two regimes are \emph{asymmetric}: horn~(1) is a proven
 impossibility; horn~(2) is a theorem limitation---the bound loses
@@ -862,11 +875,10 @@ depend on full history---this does not matter, as each timestep is a
 fresh instance of boundary fixation.
 \end{proof}
 
-Multi-turn interaction compounds the problem: boundary information
-accumulates (\texttt{boundary\_points\_accumulate}), the best
+Multi-turn interaction compounds the problem: the attacker's best
 observed exploit improves monotonically
 (\texttt{running\_max\_monotone}), and the attacker can steer toward
-transversality (\texttt{transversality\_reachable}).
+transversality via binary search (\texttt{transversality\_reachable}).
 
 \subsection{Stochastic Defense Impossibility}
 
@@ -884,6 +896,12 @@ so $h$ vanishes on $\cl{S_\tau}$ (same closure argument as
 \Cref{thm:score-preserving}). For
 $z \in \cl{S_\tau} \setminus S_\tau$: $g(z) = f(z) = \tau$.
 \end{proof}
+
+\noindent\textit{Remark.}
+The continuity of $g$ is a nontrivial assumption: it requires the
+distribution $D(x)$ to vary continuously with~$x$ in a suitable sense.
+Stochastic defenses with discontinuous rejection probabilities escape
+this theorem.
 
 \subsection{Nonlinear Agent Pipelines}
 
@@ -905,6 +923,8 @@ boundary fixed points. If $D$ is $K_D$-Lipschitz and each $T_i$ is
 $K$-Lipschitz, the $\varepsilon$-robust band scales as
 $L(K_D \cdot K^n + 1)\delta$.
 \end{theorem}
+
+\noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_15\_NonlinearAgents}}.}
 
 Note: $P(x) = x$ for safe~$x$ requires $T_n \circ \cdots \circ T_1$
 to act as the identity on safe inputs, not just~$D$. This holds when
@@ -946,7 +966,6 @@ in \Cref{app:cost}.
 \section{Experimental Validation}
 \label{sec:experiments}
 
-% We validate the theorems against real model behavior.
 The Manifold of
 Failure framework~\cite{munshi2026manifold} maps three LLMs over a 2D
 behavioral space with two axes: \emph{query indirection} (how obliquely
@@ -954,7 +973,7 @@ the prompt asks for unsafe content) and \emph{authority framing} (how
 much the prompt invokes authority or permission). Each point corresponds
 to a prompt style, and the alignment deviation score measures how
 unsafe the model's response is. \Cref{tab:correspondence} summarizes
-nine falsifiable predictions, all confirmed.
+nine qualitative predictions, all directionally consistent with observations.
 
 \begin{table}[t]
 \centering
@@ -998,9 +1017,7 @@ Pipeline (\ref{thm:pipeline})
 
 \paragraph{Llama-3-8B} (mean AD $0.93$, basin rate $93.9\%$):
 near-flat alignment surface (small~$L$), large robustness radii.
-Estimated directional slope $G \approx 5$ at boundary crossings;
-for $\ell \approx 1$ and $K = 1$, $G > \ell(K+1) = 2$, satisfying
-the transversality condition of \Cref{thm:persistent}.
+Estimated from the 2D behavioral surface in~\cite{munshi2026manifold}: directional slope $G \approx 5$ at the steepest boundary crossing, defense-path Lipschitz constant $\ell \approx 1$ (estimated from grid-adjacent score differences along the defense direction), and $K = 1$ (identity-rate defense). These satisfy $G > \ell(K+1) = 2$.
 
 \paragraph{GPT-OSS-20B} (mean AD $0.73$, basin rate $64.3\%$): a
 rugged landscape (large~$L$) with many small fragments. Horizontal
@@ -1081,7 +1098,7 @@ We establish a three-level impossibility hierarchy for prompt-injection
 defense: boundary fixation, the $\varepsilon$-robust constraint, and the
 persistent unsafe region theorem. Continuous topology, Lipschitz bounds,
 discrete counting, stochastic expectations, multi-turn dynamics, and
-capacity constraints all converge on the same conclusion: under the
+capacity constraints all point to the same conclusion: under the
 wrapper model, some failures persist. 
 
 The practical prescription is to make the boundary shallow, smooth,
@@ -1138,16 +1155,16 @@ M.~J. Kochenderfer.
   networks.
 \newblock \emph{Proceedings of CAV}, 2017.
 
+\bibitem{carlini2017evaluating}
+N.~Carlini and D.~Wagner.
+\newblock Towards evaluating the robustness of neural networks.
+\newblock \emph{Proceedings of IEEE S\&P}, 2017.
+
 \bibitem{mehrotra2024tree}
 A.~Mehrotra et~al.
 \newblock Tree of attacks: Jailbreaking black-box {LLMs} automatically.
 \newblock \emph{Advances in Neural Information Processing Systems}, 37,
 2024.
-
-\bibitem{carlini2017evaluating}
-N.~Carlini and D.~Wagner.
-\newblock Towards evaluating the robustness of neural networks.
-\newblock \emph{Proceedings of IEEE S\&P}, 2017.
 
 \bibitem{fawzi2018adversarial}
 A.~Fawzi, H.~Fawzi, and O.~Fawzi.
@@ -1170,15 +1187,15 @@ A.~Madry, A.~Makelov, L.~Schmidt, D.~Tsipras, and A.~Vladu.
 \newblock Towards deep learning models resistant to adversarial attacks.
 \newblock \emph{Proceedings of ICLR}, 2018.
 
-\bibitem{naitzat2020topology}
-G.~Naitzat, A.~Zhitnikov, and L.-H.~Lim.
-\newblock Topology of deep neural networks.
-\newblock \emph{Journal of Machine Learning Research}, 21(184):1--40, 2020.
-
 \bibitem{mouret2015illuminating}
 J.-B. Mouret and J.~Clune.
 \newblock Illuminating search spaces by mapping elites.
 \newblock \emph{arXiv preprint arXiv:1504.04909}, 2015.
+
+\bibitem{naitzat2020topology}
+G.~Naitzat, A.~Zhitnikov, and L.-H.~Lim.
+\newblock Topology of deep neural networks.
+\newblock \emph{Journal of Machine Learning Research}, 21(184):1--40, 2020.
 
 \bibitem{munshi2026manifold}
 S.~Munshi, M.~Bhatt, V.~S.~Narajala, I.~Habler, A.~Al-Kahfah,
@@ -1263,13 +1280,12 @@ $f(D(z)) = \tau$.
 By \Cref{thm:main}, the fixed boundary point $z$ exists.
 
 \textbf{Step~1.} Since $D(z) = z$ and $D$ is $K$-Lipschitz:
-$\dist(D(x), z) = \dist(D(x), D(z)) \leq K\,\dist(x, z)$.
+$\dist(D(x), z) = \dist(D(x), D(z)) \leq K\dist(x, z)$.
 
 \textbf{Step~2.} Since $f(z) = \tau$ and $f$ is $L$-Lipschitz:
-$|f(D(x)) - \tau| = |f(D(x)) - f(z)| \leq L\,\dist(D(x), z) \leq
-LK\,\dist(x, z) \leq L(K+1)\,\dist(x,z)$.
-The last uses $K \leq K+1$; we keep the uniform constant since it
-matches the displacement bound from the triangle inequality.
+$|f(D(x)) - \tau| = |f(D(x)) - f(z)| \leq L\dist(D(x), z) \leq
+LK\dist(x, z) \leq L(K+1)\dist(x,z)$.
+The last uses $K \leq K+1$; we keep the uniform constant $K+1$ for consistency with the displacement bound in \Cref{lem:input-bound}.
 \end{proof}
 
 \begin{proof}[Proof of \Cref{thm:persistent} (Persistent Unsafe Region)]
@@ -1400,10 +1416,6 @@ effective Lipschitz constant: $K^n < K^{n+1}$ for $K \geq 2$.
 
 \paragraph{Attacker monotone improvement.}
 Best observed alignment deviation is non-decreasing across turns.
-
-\paragraph{Boundary knowledge accumulation.}
-Known boundary points grow monotonically; after $T$ probes, $T$ points
-are classified.
 
 \paragraph{Attacker steering.}
 If directional slope varies continuously with attacker parameter $\alpha$
