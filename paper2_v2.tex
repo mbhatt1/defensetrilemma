@@ -106,7 +106,7 @@ completions~\cite{inan2023llama}, and constitutional rewriting
 pipelines~\cite{bai2022constitutional} all share the same structure: a
 function $D\colon X \to X$ that preprocesses prompts before the model
 sees them, mapping unsafe inputs to safe equivalents while leaving safe
-inputs unchanged. We prove the answer is no, under two mild constraints. If the defense
+inputs unchanged. We prove the answer is no, under two constraints. If the defense
 is \emph{continuous} (similar prompts produce similar rewrites) and
 \emph{utility-preserving} (safe prompts pass through unchanged), it
 cannot be \emph{complete} (make every output safe). These three
@@ -370,7 +370,8 @@ appear in \Cref{app:counterexamples}.
   \node[font=\small\itshape, align=center] at (3.5,1.6)
     {All three\\simultaneously\\impossible};
 \end{tikzpicture}
-\caption{The defense trilemma. Any defense can satisfy at most two of
+\caption{The defense trilemma. Any continuous wrapper defense on a
+connected space can satisfy at most two of
 the three properties. The bottom edge is our main result; the other
 two edges correspond to counterexamples in \Cref{app:counterexamples}.}
 \label{fig:trilemma}
@@ -378,8 +379,7 @@ two edges correspond to counterexamples in \Cref{app:counterexamples}.}
 
 \begin{remark}[Not all boundary points are fixed]
 The theorem captures $\cl{S_\tau} \setminus S_\tau$, not all of
-$B_\tau$. Boundary points isolated from the safe side may escape.
-Verified in Lean with $f(x)=x^2$, $\tau=0$.
+$B_\tau$. Boundary points not in $\cl{S_\tau}$ may escape fixation.
 \end{remark}
 
 
@@ -1010,7 +1010,7 @@ Cost (\ref{thm:cost})
   & 15K queries fill 63\% at $d\!=\!2$ \\[3pt]
 Pipeline (\ref{thm:pipeline})
   & Deeper pipelines $\to$ wider failure band
-  & Tool-using agents harder to defend than single-turn \\
+  & Not directly tested (no pipeline experiment) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1140,7 +1140,7 @@ J.~Cohen, E.~Rosenfeld, and J.~Z. Kolter.
 \bibitem{goodfellow2014explaining}
 I.~J. Goodfellow, J.~Shlens, and C.~Szegedy.
 \newblock Explaining and harnessing adversarial examples.
-\newblock \emph{arXiv preprint arXiv:1412.6572}, 2014.
+\newblock \emph{Proceedings of ICLR}, 2015.
 
 \bibitem{inan2023llama}
 H.~Inan et~al.
@@ -1219,12 +1219,12 @@ G.~Singh, T.~Gehr, M.~P{\"u}schel, and M.~Vechev.
 \bibitem{szegedy2013intriguing}
 C.~Szegedy et~al.
 \newblock Intriguing properties of neural networks.
-\newblock \emph{arXiv preprint arXiv:1312.6199}, 2013.
+\newblock \emph{Proceedings of ICLR}, 2014.
 
 \bibitem{tsipras2018robustness}
 D.~Tsipras, S.~Santurkar, L.~Engstrom, A.~Turner, and A.~Madry.
 \newblock Robustness may be at odds with accuracy.
-\newblock \emph{arXiv preprint arXiv:1805.12152}, 2018.
+\newblock \emph{Proceedings of ICLR}, 2019.
 
 \bibitem{wolpert1997no}
 D.~H. Wolpert and W.~G. Macready.
