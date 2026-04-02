@@ -340,9 +340,13 @@ retract of a Hausdorff space is closed (the fixed-point set is
 closed), while~$S_\tau$ is open and not closed
 (connectedness)---a contradiction.
 
-\begin{corollary}
-No continuous utility-preserving defense is complete.
-\end{corollary}
+\begin{theorem}[Defense Trilemma]
+\label{thm:trilemma}
+Let $X$ be a connected Hausdorff space, $f\colon X \to \R$ continuous
+with $S_\tau, U_\tau \neq \emptyset$. No $D\colon X \to X$ can
+simultaneously be continuous, utility-preserving ($D|_{S_\tau} = \id$),
+and complete ($f(D(x)) < \tau$ for all~$x$).
+\end{theorem}
 
 All three hypotheses are individually necessary. A defense can satisfy
 at most two of the three---the \emph{defense trilemma}
@@ -503,9 +507,11 @@ direction the defense pulls.
 We write $\ell$ for the \emph{defense-path Lipschitz constant}:
 \[
   \ell \;=\; \sup_{x \neq D(x)}
-    \frac{|f(D(x)) - f(x)|}{\dist(D(x),\, x)}.
+    \frac{|f(D(x)) - f(x)|}{\dist(D(x),\, x)}
 \]
-Since $f$ is $L$-Lipschitz globally, $\ell \leq L$ always. When the
+(with $\ell = 0$ when $D = \id$, i.e., the supremum over the empty
+set is taken as~$0$).
+Since $f$ is $L$-Lipschitz globally, $\ell \leq L$. When the
 alignment surface is \textbf{isotropic} ($\ell = L$), the steep region
 is empty for every $K \geq 0$ (verified in Lean as
 \texttt{shallow\_boundary\_no\_persistence}). The result is
@@ -543,8 +549,12 @@ the defense's Lipschitz budget can compensate.
 
 \begin{theorem}[Persistent Unsafe Region]
 \label{thm:persistent}
-Under the hypotheses of \Cref{thm:eps-robust}, if $\mathcal{S} \neq
-\emptyset$, then:
+Let $X$ be a connected Hausdorff metric space, $f$ continuous and
+$L$-Lipschitz, $D$ continuous and $K$-Lipschitz with
+$D|_{S_\tau} = \id$, and $S_\tau, U_\tau \neq \emptyset$.
+Let $z \in \cl{S_\tau} \setminus S_\tau$ be the fixed boundary
+point from \Cref{thm:main}, and let $\ell$ be the defense-path
+Lipschitz constant. If $\mathcal{S} \neq \emptyset$, then:
 \begin{enumerate}[nosep]
   \item $\mathcal{S}$ is open.
   \item $\mathcal{S}$ has positive measure (under any measure positive
@@ -691,16 +701,17 @@ the defense's aggressiveness.
 
 \begin{theorem}[Volume Lower Bound]
 \label{thm:coarea}
-Let $f\colon \R^n \to \R$ be $L$-Lipschitz with $L > 0$. If there
-exists $c$ with $f(c) = \tau - \varepsilon/2$, then
+Let $f\colon \R^n \to \R$ be $L$-Lipschitz with $L > 0$, and let
+$\mu$ denote Lebesgue measure. If there exists $c$ with
+$f(c) = \tau - \varepsilon/2$, then
 $B(c,\, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$, giving:
 \begin{equation}
   \mu(\mathcal{B}_\varepsilon)
   \;\geq\; V_n \cdot \left(\frac{\varepsilon}{4L}\right)^{\!n}
 \end{equation}
-where $V_n$ is the unit ball volume in $\R^n$. In $\R^1$, this
-simplifies to $\mu(\mathcal{B}_\varepsilon) \geq \varepsilon/(2L)$.
+where $V_n$ is the volume of the unit ball in $\R^n$. In $\R^1$,
+this simplifies to $\mu(\mathcal{B}_\varepsilon) \geq \varepsilon/(2L)$.
 \end{theorem}
 
 \noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_17\_CoareaBound}}.}
@@ -709,8 +720,9 @@ Smoother surfaces (smaller~$L$) produce wider $\varepsilon$-bands.
 
 \begin{theorem}[Cone Measure Bound]
 \label{thm:cone}
-In $\R$, if $f(x) \geq \tau + c(x - z)$ for all
-$x \in (z,\, z + \delta_0)$ with $c > \ell(K+1)$, then
+In $\R$ with Lebesgue measure~$\mu$, if
+$f(x) \geq \tau + c(x - z)$ for all $x \in (z,\, z + \delta_0)$
+with $c > \ell(K+1)$, then
 $\mu(\{x : f(D(x)) > \tau\}) \geq \delta_0$.
 \end{theorem}
 
@@ -864,10 +876,11 @@ transversality via binary search (\texttt{transversality\_reachable}).
 
 \begin{theorem}[Stochastic Defense Impossibility]
 \label{thm:stochastic}
-Let $D$ be a stochastic defense and define
-$g(x) = \mathbb{E}_{y \sim D(x)}[f(y)]$. If $g$ is continuous and
-$g(x) = f(x)$ for all $x \in S_\tau$, then there exists $z$ with
-$f(z) = \tau$ and $g(z) = \tau$.
+Let $X$ be a connected Hausdorff space, $f\colon X \to \R$ continuous
+with $S_\tau, U_\tau \neq \emptyset$. Let $D$ be a stochastic defense
+and define $g(x) = \mathbb{E}_{y \sim D(x)}[f(y)]$. If $g$ is
+continuous and $g(x) = f(x)$ for all $x \in S_\tau$, then there
+exists $z$ with $f(z) = \tau$ and $g(z) = \tau$.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
