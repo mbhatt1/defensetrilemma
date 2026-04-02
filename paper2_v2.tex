@@ -332,8 +332,9 @@ closure forces it to contain the boundary; connectedness ensures the
 boundary is nonempty. Equivalently: a complete utility-preserving
 defense would be a continuous retraction $D\colon X \to S_\tau$
 (since $D|_{S_\tau} = \id$ and $D(X) \subseteq S_\tau$), but a
-retract of a connected space is closed, while~$S_\tau$ is open and
-proper---a contradiction.
+retract of a Hausdorff space is closed (the fixed-point set is
+closed), while~$S_\tau$ is open and not closed
+(connectedness)---a contradiction.
 
 \begin{corollary}
 No continuous utility-preserving defense is complete.
@@ -1357,9 +1358,10 @@ Only the band $|f(x) - \tau| \leq \varepsilon$ is uncertain.
 
 \begin{theorem}[Crossing Preservation]
 \label{thm:crossing}
-If $f$ crosses $\tau$ transversally on $[a,b]$ and
-$\|f - g\|_\infty \leq \varepsilon$, then $g$ also crosses $\tau$
-on $[a,b]$.
+If $f$ crosses $\tau$ on $[a,b]$ with margin $m$ (i.e.,
+$f(a') < \tau - m$ and $f(b') > \tau + m$ for some
+$a', b' \in [a,b]$) and $\|f - g\|_\infty \leq \varepsilon < m$,
+then $g$ also crosses $\tau$ on $[a,b]$.
 \end{theorem}
 
 \begin{theorem}[Patching Is Nonlocal]
