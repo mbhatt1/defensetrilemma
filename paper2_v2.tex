@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 
 % NOTE: For NeurIPS submission, replace this preamble with:
-%   \usepackage[preprint]{neurips_2025}
+  \usepackage[preprint]{neurips_2025}
 % and remove the geometry package.
 
 \usepackage[utf8]{inputenc}
@@ -12,7 +12,7 @@
 \usepackage{cleveref}
 \usepackage{booktabs}
 \usepackage{enumitem}
-\usepackage[margin=1in]{geometry}
+% \usepackage[margin=1in]{geometry}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{patterns,decorations.pathreplacing,calc}
@@ -35,8 +35,7 @@
 \newcommand{\diam}{\operatorname{diam}}
 \newcommand{\dist}{\operatorname{dist}}
 
-\title{The Defense Trilemma:\\
-  Impossibility of Continuous Utility-Preserving Wrapper Defenses on Connected Spaces}
+\title{The Defense Trilemma: Why Prompt Injection Defense Wrappers Fail?}
 
 \author{
     {\rm Manish Bhatt\thanks{Corresponding author: manish.bhatt13212@gmail.com}}\hspace{0.5em}\footnotemark[2]\\
@@ -56,6 +55,9 @@
   \and
   {\rm Ken Huang}\\
   Distributedapps.ai
+  \and
+  {\rm Joel Andrew Webb}\\
+  Department of Mathematics, University of New Orleans
   \and
   {\rm Blake Gatto}\\
   Shrewd Security
@@ -84,7 +86,7 @@ positive-measure subset of inputs remains strictly unsafe. These
 constitute a \emph{defense trilemma}: continuity, utility preservation,
 and completeness cannot coexist. We prove parallel discrete results
 requiring no topology, and extend to multi-turn interactions,
-stochastic defenses, and capacity-parity settings. The results do not
+stochastic defenses. The results do not
 preclude training-time alignment, architectural changes, or defenses
 that sacrifice utility. The full theory is mechanically verified in
 Lean~4 with Mathlib
@@ -101,9 +103,9 @@ axioms) and validated empirically on three LLMs~\cite{munshi2026manifold}.
 Can you build a wrapper around a language model that eliminates all
 prompt injection vulnerabilities? Most current defense work implicitly
 assumes yes. Input classifiers that flag suspicious
-prompts~\cite{alon2023detecting}, output filters that catch unsafe
-completions~\cite{inan2023llama}, and constitutional rewriting
-pipelines~\cite{bai2022constitutional} all share the same structure: a
+prompts~\cite{alon2023detecting}, constitutional rewriting
+pipelines~\cite{bai2022constitutional}, and input sanitization
+layers~\cite{inan2023llama} all share the same structure: a
 function $D\colon X \to X$ that preprocesses prompts before the model
 sees them, mapping unsafe inputs to safe equivalents while leaving safe
 inputs unchanged. We prove the answer is no, under two constraints. If the defense
@@ -271,7 +273,10 @@ dot~$z$ passes through with no remediation.}
 \begin{definition}[Alignment Deviation Function]
 \label{def:ad}
 Let $X$ be a topological space (a set equipped with a notion of
-``nearness'' between points). An \emph{alignment deviation function} is
+``open'' and ``closed'' sets, such that the whole space and the empty
+set are both open and closed, arbitrary unions and finite intersections
+of open sets are open, and a notion of ``neighborhoods'' of points---that
+is, points ``close to'' a given point). An \emph{alignment deviation function} is
 a continuous map $f\colon X \to \R$, i.e., small changes in the
 input produce small changes in the score. Given a threshold
 $\tau\in\R$:
@@ -330,7 +335,7 @@ values ${<}\tau$ cannot exceed~$\tau$, and $z \notin S_\tau$ forces
 $f(z) \geq \tau$) and $D(z) = z$. Full proof in \Cref{app:proofs}.
 \end{proof}
 
-The defense's fixed-point set is too large to avoid the
+This means that the defense's fixed-point set is too large to avoid the
 boundary. Utility preservation forces it to contain the safe region;
 closure forces it to contain the boundary; connectedness ensures the
 boundary is nonempty. Alternatively: a complete utility-preserving
@@ -406,15 +411,15 @@ $f(z) = \tau$ and $f(D(z)) = \tau$.
 
 \begin{proof}[Proof sketch]
 Define $h = f \circ D - f$. Then $h$ is continuous and $h|_{S_\tau} = 0$.
-The zero set $\{h = 0\}$ is closed and contains $\cl{S_\tau}$. For
-$z \in \cl{S_\tau} \setminus S_\tau$: $f(D(z)) = f(z) = \tau$.
+The zero set $\{h = 0\}$ is closed and contains $\cl{S_\tau}$, since closed sets contain their boundary points. For
+$z \in \cl{S_\tau} \setminus S_\tau$, $f(D(z)) = f(z) = \tau$.
 \end{proof}
 
 The next result weakens score preservation to approximate:
 
 \begin{theorem}[$\varepsilon$-Relaxed Utility Preservation]
 \label{thm:eps-relaxed}
-Under the same hypotheses, if
+Under the hypotheses of \Cref{thm:score-preserving}, if
 $|f(D(x)) - f(x)| \leq \varepsilon$ for all $x \in S_\tau$, then
 there exists $z$ with $f(z) = \tau$ and
 $f(D(z)) \geq \tau - \varepsilon$.
@@ -479,9 +484,9 @@ Specifically, $B(c, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$ for the midpoint $c$ with
 $f(c) = \tau - \varepsilon/2$ (which exists by the intermediate
 value theorem).
-By \Cref{thm:eps-robust}, every $x \in \mathcal{B}_\varepsilon$
-satisfies $|f(D(x)) - \tau| \leq LK\dist(x, z)$: the defense is
-constrained to near-threshold output on this entire region.
+By \Cref{thm:main}, $\cl{S_\tau} \subseteq \Fix(D)$. Every point in $\mathcal{B}_\varepsilon$ with $f(x) < \tau$ is safe and therefore fixed by utility preservation; every point with $f(x) = \tau$ in
+  $\cl{S_\tau}$ is fixed by boundary fixation. On both subsets $f(D(x)) = f(x) \in [\tau - \varepsilon,\, \tau]$. The remainder---boundary points outside $\cl{S_\tau}$---is contained in the level set $f^{-1}(\tau)$,
+  which has measure zero when $f$ is Lipschitz on~$\R^n$ (by the coarea formula).
 \end{theorem}
 
 \begin{proof}[Proof sketch]
@@ -538,7 +543,7 @@ Defense-path Lipschitz: $|f(D(x)) - f(x)| \leq \ell\dist(D(x), x)
 \leq \ell(K+1)\dist(x, z)$.
 \end{proof}
 
-The defense can reduce any point's score by at most
+This means that the defense can reduce any point's score by at most
 $\ell(K+1)$ times its distance from~$z$. If the score rises faster
 than that, the defense loses.
 
@@ -586,10 +591,10 @@ $z + tv \in \mathcal{S}$ for sufficiently small $t > 0$.
 Verified in Lean as \texttt{transversality\_from\_deriv}.
 \end{proposition}
 
-This condition is observed empirically in all three models we study
-(\Cref{sec:experiments}): the alignment surface rises steeply toward
-the unsafe region ($G$ large) while the defense operates in a
-smoother subspace ($\ell \ll L$).
+This condition is observed empirically in the two models with
+$U_\tau \neq \emptyset$ (\Cref{sec:experiments}): the alignment
+surface rises steeply toward the unsafe region ($G$ large) while the
+defense operates in a smoother subspace ($\ell \ll L$).
 
 
 \begin{figure}[t]
@@ -778,19 +783,43 @@ theorem guarantees this:
 
 \begin{theorem}[Continuous Relaxation]
 \label{thm:tietze}
-Let $X$ be a connected, normal, Hausdorff space, and $S \subset X$ a
-finite set of observations with $g(p) < \tau$ and $g(q) > \tau$ for
-some $p, q$. Then there exists a continuous $f\colon X \to \R$ agreeing
-with all observations for which \Cref{thm:main,thm:eps-robust} hold.
+Let $(X,d)$ be a connected, normal, Hausdorff metric space, and
+$S \subset X$ a finite set of observations with observed alignment
+scores $g\colon S \to \R$ satisfying $g(p) < \tau$ and $g(q) > \tau$
+for some $p, q \in S$. Then there exists a continuous $f\colon X \to \R$
+extending~$g$ (i.e., $f|_S = g$) for which the hypotheses of
+\Cref{thm:main} hold. If the extension is chosen to be Lipschitz
+(via McShane--Whitney), the hypotheses of \Cref{thm:eps-robust} also
+hold.
 If $f$ is additionally Lipschitz (as for GP posterior means under
 standard kernel assumptions), \Cref{thm:persistent} applies wherever
 transversality is met.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
-Finite subsets of $T_1$ spaces are closed. By Tietze, $g$ extends to a
-continuous~$f$. Since $f(p) < \tau < f(q)$, \Cref{thm:main} applies.
-Lipschitz extensions (McShane--Whitney) enable the remaining results.
+\textbf{Step~1} (Extension exists).
+$S$ is finite and $X$ is $T_1$ (every Hausdorff space is $T_1$), so
+$S$ is closed. Since $X$ is normal and $g\colon S \to \R$ is
+continuous (every function on a discrete closed subset is continuous),
+the Tietze extension theorem provides a continuous
+$f\colon X \to \R$ with $f|_S = g$.
+
+\textbf{Step~2} (Hypotheses of \Cref{thm:main} are satisfied).
+We have $f(p) = g(p) < \tau$ and $f(q) = g(q) > \tau$, so
+$S_\tau \neq \emptyset$ and $U_\tau \neq \emptyset$. Since $X$ is
+connected and Hausdorff, \Cref{thm:main} applies: any continuous,
+utility-preserving defense has a fixed boundary point.
+
+\textbf{Step~3} (Lipschitz extension enables stronger results).
+When a Lipschitz extension is needed (e.g., for
+\Cref{thm:eps-robust,thm:persistent}), the McShane--Whitney theorem
+provides an $L$-Lipschitz $f$ agreeing with~$g$ on~$S$. Given the
+Lipschitz constants $L$ of~$f$ and $K$ of~$D$, the $\varepsilon$-robust
+bound $f(D(x)) \geq \tau - LK\dist(x,z)$ follows from \Cref{thm:eps-robust}.
+If additionally the alignment surface has directional slope
+$c > \ell(K+1)$ at the fixed boundary point~$z$ (where $\ell$ is the
+defense-path Lipschitz constant), \Cref{thm:persistent} gives a
+positive-measure region that remains strictly unsafe.
 \end{proof}
 
 If we observe both safe and unsafe model behaviors, the
@@ -927,7 +956,8 @@ If the composed pipeline $P = T_n \circ \cdots \circ T_1 \circ D$ is
 continuous and $P(x) = x$ for all $x \in S_\tau$, then $P$ has
 boundary fixed points. If $D$ is $K_D$-Lipschitz and each $T_i$ is
 $K$-Lipschitz, the $\varepsilon$-robust band scales as
-$L(K_D \cdot K^n + 1)\delta$.
+% $L(K_D \cdot K^n + 1)\delta$.
+$L \cdot K_D \cdot K^n \cdot \delta$
 \end{theorem}
 
 \noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_15\_NonlinearAgents}}.}
@@ -1024,8 +1054,9 @@ actionable:
 Set $\tau$ so that boundary-level behavior is benign. If $f(z) = \tau$
 yields a polite refusal rather than harmful compliance, the
 impossibility is mathematically true but practically harmless.
-GPT-5-Mini exemplifies this: its ceiling at $\AD = 0.50$ means the
-failure manifold exists but contains no actual harm.
+GPT-5-Mini exemplifies this: its ceiling at $\AD = 0.50$ means
+$U_\tau = \emptyset$, so the impossibility theorems do not apply and
+no defense failure is predicted.
 
 \paragraph{2. Reduce the Lipschitz constant.}
 Smaller~$L$ tightens the bound $\ell \leq L$, potentially reducing
