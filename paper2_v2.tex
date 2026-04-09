@@ -91,7 +91,7 @@ preclude training-time alignment, architectural changes, or defenses
 that sacrifice utility. The full theory is mechanically verified in
 Lean~4 with Mathlib
 \url{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}
-(45 files, ${\sim}350$ theorems, no admitted proofs, three standard
+(46 files, ${\sim}360$ theorems, no admitted proofs, three standard
 axioms) and validated empirically on three LLMs~\cite{munshi2026manifold}.
 \end{abstract}
 
@@ -198,7 +198,7 @@ for each (\Cref{app:counterexamples}).
   \item \textbf{Extensions}: multi-turn (\Cref{thm:multi-turn}),
     stochastic (\Cref{thm:stochastic}), and pipeline
     (\Cref{thm:pipeline}) settings.
-  \item \textbf{Lean~4 formalization}: 45 files, ${\sim}350$ theorems,
+  \item \textbf{Lean~4 formalization}: 46 files, ${\sim}360$ theorems,
     zero \texttt{sorry} statements, three standard axioms. Full proofs
     in \Cref{app:proofs}; artifact in \Cref{app:artifact}.
 \end{enumerate}
@@ -585,10 +585,14 @@ directional slope exceeding~$\ell(K+1)$ at the boundary:
 
 \begin{proposition}[Transversality from Directional Derivative]
 \label{prop:transversality}
-In a normed space, if $f$ has directional derivative $c > \ell(K+1)$
-along a unit vector $v$ at boundary point $z$, then
-$z + tv \in \mathcal{S}$ for sufficiently small $t > 0$.
-Verified in Lean as \texttt{transversality\_from\_deriv}.
+In a normed space, if $f$ has Fr\'{e}chet derivative $f'$ at boundary
+point $z$ with directional value $f'(v) > \ell(K+1)$ along a unit
+vector $v$, then $z + tv \in \mathcal{S}$ for sufficiently small
+$t > 0$. If $\|f'\| > \ell(K+1)$, such a $v$ exists by operator-norm
+near-attainment. Verified in Lean as
+\texttt{gradient\_norm\_implies\_steep\_nonempty}
+(\texttt{MoF\_21\_GradientChain}), which derives the local growth
+bound from \texttt{HasFDerivAt} rather than assuming it.
 \end{proposition}
 
 This condition is observed empirically in the two models with
@@ -766,7 +770,11 @@ Since $\ell \leq L$, the dilemma is sharpest when $\ell \ll L$
 and horn~(1) is vacuous.
 \end{theorem}
 
-\noindent\emph{Proved in the Lean artifact as \textup{\texttt{MoF\_19\_OptimalDefense}}.}
+\noindent\emph{Proved in the Lean artifact as
+\textup{\texttt{MoF\_19\_OptimalDefense}}; the Lean theorem
+\textup{\texttt{optimal\_K\_exists}} is stated for generic positive
+reals $(G, L)$---instantiating $L \mapsto \ell$ recovers the
+defense-path version above.}
 
 
 % ============================================================
@@ -1341,6 +1349,14 @@ $x \mapsto f(x) - \ell(K+1)\dist(x,z)$ at level~$\tau$, hence open.
 \textbf{(3)} For $x \in \mathcal{S}$:
 $f(x) > \tau + \ell(K+1)\dist(x,z)$. By \Cref{lem:input-bound}:
 $f(D(x)) \geq f(x) - \ell(K+1)\dist(x,z) > \tau$.
+
+\noindent\emph{Lean:
+\textup{\texttt{persistent\_unsafe\_refined}} in
+\textup{\texttt{MoF\_20\_RefinedPersistence}}
+(defense-path constant~$\ell$).
+\textup{\texttt{MoF\_11\_EpsilonRobust}} contains an earlier version
+using the global constant~$L$; as noted in
+\Cref{sec:persistent}, that version is vacuous for isotropic surfaces.}
 \end{proof}
 
 
@@ -1487,13 +1503,14 @@ $K_D \cdot K_T^n$.
 The complete theory is verified in Lean~4.28.0 with Mathlib~v4.28.0,
 available at
 \url{https://github.com/mbhatt1/stuff/tree/main/ManifoldProofs}.
-The artifact comprises 45 files:
+The artifact comprises 46 files:
 \begin{itemize}[nosep]
   \item 10 core theory files (MoF\_01--MoF\_10)
   \item 10 cost theory files (MoF\_Cost\_01--MoF\_Cost\_10)
   \item 10 advanced theory files (MoF\_Adv\_01--MoF\_Adv\_10)
   \item 1 continuous relaxation (MoF\_ContinuousRelaxation)
-  \item 1 $\varepsilon$-robust + persistent unsafe region
+  \item 1 $\varepsilon$-robust constraint + persistent unsafe region
+    with global Lipschitz constant
     (MoF\_11\_EpsilonRobust)
   \item 1 discrete impossibility (MoF\_12\_Discrete)
   \item 1 multi-turn + stochastic extensions
@@ -1508,8 +1525,13 @@ The artifact comprises 45 files:
     (MoF\_18\_ConeBound)
   \item 1 optimal defense characterization
     (MoF\_19\_OptimalDefense)
-  \item 1 refined persistence with defense-path Lipschitz
-    (MoF\_20\_RefinedPersistence)
+  \item 1 refined persistence with defense-path Lipschitz constant~$\ell$
+    (MoF\_20\_RefinedPersistence); this file contains the primary
+    formalization of \Cref{thm:persistent,lem:input-bound,def:steep}
+  \item 1 gradient chain: $\|\nabla f(z)\| > \ell(K+1)$ implies
+    persistent unsafe region via operator-norm direction extraction
+    and derivative-based local growth
+    (MoF\_21\_GradientChain)
   \item 3 capstone files (MasterTheorem, Euclidean instantiation,
     verification)
   \item 1 root import file (ManifoldProofs.lean)
