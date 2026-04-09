@@ -484,10 +484,13 @@ Specifically, $B(c, \varepsilon/(4L)) \subseteq
 \mathcal{B}_\varepsilon$ for the midpoint $c$ with
 $f(c) = \tau - \varepsilon/2$ (which exists by the intermediate
 value theorem).
+\end{theorem}
+
+\begin{remark}[Defense behavior on the $\varepsilon$-band]
 By \Cref{thm:main}, $\cl{S_\tau} \subseteq \Fix(D)$. Every point in $\mathcal{B}_\varepsilon$ with $f(x) < \tau$ is safe and therefore fixed by utility preservation; every point with $f(x) = \tau$ in
   $\cl{S_\tau}$ is fixed by boundary fixation. On both subsets $f(D(x)) = f(x) \in [\tau - \varepsilon,\, \tau]$. The remainder---boundary points outside $\cl{S_\tau}$---is contained in the level set $f^{-1}(\tau)$,
-  which has measure zero when $f$ is Lipschitz on~$\R^n$ (by the coarea formula).
-\end{theorem}
+  which has measure zero when $f$ is Lipschitz on~$\R^n$ (by the coarea formula; not formalized in the Lean artifact).
+\end{remark}
 
 \begin{proof}[Proof sketch]
 For $y \in B(c, \varepsilon/(4L))$: $|f(y) - f(c)| \leq L \cdot \varepsilon/(4L) = \varepsilon/4$. Since $f(c) = \tau - \varepsilon/2$, we get $\tau - 3\varepsilon/4 \leq f(y) \leq \tau - \varepsilon/4$, so $y \in \mathcal{B}_\varepsilon$.
