@@ -1,0 +1,249 @@
+/* ============================================================
+   Defense Trilemma — custom theme
+   ============================================================ */
+
+:root {
+  --vp-c-brand-1: #b0413e;
+  --vp-c-brand-2: #c95955;
+  --vp-c-brand-3: #d76b67;
+  --vp-c-brand-soft: rgba(176, 65, 62, 0.14);
+
+  --dt-safe: #38a169;
+  --dt-safe-bg: #d4f5dd;
+  --dt-unsafe: #c53030;
+  --dt-unsafe-bg: #fbe2e2;
+  --dt-boundary: #2d3748;
+  --dt-defense: #2b6cb0;
+  --dt-band: #f6ad55;
+  --dt-band-bg: #fef5e7;
+  --dt-cone: #d69e2e;
+  --dt-persistent: #e53e3e;
+}
+
+.dark {
+  --dt-safe: #68d391;
+  --dt-safe-bg: rgba(56, 161, 105, 0.2);
+  --dt-unsafe: #fc8181;
+  --dt-unsafe-bg: rgba(197, 48, 48, 0.25);
+  --dt-boundary: #e2e8f0;
+  --dt-defense: #63b3ed;
+  --dt-band: #fbd38d;
+  --dt-band-bg: rgba(246, 173, 85, 0.18);
+  --dt-cone: #ecc94b;
+  --dt-persistent: #fc8181;
+}
+
+/* Hero tweaks */
+.VPHero .name,
+.VPHero .text {
+  letter-spacing: -0.01em;
+}
+
+/* Diagram container */
+.diagram {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram-caption {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--vp-c-text-2);
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.diagram-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin: 2rem 0;
+}
+
+.diagram-row .diagram {
+  margin: 0;
+}
+
+/* SVG defaults */
+svg .label {
+  font-family: var(--vp-font-family-base);
+  font-size: 11px;
+  fill: var(--vp-c-text-1);
+}
+
+svg .label-bold {
+  font-weight: 600;
+}
+
+svg .label-small {
+  font-size: 9px;
+  fill: var(--vp-c-text-2);
+}
+
+svg .axis {
+  stroke: var(--vp-c-text-2);
+  stroke-width: 1;
+}
+
+svg .grid {
+  stroke: var(--vp-c-divider);
+  stroke-width: 0.5;
+  stroke-dasharray: 2, 2;
+}
+
+svg .threshold {
+  stroke: var(--vp-c-text-2);
+  stroke-width: 1;
+  stroke-dasharray: 4, 3;
+}
+
+svg .curve {
+  fill: none;
+  stroke: var(--dt-defense);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+svg .safe-fill {
+  fill: var(--dt-safe-bg);
+}
+
+svg .unsafe-fill {
+  fill: var(--dt-unsafe-bg);
+}
+
+svg .band-fill {
+  fill: var(--dt-band-bg);
+}
+
+svg .persistent-fill {
+  fill: rgba(229, 62, 62, 0.18);
+}
+
+svg .point {
+  fill: var(--dt-boundary);
+}
+
+svg .cone-line {
+  stroke: var(--dt-cone);
+  stroke-width: 1.4;
+  stroke-dasharray: 5, 3;
+  fill: none;
+}
+
+svg .arrow {
+  stroke: var(--dt-defense);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+/* Theorem callouts */
+.thm {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  border-radius: 6px;
+}
+
+.thm-title {
+  font-weight: 700;
+  color: var(--vp-c-brand-1);
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Tag pills */
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-right: 0.35rem;
+  background: var(--vp-c-default-soft);
+  color: var(--vp-c-text-1);
+}
+
+.tag-safe { background: var(--dt-safe-bg); color: var(--dt-safe); }
+.tag-unsafe { background: var(--dt-unsafe-bg); color: var(--dt-unsafe); }
+.tag-band { background: var(--dt-band-bg); color: #b7791f; }
+
+/* Three-card layout */
+.three-card {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 2rem 0;
+}
+
+.card {
+  padding: 1.25rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--vp-c-bg-soft);
+}
+
+.card h4 {
+  margin-top: 0;
+  font-size: 1rem;
+  color: var(--vp-c-brand-1);
+}
+
+.card p {
+  font-size: 0.9rem;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+.card .num {
+  display: inline-block;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--vp-c-brand-1);
+  color: white;
+  text-align: center;
+  line-height: 1.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+/* Comparison table */
+.compare-table {
+  margin: 1.5rem 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid var(--vp-c-divider);
+  font-size: 0.92rem;
+}
+
+.compare-table th {
+  background: var(--vp-c-bg-soft);
+  font-weight: 600;
+}
+
+/* Inline math nicer */
+.math.math-inline {
+  font-size: 1.05em;
+}
