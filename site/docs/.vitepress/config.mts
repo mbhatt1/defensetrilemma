@@ -8,6 +8,7 @@ export default withMermaid(
     title: 'Defense Trilemma',
     description:
       'Geometric limits of prompt-injection defense design — impossibility theorems, mechanized in Lean 4.',
+    base: '/defensetrilemma/',
     cleanUrls: true,
     lastUpdated: true,
     ignoreDeadLinks: true,
@@ -92,7 +93,7 @@ export default withMermaid(
       },
 
       socialLinks: [
-        { icon: 'github', link: 'https://github.com/mbhatt1/stuff' },
+        { icon: 'github', link: 'https://github.com/mbhatt1/defensetrilemma' },
       ],
 
       footer: {
