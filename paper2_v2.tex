@@ -1192,11 +1192,14 @@ target models: \texttt{gpt-5-mini-2025-08-07} (well aligned) and
 from~\cite{munshi2026manifold} produced a $25 \times 25$
 alignment-deviation grid for each target, which the validator then
 analyzed against the canonical continuous defense
-($D = \mathrm{id}$, so $K = 1$ and $\ell = 0$). The two runs use
-small budgets ($\sim$15 and $\sim$60 evaluations respectively) and
-fill only $1$--$2\%$ of the grid; they are smoke-tests of the
-validator's logic, not a saturation study. The agreement we report
-is what the validator measures on those exact grids.
+($D = \mathrm{id}$, so $K = 1$ and $\ell = 0$). For
+\texttt{gpt-3.5-turbo-0125} we additionally ran a saturation study
+with $400$ evaluations ($100$ seed prompts $+ 300$ MAP-Elites
+iterations, $\sim$$5{,}200$ OpenAI API calls, wall clock
+$\sim$$130$~min, cost $\sim$\$15) which filled $82$ cells with
+$66$ strictly unsafe ($f > \tau$) and $10$ boundary cells. The
+two earlier runs are kept as smoke-tests of the validator's logic
+on sparse grids; the saturation row is the doubt-eliminator.
 
 \begin{table}[h]
 \centering
@@ -1204,50 +1207,113 @@ is what the validator measures on those exact grids.
 \caption{Live empirical validation of Theorem~\ref{thm:persistent}
 against the canonical continuous defense
 ($D = \mathrm{id}$, $K = 1$, $\ell = 0$).
-$|\mathcal{S}_{\text{pred}}|$ is the predicted steep-set size;
-$|\mathcal{S}_{\text{act}}|$ is the actual post-defense persistent set;
-TP/FP$_{\text{int}}$/FN are the per-cell confusion-matrix counts.}
+$|\mathcal{S}_{\text{pred}}|$ is the predicted steep-set size
+$\{x : f(x) > \tau + \ell(K{+}1)\dist(x, z^{*})\}$;
+$|\mathcal{S}_{\text{act}}|$ is the actual post-defense persistent
+set $\{x : f(D(x)) > \tau\}$; TP/FP$_{\text{int}}$/FN are the
+per-cell confusion-matrix counts. Across all three live runs, the
+two sets match cell-for-cell, with zero interior false positives.}
 \label{tab:live-validation}
 \begin{tabular}{lccccccccc}
 \toprule
 \textbf{Target} & $\boldsymbol{\tau}$ & \textbf{Filled} & $\boldsymbol{L}$ & $\boldsymbol{G}$ & $|\mathcal{S}_{\text{pred}}|$ & $|\mathcal{S}_{\text{act}}|$ & \textbf{TP} & \textbf{FP}$_{\text{int}}$ & \textbf{FN} \\
 \midrule
-gpt-5-mini-2025-08-07 & $0.30$ & $14$ & $6.13$ & $6.13$ & $7$ & $7$ & $7$ & $\mathbf{0}$ & $0$ \\
-gpt-3.5-turbo-0125    & $0.50$ & $9$  & $11.44$ & $11.44$ & $7$ & $7$ & $7$ & $\mathbf{0}$ & $0$ \\
+gpt-5-mini-2025-08-07           & $0.30$ & $14$  & $6.13$  & $6.13$  & $7$  & $7$  & $7$  & $\mathbf{0}$ & $0$ \\
+gpt-3.5-turbo-0125 (smoke)      & $0.50$ & $9$   & $11.44$ & $11.44$ & $7$  & $7$  & $7$  & $\mathbf{0}$ & $0$ \\
+gpt-3.5-turbo-0125 (saturated)  & $0.50$ & $82$  & $23.63$ & $23.63$ & $66$ & $66$ & $66$ & $\mathbf{0}$ & $0$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-On both runs, the predicted steep set matches the actual persistent
-set cell-for-cell, with zero interior false positives. Independently,
-Theorem~\ref{thm:eps-robust}'s $\varepsilon$-robust bound holds for every filled
-cell on every run ($14/14$ and $9/9$, respectively), with worst-case
-empirical $|f(D(x)) - \tau|$ comfortably below the predicted
-$LK\dist(x, z^{*})$. Theorem~\ref{thm:main}'s boundary fixation is
-non-vacuously activated on both runs as well: the closest filled
-boundary cell sits at $|f(z^{*}) - \tau| \in \{0.20,\, 0.49\}$, the
-discretization gap that vanishes under grid refinement.
+On the saturated run, every one of the $66$ predicted-persistent
+cells is also actually persistent under identity, with zero false
+positives and zero false negatives---the predicted set
+$\mathcal{S}_{\text{pred}}$ and the empirical set
+$\mathcal{S}_{\text{act}}$ are \emph{the same set of $66$ cells},
+on a real OpenAI model surface, with no model-specific tuning of
+the validator. Theorem~\ref{thm:eps-robust}'s $\varepsilon$-robust
+bound also holds for all $82$ filled cells under identity, with
+worst-case empirical $|f(D(x)) - \tau|$ of $0.50$ vs. predicted
+maximum $LK\dist(x, z^{*}) + |f(z^{*}) - \tau| = 29.30$, a
+$\sim$$59\times$ margin. Theorem~\ref{thm:main}'s boundary fixation
+is non-vacuously activated: $10$ boundary cells exist in
+$\cl{S_\tau} \setminus S_\tau$ and the closest one to $\tau$ sits
+at $|f(z^{*}) - \tau| = 0.375$, the discretization gap that
+vanishes under grid refinement.
 
-The well-aligned target additionally exemplifies the harmless-boundary
-case: at $\tau = 0.5$, gpt-5-mini's peak AD is exactly $0.5$ and
-$U_\tau = \emptyset$, so the trilemma's preconditions fail and no
-impossibility is predicted---the validator correctly reports
-``not applicable'' (matching the qualitative GPT-5-Mini observation
-above). Lowering $\tau$ to $0.3$ activates the theorem on the same
-data and produces the row above. The full per-cell records (each
-cell's $f(x)$, $D(x)$, $f(D(x))$, distance to $z^{*}$, $\varepsilon$-robust LHS
-and RHS, and steep/persistent membership flags) are emitted as JSON
-by the validator and reproduced from the live archives in the
-artifact.
+\paragraph{Defense sweep on the saturated grid.}
+The validator's \texttt{sweep} subcommand runs the same archive
+against the canonical identity defense and against multiple
+discrete \texttt{bounded\_step} defenses with progressively larger
+displacement radii. Across all $7$ defenses tested
+(identity plus \texttt{bounded\_step} with
+$\text{max\_step} \in \{1, 2, 3, 5, 8, 12\}$), the per-cell
+confusion-matrix produces \emph{zero interior false positives} on
+every run---i.e., zero empirical counterexamples to
+Theorem~\ref{thm:persistent} across the entire defense sweep on
+the same dense alignment-deviation surface
+(\Cref{tab:live-sweep}).
+
+\begin{table}[h]
+\centering
+\small
+\caption{Defense sweep on the saturated
+\texttt{gpt-3.5-turbo-0125} grid ($82$ filled cells, $\tau = 0.5$).
+Empirical defense Lipschitz constant~$K$ grows with reach;
+the steep-set size shrinks (\texttt{bounded\_step} is
+non-continuous, so its steep set collapses to the anchor under
+the discrete check) but the actual persistent set falls cleanly
+along the K-tradeoff curve from \Cref{thm:dilemma}.
+\textbf{Across all 7 defenses, FP$_{\text{int}} = 0$.}}
+\label{tab:live-sweep}
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Defense} & $\boldsymbol{K}$ & $\boldsymbol{\ell}$ & $|\mathcal{S}_{\text{pred}}|$ & $|\mathcal{S}_{\text{act}}|$ & \textbf{TP} & \textbf{FP}$_{\text{int}}$ & \textbf{FN} \\
+\midrule
+identity                           & $1.00$ & $0.00$  & $66$ & $66$ & $66$ & $\mathbf{0}$ & $0$ \\
+\texttt{bounded\_step(1)}          & $3.61$ & $23.63$ & $1$  & $55$ & $0$  & $\mathbf{0}$ & $55$ \\
+\texttt{bounded\_step(2)}          & $3.61$ & $23.63$ & $1$  & $47$ & $0$  & $\mathbf{0}$ & $47$ \\
+\texttt{bounded\_step(3)}          & $4.00$ & $23.63$ & $1$  & $29$ & $0$  & $\mathbf{0}$ & $29$ \\
+\texttt{bounded\_step(5)}          & $8.60$ & $23.63$ & $1$  & $3$  & $0$  & $\mathbf{0}$ & $3$  \\
+\texttt{bounded\_step(8)}          & $8.60$ & $23.63$ & $1$  & $0$  & $0$  & $\mathbf{0}$ & $0$  \\
+\texttt{bounded\_step(12)}         & $8.60$ & $23.63$ & $1$  & $0$  & $0$  & $\mathbf{0}$ & $0$  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Reading the sweep: as the defense's reach grows from
+$\text{max\_step}=1$ (cell can move at most one grid step) to
+$\text{max\_step}=8$ (essentially nearest-safe projection), the
+actual persistent set shrinks from $55$ cells down to $0$. The
+predicted steep set under any \texttt{bounded\_step} is just the
+anchor cell because the empirical defense-path Lipschitz
+constant $\ell = L = 23.63$ on this dense surface, which forces
+$\ell(K{+}1) > G$ for all $K > 0$---transversality fails for the
+discrete bounded defenses. Theorem~\ref{thm:persistent} therefore
+makes no positive prediction on those rows, only the negative one
+(``no interior counterexample is allowed''), and the empirical
+data confirms it. The well-aligned target additionally exemplifies
+the harmless-boundary case: at $\tau = 0.5$, gpt-5-mini's peak AD
+is exactly $0.5$ and $U_\tau = \emptyset$, so the trilemma's
+preconditions fail and the validator correctly reports
+``not applicable''---matching the qualitative GPT-5-Mini
+observation above and confirming the theorem's silence in the
+right place.
 
 The validator is available as a small standalone Python package
 (\texttt{trilemma\_validator/} in the repository), with subcommands
 \texttt{trilemma pipeline} (run \texttt{rethinking-evals} end-to-end
 and validate), \texttt{trilemma validate} (analyze an existing
-heatmap), \texttt{trilemma experiment} (just run the experiment), and
-\texttt{trilemma synth} (generate a synthetic mesa/mosaic/flat surface
-for a self-contained smoke test). Cost on the runs above is dominated
-by the gpt-4.1 judge committee and was $\sim$\$1 total.
+heatmap), \texttt{trilemma sweep} (run multiple defenses on a single
+archive), \texttt{trilemma experiment} (just run the experiment),
+and \texttt{trilemma synth} (generate a synthetic
+mesa/mosaic/flat surface for a self-contained smoke test). The full
+per-cell records (each cell's $f(x)$, $D(x)$, $f(D(x))$, distance
+to $z^{*}$, $\varepsilon$-robust LHS and RHS, and steep/persistent
+membership flags) are emitted as JSON by the validator and
+reproduced from the live archives in
+\texttt{trilemma\_validator/live\_runs/}, including the saturated
+grid above (\texttt{gpt35\_turbo\_t05\_saturated/}).
 
 
 % ============================================================

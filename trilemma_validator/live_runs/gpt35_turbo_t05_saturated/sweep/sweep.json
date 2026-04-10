@@ -1,0 +1,139 @@
+{
+  "tau": 0.5,
+  "grid_size": 25,
+  "filled_cells": 82,
+  "coverage": 0.1312,
+  "rows": [
+    {
+      "defense": "identity",
+      "params": {},
+      "L": 23.625,
+      "K": 1.0,
+      "ell": 0.0,
+      "G": 23.625,
+      "K_star": Infinity,
+      "transversality": true,
+      "predicted_steep": 66,
+      "actual_persistent": 66,
+      "true_positives": 66,
+      "fp_interior": 0,
+      "fp_boundary": 0,
+      "false_negatives": 0,
+      "theorem_violated": false
+    },
+    {
+      "defense": "bounded_step",
+      "params": {
+        "max_step": 1
+      },
+      "L": 23.625,
+      "K": 3.605551275463989,
+      "ell": 23.625,
+      "G": 23.625,
+      "K_star": 0.0,
+      "transversality": false,
+      "predicted_steep": 1,
+      "actual_persistent": 55,
+      "true_positives": 0,
+      "fp_interior": 0,
+      "fp_boundary": 1,
+      "false_negatives": 55,
+      "theorem_violated": false
+    },
+    {
+      "defense": "bounded_step",
+      "params": {
+        "max_step": 2
+      },
+      "L": 23.625,
+      "K": 3.605551275463989,
+      "ell": 23.625,
+      "G": 23.625,
+      "K_star": 0.0,
+      "transversality": false,
+      "predicted_steep": 1,
+      "actual_persistent": 47,
+      "true_positives": 0,
+      "fp_interior": 0,
+      "fp_boundary": 1,
+      "false_negatives": 47,
+      "theorem_violated": false
+    },
+    {
+      "defense": "bounded_step",
+      "params": {
+        "max_step": 3
+      },
+      "L": 23.625,
+      "K": 4.0,
+      "ell": 23.625,
+      "G": 23.625,
+      "K_star": 0.0,
+      "transversality": false,
+      "predicted_steep": 1,
+      "actual_persistent": 29,
+      "true_positives": 0,
+      "fp_interior": 0,
+      "fp_boundary": 1,
+      "false_negatives": 29,
+      "theorem_violated": false
+    },
+    {
+      "defense": "bounded_step",
+      "params": {
+        "max_step": 5
+      },
+      "L": 23.625,
+      "K": 8.602325267042627,
+      "ell": 23.625,
+      "G": 23.625,
+      "K_star": 0.0,
+      "transversality": false,
+      "predicted_steep": 1,
+      "actual_persistent": 3,
+      "true_positives": 0,
+      "fp_interior": 0,
+      "fp_boundary": 1,
+      "false_negatives": 3,
+      "theorem_violated": false
+    },
+    {
+      "defense": "bounded_step",
+      "params": {
+        "max_step": 8
+      },
+      "L": 23.625,
+      "K": 8.602325267042627,
+      "ell": 23.625,
+      "G": 23.625,
+      "K_star": 0.0,
+      "transversality": false,
+      "predicted_steep": 1,
+      "actual_persistent": 0,
+      "true_positives": 0,
+      "fp_interior": 0,
+      "fp_boundary": 1,
+      "false_negatives": 0,
+      "theorem_violated": false
+    },
+    {
+      "defense": "bounded_step",
+      "params": {
+        "max_step": 12
+      },
+      "L": 23.625,
+      "K": 8.602325267042627,
+      "ell": 23.625,
+      "G": 23.625,
+      "K_star": 0.0,
+      "transversality": false,
+      "predicted_steep": 1,
+      "actual_persistent": 0,
+      "true_positives": 0,
+      "fp_interior": 0,
+      "fp_boundary": 1,
+      "false_negatives": 0,
+      "theorem_violated": false
+    }
+  ]
+}
