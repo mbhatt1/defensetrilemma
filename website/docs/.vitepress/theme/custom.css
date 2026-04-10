@@ -247,3 +247,125 @@ svg .arrow {
 .math.math-inline {
   font-size: 1.05em;
 }
+
+/* ============================================================
+   Dark-mode overrides for inline SVG diagrams.
+
+   The diagrams use hardcoded hex colors in fill="..." and stroke="..."
+   presentation attributes for portability. CSS attribute selectors with
+   !important let us remap each color in dark mode without touching the
+   SVG markup.
+
+   The mapping below covers every unique hex color and the most common
+   rgba() values used across the 11 diagram pages.
+   ============================================================ */
+
+/* --- TEXT in SVGs (default: follow theme foreground) --- */
+.diagram svg text {
+  fill: var(--vp-c-text-1);
+}
+.diagram svg text[fill] {
+  /* keep authored text color when explicitly set */
+}
+
+/* --- LIGHT MODE: ensure decent contrast on shaded fills --- */
+.diagram svg [fill="#f0f0f0"] { fill: var(--vp-c-bg-soft) !important; }
+
+/* --- DARK MODE OVERRIDES --- */
+
+/* Safe (green) family */
+.dark .diagram svg [fill="#38a169"]   { fill:   #68d391 !important; }
+.dark .diagram svg [stroke="#38a169"] { stroke: #68d391 !important; }
+.dark .diagram svg [fill="#1c5b34"]   { fill:   #9ae6b4 !important; }
+.dark .diagram svg [stroke="#1c5b34"] { stroke: #9ae6b4 !important; }
+.dark .diagram svg [fill="#d4f5dd"]   { fill: rgba(56, 161, 105, 0.22) !important; }
+.dark .diagram svg [stroke="#d4f5dd"] { stroke: rgba(56, 161, 105, 0.6) !important; }
+
+/* Unsafe (red) family */
+.dark .diagram svg [fill="#c53030"]   { fill:   #fc8181 !important; }
+.dark .diagram svg [stroke="#c53030"] { stroke: #fc8181 !important; }
+.dark .diagram svg [fill="#742a2a"]   { fill:   #feb2b2 !important; }
+.dark .diagram svg [stroke="#742a2a"] { stroke: #feb2b2 !important; }
+.dark .diagram svg [fill="#fbe2e2"]   { fill: rgba(252, 129, 129, 0.22) !important; }
+.dark .diagram svg [stroke="#fbe2e2"] { stroke: rgba(252, 129, 129, 0.6) !important; }
+
+/* Defense (blue) family */
+.dark .diagram svg [fill="#2b6cb0"]   { fill:   #63b3ed !important; }
+.dark .diagram svg [stroke="#2b6cb0"] { stroke: #63b3ed !important; }
+
+/* Brand red (used in trilemma diagrams) */
+.dark .diagram svg [fill="#b0413e"]   { fill:   #fc8181 !important; }
+.dark .diagram svg [stroke="#b0413e"] { stroke: #fc8181 !important; }
+
+/* Boundary point / dark text */
+.dark .diagram svg [fill="#2d3748"]   { fill:   #e2e8f0 !important; }
+.dark .diagram svg [stroke="#2d3748"] { stroke: #e2e8f0 !important; }
+
+/* Cone / band yellow family */
+.dark .diagram svg [fill="#d69e2e"]   { fill:   #ecc94b !important; }
+.dark .diagram svg [stroke="#d69e2e"] { stroke: #ecc94b !important; }
+.dark .diagram svg [fill="#9c5d0e"]   { fill:   #fbd38d !important; }
+.dark .diagram svg [stroke="#9c5d0e"] { stroke: #fbd38d !important; }
+.dark .diagram svg [fill="#b7791f"]   { fill:   #fbd38d !important; }
+.dark .diagram svg [stroke="#b7791f"] { stroke: #fbd38d !important; }
+
+/* Neutral grays */
+.dark .diagram svg [fill="#999"]      { fill:   #a0aec0 !important; }
+.dark .diagram svg [stroke="#999"]    { stroke: #a0aec0 !important; }
+.dark .diagram svg [fill="#f0f0f0"]   { fill:   rgba(255, 255, 255, 0.06) !important; }
+
+/* rgba() families — match the literal opacity strings used in the diagrams.
+   Each red shade (used heavily in the empirical-surfaces mosaic page) maps
+   to a brighter version that holds contrast against dark backgrounds. */
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.85)"] { fill: rgba(252, 129, 129, 0.85) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.75)"] { fill: rgba(252, 129, 129, 0.78) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.7)"]  { fill: rgba(252, 129, 129, 0.74) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.65)"] { fill: rgba(252, 129, 129, 0.7) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.6)"]  { fill: rgba(252, 129, 129, 0.66) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.55)"] { fill: rgba(252, 129, 129, 0.62) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.5)"]  { fill: rgba(252, 129, 129, 0.58) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.45)"] { fill: rgba(252, 129, 129, 0.54) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.4)"]  { fill: rgba(252, 129, 129, 0.5) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.35)"] { fill: rgba(252, 129, 129, 0.45) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.3)"]  { fill: rgba(252, 129, 129, 0.4) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.25)"] { fill: rgba(252, 129, 129, 0.35) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.2)"]  { fill: rgba(252, 129, 129, 0.3) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.18)"] { fill: rgba(252, 129, 129, 0.28) !important; }
+.dark .diagram svg [fill="rgba(229, 62, 62, 0.12)"] { fill: rgba(252, 129, 129, 0.22) !important; }
+
+.dark .diagram svg [fill="rgba(56, 161, 105, 0.2)"]  { fill: rgba(104, 211, 145, 0.28) !important; }
+.dark .diagram svg [fill="rgba(56, 161, 105, 0.1)"]  { fill: rgba(104, 211, 145, 0.18) !important; }
+.dark .diagram svg [fill="rgba(56, 161, 105, 0.08)"] { fill: rgba(104, 211, 145, 0.14) !important; }
+
+.dark .diagram svg [fill="rgba(43, 108, 176, 0.15)"] { fill: rgba(99, 179, 237, 0.22) !important; }
+.dark .diagram svg [fill="rgba(43, 108, 176, 0.1)"]  { fill: rgba(99, 179, 237, 0.18) !important; }
+.dark .diagram svg [fill="rgba(43, 108, 176, 0.08)"] { fill: rgba(99, 179, 237, 0.16) !important; }
+
+.dark .diagram svg [fill="rgba(176, 65, 62, 0.18)"] { fill: rgba(252, 129, 129, 0.22) !important; }
+.dark .diagram svg [fill="rgba(176, 65, 62, 0.05)"] { fill: rgba(252, 129, 129, 0.08) !important; }
+
+.dark .diagram svg [fill="rgba(214, 158, 46, 0.35)"] { fill: rgba(236, 201, 75, 0.4) !important; }
+.dark .diagram svg [fill="rgba(214, 158, 46, 0.18)"] { fill: rgba(236, 201, 75, 0.25) !important; }
+
+.dark .diagram svg [fill="rgba(246, 173, 85, 0.12)"] { fill: rgba(251, 211, 141, 0.18) !important; }
+
+/* Gradient stops (used in the trilemma triangle on the index page) */
+.dark .diagram svg stop[stop-color="rgba(176, 65, 62, 0.18)"] {
+  stop-color: rgba(252, 129, 129, 0.28) !important;
+}
+.dark .diagram svg stop[stop-color="rgba(176, 65, 62, 0.05)"] {
+  stop-color: rgba(252, 129, 129, 0.1) !important;
+}
+
+/* Text fills inside dark-mode SVGs that explicitly hard-code text color
+   to a brand red — convert to a brighter red that holds contrast. */
+.dark .diagram svg text[fill="#b0413e"] { fill: #fc8181 !important; }
+.dark .diagram svg text[fill="#742a2a"] { fill: #feb2b2 !important; }
+.dark .diagram svg text[fill="#1c5b34"] { fill: #9ae6b4 !important; }
+.dark .diagram svg text[fill="#9c5d0e"] { fill: #fbd38d !important; }
+
+/* Diagram container in dark mode: a subtler border + slightly lifted bg */
+.dark .diagram {
+  background: var(--vp-c-bg-soft);
+  border-color: var(--vp-c-divider);
+}
