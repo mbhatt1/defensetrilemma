@@ -1,0 +1,36 @@
+{
+  "defense": "gp_smooth_grad_step",
+  "params": {
+    "length_scale": 0.2,
+    "noise": 0.02,
+    "alpha_step": 0.04,
+    "sigmoid_steepness": 20.0,
+    "defense_kind": "grad_step",
+    "centroid": null
+  },
+  "tau": 0.5,
+  "n_filled": 82,
+  "n_moved_by_defense": 82,
+  "L_data": 23.625,
+  "L_gp": 33.68869403274208,
+  "G": 23.625,
+  "K_empirical": 2.9594997003839696,
+  "ell_empirical": 26.17361696028149,
+  "ell_times_K_plus_1": 103.63442851219934,
+  "transversality_holds": false,
+  "anchor_cell_index": 74,
+  "anchor_position": [
+    0.64,
+    0.96
+  ],
+  "anchor_f_value": 0.07500000000000001,
+  "discretization_slack": 0.052825923255113594,
+  "predicted_persistent_count": 1,
+  "actual_persistent_count": 50,
+  "true_positives": 1,
+  "false_positives_interior": 0,
+  "false_positives_boundary": 0,
+  "false_negatives": 49,
+  "fp_interior_cell_positions": [],
+  "theorem_violated": false
+}

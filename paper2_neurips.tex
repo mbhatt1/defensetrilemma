@@ -1093,22 +1093,27 @@ gpt-3.5-turbo-0125 (saturated)  & $0.50$ & $82$  & $23.63$ & $23.63$ & $66$ & $6
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.92\textwidth]{figures/eps_robust_saturated.pdf}
-\caption{Per-cell validation of Theorem~\ref{thm:eps-robust} on the
-saturated live run. Each of the $82$ filled cells is one dot:
-$56$ interior unsafe ($f(x) > \tau$, red),
-$16$ safe ($f(x) < \tau$, green),
-$10$ boundary cells in $\cl{S_\tau}\setminus S_\tau$ (black squares).
-The dashed line is the predicted bound
-$LK\dist(x,z^*) + |f(z^*)-\tau|$ with empirically-measured
-$LK = 23.63$ and discretization slack $0.375$. Every dot lies below
-the bound; the worst empirical $|f(D(x)) - \tau|$ is $0.50$ against a
-predicted maximum of $\sim$$30$, a $\sim$$59\times$ margin.
-The $66$ red and black cells together are $\mathcal{S}_{\text{pred}} = \mathcal{S}_{\text{act}}$
-under the identity defense---predicted and actual persistent sets
-coincide cell-for-cell. (Log $y$-axis to show both the dots and the
-bound line on the same plot.)}
-\label{fig:eps-robust-saturated}
+\includegraphics[width=\textwidth]{figures/theory_vs_reality_saturated.pdf}
+\caption{Theory vs reality on the saturated live run, side by side.
+Both panels show the same $25 \times 25$ behavioral grid for
+\texttt{gpt-3.5-turbo-0125} with $82$ filled cells (the rest were
+not sampled by the MAP-Elites budget). Each filled cell is colored
+red if it is in the persistent unsafe set under the criterion at
+the top of its panel, green otherwise; the $10$ boundary cells
+$\overline{S_\tau}\setminus S_\tau$ are outlined in black.
+\textbf{Left:} the cells Theorem~\ref{thm:persistent} \emph{predicts}
+will remain persistent after defense, $\mathcal{S}_{\text{pred}} =
+\{x : f(x) > \tau\}$ under the canonical continuous defense
+($D = \mathrm{id}$, $K = 1$, $\ell = 0$); $|\mathcal{S}_{\text{pred}}|
+= 66$. \textbf{Right:} the cells that \emph{actually} remain
+persistent in the data, $\mathcal{S}_{\text{act}} =
+\{x : f(D(x)) > \tau\}$; $|\mathcal{S}_{\text{act}}| = 66$. The two
+panels are identical cell-for-cell: every cell red on the left is
+also red on the right ($82$ matches out of $82$, zero
+discrepancies). Any cell red on the left and green on the right
+would be a counterexample to Theorem~\ref{thm:persistent}; there
+are none.}
+\label{fig:theory-vs-reality-saturated}
 \end{figure}
 
 On the saturated run, every one of the $66$ predicted-persistent
