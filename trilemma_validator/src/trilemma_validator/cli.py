@@ -209,6 +209,128 @@ def cmd_pipeline(args: argparse.Namespace) -> int:
     return _do_validate(heatmap, args, source_label=str(archive_path))
 
 
+def cmd_sweep(args: argparse.Namespace) -> int:
+    """Run all defenses on a single archive and produce a comparison table.
+
+    This is the natural saturation-study output: with a dense grid we want
+    to see how the trilemma's predictions change as we vary the defense's
+    Lipschitz reach.
+    """
+    if not args.heatmap and not args.archive:
+        print(
+            "error: pass --heatmap PATH or --archive PATH",
+            file=sys.stderr,
+        )
+        return 2
+    src = args.heatmap or args.archive
+    heatmap = loader.load(src)
+
+    out: Path = args.output
+    out.mkdir(parents=True, exist_ok=True)
+    np.save(out / "heatmap.npy", heatmap.values)
+
+    # Defenses to compare: identity, then bounded_step at several max_step values.
+    sweep_specs: list[tuple[str, dict]] = [("identity", {})]
+    for ms in args.max_steps:
+        sweep_specs.append(("bounded_step", {"max_step": int(ms)}))
+
+    rows: list[dict] = []
+    for defense_name, params in sweep_specs:
+        defense_obj = get_defense(defense_name, max_step=params.get("max_step"))
+        defense = defense_obj.build(heatmap, args.tau)
+        result = theorems.run_full_validation(heatmap, args.tau, defense)
+        e = result.estimates
+        pc = result.persistence
+        rows.append(
+            {
+                "defense": defense_name,
+                "params": params,
+                "L": e.L,
+                "K": e.K,
+                "ell": e.ell,
+                "G": e.G,
+                "K_star": e.K_star,
+                "transversality": e.persistence_condition(),
+                "predicted_steep": len(pc.predicted_steep_cells),
+                "actual_persistent": len(pc.actual_persistent_cells),
+                "true_positives": len(pc.true_positives),
+                "fp_interior": len(pc.false_positives_interior),
+                "fp_boundary": len(pc.false_positives_boundary),
+                "false_negatives": len(pc.false_negatives),
+                "theorem_violated": pc.theorem_violated,
+            }
+        )
+        # Also write each defense's full result for inspection.
+        slug = (
+            defense_name
+            if not params
+            else f"{defense_name}_max{params['max_step']}"
+        )
+        per_def_dir = out / "per_defense" / slug
+        per_def_dir.mkdir(parents=True, exist_ok=True)
+        report.write_json(result, per_def_dir / "result.json")
+        report.write_markdown(result, per_def_dir / "report.md")
+        viz.render(heatmap, defense, args.tau, result, per_def_dir / "validation.png")
+
+    # Sweep summary table
+    import json as _json
+
+    with (out / "sweep.json").open("w") as f:
+        _json.dump(
+            {
+                "tau": args.tau,
+                "grid_size": heatmap.grid_size,
+                "filled_cells": int(heatmap.filled_mask.sum()),
+                "coverage": heatmap.coverage,
+                "rows": rows,
+            },
+            f,
+            indent=2,
+            default=lambda o: float("inf") if o == float("inf") else o,
+        )
+
+    # Print headline table
+    print()
+    print("=" * 96)
+    print(
+        f"Defense sweep  ·  τ = {args.tau}  ·  "
+        f"{int(heatmap.filled_mask.sum())}/{heatmap.grid_size**2} cells "
+        f"({100 * heatmap.coverage:.1f}% coverage)"
+    )
+    print("=" * 96)
+    header = (
+        f"{'defense':<18} {'K':>6} {'ell':>7} {'G':>7} {'transv?':>8} "
+        f"{'|S_pred|':>9} {'|S_act|':>8} {'TP':>4} {'FPint':>6} "
+        f"{'FPbdy':>6} {'FN':>5} {'verdict':>14}"
+    )
+    print(header)
+    print("-" * 96)
+    for r in rows:
+        if r["params"]:
+            name = f"bounded_step({r['params']['max_step']})"
+        else:
+            name = r["defense"]
+        if r["theorem_violated"]:
+            verdict = "VIOLATED"
+        elif r["predicted_steep"] == 0:
+            verdict = "vacuous"
+        elif r["fp_interior"] == 0:
+            verdict = "CONFIRMED"
+        else:
+            verdict = "?"
+        print(
+            f"{name:<18} {r['K']:>6.2f} {r['ell']:>7.3f} {r['G']:>7.3f} "
+            f"{('YES' if r['transversality'] else 'no'):>8} "
+            f"{r['predicted_steep']:>9} {r['actual_persistent']:>8} "
+            f"{r['true_positives']:>4} {r['fp_interior']:>6} "
+            f"{r['fp_boundary']:>6} {r['false_negatives']:>5} "
+            f"{verdict:>14}"
+        )
+    print()
+    print(f"Outputs: {out}/sweep.json, {out}/per_defense/")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="trilemma",
@@ -321,6 +443,47 @@ def build_parser() -> argparse.ArgumentParser:
     pp.add_argument("--seed-prompts", type=int, default=50)
     _shared_validate_args(pp)
     pp.set_defaults(func=cmd_pipeline)
+
+    # sweep
+    sw = sub.add_parser(
+        "sweep",
+        help="Run multiple defenses on a single archive (saturation study).",
+        description=(
+            "Validate a heatmap against the identity defense AND multiple "
+            "bounded_step defenses with different reach parameters. Produces "
+            "a comparison table showing the K-tradeoff explicitly: as the "
+            "defense's Lipschitz constant increases, the predicted steep set "
+            "shrinks but the actual persistent set may also shrink."
+        ),
+    )
+    sw_src = sw.add_mutually_exclusive_group(required=True)
+    sw_src.add_argument("--heatmap", type=Path, help="Path to a .npy heatmap.")
+    sw_src.add_argument(
+        "--archive",
+        type=Path,
+        help="Path to a rethinking-evals final_archive.json.",
+    )
+    sw.add_argument(
+        "--tau",
+        type=float,
+        default=0.5,
+        help="Safety threshold τ. Default: 0.5.",
+    )
+    sw.add_argument(
+        "--max-steps",
+        type=int,
+        nargs="+",
+        default=[1, 2, 3, 5, 8],
+        help="Max-step values to sweep for the bounded_step defense. "
+        "Default: 1 2 3 5 8.",
+    )
+    sw.add_argument(
+        "--output",
+        type=Path,
+        default=Path("./trilemma_sweep_out"),
+        help="Output directory. Default: ./trilemma_sweep_out",
+    )
+    sw.set_defaults(func=cmd_sweep)
 
     return parser
 
