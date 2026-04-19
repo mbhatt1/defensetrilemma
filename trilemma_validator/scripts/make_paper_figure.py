@@ -23,8 +23,12 @@ import argparse
 import json
 from pathlib import Path
 
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib
+
+matplotlib.use("Agg")  # headless backend: never try to open a display.
+
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 
 from trilemma_validator.defenses import IdentityDefense
 from trilemma_validator.lipschitz import estimate_global_L
@@ -292,7 +296,11 @@ def make_figure(
     from matplotlib.colors import ListedColormap
     cmap = ListedColormap(["#f7fafc", "#9ae6b4", "#fc8181"])  # empty, safe, unsafe
 
-    fig, axes = plt.subplots(1, 2, figsize=(8.0, 5.0), constrained_layout=True)
+    # NOTE: do NOT pass ``constrained_layout=True`` here — it fights with the
+    # manual ``tight_layout`` + ``subplots_adjust`` + outside-axes legend we
+    # install below, which previously caused the x-axis label ("indirection")
+    # to be buried under the shared legend.
+    fig, axes = plt.subplots(1, 2, figsize=(9.5, 5.2))
 
     for ax, grid in ((axes[0], theory_grid), (axes[1], reality_grid)):
         ax.imshow(
@@ -348,18 +356,25 @@ def make_figure(
             label=f"boundary cell ($n = {n_boundary}$)",
         ),
     ]
+    # Place the legend OUTSIDE the axes (to the upper right of the right
+    # panel) so it cannot overlap the x-axis label ("indirection"). Using
+    # ``bbox_transform=fig.transFigure`` anchors the bbox in figure
+    # coordinates — (1.0, 0.98) pins the upper-right of the legend to the
+    # top-right of the figure frame. ``bbox_inches='tight'`` on savefig
+    # then grows the PDF bounding box to include the legend.
     fig.legend(
         handles=legend_handles,
-        loc="lower center",
-        ncol=4,
+        loc="upper left",
+        ncol=1,
         frameon=True,
         framealpha=0.94,
         fontsize=8.5,
         handlelength=1.6,
         handletextpad=0.6,
-        columnspacing=2.4,
+        borderaxespad=0.0,
         borderpad=0.6,
-        bbox_to_anchor=(0.5, -0.02),
+        bbox_to_anchor=(1.01, 0.96),
+        bbox_transform=fig.transFigure,
     )
 
     trans_str = (
@@ -375,8 +390,16 @@ def make_figure(
         fontsize=10,
     )
 
+    # Leave extra room at the bottom for the x-axis labels ("indirection")
+    # so they do NOT slip under the suptitle / legend bbox. Then let
+    # ``tight_layout`` resolve the panel spacing (with explicit rectangles
+    # so it doesn't try to reclaim the space we just reserved at top/bottom
+    # for the suptitle and the outside legend).
+    fig.tight_layout(rect=(0.0, 0.04, 0.82, 0.92))
+    plt.subplots_adjust(bottom=0.15)
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, format="pdf", bbox_inches="tight")
+    fig.savefig(out_path, format="pdf", bbox_inches="tight", dpi=200)
     plt.close(fig)
 
     print(f"Wrote {out_path}")
@@ -682,6 +705,28 @@ def main(argv: list[str] | None = None) -> int:
         "--out-figure",
         type=Path,
         default=repo / "figures/bounded_step_theory_vs_reality.pdf",
+        help=(
+            "Primary output path for the Figure 4 theory-vs-reality PDF. "
+            "Additional sibling copies are also regenerated at "
+            "figures/oblique_theory_vs_reality.pdf and "
+            "overleaf_package/figures/theory_vs_reality_saturated.pdf so "
+            "the paper, the Overleaf bundle, and the oblique-defense "
+            "companion all stay in sync."
+        ),
+    )
+    parser.add_argument(
+        "--extra-figure-copies",
+        type=Path,
+        nargs="*",
+        default=[
+            repo / "figures/oblique_theory_vs_reality.pdf",
+            repo / "overleaf_package/figures/theory_vs_reality_saturated.pdf",
+        ],
+        help=(
+            "Additional paths to copy the regenerated Figure 4 to. "
+            "Pass an empty list to skip. Default: the oblique-variant PDF "
+            "and the Overleaf-package PDF."
+        ),
     )
     parser.add_argument(
         "--out-gp-result",
@@ -724,6 +769,14 @@ def main(argv: list[str] | None = None) -> int:
         make_figure(
             args.archive, args.out_figure, tau=args.tau, max_step=args.max_step
         )
+        # Mirror the regenerated Figure 4 to every additional target path
+        # (oblique-variant file, Overleaf bundle). We re-render rather than
+        # shutil.copy so each file gets its own matplotlib-rendered PDF
+        # (sane file metadata, identical layout fix applied once per path).
+        for extra in args.extra_figure_copies or []:
+            make_figure(
+                args.archive, extra, tau=args.tau, max_step=args.max_step
+            )
     if not args.skip_gp:
         # Run three defenses:
         # 1. gradient-step (ℓ = L by construction — trivial regime)

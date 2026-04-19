@@ -1,0 +1,114 @@
+{
+  "source_archive": "trilemma_validator/live_runs/gpt35_turbo_t05_saturated/source_archive.json",
+  "tau": 0.5,
+  "source_grid_size": 25,
+  "resolutions": [
+    13,
+    17,
+    21,
+    25
+  ],
+  "defense": "gp_smooth_oblique",
+  "defense_params": {
+    "length_scale": 0.2,
+    "noise": 0.02,
+    "alpha_step": 0.003,
+    "sigmoid_steepness": 2.0,
+    "oblique_angle_deg": 89.5
+  },
+  "subsampling_rule": "stride + index-floor: target[i, j] = source[floor(i * N/M), floor(j * N/M)]; unfilled cells stay unfilled.",
+  "rows": [
+    {
+      "grid_size": 13,
+      "stride": 1.9230769230769231,
+      "filled_cells": 25,
+      "L": 11.959999999999999,
+      "K": 1.0475942751119,
+      "ell": 0.6286168655040792,
+      "G": 11.959999999999999,
+      "ell_times_K_plus_1": 1.2871522950449399,
+      "transversality_holds": true,
+      "predicted_persistent_count": 5,
+      "actual_persistent_count": 20,
+      "true_positives": 5,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 15,
+      "theorem_violated": false,
+      "anchor_position": [
+        0.5384615384615385,
+        0.0
+      ],
+      "notes": []
+    },
+    {
+      "grid_size": 17,
+      "stride": 1.4705882352941178,
+      "filled_cells": 31,
+      "L": 14.195,
+      "K": 1.032703262482756,
+      "ell": 0.5975374960764299,
+      "G": 14.195,
+      "ell_times_K_plus_1": 1.2146164177303362,
+      "transversality_holds": true,
+      "predicted_persistent_count": 5,
+      "actual_persistent_count": 25,
+      "true_positives": 5,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 20,
+      "theorem_violated": false,
+      "anchor_position": [
+        0.058823529411764705,
+        0.0
+      ],
+      "notes": []
+    },
+    {
+      "grid_size": 21,
+      "stride": 1.1904761904761905,
+      "filled_cells": 52,
+      "L": 19.845000000000002,
+      "K": 1.0641746905990246,
+      "ell": 0.9659461496550775,
+      "G": 19.845000000000002,
+      "ell_times_K_plus_1": 1.9938815945995887,
+      "transversality_holds": true,
+      "predicted_persistent_count": 6,
+      "actual_persistent_count": 42,
+      "true_positives": 6,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 36,
+      "theorem_violated": false,
+      "anchor_position": [
+        0.047619047619047616,
+        0.0
+      ],
+      "notes": []
+    },
+    {
+      "grid_size": 25,
+      "stride": 1.0,
+      "filled_cells": 82,
+      "L": 23.625,
+      "K": 1.050821399895546,
+      "ell": 0.8648970604973426,
+      "G": 23.625,
+      "ell_times_K_plus_1": 1.773749400374703,
+      "transversality_holds": true,
+      "predicted_persistent_count": 3,
+      "actual_persistent_count": 68,
+      "true_positives": 3,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 65,
+      "theorem_violated": false,
+      "anchor_position": [
+        0.64,
+        0.96
+      ],
+      "notes": []
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+% Independent-dataset robustness check (Hoque issue (2)).
+% Canonical target: gpt-3.5-turbo-0125 (saturated 400-eval archive, tau=0.5).
+% Independent target: gpt-4o-mini-2024-07-18 (same MAP-Elites setup, tau=0.5).
+% Judge is held fixed at gpt-4.1-2025-04-14 to isolate target-model variability.
+% Columns are:
+%   Target          -- target model id
+%   Cells           -- filled cells in the MAP-Elites archive (of 625)
+%   Peak AD         -- max alignment-deviation score over filled cells
+%   L               -- empirical Lipschitz constant of defense (GP-smoothed oblique)
+%   K               -- empirical reachability constant
+%   ell             -- empirical reachability exponent
+%   G               -- Lipschitz constant of the archive (data-derived)
+%   |S_pred|        -- predicted persistent count (Theorem 6.3 lower bound)
+%   TP              -- true positives (predicted-and-observed persistent cells)
+%   FP_int          -- false positives, interior (strict violations of Theorem 6.3)
+%   Transversality  -- does Theorem 6.3 make a positive prediction? (yes/no/NA)
+%
+% Second row (gpt-4o-mini-2024-07-18) is \pending until live run completes;
+% see trilemma_validator/live_runs/gpt4o_mini_t05/PENDING.md for rerun recipe.
+\newcommand{\pending}{\textit{pending}}
+\begin{table}[t]
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lrrrrrrrrrc}
+    \toprule
+    Target & Cells & Peak AD & $L$ & $K$ & $\ell$ & $G$ & $|S_{\mathrm{pred}}|$ & TP & FP$_{\mathrm{int}}$ & Transv.? \\
+    \midrule
+    \texttt{gpt-3.5-turbo-0125}    & 82        & 1.00      & 33.69     & 1.05      & 0.86      & 23.63     & 3         & 3        & 0        & yes \\
+    \texttt{gpt-4o-mini-2024-07-18} & \pending & \pending  & \pending  & \pending  & \pending  & \pending  & \pending  & \pending & \pending & \pending \\
+    \bottomrule
+  \end{tabular}
+  \caption{Independent-dataset robustness check addressing Hoque issue~(2).
+    The canonical \texttt{gpt-3.5-turbo-0125} row uses the saturated 400-evaluation
+    archive at $\tau=0.5$ under the GP-smoothed oblique defense
+    (\texttt{length\_scale}=0.2, \texttt{noise}=0.02, \texttt{oblique\_angle}=$89.5^\circ$);
+    the second row holds an independent dataset on a different, better-aligned target
+    with the same judge, seed, and MAP-Elites configuration. The judge is fixed at
+    \texttt{gpt-4.1-2025-04-14} so that variability here reflects target-model
+    variability alone. A ``no'' under ``Transv.?'' would indicate $U_\tau=\emptyset$,
+    in which case Theorem~6.3 is vacuously satisfied (its preconditions fail) and
+    FP$_{\mathrm{int}}$ is reported as ``NA''.}
+  \label{tab:independent-dataset}
+\end{table}

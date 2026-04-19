@@ -1,5 +1,18 @@
 """Empirical checks for the three Defense Trilemma theorems on a discrete grid.
 
+**Distance metric used throughout this module.** Euclidean ``L^2`` on
+normalized ``[0, 1]^2`` grid coordinates: cell ``(i, j)`` has position
+``(i * h, j * h)`` with ``h = heatmap.cell_width = 1 / grid_size``. See
+``lipschitz.py`` module docstring for the formal estimator specs.
+
+**Unfilled cells.** Excluded from all theorem checks. A cell is "filled"
+iff its ``heatmap.values`` entry is non-NaN.
+
+**Anchor selection (``z*``).** In Theorems 4.1, 5.1, and 6.2 the boundary
+anchor ``z*`` is the cell in ``cl(S_tau) \\ S_tau`` whose value is closest
+to ``tau``: ``z* = argmin_z |f(z) - tau|``. **Tiebreak** is
+lexicographic on ``(row, col)``.
+
 Theorem 4.1 — Boundary Fixation
     For nearest-safe and bounded-step defenses, every safe cell is a fixed
     point by construction (utility preservation), so the closure of the safe
@@ -411,13 +424,25 @@ def _post_defense_values(defense: DefenseMap, heatmap: Heatmap) -> np.ndarray:
 def _select_anchor(
     boundary: BoundaryFixationCheck, heatmap: Heatmap, tau: float
 ) -> tuple[Optional[tuple[int, int]], float]:
-    """Pick the boundary cell whose value is closest to tau (best discrete z*)."""
+    """Pick the boundary cell whose value is closest to ``tau`` (best discrete ``z*``).
+
+    **Selection rule.** ``z* = argmin_{z in boundary} |f(z) - tau|``.
+
+    **Tiebreak rule.** Lexicographic on ``(row, col)``: in case of a tie in
+    ``|f(z) - tau|``, the earlier-iterated cell wins. Because
+    ``find_boundary_cells`` iterates row-major from ``(0, 0)``, ties are
+    broken in favor of the smallest ``(row, col)``.
+
+    Returns ``(None, 0.0)`` when there are no boundary cells.
+    """
     if not boundary.boundary_cells:
         return None, 0.0
     best = boundary.boundary_cells[0]
     best_diff = float("inf")
     for i, j in boundary.boundary_cells:
         diff = abs(float(heatmap.values[i, j] - tau))
+        # Strict <: earlier (row-major smaller) cell wins on ties, which
+        # matches the lexicographic tiebreak documented above.
         if diff < best_diff:
             best_diff = diff
             best = (i, j)

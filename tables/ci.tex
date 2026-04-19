@@ -1,0 +1,17 @@
+% Bootstrap confidence intervals (B = 1000 resamples, percentile CI at 95 %)
+% for the four trilemma estimators on the saturated gpt-3.5-turbo-0125
+% archive (n = 82 filled cells).  See
+% trilemma_validator/src/trilemma_validator/uncertainty.py for the
+% resampling rule (non-parametric bootstrap of filled cells with
+% replacement; unpicked cells become NaN; estimators are recomputed on
+% each resample).
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{l r c r c r c r c}
+\toprule
+defense & $L_{\mathrm{med}}$ & $L$ CI & $K_{\mathrm{med}}$ & $K$ CI & $\ell_{\mathrm{med}}$ & $\ell$ CI & $G_{\mathrm{med}}$ & $G$ CI \\
+\midrule
+identity          & 22.88 & $[21.00, 23.63]$ & 1.000 & $[1.000, 1.000]$ & 0.000 & $[0.000, 0.000]$ & 22.88 & $[21.00, 23.63]$ \\
+GP-smooth oblique & 22.88 & $[21.00, 23.63]$ & 1.050 & $[1.027, 1.098]$ & 0.928 & $[0.629, 1.760]$ & 22.88 & $[21.00, 23.63]$ \\
+\bottomrule
+\end{tabular}

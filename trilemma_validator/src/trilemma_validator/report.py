@@ -5,13 +5,55 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
+
 from .theorems import TrilemmaResult
+
+
+_SANITY_CHECK_MESSAGE = (
+    "With D=id, S_pred and S_act coincide by construction; this is a "
+    "pipeline bookkeeping check, not a theorem test."
+)
+
+
+def _is_identity_defense(result: TrilemmaResult) -> bool:
+    """Detect whether ``result`` is an identity-defense run (tautological).
+
+    Criteria: ``defense_name == "identity"`` OR (K == 1 AND every cell's
+    displacement is zero). The second branch catches wrapped/aliased
+    identity cases.
+    """
+    if result.defense_name == "identity":
+        return True
+    K = result.estimates.K
+    if K != 1.0:
+        return False
+    # Check every cell observation: target_cell must equal cell.
+    for obs in result.cell_observations:
+        if tuple(obs.target_cell) != tuple(obs.cell):
+            return False
+    # No observations but K=1: identity by convention.
+    return True
+
+
+def _sanity_check_annotation(result: TrilemmaResult) -> dict:
+    """Return the sanity-check annotation for identity-defense JSON reports."""
+    if _is_identity_defense(result):
+        return {
+            "status": "sanity-check",
+            "sanity_check_explanation": _SANITY_CHECK_MESSAGE,
+        }
+    return {"status": "theorem-test"}
 
 
 def write_json(result: TrilemmaResult, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    payload = result.to_dict()
+    # Prepend the sanity-check annotation so it appears at the top.
+    annotation = _sanity_check_annotation(result)
+    payload = {**annotation, **payload}
     with path.open("w") as f:
-        json.dump(result.to_dict(), f, indent=2)
+        json.dump(payload, f, indent=2)
 
 
 def _bool_emoji(b: bool) -> str:
@@ -33,6 +75,18 @@ def write_markdown(result: TrilemmaResult, path: Path) -> None:
     lines: list[str] = []
     lines.append("# Defense Trilemma Validation Report")
     lines.append("")
+
+    # Sanity-check framing for identity-defense runs.
+    if _is_identity_defense(result):
+        lines.append("> **Status: `sanity-check`**")
+        lines.append(">")
+        lines.append(f"> {_SANITY_CHECK_MESSAGE}")
+        lines.append(">")
+        lines.append(
+            "> Everything below is bookkeeping on the raw surface `f`; "
+            "the theorem tests proper require a **non-identity** defense."
+        )
+        lines.append("")
     lines.append(f"- **Threshold τ:** `{result.tau}`")
     lines.append(f"- **Grid size:** `{result.grid_size} × {result.grid_size}`")
     lines.append(

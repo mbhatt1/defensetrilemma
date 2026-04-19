@@ -1,0 +1,90 @@
+{
+  "tau": 0.5,
+  "grid_size": 25,
+  "n_filled": 82,
+  "rows": [
+    {
+      "defense": "smooth_nearest_safe",
+      "params": {
+        "radius": 3.0,
+        "sharpness": 1.5
+      },
+      "L": 23.625,
+      "K": 3.16227766016838,
+      "ell": 23.625,
+      "G": 23.625,
+      "ell_K_plus_1": 98.33380972147798,
+      "transversality_holds": false,
+      "predicted_persistent_count": 1,
+      "actual_persistent_count": 59,
+      "true_positives": 1,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 58,
+      "theorem_violated": false
+    },
+    {
+      "defense": "kernel_smoothed",
+      "params": {
+        "bandwidth": 2.5,
+        "step_size": 2.5
+      },
+      "L": 23.625,
+      "K": 5.0,
+      "ell": 21.75,
+      "G": 23.625,
+      "ell_K_plus_1": 130.5,
+      "transversality_holds": false,
+      "predicted_persistent_count": 1,
+      "actual_persistent_count": 39,
+      "true_positives": 1,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 38,
+      "theorem_violated": false
+    },
+    {
+      "defense": "softly_constrained_projection",
+      "params": {
+        "alpha": 2.0,
+        "reach": 5.0
+      },
+      "L": 23.625,
+      "K": 2.0,
+      "ell": 23.625,
+      "G": 23.625,
+      "ell_K_plus_1": 70.875,
+      "transversality_holds": false,
+      "predicted_persistent_count": 1,
+      "actual_persistent_count": 56,
+      "true_positives": 0,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 1,
+      "false_negatives": 56,
+      "theorem_violated": false
+    },
+    {
+      "defense": "oblique_gp_smooth",
+      "params": {
+        "kernel": "rbf",
+        "sigma": 0.2,
+        "oblique_angle": 89.5,
+        "alpha_step": 0.003,
+        "sigmoid_steepness": 2.0
+      },
+      "L": 23.625,
+      "K": 1.0501173326701811,
+      "ell": 0.2744662192846744,
+      "G": 23.625,
+      "ell_K_plus_1": 0.5626879533879658,
+      "transversality_holds": true,
+      "predicted_persistent_count": 46,
+      "actual_persistent_count": 68,
+      "true_positives": 46,
+      "false_positives_interior": 0,
+      "false_positives_boundary": 0,
+      "false_negatives": 22,
+      "theorem_violated": false
+    }
+  ]
+}

@@ -1,10 +1,32 @@
 """Empirical estimators for the Lipschitz constants and directional gradients
 that appear in the Defense Trilemma theorems.
 
-All estimates use grid-based finite differences. The grid spacing is the
-heatmap's ``cell_width`` (defaults to ``1/grid_size`` so the unit square is
-covered). Distances between cells are measured in continuous coordinates
-(grid index times cell width), Euclidean.
+All estimates use grid-based finite differences. Formal specification:
+
+**Distance metric.** All distances are the Euclidean ``L^2`` norm on the
+normalized grid-coordinate plane ``[0, 1]^2``. Specifically, the grid cell
+``(i, j)`` has continuous coordinates ``(i * h, j * h)`` where
+``h = heatmap.cell_width = 1 / grid_size``. So
+``dist(a, b) = h * sqrt((a_i - b_i)^2 + (a_j - b_j)^2)``.
+
+**Filled cells.** A grid cell is *filled* iff ``heatmap.values[i, j]`` is
+not NaN (threshold: ``~np.isnan``). Unfilled cells are excluded from every
+pair in every estimator — no imputation is performed. Pair counts in each
+estimator's docstring assume ``n = |filled cells|``.
+
+**Anchor selection (z*).** When an "anchor" boundary point is required
+(Theorems 4.1, 5.1, 6.2), ``z*`` is the boundary cell (element of
+``cl(S_tau) \\ S_tau``) whose value is closest to ``tau``:
+``z* = argmin_z |f(z) - tau|``. **Tiebreak rule:** on ties, we take the
+lexicographically smallest ``(row, col)`` (in practice, the order is the
+``list`` iteration order of ``find_boundary_cells``, which is row-major
+from ``(0, 0)``).
+
+**Symmetry.** Every estimator iterates over *unordered pairs* — the
+all-pairs matrix arithmetic in ``estimate_global_L`` and
+``estimate_boundary_gradient_G`` is symmetric (we take absolute differences
+of ``f``). ``estimate_defense_K`` is also symmetric. ``estimate_defense_path_ell``
+iterates single cells with their target, not pairs.
 
 Conventions:
 
@@ -82,12 +104,25 @@ def _filled_indices(heatmap: Heatmap) -> np.ndarray:
 
 
 def estimate_global_L(heatmap: Heatmap) -> float:
-    """Empirical global Lipschitz constant of ``f`` over all pairs of filled cells.
+    r"""Empirical global Lipschitz constant of ``f`` over all pairs of filled cells.
 
-    For each pair ``(a, b)`` of filled cells, computes ``|f(a) - f(b)| / dist(a, b)``
-    and returns the maximum. On dense grids this is dominated by adjacent pairs;
-    on sparse grids it gracefully handles the case where no two filled cells
-    are grid-adjacent.
+    **Formula.**
+
+    .. math::
+
+        \hat L = \max_{a, b \in G_f,\, a \neq b}
+            \frac{|f(a) - f(b)|}{\|a - b\|}
+
+    where ``G_f`` is the set of filled cells and ``||·||`` is the Euclidean
+    norm on the normalized grid ``[0, 1]^2`` (see module docstring).
+
+    **Pairs considered.** All unordered pairs ``(a, b)`` with ``a \neq b``
+    among the ``n`` filled cells — i.e., ``n(n-1)/2`` pairs. Unfilled cells
+    are excluded; no pair involving a NaN-valued cell is examined.
+
+    **Symmetry.** The absolute value in the numerator makes the estimator
+    symmetric under swapping ``a`` and ``b``, so we effectively iterate
+    unordered pairs.
 
     Returns 0.0 when fewer than two cells are filled.
     """
@@ -109,10 +144,26 @@ def estimate_global_L(heatmap: Heatmap) -> float:
 
 
 def estimate_defense_K(defense: DefenseMap, heatmap: Heatmap) -> float:
-    """Empirical Lipschitz constant of the defense map ``D`` over all filled pairs.
+    r"""Empirical Lipschitz constant of the defense map ``D`` over all filled pairs.
 
-    Computes ``K = max dist(D(u), D(v)) / dist(u, v)`` over all pairs ``(u, v)``
-    of filled cells. Returns 0.0 if fewer than two cells are filled.
+    **Formula.**
+
+    .. math::
+
+        \hat K = \max_{u, v \in G_f,\, u \neq v}
+            \frac{\|D(u) - D(v)\|}{\|u - v\|}
+
+    where ``||·||`` is Euclidean on normalized ``[0, 1]^2`` grid coordinates
+    (both input and output).
+
+    **Pairs considered.** All unordered pairs ``(u, v)`` with ``u \neq v``
+    among filled cells. ``D(x)`` is read from ``defense.targets[i, j]``,
+    which is defined on every cell; unfilled cells are excluded on the
+    *input* side only.
+
+    **Symmetry.** The ratio is symmetric under swapping ``u`` and ``v``.
+
+    Returns 0.0 if fewer than two cells are filled.
     """
     h = heatmap.cell_width
     targets = defense.targets
@@ -138,12 +189,27 @@ def estimate_defense_K(defense: DefenseMap, heatmap: Heatmap) -> float:
 
 
 def estimate_defense_path_ell(defense: DefenseMap, heatmap: Heatmap) -> float:
-    """Empirical defense-path Lipschitz constant ``ell``.
+    r"""Empirical defense-path Lipschitz constant ``ell``.
 
-    For each cell ``x`` where ``D(x) != x``, compute
-    ``|f(D(x)) - f(x)| / dist(D(x), x)`` and take the maximum. Returns 0.0 when
-    the defense is the identity (no displaced cells), matching the convention
-    in the paper of taking the supremum over the empty set as 0.
+    **Formula.**
+
+    .. math::
+
+        \hat \ell = \max_{x \in G_f,\, D(x) \neq x,\, D(x) \in G_f}
+            \frac{|f(D(x)) - f(x)|}{\|D(x) - x\|}
+
+    where ``||·||`` is Euclidean on normalized ``[0, 1]^2`` grid coordinates.
+
+    **Cells considered.** Single filled cells ``x`` (not pairs) for which
+    ``D(x) \neq x`` AND ``D(x)`` is also a filled cell. Cells whose defense
+    target is unfilled are skipped (the estimator cannot evaluate
+    ``f(D(x))`` without imputation and imputation is never performed).
+
+    **Supremum over the empty set = 0.** Returns 0.0 when the defense is
+    the identity (no displaced cells), matching the paper's convention.
+
+    **Symmetry.** Not applicable — this is a per-cell (not pair) estimator.
+    The path is directed from ``x`` to ``D(x)``.
     """
     h = heatmap.cell_width
     vals = heatmap.values
@@ -171,16 +237,31 @@ def estimate_defense_path_ell(defense: DefenseMap, heatmap: Heatmap) -> float:
 
 
 def estimate_boundary_gradient_G(heatmap: Heatmap, tau: float) -> float:
-    """Estimate the maximum directional rate at which ``f`` rises across the boundary.
+    r"""Estimate the maximum directional rate at which ``f`` rises across the boundary.
 
-    For every pair of filled cells ``(a, b)`` such that ``f(a) < tau`` and
-    ``f(b) > tau`` (i.e., the line from ``a`` to ``b`` crosses the threshold),
-    compute the rise per unit distance ``(f(b) - f(a)) / dist(a, b)``. Return
-    the maximum. This is the largest empirical directional rate at which the
-    surface crosses the threshold — the ``G`` in the transversality condition.
+    **Formula.**
 
-    Uses all-pairs over filled cells (not just grid neighbors), so the estimate
-    is meaningful even on very sparse grids.
+    .. math::
+
+        \hat G = \max_{a \in S_\tau^{\mathrm{filled}},\, b \in U_\tau^{\mathrm{filled}}}
+            \frac{f(b) - f(a)}{\|a - b\|}
+
+    where ``S_tau^filled = {x in G_f : f(x) < tau}`` and
+    ``U_tau^filled = {x in G_f : f(x) > tau}``, and ``||·||`` is Euclidean on
+    normalized ``[0, 1]^2`` grid coordinates.
+
+    **Pairs considered.** All (strictly-safe, strictly-unsafe) ordered pairs
+    among filled cells — ``|S_tau^filled| * |U_tau^filled|`` pairs in total.
+    Unfilled cells and cells exactly at ``f = tau`` are excluded (the latter
+    are measure-zero in the continuous limit).
+
+    **Symmetry.** The pair ``(a, b)`` here is *oriented* (safe to unsafe),
+    so the rise is always non-negative and we take the maximum of a
+    non-negative ratio. The set of pairs is symmetric under reordering of
+    the safe/unsafe partitions.
+
+    Returns 0.0 when either ``S_tau^filled`` or ``U_tau^filled`` is empty
+    (trilemma preconditions fail; no impossibility predicted).
     """
     h = heatmap.cell_width
     vals = heatmap.values
@@ -220,3 +301,106 @@ def estimate_all(
         ell=estimate_defense_path_ell(defense, heatmap),
         G=estimate_boundary_gradient_G(heatmap, tau),
     )
+
+
+# ============================================================
+# Per-pair finite differences — used by the bootstrap
+# ============================================================
+
+
+def pairwise_L_ratios(heatmap: Heatmap) -> np.ndarray:
+    """Return the flat array of ``|f(a) - f(b)| / dist(a, b)`` over filled pairs.
+
+    Used by ``uncertainty.bootstrap_ci`` to resample the ``max`` distribution
+    with bootstrap CIs. Only includes ordered pairs with ``a < b``
+    (upper-triangular of the all-pairs matrix) to avoid double-counting.
+    """
+    h = heatmap.cell_width
+    vals = heatmap.values
+    idx = _filled_indices(heatmap)
+    n = len(idx)
+    if n < 2:
+        return np.array([], dtype=float)
+    fvals = vals[idx[:, 0], idx[:, 1]]
+    di = idx[:, 0:1] - idx[:, 0:1].T
+    dj = idx[:, 1:2] - idx[:, 1:2].T
+    dist = np.hypot(di, dj).astype(float) * h
+    diff = np.abs(fvals[:, None] - fvals[None, :])
+    iu, ju = np.triu_indices(n, k=1)
+    d = dist[iu, ju]
+    r = diff[iu, ju]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        ratio = np.where(d > 0, r / d, 0.0)
+    return ratio
+
+
+def pairwise_G_ratios(heatmap: Heatmap, tau: float) -> np.ndarray:
+    """Return the flat array of ``(f(b) - f(a)) / dist(a, b)`` for safe-unsafe pairs."""
+    h = heatmap.cell_width
+    vals = heatmap.values
+    idx = _filled_indices(heatmap)
+    n = len(idx)
+    if n < 2:
+        return np.array([], dtype=float)
+    fvals = vals[idx[:, 0], idx[:, 1]]
+    safe = fvals < tau
+    unsafe = fvals > tau
+    if not safe.any() or not unsafe.any():
+        return np.array([], dtype=float)
+    safe_i = idx[safe]
+    unsafe_i = idx[unsafe]
+    safe_f = fvals[safe]
+    unsafe_f = fvals[unsafe]
+    di = unsafe_i[:, 0:1] - safe_i[:, 0:1].T
+    dj = unsafe_i[:, 1:2] - safe_i[:, 1:2].T
+    dist = np.hypot(di, dj).astype(float) * h
+    rise = unsafe_f[:, None] - safe_f[None, :]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        ratio = np.where(dist > 0, rise / dist, 0.0)
+    return ratio.ravel()
+
+
+def per_cell_ell_ratios(defense: DefenseMap, heatmap: Heatmap) -> np.ndarray:
+    """Return the flat array of ``|f(D(x)) - f(x)| / dist(D(x), x)`` per moved cell."""
+    h = heatmap.cell_width
+    vals = heatmap.values
+    filled = heatmap.filled_mask
+    gs = heatmap.grid_size
+    targets = defense.targets
+    out: list[float] = []
+    for i in range(gs):
+        for j in range(gs):
+            if not filled[i, j]:
+                continue
+            ti, tj = int(targets[i, j, 0]), int(targets[i, j, 1])
+            if (ti, tj) == (i, j) or not filled[ti, tj]:
+                continue
+            d = h * float(np.hypot(ti - i, tj - j))
+            if d <= 0:
+                continue
+            out.append(abs(float(vals[ti, tj] - vals[i, j])) / d)
+    return np.array(out, dtype=float)
+
+
+def per_pair_K_ratios(defense: DefenseMap, heatmap: Heatmap) -> np.ndarray:
+    """Return flat array of ``||D(u) - D(v)|| / ||u - v||`` over unordered filled pairs."""
+    h = heatmap.cell_width
+    targets = defense.targets
+    idx = _filled_indices(heatmap)
+    n = len(idx)
+    if n < 2:
+        return np.array([], dtype=float)
+    src = idx.astype(float)
+    tgt = targets[idx[:, 0], idx[:, 1]].astype(float)
+    di = src[:, 0:1] - src[:, 0:1].T
+    dj = src[:, 1:2] - src[:, 1:2].T
+    in_dist = np.hypot(di, dj) * h
+    tdi = tgt[:, 0:1] - tgt[:, 0:1].T
+    tdj = tgt[:, 1:2] - tgt[:, 1:2].T
+    out_dist = np.hypot(tdi, tdj) * h
+    iu, ju = np.triu_indices(n, k=1)
+    d_in = in_dist[iu, ju]
+    d_out = out_dist[iu, ju]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        ratio = np.where(d_in > 0, d_out / d_in, 0.0)
+    return ratio
