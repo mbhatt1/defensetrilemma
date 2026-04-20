@@ -607,7 +607,10 @@ $\sim 130$ min); 82 filled cells, 66 strictly unsafe, 10 boundary.
 Fitting a 2D GP (RBF, $\sigma=0.2$) and building a smooth-oblique
 defense $D(x) = x + \alpha\,\beta(\mu(x))\,v(x)$ with $v(x)$ displaced
 $89.5^\circ$ from the negative gradient gives
-$\hat\ell = 0.86$, $\hat K = 1.05$, $\hat G = 23.6$; transversality
+$\hat\ell = 0.86$ (conservative per-cell max; the sweep diagnostic
+$\hat\ell_{\mathrm{diag}}=0.27$ in \Cref{tab:continuous-sweep} uses a
+different estimator and predicts 46~cells),
+$\hat K = 1.05$, $\hat G = 23.6$; transversality
 $\hat G > \hat\ell(\hat K{+}1) = 1.77$ holds by a factor of $\sim13$.
 $|\mathcal{S}_{\text{pred}}| = 3$, all three actually persistent
 ($\mathrm{TP}=3$, $\mathrm{FP}_{\mathrm{int}}=0$;
@@ -615,7 +618,8 @@ $|\mathcal{S}_{\text{pred}}| = 3$, all three actually persistent
 with 65 false negatives (allowed by one-sided containment). The defense
 is genuinely non-identity (82 cells displaced). \Cref{thm:eps-robust}
 also holds at every filled cell, and \Cref{thm:main}'s boundary
-fixation is non-vacuously activated with closest-to-threshold
+fixation is non-vacuously activated: the archive's closest boundary
+cell (restricted to $\cl{S_\tau}\setminus S_\tau$) has raw
 $|f(z^*)-\tau| = 0.375$.
 This oblique construction is a deliberately near-tangential
 \emph{stress-test} wrapper used to instantiate a non-vacuous
@@ -1806,6 +1810,10 @@ at every tested~$\tau$.}
 varies. The legacy target retains a weak one-cell footprint
 (\texttt{weak}); better-aligned targets become \texttt{sil.} because
 the sampled archive no longer yields a testable quantitative witness.
+For the two better-aligned targets, 42--45 of 82 cells score exactly at
+$\tau=0.5$ (refusal responses); $|\mathcal{S}_\tau|$ and
+$|\mathcal{U}_\tau|$ count strict inequalities only, so these
+at-threshold cells are excluded from both counts.
 Silent rows provide no positive evidence for the refinement; they are
 reported only to show that no interior counterexample appears when the
 refinement is vacuous or untestable on the sampled archive.}
@@ -1941,9 +1949,9 @@ Two deliberately compact illustrations of the compositional
 extensions. \emph{Multi-turn}
 (\Cref{tab:multi-turn}, \Cref{fig:multi-turn-plot}) is included only
 as a sanity check on the turnwise corollary
-\Cref{thm:multi-turn}: a ten-turn attack trajectory exhibits the
-monotone running-max AD expected when boundary fixation can recur at
-each turn. \emph{Pipeline} (\Cref{tab:pipeline} in
+\Cref{thm:multi-turn}: ten five-turn attack trajectories each exhibit
+monotone running-max AD, as expected when boundary fixation can recur
+at every turn. \emph{Pipeline} (\Cref{tab:pipeline} in
 \Cref{app:pipeline}) is likewise a compact check that the empirical
 composed Lipschitz constant $\hat K_{\text{composed}}$ is bounded
 above by $\prod \hat K_i$, consistent with the submultiplicative

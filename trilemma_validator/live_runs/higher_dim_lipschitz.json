@@ -4,9 +4,9 @@
   "model": "sentence-transformers/all-mpnet-base-v2",
   "embedding_dim": 768,
   "2d_grid_normalized": {
-    "L_hat": 22.68,
-    "G_hat": 22.68,
-    "max_pairwise_distance": 1.3565683830083088
+    "L_hat": 23.625000000000004,
+    "G_hat": 23.625000000000004,
+    "max_pairwise_distance": 1.3023056476879764
   },
   "hdim_normalized": {
     "L_hat": 17.926352837290132,
@@ -19,7 +19,7 @@
     "max_pairwise_distance": 1.4459929466247559
   },
   "ratios": {
-    "L_ratio_hdim_over_2d_normalized": 0.790403564254415,
-    "G_ratio_hdim_over_2d_normalized": 0.790403564254415
+    "L_ratio_hdim_over_2d_normalized": 0.7587874216842383,
+    "G_ratio_hdim_over_2d_normalized": 0.7587874216842383
   }
 }

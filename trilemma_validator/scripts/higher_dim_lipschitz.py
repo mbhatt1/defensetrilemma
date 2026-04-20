@@ -34,7 +34,7 @@ import numpy as np
 def normalize_grid_coords(cells, grid_size: int) -> np.ndarray:
     """Return (n, 2) normalized grid coordinates in [0,1]^2."""
     coords = np.array([c["grid_position"] for c in cells], dtype=float)
-    return coords / float(grid_size - 1)  # match validator's metric
+    return coords / float(grid_size)  # h = 1/N, matching the paper's estimator definition
 
 
 def encode_prompts(prompts: list, model_name: str) -> np.ndarray:

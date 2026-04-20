@@ -99,7 +99,7 @@ def main():
 
     # Build filled-cell coordinate list in normalized [0,1]^2
     gs = hm.grid_size
-    h = 1.0 / (gs - 1)
+    h = 1.0 / gs  # h = 1/N, matching paper
     filled = np.argwhere(hm.filled_mask)
     X = filled * h  # normalized coords
     y = np.array([hm.values[i, j] for i, j in filled])

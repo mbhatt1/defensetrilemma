@@ -8,9 +8,9 @@ Comparison of empirical $\hat L$ and $\hat G$ computed in two metrics:
 
 | Metric | L_hat | G_hat |
 |---|---:|---:|
-| 2D grid (normalized) | 22.680 | 22.680 |
+| 2D grid (normalized) | 23.625 | 23.625 |
 | 768-d MPNet (normalized) | 17.926 | 17.926 |
-| ratio hdim/2d | 0.790 | 0.790 |
+| ratio hdim/2d | 0.759 | 0.759 |
 
 ## Interpretation
 

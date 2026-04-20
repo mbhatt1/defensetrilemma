@@ -34,7 +34,7 @@ def grid_positions_from_archive(path: Path):
 
 def pairwise_K(defense_map_targets: np.ndarray, filled_mask: np.ndarray, grid_size: int) -> float:
     """Empirical K = max dist(D(u), D(v)) / dist(u, v) over filled pairs."""
-    h = 1.0 / (grid_size - 1)
+    h = 1.0 / grid_size  # h = 1/N, matching paper's estimator definition
     filled = np.argwhere(filled_mask)
     if len(filled) < 2:
         return 0.0

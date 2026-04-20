@@ -17,7 +17,7 @@ from trilemma_validator.uncertainty import bootstrap_ci
 
 
 def L_pairs(values: np.ndarray, filled_mask: np.ndarray, gs: int) -> np.ndarray:
-    h = 1.0 / (gs - 1)
+    h = 1.0 / gs  # h = 1/N, matching the paper's estimator definition (Sec D.1)
     filled = np.argwhere(filled_mask)
     out = []
     for i in range(len(filled)):
@@ -30,7 +30,7 @@ def L_pairs(values: np.ndarray, filled_mask: np.ndarray, gs: int) -> np.ndarray:
 
 
 def G_pairs(values: np.ndarray, filled_mask: np.ndarray, gs: int, tau: float) -> np.ndarray:
-    h = 1.0 / (gs - 1)
+    h = 1.0 / gs  # h = 1/N, matching the paper's estimator definition (Sec D.1)
     filled = np.argwhere(filled_mask)
     out = []
     for i in range(len(filled)):

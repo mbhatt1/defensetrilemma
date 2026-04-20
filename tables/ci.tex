@@ -1,16 +1,17 @@
-% Bootstrap percentile CIs (B=1000, seed=0, 95% level) on the saturated
-% gpt-3.5-turbo-0125 archive. Each cell shows median and 95% CI. L and G
-% bootstrap is defense-independent (per-pair finite differences over all
-% filled pairs). K and ell bootstrap from per-pair/per-cell populations
-% in gp_smooth_result_oblique.json. Raw:
-% live_runs/gpt35_turbo_t05_saturated/bootstrap_ci.json.
+% Bootstrap percentile CIs (B=1000, seed=0, 95% level) on the
+% saturated gpt-3.5-turbo-0125 archive. L and G bootstrapped from
+% per-pair finite-difference populations over all filled pairs.
+% K and ell bootstrapped from the per-pair/per-cell populations
+% stored in gp_smooth_result_oblique.json (exactly the populations
+% that produced K_empirical and ell_empirical). Bootstrap output at
+% trilemma_validator/live_runs/gpt35_turbo_t05_saturated/bootstrap_ci.json.
 \footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lcccc}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{l r c r c r c r c}
 \toprule
-defense          & $L$ median [CI]              & $K$ median [CI]        & $\ell$ median [CI]     & $G$ median [CI] \\
+defense & $L_{\mathrm{med}}$ & $L$ CI & $K_{\mathrm{med}}$ & $K$ CI & $\ell_{\mathrm{med}}$ & $\ell$ CI & $G_{\mathrm{med}}$ & $G$ CI \\
 \midrule
-identity         & $22.68\ [20.88, 22.68]$      & $1.00\ [1.00, 1.00]$   & --                     & $22.68\ [20.88, 22.68]$ \\
-GP-smooth obl.   & $22.68\ [20.88, 22.68]$      & $1.05\ [1.03, 1.05]$   & $0.87\ [0.80, 0.87]$   & $22.68\ [20.88, 22.68]$ \\
+identity & 23.625 & $[21.750, 23.625]$ & 1.000 & $[1.000, 1.000]$ & -- & $[--, --]$ & 23.625 & $[21.750, 23.625]$ \\
+GP-smooth oblique & 23.625 & $[21.750, 23.625]$ & 1.051 & $[1.029, 1.051]$ & 0.865 & $[0.801, 0.865]$ & 23.625 & $[21.750, 23.625]$ \\
 \bottomrule
 \end{tabular}

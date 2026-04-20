@@ -32,7 +32,7 @@ def load_heatmap_from_archive(p: Path) -> Heatmap:
 
 def h_dist(gs: int, a: np.ndarray, b: np.ndarray) -> float:
     """L2 on normalized [0,1]^2."""
-    h = 1.0 / (gs - 1)
+    h = 1.0 / gs  # h = 1/N, matching paper
     return h * float(np.sqrt(((a - b) ** 2).sum()))
 
 
