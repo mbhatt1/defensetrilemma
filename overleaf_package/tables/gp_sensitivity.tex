@@ -1,12 +1,13 @@
 % All rows use the oblique defense with alpha_step = 0.003,
 % sigmoid_steepness = 2.0, oblique_angle = 89.5 deg.
-% Note: ell here uses the per-pair finite-difference estimator;
-% Figure 4's ell = 0.865 uses the per-cell displacement estimator.
+% The appendix sweep reports the secondary diagnostic
+% \hat\ell_diag; the main-text footprint uses the canonical
+% per-cell estimator \hat\ell.
 \small
 \setlength{\tabcolsep}{5pt}
 \begin{tabular}{lcrrrrrrr}
 \toprule
-kernel          & $\sigma$ & $L$     & $K$     & $\ell$  & $G$     & $|\mathcal{S}_{\mathrm{pred}}|$ & TP & FP$_{\mathrm{int}}$ \\
+kernel          & $\sigma$ & $L$     & $K$     & $\hat\ell_{\mathrm{diag}}$  & $G$     & $|\mathcal{S}_{\mathrm{pred}}|$ & TP & FP$_{\mathrm{int}}$ \\
 \midrule
 RBF             & $0.10$   & $23.62$ & $1.105$ & $0.884$ & $23.62$ & $ 9$ & $ 9$ & $0$ \\
 RBF             & $0.20$   & $23.62$ & $1.050$ & $0.274$ & $23.62$ & $46$ & $46$ & $0$ \\

@@ -2,13 +2,13 @@
 % gpt-3.5-turbo-0125 archive, same gpt-4.1 judge, same smooth_nearest_safe
 % continuous defense at tau=0.5. Only the target varies (retarget_archive.py).
 \footnotesize
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lrrrrrrrrrr}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrrrrrrrrrrl}
 \toprule
-Target                                & Cells & Peak AD & $|\mathcal{S}_\tau|$ & $|\mathcal{U}_\tau|$ & $L$ & $K$ & $\ell$ & $G$ & $|\mathcal{S}_{\mathrm{pred}}|$ & FP$_{\mathrm{int}}$ \\
+Target                                & Cells & Peak AD & $|\mathcal{S}_\tau|$ & $|\mathcal{U}_\tau|$ & $L$ & $K$ & $\ell$ & $G$ & $|\mathcal{S}_{\mathrm{pred}}|$ & FP$_{\mathrm{int}}$ & role \\
 \midrule
-\texttt{gpt-3.5-turbo-0125}           & $82$ & $1.00$ & $16$ & $66$ & $23.62$ & $3.16$ & $23.62$ & $23.62$ & $1$ & $0$ \\
-\texttt{gpt-4o-mini-2024-07-18}       & $82$ & $0.99$ & $13$ & $24$ & $12.25$ & $4.94$ & $ 4.02$ & $10.12$ & $0$ & $0$ \\
-\texttt{gpt-4o-2024-08-06}            & $82$ & $0.99$ & $10$ & $30$ & $12.38$ & $3.41$ & $12.38$ & $12.38$ & $0$ & $0$ \\
+\texttt{gpt-3.5-turbo-0125}           & $82$ & $1.00$ & $16$ & $66$ & $23.62$ & $3.16$ & $23.62$ & $23.62$ & $1$ & $0$ & weak \\
+\texttt{gpt-4o-mini-2024-07-18}       & $82$ & $0.99$ & $13$ & $24$ & $12.25$ & $4.94$ & $ 4.02$ & $10.12$ & $0$ & $0$ & sil. \\
+\texttt{gpt-4o-2024-08-06}            & $82$ & $0.99$ & $10$ & $30$ & $12.38$ & $3.41$ & $12.38$ & $12.38$ & $0$ & $0$ & sil. \\
 \bottomrule
 \end{tabular}
