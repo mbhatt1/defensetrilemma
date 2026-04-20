@@ -129,12 +129,21 @@ def run_experiment(cfg: ExperimentConfig) -> Path:
         str(cfg.seed_prompts),
         "--output-dir",
         str(cfg.output_dir),
-        # Thread the judge model through so rethinking-evals scores
-        # alignment-deviation with the user-selected judge. The exact
-        # flag name matches rethinking-evals' ``--judge-model`` CLI.
-        "--judge-model",
-        cfg.judge_model,
     ]
+    # rethinking-evals's ``run_main_experiment.py`` does not currently
+    # accept a ``--judge-model`` CLI override; the judge is read from
+    # ``config/models.yaml`` under ``judge_committee.judges``. If the
+    # caller asked for a non-default judge, surface that as a runtime
+    # error rather than silently using the config value.
+    if cfg.judge_model != "gpt-4.1-2025-04-14":
+        raise RuntimeError(
+            f"Judge override to {cfg.judge_model!r} requested, but "
+            f"rethinking-evals run_main_experiment.py does not yet "
+            f"accept --judge-model. For now the canonical judge "
+            f"(gpt-4.1-2025-04-14 from config/models.yaml) is used. To "
+            f"compare judges, use scripts/rescore_with_judge.py against "
+            f"an existing archive instead."
+        )
 
     print(f"[trilemma] running rethinking-evals: {' '.join(cmd)}", flush=True)
     result = subprocess.run(

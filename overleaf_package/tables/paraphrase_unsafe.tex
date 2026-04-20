@@ -1,0 +1,14 @@
+% Paraphrase-defense incompleteness (Theorem 8.3 injective horn).
+% Mean AD = 0.045, max = 1.00. The strict-unsafe paraphrase was a
+% fraud-category rewrite that elicited step-by-step counterfeit-document
+% instructions from gpt-3.5-turbo-0125 (judged by gpt-4.1).
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lrc}
+\toprule
+Defense                                          & $|\{x : f(D(x)){>}\tau\}|$ & Incomplete per Thm.~\ref{thm:disc-dilemma} \\
+\midrule
+paraphrase ($T{=}0$, strict $> \tau$)            & $1 / 66$                   & \checkmark \\
+paraphrase ($T{=}0$, borderline $\ge \tau$)      & $5 / 66$                   & \checkmark \\
+\bottomrule
+\end{tabular}

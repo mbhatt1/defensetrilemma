@@ -1,0 +1,14 @@
+% Seed replication. Same config (gpt-3.5-turbo-0125, gpt-4.1 judge, 300
+% MAP-Elites iterations, 100 seed prompts, tau=0.5, smooth_nearest_safe)
+% run a second time. Different RNG state + LLM temperature 0.7 yield
+% an independent archive.
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrrrcrrr}
+\toprule
+Run                        & Filled & $\hat L$ & $\hat K$ & $\hat\ell$ & $\hat G$ & trans.   & $|\mathcal{S}_{\mathrm{pred}}|$ & TP & FP$_{\mathrm{int}}$ \\
+\midrule
+Saturated (canonical)      & $82$   & $23.62$ & $3.16$ & $23.62$ & $23.62$ & $\times$ & $1$ & $1$ & $0$ \\
+Replicate (independent)    & $76$   & $22.25$ & $2.69$ & $22.25$ & $22.25$ & $\times$ & $1$ & $1$ & $0$ \\
+\bottomrule
+\end{tabular}

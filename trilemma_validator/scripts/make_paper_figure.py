@@ -215,6 +215,215 @@ def smooth_defense_target_oblique(
     return x + alpha_step * beta * v
 
 
+def make_oblique_figure(
+    archive_path: Path,
+    out_path: Path,
+    tau: float = 0.5,
+    length_scale: float = 0.20,
+    noise: float = 0.02,
+    alpha_step: float = 0.003,
+    sigmoid_steepness: float = 2.0,
+    oblique_angle_deg: float = 89.5,
+) -> None:
+    """Render the published oblique GP footprint in the paper-friendly map style."""
+    heatmap = load_archive_json(archive_path)
+    filled_idx = np.argwhere(heatmap.filled_mask)
+    h = heatmap.cell_width
+    X = filled_idx.astype(float) * h
+    y = np.array([heatmap.values[i, j] for i, j in filled_idx])
+
+    gp = fit_gp_2d(X, y, length_scale=length_scale, noise=noise)
+    mu_at_X = gp_predict(gp, X)
+
+    D_targets = np.array(
+        [
+            smooth_defense_target_oblique(
+                gp,
+                X[i],
+                tau,
+                alpha_step,
+                sigmoid_steepness,
+                oblique_angle_deg,
+            )
+            for i in range(len(X))
+        ]
+    )
+    f_post = gp_predict(gp, D_targets)
+
+    n = len(X)
+    in_dist = np.linalg.norm(X[:, None, :] - X[None, :, :], axis=2)
+    out_dist = np.linalg.norm(D_targets[:, None, :] - D_targets[None, :, :], axis=2)
+    np.fill_diagonal(in_dist, np.inf)
+    K_emp = float((out_dist / in_dist).max())
+
+    ell_emp = 0.0
+    moved = 0
+    for i in range(n):
+        d = float(np.linalg.norm(D_targets[i] - X[i]))
+        if d < 1e-10:
+            continue
+        moved += 1
+        ratio = abs(float(f_post[i] - mu_at_X[i])) / d
+        if ratio > ell_emp:
+            ell_emp = ratio
+
+    L_data = estimate_global_L(heatmap)
+    G = L_data
+
+    boundary_idx: list[int] = []
+    nbr_radius = 2.0 * h
+    for i in range(n):
+        if mu_at_X[i] < tau:
+            continue
+        for j in range(n):
+            if i == j or mu_at_X[j] >= tau:
+                continue
+            if float(np.linalg.norm(X[i] - X[j])) <= nbr_radius:
+                boundary_idx.append(i)
+                break
+    if not boundary_idx:
+        raise RuntimeError("no boundary cells found for oblique figure")
+
+    z_idx = min(boundary_idx, key=lambda i: abs(float(mu_at_X[i]) - tau))
+    z_star = X[z_idx]
+
+    predicted: list[int] = []
+    actual: list[int] = []
+    for i in range(n):
+        d = float(np.linalg.norm(X[i] - z_star))
+        steep_threshold = tau + ell_emp * (K_emp + 1.0) * d
+        if float(mu_at_X[i]) > steep_threshold:
+            predicted.append(i)
+        if float(f_post[i]) > tau:
+            actual.append(i)
+
+    pred_set = set(predicted)
+    act_set = set(actual)
+    boundary_set = set(boundary_idx)
+    fp_int = sorted((pred_set - act_set) - boundary_set)
+
+    EMPTY, SAFE, UNSAFE = 0, 1, 2
+    theory_grid = np.full((heatmap.grid_size, heatmap.grid_size), EMPTY, dtype=int)
+    reality_grid = np.full((heatmap.grid_size, heatmap.grid_size), EMPTY, dtype=int)
+    for idx, (i, j) in enumerate(filled_idx):
+        theory_grid[i, j] = UNSAFE if idx in pred_set else SAFE
+        reality_grid[i, j] = UNSAFE if idx in act_set else SAFE
+
+    raw_boundary_cells: set[tuple[int, int]] = set()
+    vals = heatmap.values
+    filled = heatmap.filled_mask
+    for i in range(heatmap.grid_size):
+        for j in range(heatmap.grid_size):
+            if not filled[i, j] or vals[i, j] < tau:
+                continue
+            for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                ni, nj = i + di, j + dj
+                if 0 <= ni < heatmap.grid_size and 0 <= nj < heatmap.grid_size:
+                    if filled[ni, nj] and vals[ni, nj] < tau:
+                        raw_boundary_cells.add((i, j))
+                        break
+
+    plt.rcParams.update(
+        {
+            "font.family": "serif",
+            "font.size": 8,
+            "axes.titlesize": 10,
+            "axes.labelsize": 9,
+            "xtick.labelsize": 8,
+            "ytick.labelsize": 8,
+            "legend.fontsize": 8,
+        }
+    )
+
+    from matplotlib.colors import ListedColormap
+    from matplotlib.patches import Patch, Rectangle
+
+    cmap = ListedColormap(["#F7FAFC", "#BFE7CC", "#F2AAA2"])
+    fig, axes = plt.subplots(1, 2, figsize=(7.6, 4.95))
+
+    for ax, grid in ((axes[0], theory_grid), (axes[1], reality_grid)):
+        ax.imshow(
+            grid.T,
+            origin="lower",
+            cmap=cmap,
+            vmin=0,
+            vmax=2,
+            aspect="equal",
+            interpolation="nearest",
+        )
+        for bi, bj in raw_boundary_cells:
+            ax.add_patch(
+                Rectangle(
+                    (bi - 0.5, bj - 0.5),
+                    1,
+                    1,
+                    fill=False,
+                    edgecolor="#1A202C",
+                    linewidth=0.9,
+                )
+            )
+        ax.set_xticks([0, heatmap.grid_size // 2, heatmap.grid_size - 1])
+        ax.set_yticks([0, heatmap.grid_size // 2, heatmap.grid_size - 1])
+        ax.set_xlim(-0.5, heatmap.grid_size - 0.5)
+        ax.set_ylim(-0.5, heatmap.grid_size - 0.5)
+        ax.set_xlabel("indirection")
+        ax.set_ylabel("authority")
+
+    axes[0].set_title(
+        "Predicted steep set\n"
+        + rf"$f(x)>\tau+\hat{{\ell}}(\hat{{K}}+1)\mathrm{{dist}}(x,z^*)$: $n={len(predicted)}$",
+        pad=10,
+    )
+    axes[1].set_title(
+        "Observed persistent cells\n"
+        + rf"$f(D(x))>\tau$: $n={len(actual)}$",
+        pad=10,
+    )
+
+    fig.suptitle(
+        rf"GP-oblique continuous footprint ($n={n}$ cells, $\tau={tau}$)",
+        fontsize=11,
+        fontweight="bold",
+        y=0.965,
+    )
+    fig.text(
+        0.5,
+        0.905,
+        rf"$\theta={oblique_angle_deg:.1f}^\circ$ • "
+        rf"$\hat{{\ell}}={ell_emp:.2f}$ • $\hat{{K}}={K_emp:.2f}$ • "
+        rf"$\hat{{G}}={G:.1f}$ • TP={len(pred_set & act_set)} • "
+        rf"$\mathrm{{FP}}_{{\mathrm{{int}}}}={len(fp_int)}$ • "
+        rf"boundary $n={len(raw_boundary_cells)}$",
+        ha="center",
+        va="center",
+        fontsize=8,
+    )
+
+    legend_handles = [
+        Patch(facecolor="#F2AAA2", edgecolor="black", label="unsafe / persistent"),
+        Patch(facecolor="#BFE7CC", edgecolor="black", label="safe / defended"),
+        Patch(facecolor="#F7FAFC", edgecolor="black", label="not sampled"),
+        Patch(facecolor="white", edgecolor="#1A202C", linewidth=0.9, label=f"boundary ($n={len(raw_boundary_cells)}$)"),
+    ]
+    fig.legend(
+        handles=legend_handles,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.02),
+        ncol=4,
+        frameon=True,
+        framealpha=0.96,
+        handlelength=1.4,
+        handletextpad=0.6,
+        borderpad=0.45,
+        columnspacing=1.0,
+    )
+    fig.tight_layout(rect=(0.0, 0.16, 1.0, 0.84))
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, format="pdf", bbox_inches="tight", dpi=200)
+    plt.close(fig)
+
+
 def make_figure(
     archive_path: Path, out_path: Path, tau: float = 0.5, max_step: int = 2
 ) -> None:
@@ -286,7 +495,7 @@ def make_figure(
         {
             "font.family": "serif",
             "font.size": 9,
-            "axes.titlesize": 11,
+            "axes.titlesize": 10,
             "axes.labelsize": 9,
             "xtick.labelsize": 8,
             "ytick.labelsize": 8,
@@ -300,7 +509,7 @@ def make_figure(
     # manual ``tight_layout`` + ``subplots_adjust`` + outside-axes legend we
     # install below, which previously caused the x-axis label ("indirection")
     # to be buried under the shared legend.
-    fig, axes = plt.subplots(1, 2, figsize=(9.5, 5.2))
+    fig, axes = plt.subplots(1, 2, figsize=(7.8, 4.5))
 
     for ax, grid in ((axes[0], theory_grid), (axes[1], reality_grid)):
         ax.imshow(
@@ -333,14 +542,11 @@ def make_figure(
         ax.set_ylabel("authority")
 
     axes[0].set_title(
-        f"Theory predicts persistent (steep set)\n"
-        rf"$\{{x : f(x) > \tau + \ell(K{{+}}1)\,d(x,z^*)\}}$"
-        f" — $n = {n_predicted}$",
+        f"Predicted steep set ($n={n_predicted}$)",
         fontsize=10,
     )
     axes[1].set_title(
-        f"Reality (after bounded-step defense, step$={max_step}$)\n"
-        rf"$\{{x : f(D(x)) > \tau\}}$ — $n = {n_actual}$",
+        f"Observed persistent cells ($n={n_actual}$)",
         fontsize=10,
     )
 
@@ -356,47 +562,33 @@ def make_figure(
             label=f"boundary cell ($n = {n_boundary}$)",
         ),
     ]
-    # Place the legend OUTSIDE the axes (to the upper right of the right
-    # panel) so it cannot overlap the x-axis label ("indirection"). Using
-    # ``bbox_transform=fig.transFigure`` anchors the bbox in figure
-    # coordinates — (1.0, 0.98) pins the upper-right of the legend to the
-    # top-right of the figure frame. ``bbox_inches='tight'`` on savefig
-    # then grows the PDF bounding box to include the legend.
     fig.legend(
         handles=legend_handles,
-        loc="upper left",
-        ncol=1,
+        loc="upper center",
+        ncol=4,
         frameon=True,
-        framealpha=0.94,
-        fontsize=8.5,
-        handlelength=1.6,
+        framealpha=0.96,
+        fontsize=8,
+        handlelength=1.4,
         handletextpad=0.6,
         borderaxespad=0.0,
-        borderpad=0.6,
-        bbox_to_anchor=(1.01, 0.96),
+        borderpad=0.5,
+        columnspacing=1.0,
+        bbox_to_anchor=(0.5, 0.98),
         bbox_transform=fig.transFigure,
     )
-
-    trans_str = (
-        rf"$G={estimates.G:.1f},\;\ell={estimates.ell:.1f},\;K={estimates.K:.1f}$"
-    )
-    fig.suptitle(
-        rf"Theory vs reality (gpt-3.5-turbo-0125, $n = {n_filled}$ cells, $\tau = {tau}$)"
-        "\n"
-        rf"steep $\subseteq$ persistent: "
-        rf"$\mathbf{{{n_predicted - n_fp_interior}/{n_predicted}}}$ confirmed"
-        rf"  $\bullet$  counterexamples: $\mathbf{{{n_fp_interior}}}$"
-        rf"  $\bullet$  {trans_str}",
-        fontsize=10,
+    fig.text(
+        0.5,
+        0.03,
+        rf"$\tau={tau}$, $G={estimates.G:.1f}$, $\ell={estimates.ell:.1f}$, $K={estimates.K:.1f}$, "
+        rf"TP={n_predicted - n_fp_interior}$, $\mathrm{{FP}}_{{\mathrm{{int}}}}={n_fp_interior}$, "
+        rf"$n_{{\mathrm{{boundary}}}}={n_boundary}$",
+        ha="center",
+        va="bottom",
+        fontsize=8,
     )
 
-    # Leave extra room at the bottom for the x-axis labels ("indirection")
-    # so they do NOT slip under the suptitle / legend bbox. Then let
-    # ``tight_layout`` resolve the panel spacing (with explicit rectangles
-    # so it doesn't try to reclaim the space we just reserved at top/bottom
-    # for the suptitle and the outside legend).
-    fig.tight_layout(rect=(0.0, 0.04, 0.82, 0.92))
-    plt.subplots_adjust(bottom=0.15)
+    fig.tight_layout(rect=(0.0, 0.08, 1.0, 0.90))
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, format="pdf", bbox_inches="tight", dpi=200)
@@ -531,14 +723,25 @@ def gp_smooth_validation(
     f_post = gp_predict(gp, D_targets)
     ell_emp = 0.0
     moved = 0
+    per_cell_ell_ratios: list[float] = []
+    per_pair_K_ratios: list[float] = []
     for i in range(n):
         d = float(np.linalg.norm(D_targets[i] - X[i]))
         if d < 1e-10:
             continue
         moved += 1
         ratio = abs(float(f_post[i] - mu_at_X[i])) / d
+        per_cell_ell_ratios.append(ratio)
         if ratio > ell_emp:
             ell_emp = ratio
+    # Also persist per-pair K ratios so tables/ci.tex can bootstrap the same
+    # populations that produced K_empirical + ell_empirical.
+    for i in range(n):
+        for j in range(i + 1, n):
+            di = float(in_dist[i, j])
+            do = float(out_dist[i, j])
+            if di > 0 and di != float("inf"):
+                per_pair_K_ratios.append(do / di)
 
     # L_GP = sup ||∇μ|| (over the unit square, sampled).
     L_gp = gp_max_grad_norm(gp, n_samples=600)
@@ -669,6 +872,8 @@ def gp_smooth_validation(
         "K_empirical": K_emp,
         "ell_empirical": ell_emp,
         "ell_times_K_plus_1": ell_emp * (K_emp + 1.0),
+        "per_cell_ell_ratios": per_cell_ell_ratios,
+        "per_pair_K_ratios": per_pair_K_ratios,
         "transversality_holds": transversality,
         "anchor_cell_index": int(z_idx),
         "anchor_position": list(z_star),
@@ -704,14 +909,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--out-figure",
         type=Path,
-        default=repo / "figures/bounded_step_theory_vs_reality.pdf",
+        default=repo / "figures/oblique_theory_vs_reality.pdf",
         help=(
-            "Primary output path for the Figure 4 theory-vs-reality PDF. "
+            "Primary output path for the paper's continuous footprint PDF. "
             "Additional sibling copies are also regenerated at "
             "figures/oblique_theory_vs_reality.pdf and "
             "overleaf_package/figures/theory_vs_reality_saturated.pdf so "
-            "the paper, the Overleaf bundle, and the oblique-defense "
-            "companion all stay in sync."
+            "the paper and Overleaf bundle stay in sync."
         ),
     )
     parser.add_argument(
@@ -719,7 +923,6 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         nargs="*",
         default=[
-            repo / "figures/oblique_theory_vs_reality.pdf",
             repo / "overleaf_package/figures/theory_vs_reality_saturated.pdf",
         ],
         help=(
@@ -766,16 +969,26 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if not args.skip_figure:
-        make_figure(
-            args.archive, args.out_figure, tau=args.tau, max_step=args.max_step
+        make_oblique_figure(
+            args.archive,
+            args.out_figure,
+            tau=args.tau,
+            length_scale=args.length_scale,
+            noise=args.noise,
+            alpha_step=args.alpha_step,
+            sigmoid_steepness=args.sigmoid_steepness,
+            oblique_angle_deg=args.oblique_angle,
         )
-        # Mirror the regenerated Figure 4 to every additional target path
-        # (oblique-variant file, Overleaf bundle). We re-render rather than
-        # shutil.copy so each file gets its own matplotlib-rendered PDF
-        # (sane file metadata, identical layout fix applied once per path).
         for extra in args.extra_figure_copies or []:
-            make_figure(
-                args.archive, extra, tau=args.tau, max_step=args.max_step
+            make_oblique_figure(
+                args.archive,
+                extra,
+                tau=args.tau,
+                length_scale=args.length_scale,
+                noise=args.noise,
+                alpha_step=args.alpha_step,
+                sigmoid_steepness=args.sigmoid_steepness,
+                oblique_angle_deg=args.oblique_angle,
             )
     if not args.skip_gp:
         # Run three defenses:

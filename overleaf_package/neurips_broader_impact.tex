@@ -1,0 +1,112 @@
+% =====================================================================
+% neurips_broader_impact.tex
+% Included from paper2_v3_submission.tex via \input{}.
+% Expanded Broader Impact / dual-use statement (~1 page).
+% =====================================================================
+
+\section*{Broader Impact}
+\label{sec:broader-impact}
+
+This paper establishes a \emph{structural limit} on a specific class
+of LLM safety interventions (continuous, utility-preserving wrapper
+defenses). It does not propose new attacks, release new attack
+corpora, or provide adversaries with new techniques. We summarize the
+impact, dual-use, and deployment considerations below in the form
+encouraged by the NeurIPS 2025 Broader Impact guidance.
+
+\paragraph{Responsible-disclosure stance.}
+The artifact is a \emph{theoretical impossibility}, not a
+vulnerability report. There is no affected vendor, no proof-of-concept
+exploit, and no coordinated-disclosure timeline to negotiate: the
+claim is that \emph{any} defense satisfying continuity and
+utility-preservation on a connected prompt space must leave boundary
+prompts fixed. Responsible disclosure in this context means (i)
+framing the result as a design constraint rather than a recipe for
+bypass, (ii) providing the Lean-verified proofs so defenders can
+evaluate the claim on its own terms, and (iii) accompanying every
+empirical demonstration with explicit quantitative bounds (such as
+$K^{*} = G/\ell - 1$) that tell defenders what the achievable region
+looks like.
+
+\paragraph{Who benefits.}
+The primary beneficiaries are \textbf{defenders and safety
+researchers}: the trilemma gives them a principled way to allocate
+effort, a sanity check on new-wrapper proposals (if a published
+wrapper claims continuity, utility preservation, \emph{and}
+completeness, one of the three claims must be
+wrong), and concrete parameter targets for the defense-design knobs
+they actually control (Lipschitz constant, threshold geometry,
+choice of feature space). Secondary beneficiaries are
+\textbf{auditors and policy teams} who need defensible upper bounds
+on what wrapper-class controls can achieve.
+
+\paragraph{Who does \emph{not} benefit.}
+An adversary seeking to jailbreak a particular deployed model gains
+nothing actionable from this paper. The theorems do not identify
+specific prompts, do not parameterize a model family, and do not
+provide a search procedure over inputs. Our empirical forced-collapse
+demonstration (\Cref{tab:forced-collapse,tab:paraphrase-unsafe})
+operates entirely on \textbf{prompts already contained in public
+jailbreak datasets}; no new adversarial text is produced by this
+work that was not already available to adversaries via prior
+publications and public leaderboards.
+
+\paragraph{Dual-use analysis.}
+We considered three plausible misuse vectors:
+\begin{itemize}[nosep,leftmargin=1.6em]
+  \item \emph{``The paper implies wrappers are useless, so vendors
+        will stop deploying them.''} The paper explicitly rules this
+        out (\Cref{sec:implications}): wrappers remain the
+        cheapest risk-reduction primitive, they just cannot be
+        total. This is analogous to the existence of adversarial
+        examples not implying that image classifiers should be
+        removed from production.
+  \item \emph{``The paper tells attackers where to look.''} The
+        boundary-fixation phenomenon is a consequence of continuity
+        on a connected space, not a localized exploit. No attacker
+        gains a search advantage from knowing that a boundary exists
+        in general.
+  \item \emph{``The paper's quantitative bounds help adversaries
+        tune.''} The quantitative bounds
+        (Theorems~\ref{thm:persistent}--\ref{thm:cone} and
+        $K^{*} = G/\ell - 1$) are defender-facing: they require the
+        \emph{wrapper's} Lipschitz constant and the \emph{surface's}
+        boundary rate, both of which are available only to the
+        operator running the safety stack, not to an external
+        attacker probing the deployed system.
+\end{itemize}
+
+\paragraph{Mitigations.}
+To minimize misuse potential, this paper (i) does not propose or
+evaluate any new attack; (ii) releases only \emph{wrapper-side}
+quantitative bounds (Lipschitz constant, persistent-unsafe measure,
+threshold gap) rather than attack improvements; (iii) anonymizes the
+artifact URL to comply with double-blind review and prevent
+author-linked attack-adjacent discoverability; and (iv) pairs every
+empirical table with the theorem it exercises and the inequality it
+is expected to satisfy, so that readers cannot mistake the
+demonstrations for generic red-teaming results.
+
+\paragraph{Deployment guidance for practitioners.}
+For a team deploying an LLM-backed product, the intended takeaway is
+a \emph{design-constraint tool}, not an attack toolkit. Concretely:
+(a) if a wrapper is continuous and utility-preserving, treat its
+near-threshold behavior as structurally unreliable and do not rely on
+it alone; (b) invest the saved attention in layers outside the
+wrapper class---training-time alignment, output-side filters,
+human-in-the-loop review of boundary cases, and architectural
+controls on the underlying model; (c) measure $\hat L, \hat\ell,
+\hat G, \hat K$ on your own surface and use $K^{*} = \hat G/\hat\ell
+- 1$ as a planning number when specifying SLAs for the wrapper
+layer; (d) if regulatory or contractual requirements demand
+\emph{complete} wrapper safety, know that this forces either
+discontinuity (e.g., hard blocklists with a non-negligible refusal
+rate on benign inputs) or utility sacrifice (e.g., canonicalizing
+prompt content), and plan the product experience accordingly.
+
+\paragraph{Scope of this statement.}
+Our results do not address fairness, bias, privacy, or environmental
+impact of LLMs more broadly; they address a specific class of safety
+controls and a specific structural limit on that class. Claims about
+adequacy of alternative defense mechanisms (RLHF, constitutional
+training, discrete filtering, ensembles) are out of scope.

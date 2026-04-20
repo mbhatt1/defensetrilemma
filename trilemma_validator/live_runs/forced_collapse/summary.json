@@ -1,0 +1,23 @@
+{
+  "refusal": {
+    "n_inputs": 66,
+    "n_distinct_outputs": 1,
+    "collapse_rate": 0.9848484848484849,
+    "max_collision_class": 66,
+    "n_collision_classes": 1
+  },
+  "canonical_category": {
+    "n_inputs": 66,
+    "n_distinct_outputs": 7,
+    "collapse_rate": 0.8939393939393939,
+    "max_collision_class": 40,
+    "n_collision_classes": 5
+  },
+  "paraphrase": {
+    "n_inputs": 66,
+    "n_distinct_outputs": 66,
+    "collapse_rate": 0.0,
+    "max_collision_class": 1,
+    "n_collision_classes": 0
+  }
+}

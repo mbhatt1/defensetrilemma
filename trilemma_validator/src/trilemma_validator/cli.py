@@ -422,10 +422,6 @@ def cmd_sweep(args: argparse.Namespace) -> int:
 
     rows: list[dict] = []
     for defense_name, params in sweep_specs:
-        if defense_name == "oblique_gp_smooth":
-            # Use the script's implementation; record a summary row only.
-            rows.append(_sweep_gp_smooth_oblique(heatmap, args.tau, out))
-            continue
         defense_obj = get_defense(
             defense_name,
             max_step=params.get("max_step"),
@@ -1044,6 +1040,7 @@ def build_parser() -> argparse.ArgumentParser:
     _add_resolution_subcommand(sub)
 
     return parser
+
 
 
 def main(argv: list[str] | None = None) -> int:

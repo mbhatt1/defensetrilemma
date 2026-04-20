@@ -1,0 +1,14 @@
+% Empirical ablation of the three hypotheses (C.1, C.2, C.3 in paper).
+% Each row drops one hypothesis and shows the resulting violation the
+% validator flags.
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Case & Hypothesis dropped   & Construction                                & Validator flag \\
+\midrule
+C.1  & connectedness        & $X=\{0,1\}$ discrete, $D=\mathrm{id}$       & \texttt{applicable=False}; $\cl{S_\tau}=S_\tau$ \\
+C.2  & continuity           & $X=[0,1]$, $D(x)=x\cdot\mathbf{1}_{x<0.5}$  & local Lipschitz $K=49.0$ at $x{=}0.495$ \\
+C.3  & utility preservation & $D(x)=x_0$ constant                         & $|D(X)|=1$; $50/50$ safe inputs displaced \\
+\bottomrule
+\end{tabular}

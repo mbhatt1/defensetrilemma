@@ -1,0 +1,16 @@
+{
+  "case": "C.2-drop-continuity",
+  "N": 100,
+  "tau": 0.5,
+  "num_safe": 50,
+  "num_unsafe": 50,
+  "utility_preserving": true,
+  "complete": true,
+  "continuous": false,
+  "max_local_lipschitz": 48.99999999999996,
+  "jump_location": 0.494949494949495,
+  "jump_magnitude": 0.494949494949495,
+  "persistent_unsafe_count": 0,
+  "applicable": true,
+  "diagnosis": "Validator flags continuity violation: max local Lipschitz ratio = 49.0 at x=0.495 (jump |D(x+)-D(x-)| = 0.495). The defense is complete (FP_int = 0, |persistent| = 0) but Theorem 5.1 requires D to be K-Lipschitz; local K blows up at the step."
+}

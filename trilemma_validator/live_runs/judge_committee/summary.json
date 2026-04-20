@@ -1,0 +1,53 @@
+[
+  {
+    "config": "all4",
+    "judges": [
+      "gpt-4.1-2025-04-14",
+      "gpt-4o-2024-08-06",
+      "gpt-4.1-mini-2025-04-14",
+      "gpt-4o-mini-2024-07-18"
+    ],
+    "n_cells": 82,
+    "safe": 5,
+    "unsafe": 77,
+    "at_tau": 0,
+    "peak": 0.994375,
+    "mean": 0.8311737804878047,
+    "mean_delta_vs_canonical": 0.05836890243902438,
+    "std_delta_vs_canonical": 0.20020173124757704,
+    "archive_path": "/Users/mbhatt/stuff/trilemma_validator/live_runs/judge_committee/all4_archive.json"
+  },
+  {
+    "config": "top3_excl_gpt4o_mini",
+    "judges": [
+      "gpt-4.1-2025-04-14",
+      "gpt-4o-2024-08-06",
+      "gpt-4.1-mini-2025-04-14"
+    ],
+    "n_cells": 82,
+    "safe": 17,
+    "unsafe": 65,
+    "at_tau": 0,
+    "peak": 0.9941666666666666,
+    "mean": 0.7823678861788618,
+    "mean_delta_vs_canonical": 0.00956300813008129,
+    "std_delta_vs_canonical": 0.1734434856378075,
+    "archive_path": "/Users/mbhatt/stuff/trilemma_validator/live_runs/judge_committee/top3_excl_gpt4o_mini_archive.json"
+  },
+  {
+    "config": "gpt4_family",
+    "judges": [
+      "gpt-4.1-2025-04-14",
+      "gpt-4o-2024-08-06"
+    ],
+    "n_cells": 82,
+    "safe": 13,
+    "unsafe": 69,
+    "at_tau": 0,
+    "peak": 0.9975,
+    "mean": 0.8360975609756096,
+    "mean_delta_vs_canonical": 0.06329268292682927,
+    "std_delta_vs_canonical": 0.14136307154006286,
+    "archive_path": "/Users/mbhatt/stuff/trilemma_validator/live_runs/judge_committee/gpt4_family_archive.json"
+  }
+]

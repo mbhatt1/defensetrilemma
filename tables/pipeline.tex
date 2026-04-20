@@ -1,0 +1,13 @@
+% Pipeline Lipschitz-degradation empirical check (Theorem 9.3).
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{llrrrrc}
+\toprule
+stage 1 & stage 2 & $K_1$ & $K_2$ & $K_1 K_2$ & $K_{\mathrm{comp}}$ & $K_{\mathrm{comp}} \le K_1 K_2$ \\
+\midrule
+\texttt{smooth\_nearest\_safe} & \texttt{kernel\_smoothed}      & $3.00$ & $1.71$ &  $5.13$ &  $5.10$ & \checkmark \\
+\texttt{smooth\_nearest\_safe} & \texttt{softly\_constrained}   & $3.00$ & $7.07$ & $21.21$ & $10.44$ & \checkmark \\
+\texttt{kernel\_smoothed}      & \texttt{smooth\_nearest\_safe} & $1.71$ & $3.00$ &  $5.13$ &  $3.48$ & \checkmark \\
+\texttt{kernel\_smoothed}      & \texttt{softly\_constrained}   & $1.71$ & $7.07$ & $12.08$ &  $4.47$ & \checkmark \\
+\bottomrule
+\end{tabular}

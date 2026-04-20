@@ -1,0 +1,25 @@
+{
+  "n_cells": 82,
+  "tau": 0.5,
+  "model": "sentence-transformers/all-mpnet-base-v2",
+  "embedding_dim": 768,
+  "2d_grid_normalized": {
+    "L_hat": 22.68,
+    "G_hat": 22.68,
+    "max_pairwise_distance": 1.3565683830083088
+  },
+  "hdim_normalized": {
+    "L_hat": 17.926352837290132,
+    "G_hat": 17.926352837290132,
+    "max_pairwise_distance": 1.0
+  },
+  "hdim_raw": {
+    "L_hat": 12.397261678092528,
+    "G_hat": 12.397261678092528,
+    "max_pairwise_distance": 1.4459929466247559
+  },
+  "ratios": {
+    "L_ratio_hdim_over_2d_normalized": 0.790403564254415,
+    "G_ratio_hdim_over_2d_normalized": 0.790403564254415
+  }
+}

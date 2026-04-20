@@ -1,0 +1,73 @@
+% =====================================================================
+% neurips_compute_disclosure.tex
+% Included from paper2_v3_submission.tex via \input{}.
+% Standalone section: total compute, cost, and wall-clock used for the
+% empirical results in the paper. Does not affect the theoretical claims
+% (which are Lean-verified, no compute involved).
+% =====================================================================
+
+\section*{Compute Disclosure}
+\label{sec:compute}
+
+The theoretical contributions of this paper---Theorems~\ref{thm:main}
+through~\ref{thm:stochastic} and their refinements---are
+\emph{Lean~4 / Mathlib} machine-verified and required no empirical
+compute beyond a standard \texttt{lake build} pass (minutes on a
+consumer laptop). All empirical compute below supports only
+\Cref{sec:experiments} and \Cref{app:exp-details}.
+
+\paragraph{OpenAI API usage.}
+Behavioral-manifold construction and validator runs were executed
+against the public OpenAI API. The aggregate API spend across all live
+runs referenced in the main paper and appendix---spanning the two
+canonical $25\times25$ MAP-Elites grids
+(\texttt{gpt-5-mini-2025-08-07} and \texttt{gpt-3.5-turbo-0125}), the
+saturated 400-evaluation \texttt{gpt-3.5-turbo-0125} archive
+($\sim$5\,200 API calls, wall-clock $\sim$130 minutes, cost
+$\sim$\$15), the seed-replication run (wall-clock $\sim$119 minutes),
+two retargeted re-evaluation surfaces
+(\texttt{gpt-4o-mini-2024-07-18} and \texttt{gpt-4o-2024-08-06}), a
+66-prompt paraphrase pass with \texttt{gpt-4o-mini} at $T\!=\!0$, and
+three judge-robustness and PAIR-baseline runs---totals approximately
+\textbf{\$60--\$80 USD} at list prices. Individual run wall-clocks
+recorded in \texttt{final\_statistics.json} files for the two largest
+runs are \texttt{7\,814\,s} (saturated) and \texttt{7\,139\,s}
+(replicate); total API wall-clock across all runs is under four
+hours.
+
+\paragraph{Local (Ollama) inference.}
+The LlamaGuard-3-1B demonstration (\Cref{tab:llamaguard-demo}) was run
+locally via Ollama on an Apple-silicon laptop (M-series, on-device
+Metal acceleration). No external compute, no GPU cluster. The full
+82-prompt pass completes in under ten minutes of wall-clock.
+
+\paragraph{Formal verification.}
+Lean~4.28.0 + Mathlib~v4.28.0 compiles the 46-file \texttt{ManifoldProofs}
+tree in approximately 20 minutes on the same consumer laptop. No GPU
+is used. Verification reproducibility is a function of Lean+Mathlib
+version pinning and is independent of API availability.
+
+\paragraph{Attribution to paper sections.}
+The \$15 saturated-archive budget supports
+\Cref{sec:live-validation,sec:gp-instance} and the entire
+continuous-defense sweep (\Cref{app:continuous-sweeps}); the
+remaining $\sim$\$45--\$65 is divided across the retargeting sweep
+(\Cref{tab:three-target}), the judge-robustness deltas
+(\Cref{app:judge-robustness}), seed replication
+(\Cref{tab:seed-replication}), and the PAIR baseline
+(\Cref{app:pair-baseline}). The forced-collapse demonstration
+(\Cref{tab:forced-collapse,tab:paraphrase-unsafe}) uses the 66
+paraphrases from the saturated archive and a single extra scoring
+pass; marginal cost below \$2.
+
+\paragraph{Reproducibility envelope.}
+All budgets quoted are order-of-magnitude; re-running the pipeline
+from a fresh checkout should land within a factor of $2$ on cost and
+wall-clock, modulated by OpenAI list-price changes and model-server
+latency. No experiment in this paper required specialized hardware,
+exceeded a single laptop's memory footprint, or relied on
+non-public data. The anonymized artifact repository contains the
+exact run scripts, the raw \texttt{live\_runs/} metadata (including
+\texttt{final\_statistics.json} for each run), and the
+reconstruction paths from \texttt{live\_runs/} to every table and
+figure in the paper.

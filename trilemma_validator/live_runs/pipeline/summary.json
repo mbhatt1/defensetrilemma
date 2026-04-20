@@ -1,0 +1,47 @@
+{
+  "archive": "/Users/mbhatt/stuff/trilemma_validator/live_runs/gpt35_turbo_t05_saturated/source_archive.json",
+  "tau": 0.5,
+  "filled_cells": 82,
+  "compositions": [
+    {
+      "stage1": "smooth_nearest_safe",
+      "K1": 3.0,
+      "stage2": "kernel_smoothed",
+      "K2": 1.7088007490635062,
+      "K_composed_empirical": 5.0990195135927845,
+      "K_bound_K1_times_K2": 5.126402247190518,
+      "bound_holds": true,
+      "slack": 0.02738273359773391
+    },
+    {
+      "stage1": "smooth_nearest_safe",
+      "K1": 3.0,
+      "stage2": "soft_projection",
+      "K2": 7.0710678118654755,
+      "K_composed_empirical": 10.44030650891055,
+      "K_bound_K1_times_K2": 21.213203435596427,
+      "bound_holds": true,
+      "slack": 10.772896926685876
+    },
+    {
+      "stage1": "kernel_smoothed",
+      "K1": 1.7088007490635062,
+      "stage2": "smooth_nearest_safe",
+      "K2": 3.0,
+      "K_composed_empirical": 3.48010216963685,
+      "K_bound_K1_times_K2": 5.126402247190518,
+      "bound_holds": true,
+      "slack": 1.6463000775536685
+    },
+    {
+      "stage1": "kernel_smoothed",
+      "K1": 1.7088007490635062,
+      "stage2": "soft_projection",
+      "K2": 7.0710678118654755,
+      "K_composed_empirical": 4.47213595499958,
+      "K_bound_K1_times_K2": 12.083045973594572,
+      "bound_holds": true,
+      "slack": 7.610910018594993
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "cases": [
+    {
+      "id": "C.1",
+      "drops": "connectedness",
+      "space": "{0, 1}",
+      "f": "f(0)=0, f(1)=1",
+      "D": "identity",
+      "utility_preserving": true,
+      "continuous": true,
+      "complete": false,
+      "applicable": false,
+      "flagged_as": "not-connected / boundary empty",
+      "witness": "closure(S_tau) = S_tau"
+    },
+    {
+      "id": "C.2",
+      "drops": "continuity",
+      "space": "[0,1], N=100",
+      "f": "f(x)=x",
+      "D": "x if x<0.5 else 0 (step)",
+      "utility_preserving": true,
+      "continuous": false,
+      "complete": true,
+      "applicable": true,
+      "flagged_as": "discontinuity at x=0.5",
+      "witness": "max local K = 49.0"
+    },
+    {
+      "id": "C.3",
+      "drops": "utility preservation",
+      "space": "[0,1], N=100",
+      "f": "f(x)=x",
+      "D": "constant x0=0.2",
+      "utility_preserving": false,
+      "continuous": true,
+      "complete": true,
+      "applicable": true,
+      "flagged_as": "collapse |D(X)|=1",
+      "witness": "50/50 safe inputs displaced"
+    }
+  ]
+}

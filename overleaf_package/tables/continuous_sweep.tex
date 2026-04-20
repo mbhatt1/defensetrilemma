@@ -1,0 +1,16 @@
+% Continuous-defense sweep on the saturated gpt-3.5-turbo-0125 archive.
+% Note: the ObliqueGP row reports the per-pair ell estimator; Figure 4 in
+% the main text uses the per-cell displacement estimator on the same run,
+% giving ell=0.865 and |S_pred|=3. See caption in the parent table.
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrcrrrr}
+\toprule
+defense & $L$ & $K$ & $\ell$ & $\ell(K{+}1)$ & $G$ & trans. & $|\mathcal{S}_{\mathrm{pred}}|$ & TP & FP$_{\mathrm{int}}$ & $|\mathcal{S}_{\mathrm{act}}|$ \\
+\midrule
+\textsc{SmoothNearestSafe} & $23.62$ & $3.162$ & $23.625$ &  $98.334$ & $23.62$ & $\times$        &  $1$ &  $1$ & $0$ & $59$ \\
+\textsc{KernelSmoothed}    & $23.62$ & $5.000$ & $21.750$ & $130.500$ & $23.62$ & $\times$        &  $1$ &  $1$ & $0$ & $39$ \\
+\textsc{SoftProj}          & $23.62$ & $2.000$ & $23.625$ &  $70.875$ & $23.62$ & $\times$        &  $1$ &  $0$ & $0$ & $56$ \\
+\textsc{ObliqueGP}         & $23.62$ & $1.050$ & $ 0.274$ &   $0.563$ & $23.62$ & \checkmark      & $46$ & $46$ & $0$ & $68$ \\
+\bottomrule
+\end{tabular}

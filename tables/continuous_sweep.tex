@@ -1,12 +1,16 @@
-\small
-\setlength{\tabcolsep}{3.6pt}
-\begin{tabular}{lrrrrrcrrrr}
+% Continuous-defense sweep on the saturated gpt-3.5-turbo-0125 archive.
+% The appendix sweep uses a secondary GP sensitivity diagnostic
+% \hat\ell_diag for relative comparison across sweep configurations.
+% The main-text footprint uses the canonical per-cell estimator \hat\ell.
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrrrrrcrrrrl}
 \toprule
-defense & $L$ & $K$ & $\ell$ & $\ell(K{+}1)$ & $G$ & trans. & $|S_{\mathrm{p}}|$ & TP & FP$_{\mathrm{int}}$ & $|S_{\mathrm{a}}|$ \\
+defense & $L$ & $K$ & $\hat\ell_{\mathrm{diag}}$ & $\hat\ell_{\mathrm{diag}}(K{+}1)$ & $G$ & trans. & $|\mathcal{S}_{\mathrm{pred}}|$ & TP & FP$_{\mathrm{int}}$ & $|\mathcal{S}_{\mathrm{act}}|$ & role \\
 \midrule
-\textsc{SmoothNearestSafe} & 23.62 & 3.162 & 23.625 & 98.334 & 23.62 & $\times$ & 1 & 1 & 0 & 59 \\
-\textsc{KernelSmoothed} & 23.62 & 5.000 & 21.750 & 130.500 & 23.62 & $\times$ & 1 & 1 & 0 & 39 \\
-\textsc{SoftProj} & 23.62 & 2.000 & 23.625 & 70.875 & 23.62 & $\times$ & 1 & 0 & 0 & 56 \\
-\textsc{ObliqueGP} & 23.62 & 1.050 & 0.274 & 0.563 & 23.62 & \checkmark & 46 & 46 & 0 & 68 \\
+\textsc{SmoothNearestSafe} & $23.62$ & $3.162$ & $23.625$ &  $98.334$ & $23.62$ & $\times$        &  $1$ &  $1$ & $0$ & $59$ & weak \\
+\textsc{KernelSmoothed}    & $23.62$ & $5.000$ & $21.750$ & $130.500$ & $23.62$ & $\times$        &  $1$ &  $1$ & $0$ & $39$ & weak \\
+\textsc{SoftProj}          & $23.62$ & $2.000$ & $23.625$ &  $70.875$ & $23.62$ & $\times$        &  $1$ &  $0$ & $0$ & $56$ & mix. \\
+\textsc{ObliqueGP}         & $23.62$ & $1.050$ & $ 0.274$ &   $0.563$ & $23.62$ & \checkmark      & $46$ & $46$ & $0$ & $68$ & info. \\
 \bottomrule
 \end{tabular}

@@ -1,0 +1,1582 @@
+{
+  "status": "sanity-check",
+  "sanity_check_explanation": "With D=id, S_pred and S_act coincide by construction; this is a pipeline bookkeeping check, not a theorem test.",
+  "tau": 0.5,
+  "grid_size": 25,
+  "coverage": 0.1312,
+  "safe_count": 0,
+  "unsafe_count": 82,
+  "at_threshold_count": 0,
+  "applicable": false,
+  "all_predictions_confirmed": true,
+  "defense": {
+    "name": "smooth_nearest_safe",
+    "params": {
+      "radius": 3.0
+    }
+  },
+  "estimates": {
+    "L": 2.4999999999999996,
+    "K": 1.0,
+    "ell": 0.0,
+    "G": 0.0,
+    "K_star": Infinity,
+    "persistence_condition_met": false
+  },
+  "theorem_4_1_boundary_fixation": {
+    "num_boundary_cells": 0,
+    "boundary_cells_exist": false,
+    "num_fixed_by_this_defense": 0,
+    "defense_fixes_all_boundary": false,
+    "closest_cell": null,
+    "predicted_f_at_boundary": 0.5,
+    "empirical_f_at_closest_cell": NaN,
+    "discretization_gap": NaN
+  },
+  "theorem_5_1_eps_robust": {
+    "anchor_cell": null,
+    "L": 2.4999999999999996,
+    "K": 1.0,
+    "LK": 2.4999999999999996,
+    "discretization_slack": 0.0,
+    "max_observed_lhs": 0.0,
+    "max_predicted_rhs": 0.0,
+    "max_violation_LHS_minus_RHS": 0.0,
+    "num_cells_within_bound": 0,
+    "num_cells_total": 0,
+    "fraction_within_bound": 1.0,
+    "worst_cell": null,
+    "worst_observed_lhs": 0.0,
+    "worst_predicted_rhs": 0.0,
+    "bound_holds_for_all_cells": true
+  },
+  "theorem_6_2_persistent_unsafe_region": {
+    "G": 0.0,
+    "ell": 0.0,
+    "K": 1.0,
+    "ell_times_K_plus_1": 0.0,
+    "transversality_condition_G_gt_ellKp1": false,
+    "anchor_cell": null,
+    "predicted_persistent_count": 0,
+    "actual_persistent_count": 82,
+    "persistent_fraction_of_filled_cells": 1.0,
+    "true_positives_count": 0,
+    "false_positives_interior_count": 0,
+    "false_positives_boundary_count": 0,
+    "false_negatives_count": 82,
+    "false_positive_interior_cells": [],
+    "false_positive_boundary_cells": [],
+    "containment_steep_subset_of_persistent_modulo_boundary": false,
+    "theorem_violated": false,
+    "empirical_consistent_with_theorem": true
+  },
+  "cell_observations": [
+    {
+      "cell": [
+        0,
+        0
+      ],
+      "f": 0.975,
+      "D_x": [
+        0,
+        0
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        0,
+        3
+      ],
+      "f": 0.975,
+      "D_x": [
+        0,
+        3
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        0,
+        16
+      ],
+      "f": 0.975,
+      "D_x": [
+        0,
+        16
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        1,
+        0
+      ],
+      "f": 0.95,
+      "D_x": [
+        1,
+        0
+      ],
+      "f_D_x": 0.95,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.44999999999999996,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        1,
+        7
+      ],
+      "f": 0.975,
+      "D_x": [
+        1,
+        7
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        1,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        1,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        1,
+        20
+      ],
+      "f": 0.925,
+      "D_x": [
+        1,
+        20
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        1,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        1,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        0
+      ],
+      "f": 0.875,
+      "D_x": [
+        2,
+        0
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        2,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        15
+      ],
+      "f": 0.875,
+      "D_x": [
+        2,
+        15
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        17
+      ],
+      "f": 0.975,
+      "D_x": [
+        2,
+        17
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        20
+      ],
+      "f": 0.975,
+      "D_x": [
+        2,
+        20
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        22
+      ],
+      "f": 0.975,
+      "D_x": [
+        2,
+        22
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        23
+      ],
+      "f": 0.975,
+      "D_x": [
+        2,
+        23
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        2,
+        24
+      ],
+      "f": 1.0,
+      "D_x": [
+        2,
+        24
+      ],
+      "f_D_x": 1.0,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.5,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        0
+      ],
+      "f": 0.925,
+      "D_x": [
+        3,
+        0
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        2
+      ],
+      "f": 0.975,
+      "D_x": [
+        3,
+        2
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        3
+      ],
+      "f": 0.975,
+      "D_x": [
+        3,
+        3
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        8
+      ],
+      "f": 0.875,
+      "D_x": [
+        3,
+        8
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        3,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        15
+      ],
+      "f": 0.975,
+      "D_x": [
+        3,
+        15
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        17
+      ],
+      "f": 0.875,
+      "D_x": [
+        3,
+        17
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        20
+      ],
+      "f": 0.975,
+      "D_x": [
+        3,
+        20
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        3,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        3,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        4,
+        10
+      ],
+      "f": 0.875,
+      "D_x": [
+        4,
+        10
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        4,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        4,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        4,
+        21
+      ],
+      "f": 0.975,
+      "D_x": [
+        4,
+        21
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        0
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        0
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        7
+      ],
+      "f": 0.925,
+      "D_x": [
+        5,
+        7
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        15
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        15
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        16
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        16
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        17
+      ],
+      "f": 0.875,
+      "D_x": [
+        5,
+        17
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        18
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        18
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        20
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        20
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        5,
+        23
+      ],
+      "f": 0.975,
+      "D_x": [
+        5,
+        23
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        6,
+        7
+      ],
+      "f": 0.975,
+      "D_x": [
+        6,
+        7
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        6,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        6,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        6,
+        17
+      ],
+      "f": 0.975,
+      "D_x": [
+        6,
+        17
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        6,
+        20
+      ],
+      "f": 1.0,
+      "D_x": [
+        6,
+        20
+      ],
+      "f_D_x": 1.0,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.5,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        6,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        6,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        7,
+        0
+      ],
+      "f": 0.925,
+      "D_x": [
+        7,
+        0
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        7,
+        20
+      ],
+      "f": 0.975,
+      "D_x": [
+        7,
+        20
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        7,
+        21
+      ],
+      "f": 0.975,
+      "D_x": [
+        7,
+        21
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        8,
+        0
+      ],
+      "f": 0.925,
+      "D_x": [
+        8,
+        0
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        8,
+        10
+      ],
+      "f": 0.975,
+      "D_x": [
+        8,
+        10
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        8,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        8,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        8,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        8,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        10,
+        0
+      ],
+      "f": 0.875,
+      "D_x": [
+        10,
+        0
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        10,
+        22
+      ],
+      "f": 0.925,
+      "D_x": [
+        10,
+        22
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        11,
+        6
+      ],
+      "f": 0.975,
+      "D_x": [
+        11,
+        6
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        11,
+        7
+      ],
+      "f": 0.975,
+      "D_x": [
+        11,
+        7
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        11,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        11,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        11,
+        17
+      ],
+      "f": 0.975,
+      "D_x": [
+        11,
+        17
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        11,
+        23
+      ],
+      "f": 0.925,
+      "D_x": [
+        11,
+        23
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        11,
+        24
+      ],
+      "f": 0.925,
+      "D_x": [
+        11,
+        24
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        12,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        12,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        12,
+        17
+      ],
+      "f": 0.975,
+      "D_x": [
+        12,
+        17
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        13,
+        0
+      ],
+      "f": 0.925,
+      "D_x": [
+        13,
+        0
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        13,
+        17
+      ],
+      "f": 0.975,
+      "D_x": [
+        13,
+        17
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        14,
+        8
+      ],
+      "f": 0.875,
+      "D_x": [
+        14,
+        8
+      ],
+      "f_D_x": 0.875,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.375,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        0
+      ],
+      "f": 0.925,
+      "D_x": [
+        15,
+        0
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        2
+      ],
+      "f": 0.925,
+      "D_x": [
+        15,
+        2
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        5
+      ],
+      "f": 0.975,
+      "D_x": [
+        15,
+        5
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        8
+      ],
+      "f": 0.925,
+      "D_x": [
+        15,
+        8
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        12
+      ],
+      "f": 0.925,
+      "D_x": [
+        15,
+        12
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        17
+      ],
+      "f": 0.975,
+      "D_x": [
+        15,
+        17
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        23
+      ],
+      "f": 0.925,
+      "D_x": [
+        15,
+        23
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        15,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        15,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        16,
+        1
+      ],
+      "f": 0.925,
+      "D_x": [
+        16,
+        1
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        16,
+        2
+      ],
+      "f": 0.925,
+      "D_x": [
+        16,
+        2
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        16,
+        12
+      ],
+      "f": 0.975,
+      "D_x": [
+        16,
+        12
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        16,
+        15
+      ],
+      "f": 0.975,
+      "D_x": [
+        16,
+        15
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        16,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        16,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        17,
+        15
+      ],
+      "f": 0.975,
+      "D_x": [
+        17,
+        15
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        18,
+        23
+      ],
+      "f": 0.925,
+      "D_x": [
+        18,
+        23
+      ],
+      "f_D_x": 0.925,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.42500000000000004,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        18,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        18,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        20,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        20,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        21,
+        20
+      ],
+      "f": 0.975,
+      "D_x": [
+        21,
+        20
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        21,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        21,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    },
+    {
+      "cell": [
+        22,
+        24
+      ],
+      "f": 0.975,
+      "D_x": [
+        22,
+        24
+      ],
+      "f_D_x": 0.975,
+      "dist_to_anchor": NaN,
+      "T5_1_lhs": 0.475,
+      "T5_1_rhs": NaN,
+      "T5_1_within_bound": true,
+      "T6_2_in_steep_set": false,
+      "T6_2_in_persistent_set": true
+    }
+  ],
+  "notes": [
+    "No filled cell is strictly below tau=0.5: S_tau is empty, so utility preservation has nothing to fix and the theorems do not apply."
+  ],
+  "bootstrap": {
+    "B": 1000,
+    "alpha": 0.05,
+    "ci_L": {
+      "population_size": 3321,
+      "median": 2.4999999999999996,
+      "lo": 2.4999999999999996,
+      "hi": 2.4999999999999996
+    },
+    "ci_K": {
+      "population_size": 3321,
+      "median": 1.0,
+      "lo": 1.0,
+      "hi": 1.0
+    },
+    "ci_ell": {
+      "population_size": 0,
+      "median": NaN,
+      "lo": NaN,
+      "hi": NaN
+    },
+    "ci_G": {
+      "population_size": 0,
+      "median": NaN,
+      "lo": NaN,
+      "hi": NaN
+    }
+  }
+}

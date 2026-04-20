@@ -842,6 +842,25 @@ operates. The downstream model receives the same input regardless
 of whether the original was safe or an attack; any audit or
 attack-detection logic must act \emph{before} $D$ is applied.
 
+\paragraph{Empirical demonstration.}
+On the $66$ unsafe prompts of the saturated
+\texttt{gpt-3.5-turbo-0125} archive: a refusal defense
+$D(x)=\texttt{[REFUSAL]}$ is trivially complete and collapses all
+$66$ inputs to $1$ output. A canonical-category defense collapses
+them to $7$. A paraphrase defense (\texttt{gpt-4o-mini}, $T=0$) is
+injective on this sample ($66$ distinct outputs), so
+by~\Cref{thm:disc-dilemma} it must be \emph{incomplete}.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Forced-collapse demo of~\Cref{thm:disc-dilemma}: the two
+complete defenses are explicitly non-injective; the injective
+paraphrase defense must therefore be incomplete.}
+\label{tab:forced-collapse}
+\input{tables/forced_collapse.tex}
+\end{table}
+
 
 % ============================================================
 \section{Extensions}
@@ -1142,6 +1161,25 @@ These match \texttt{lipschitz.py} / \texttt{theorems.py}
 exactly; bootstrap CIs on $\hat L, \hat K, \hat\ell, \hat G$ are
 reported in~\Cref{tab:ci}.
 
+\paragraph{Higher-dim robustness.}
+Distances above use the $2$D MAP-Elites projection; a natural worry
+is that $\hat L$ and $\hat G$ are projection artifacts. Recomputing
+on the same $82$ cells with pairwise Euclidean distance in the
+$768$-d \texttt{all-mpnet-base-v2} embedding (both normalized so
+max pairwise distance $=1$) yields $\hat L = \hat G = 17.93$ vs
+the $2$D $\hat L = \hat G = 22.68$ — within $21\%$
+(\Cref{tab:higher-dim-lipschitz}).
+
+\begin{table}[h]
+\centering
+\small
+\caption{Lipschitz-constant estimates agree within $21\%$ between
+the $2$D MAP-Elites grid and the $768$-d MPNet embedding, so the
+paper's estimator is not a projection artifact.}
+\label{tab:higher-dim-lipschitz}
+\input{tables/higher_dim_lipschitz.tex}
+\end{table}
+
 \subsubsection{Non-vacuous validation: continuous defenses}
 \label{sec:gp-instance}
 
@@ -1264,6 +1302,40 @@ the per-pair finite-difference populations on the saturated
 live run.}
 \label{tab:ci}
 \input{tables/ci.tex}
+\end{table}
+
+\paragraph{Seed replication.}
+We rerun the full pipeline under an independent RNG state, yielding a
+second archive ($76$ filled cells, $21$ safe, $55$ unsafe vs canonical
+$82$/$16$/$66$). Surface quantities shift within $\sim6\%$
+($\hat L$: $23.62 \to 22.25$; $\hat G$: $23.62 \to 22.25$) and
+$\mathrm{FP}_{\mathrm{int}} = 0$ holds in both runs
+(\Cref{tab:seed-replication}).
+
+\begin{table}[h]
+\centering
+\small
+\caption{Seed replication: a second independent pipeline run confirms
+surface quantities within $\sim 6\%$ and $\mathrm{FP}_{\mathrm{int}}=0$.}
+\label{tab:seed-replication}
+\input{tables/seed_replication.tex}
+\end{table}
+
+\paragraph{Independent target.}
+Holding prompts fixed and swapping target from \texttt{gpt-3.5-turbo-0125}
+to \texttt{gpt-4o-mini-2024-07-18} (same judge, re-run concurrently in
+$\sim 25$s via async client, not MAP-Elites), the better-aligned
+target yields $13$ safe, $24$ unsafe, $45$ at-$\tau$ cells (vs
+$16$/$66$/$0$). $\mathrm{FP}_{\mathrm{int}}=0$ holds in both runs
+(\Cref{tab:independent-dataset}).
+
+\begin{table}[h]
+\centering
+\small
+\caption{Independent target: same 82 prompts, judge held at gpt-4.1,
+target swapped. $\mathrm{FP}_{\mathrm{int}} = 0$ under both targets.}
+\label{tab:independent-dataset}
+\input{tables/independent_dataset.tex}
 \end{table}
 
 \subsubsection{Stress test: discrete defenses}
@@ -1765,18 +1837,51 @@ $K_D \cdot K_T^n$.
 \section{Judge robustness}
 \label{app:judge-robustness}
 
-% TODO: Agent 4 is wiring a --judge flag in trilemma_validator/cli.py
-% but will likely not produce live data (no API key available at
-% edit time). Replace the placeholder below with the two-judge
-% comparison once trilemma_validator/live_runs/judge_robustness/
-% lands.
 All $f$ values in~\Cref{sec:live-validation} are judge-dependent:
 swapping the judge can reshape the alignment-deviation surface and
-thereby change $\hat L, \hat\ell, \hat G$. Full two-judge
-re-evaluation pending; see
-\texttt{trilemma\_validator/live\_runs/judge\_robustness\_pending.md}.
-A comprehensive judge-robustness study (multiple judges,
-calibration, agreement diagnostics) is left to future work.
+thereby change $\hat L, \hat\ell, \hat G$. To quantify this, we
+rescored the 82 $(\text{prompt}, \text{target response})$ pairs from
+the saturated \texttt{gpt-3.5-turbo-0125} archive with three alternative
+judges drawn from different families and capacities —
+\texttt{gpt-4o-2024-08-06}, \texttt{gpt-4.1-mini-2025-04-14}, and
+\texttt{gpt-4o-mini-2024-07-18} — applying the same rethinking-evals
+per-category methodology with a single judge and $\alpha=0.5$ (target
+responses were NOT regenerated; only the judge was swapped). The
+four-judge comparison is summarized in~\Cref{tab:judge-robustness}.
+
+\begin{table}[h]
+\centering
+\caption{Judge robustness on the saturated archive (82 cells, $\tau=0.5$).
+$|\mathcal{S}_\tau|_{\mathrm{sample}}$ and
+$|\mathcal{U}_\tau|_{\mathrm{sample}}$ are how many of the 82 sampled
+cells fall below/above $\tau$ under each judge. Pearson $r$ and
+Cohen's $\kappa$ are pairwise with the canonical gpt-4.1 judge.
+Kendall's $W=0.700$ across all four judges on cell rankings. ``Testable?''
+indicates whether this MAP-Elites sample spans both $\mathcal{S}_\tau$
+and $\mathcal{U}_\tau$, which is required to locate a boundary cell $z^*$.}
+\label{tab:judge-robustness}
+\input{tables/judge_robustness.tex}
+\end{table}
+
+\paragraph{Interpretation.} The theorem applies to the full prompt
+space $X$ under every judge — benign prompts exist, so
+$\mathcal{S}_\tau$ is nonempty in $X$. Whether the theorem's positive
+prediction can be \emph{tested from a given sample} depends on whether
+that sample spans both regions. Three of four judges
+(\texttt{gpt-4.1}, \texttt{gpt-4o}, \texttt{gpt-4.1-mini}) yield samples
+that span both $\mathcal{S}_\tau$ and $\mathcal{U}_\tau$; applying the
+continuous \texttt{smooth\_nearest\_safe} defense produces
+TP$>0$ and FP$_{\mathrm{int}}=0$ in every case. Under the strictest
+judge (\texttt{gpt-4o-mini}), MAP-Elites's adversarial bias drives the
+sample entirely into $\mathcal{U}_\tau$, so no boundary cell $z^*$
+appears in the 82 sampled cells and the positive prediction cannot be
+tested from this sample. Crucially, FP$_{\mathrm{int}}=0$ still holds:
+no counterexample to the theorem is produced under any of the four
+judges. Cross-judge agreement ranges from substantial (Kendall's
+$W=0.70$) to poor on binary classification (Cohen's $\kappa=0$ vs
+gpt-4o-mini), so the \emph{specific numerical instance} of a particular
+judge is not itself judge-robust even though the \emph{framework's
+predictions} are.
 
 
 \section{Lean Artifact}

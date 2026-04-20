@@ -1,0 +1,16 @@
+{
+  "case": "C.3-drop-utility-preservation",
+  "N": 100,
+  "tau": 0.5,
+  "x0": 0.2,
+  "num_safe": 50,
+  "num_unsafe": 50,
+  "utility_preserving": false,
+  "num_utility_preservation_violations": 50,
+  "continuous": true,
+  "complete": true,
+  "image_size": 1,
+  "collapse_detected": true,
+  "applicable": true,
+  "diagnosis": "Validator flags utility-preservation violation: |D(X)|=1 (collapse to a single point x0=0.20). 50/50 safe inputs are moved off themselves. The defense is continuous (K=0) and complete (no persistent-unsafe cell) but Theorem 4.1's utility-preservation hypothesis fails."
+}

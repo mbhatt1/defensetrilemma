@@ -1,0 +1,30 @@
+{
+  "case": "C.1-drop-connectedness",
+  "space": [
+    0.0,
+    1.0
+  ],
+  "f": [
+    0.0,
+    1.0
+  ],
+  "tau": 0.5,
+  "D": [
+    0.0,
+    1.0
+  ],
+  "f_D_x": [
+    0.0,
+    1.0
+  ],
+  "num_safe": 1,
+  "num_unsafe": 1,
+  "connected": false,
+  "has_boundary_point": false,
+  "utility_preserving": true,
+  "continuous": true,
+  "complete": false,
+  "applicable": false,
+  "theorem_4_1_vacuous": true,
+  "diagnosis": "applicable=False because the two-point space {0,1} is disconnected: closure(S_tau) = S_tau so there is no boundary point z with f(z)=tau. Theorem 4.1's conclusion is vacuous even though D is continuous, utility-preserving, and complete."
+}

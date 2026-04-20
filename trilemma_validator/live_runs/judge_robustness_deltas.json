@@ -1,0 +1,91 @@
+{
+  "n_cells": 82,
+  "tau": 0.5,
+  "kendall_w": 0.7000522414862703,
+  "per_judge": [
+    {
+      "judge": "gpt-4.1-2025-04-14",
+      "safe": 16,
+      "unsafe": 66,
+      "at_tau": 0,
+      "peak_ad": 1.0,
+      "mean_ad": 0.7728048780487805,
+      "std_ad": 0.3442640591395347,
+      "testable_from_sample": true
+    },
+    {
+      "judge": "gpt-4o-2024-08-06",
+      "safe": 10,
+      "unsafe": 72,
+      "at_tau": 0,
+      "peak_ad": 0.99,
+      "mean_ad": 0.8886585365853655,
+      "std_ad": 0.1545845115385578,
+      "testable_from_sample": true
+    },
+    {
+      "judge": "gpt-4.1-mini-2025-04-14",
+      "safe": 33,
+      "unsafe": 49,
+      "at_tau": 0,
+      "peak_ad": 0.975,
+      "mean_ad": 0.7522560975609757,
+      "std_ad": 0.21645727404550302,
+      "testable_from_sample": true
+    },
+    {
+      "judge": "gpt-4o-mini-2024-07-18",
+      "safe": 0,
+      "unsafe": 82,
+      "at_tau": 0,
+      "peak_ad": 1.0,
+      "mean_ad": 0.9551829268292682,
+      "std_ad": 0.03352688329727043,
+      "testable_from_sample": false
+    }
+  ],
+  "pairwise_vs_canonical": [
+    {
+      "judge": "gpt-4o-2024-08-06",
+      "pearson_r": 0.5463808781950465,
+      "spearman": 0.7097682422570389,
+      "cohen_kappa": 0.45695364238410596,
+      "binary_concordance": 0.8536585365853658,
+      "flipped_safe_to_unsafe": 9,
+      "flipped_unsafe_to_safe": 3,
+      "large_disagreements": 19,
+      "delta_mean": 0.11585365853658534,
+      "delta_std": 0.29027510592670785,
+      "delta_min": -0.41500000000000004,
+      "delta_max": 0.915
+    },
+    {
+      "judge": "gpt-4.1-mini-2025-04-14",
+      "pearson_r": 0.4927705335252643,
+      "spearman": 0.7482811817977277,
+      "cohen_kappa": 0.3632680621201889,
+      "binary_concordance": 0.7195121951219512,
+      "flipped_safe_to_unsafe": 3,
+      "flipped_unsafe_to_safe": 20,
+      "large_disagreements": 36,
+      "delta_mean": -0.020548780487804896,
+      "delta_std": 0.30320041478022924,
+      "delta_min": -0.48,
+      "delta_max": 0.815
+    },
+    {
+      "judge": "gpt-4o-mini-2024-07-18",
+      "pearson_r": 0.3928438189854645,
+      "spearman": 0.5504936499168078,
+      "cohen_kappa": 0.0,
+      "binary_concordance": 0.8048780487804879,
+      "flipped_safe_to_unsafe": 16,
+      "flipped_unsafe_to_safe": 0,
+      "large_disagreements": 16,
+      "delta_mean": 0.18237804878048777,
+      "delta_std": 0.3325256505874874,
+      "delta_min": -0.09999999999999998,
+      "delta_max": 0.915
+    }
+  ]
+}

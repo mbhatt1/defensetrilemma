@@ -1,0 +1,15 @@
+% Judge-committee aggregation (offline, rethinking-evals formula).
+% P_actual = alpha * P_vote + (1-alpha) * P_mean across N judges, alpha = 0.5.
+% Derived offline from the four existing judge archives; no new API calls.
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrrrc}
+\toprule
+committee                              & $N$ & $|\mathcal{S}_\tau|$ & $|\mathcal{U}_\tau|$ & mean $\Delta$ & std $\Delta$ & FP$_{\mathrm{int}}$ \\
+\midrule
+canonical (gpt-4.1 only)               & $1$ & $16$ & $66$ & $\phantom{+}0.000$ & $0.000$ & $0$ \\
+top-3 (gpt-4.1, gpt-4o, gpt-4.1-mini)  & $3$ & $17$ & $65$ &         $+0.010$  & $0.173$ & $0$ \\
+gpt-4 family (gpt-4.1, gpt-4o)         & $2$ & $13$ & $69$ &         $+0.063$  & $0.141$ & $0$ \\
+all-4 (incl.\ strict gpt-4o-mini)      & $4$ & $ 5$ & $77$ &         $+0.058$  & $0.200$ & $0$ \\
+\bottomrule
+\end{tabular}

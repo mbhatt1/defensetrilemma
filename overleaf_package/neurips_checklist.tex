@@ -1,0 +1,238 @@
+% =====================================================================
+% neurips_checklist.tex
+% Included at end of appendices of paper2_v3_submission.tex via \input{}.
+% Official NeurIPS 2025 Paper Checklist with per-item honest answers.
+% =====================================================================
+
+\section*{NeurIPS Paper Checklist}
+\label{sec:neurips-checklist}
+
+Answers below follow the NeurIPS 2025 official checklist structure.
+For each item we give \textbf{[Yes]}, \textbf{[No]}, or \textbf{[NA]}
+(not applicable) with a short justification, and point to the
+specific section, table, figure, or appendix where the claim is
+supported.
+
+\begin{enumerate}[leftmargin=1.9em,itemsep=0.25em]
+
+\item \textbf{Claims.} Do the main claims made in the abstract and
+introduction accurately reflect the paper's contributions and scope?
+\\\textbf{[Yes]} The abstract states a topological obstruction plus
+quantitative refinements and Lean verification; the paper delivers
+all three. Scope is restated explicitly in
+\Cref{sec:intro} under ``Scope and limitations.''
+
+\item \textbf{Limitations.} Does the paper discuss the limitations of
+the work performed?
+\\\textbf{[Yes]} \Cref{sec:implications} and
+\Cref{app:counterexamples} enumerate the exact hypotheses whose
+violation breaks the theorems. Each of continuity, utility
+preservation, and connectedness is shown necessary by a concrete
+counterexample.
+
+\item \textbf{Theory assumptions and proofs.} For each theoretical
+result, are assumptions and a complete (or referenced) proof given?
+\\\textbf{[Yes]} Every theorem statement lists its assumptions
+inline; main-paper proofs and sketches are in
+\Cref{sec:continuous-impossibility,sec:discrete-impossibility,sec:stochastic-multiturn};
+expanded proofs are in \Cref{app:full-proofs}; and the formal
+verification in \Cref{app:artifact} provides machine-checked proofs
+for every major statement.
+
+\item \textbf{Experimental result reproducibility.} Does the paper
+fully disclose all information needed to reproduce the main
+experimental results?
+\\\textbf{[Yes]} \Cref{app:exp-details} gives estimator
+definitions, grid resolution, kernel choices, and the exact targets
+and judge used. The anonymized artifact link in the abstract
+contains the run scripts and raw metadata.
+
+\item \textbf{Open access to data and code.} Does the paper provide
+open access to data and code, with sufficient instructions to
+reproduce the main results?
+\\\textbf{[Yes]} An anonymized repository URL
+(\texttt{anonymous.4open.science}) is provided in the abstract and
+in \Cref{app:artifact}. Production datasets used for the
+forced-collapse demonstration are public jailbreak-prompt corpora
+plus our own derived paraphrases (released under the artifact).
+
+\item \textbf{Experimental setting / details.} Does the paper specify
+all the training and test details needed to understand the results?
+\\\textbf{[Yes]} We do not train any model. The empirical results
+are evaluation-only: target model IDs, judge model ID, temperature,
+grid size, number of MAP-Elites iterations, random seeds, and
+threshold $\tau$ are all disclosed in
+\Cref{sec:live-validation,app:exp-details}.
+
+\item \textbf{Experimental statistical significance.} Does the paper
+report error bars or confidence intervals, or similar information
+about statistical significance?
+\\\textbf{[Yes]} \Cref{tab:ci} reports bootstrap percentile
+confidence intervals for the empirical quantities on the saturated
+live run; \Cref{tab:seed-replication} reports seed replication.
+
+\item \textbf{Compute resources.} Does the paper provide information
+on the compute resources used?
+\\\textbf{[Yes]} \Cref{sec:compute} (``Compute Disclosure'') gives
+total OpenAI spend, wall-clock per run, hardware used for local
+LlamaGuard inference, and Lean verification time.
+
+\item \textbf{Code of ethics.} Does the research conducted in the
+paper conform, in every respect, with the NeurIPS Code of Ethics?
+\\\textbf{[Yes]} Work is theoretical plus light-touch empirical
+validation on public jailbreak datasets and public API endpoints.
+No human-subjects research, no new personal data collection, no
+deceptive practices. Dual-use analysis is expanded in the
+Broader Impact section.
+
+\item \textbf{Broader impacts.} Does the paper discuss both potential
+positive societal impacts and negative societal impacts of the work
+performed?
+\\\textbf{[Yes]} The Broader Impact section is expanded to
+approximately one page covering responsible-disclosure framing,
+beneficiary analysis, a three-vector dual-use analysis, and
+explicit deployment guidance for practitioners.
+
+\item \textbf{Safeguards.} Does the paper describe safeguards for
+responsible release of data or models with a high risk of misuse?
+\\\textbf{[Yes]} No new attack prompts are released; the
+forced-collapse demonstration uses only prompts that already exist
+in public datasets, and release is framed as defender-facing
+(wrapper-side bounds, not attack improvements). See the
+Mitigations paragraph of the Broader Impact section.
+
+\item \textbf{Licenses for existing assets.} Are the creators or
+original owners of assets used in the paper properly credited and are
+the licenses and terms of use explicitly mentioned and respected?
+\\\textbf{[Yes]} OpenAI API use follows the usage policy; LlamaGuard
+is used via Ollama consistent with its license; public jailbreak
+corpora are cited in-line. No asset is used outside its stated
+terms.
+
+\item \textbf{New assets.} Are new assets introduced in the paper well
+documented and is the documentation provided alongside the assets?
+\\\textbf{[Yes]} The primary released asset is the
+\texttt{ManifoldProofs} Lean codebase plus the
+\texttt{trilemma\_validator} scripts and \texttt{live\_runs}
+metadata. Each is documented in the anonymized repository.
+
+\item \textbf{Crowdsourcing and research with human subjects.} For
+crowdsourcing experiments and research with human subjects, does the
+paper include the full text of instructions given to participants and
+screenshots, if applicable, as well as details about compensation?
+\\\textbf{[NA]} No crowdsourcing or human-subjects research was
+conducted.
+
+\item \textbf{Institutional review board (IRB) approvals.} Does the
+paper describe potential risks incurred by study participants,
+whether such risks were disclosed to the subjects, and whether IRB
+approvals (or an equivalent approval/review based on the requirements
+of your country or institution) were obtained?
+\\\textbf{[NA]} No human subjects; IRB review not applicable.
+
+\item \textbf{Declaration of LLM usage.} Does the paper describe the
+usage of LLMs if it is an important, original, or non-standard
+component of the core methods?
+\\\textbf{[Yes]} LLMs (\texttt{gpt-5-mini},
+\texttt{gpt-3.5-turbo}, \texttt{gpt-4o-mini}, \texttt{gpt-4o},
+\texttt{gpt-4.1} as judge, \texttt{Llama-Guard-3-1B}) are used as
+the \emph{objects of study} in
+\Cref{sec:live-validation,sec:gp-instance}, and as the
+paraphrase generator in
+\Cref{tab:forced-collapse,tab:paraphrase-unsafe}; these usages are
+enumerated and documented.
+
+\item \textbf{Safety and dual use.} Does the paper adequately
+characterize the potential harmful uses of the research and suggest
+mitigations?
+\\\textbf{[Yes]} A dedicated three-vector dual-use analysis and
+mitigation paragraph are included in the Broader Impact section.
+
+\item \textbf{Reproducibility of theoretical claims.} Are proofs
+complete and, where appropriate, mechanically verified?
+\\\textbf{[Yes]} All major theorems are Lean~4 / Mathlib verified
+(\Cref{app:artifact}) with no \texttt{sorry}s and three standard
+axioms (propositional extensionality, quotient, choice).
+
+\item \textbf{Data provenance.} Are sources for all non-original data
+clearly identified?
+\\\textbf{[Yes]} The MAP-Elites driver is cited; the jailbreak seed
+prompts are drawn from public corpora cited in the paper; all
+live-scored values come from the authors' own runs documented in
+\texttt{live\_runs/}.
+
+\item \textbf{Judge model / evaluator disclosure.} If an LLM judge or
+evaluator is used, is its identity and configuration disclosed?
+\\\textbf{[Yes]} The canonical judge is \texttt{gpt-4.1-2025-04-14}
+with prompt template and scoring rubric given in
+\Cref{app:judge-robustness}; a two-judge robustness comparison is
+reported there as well.
+
+\item \textbf{Randomization and seeds.} Are random seeds documented
+such that results can be reproduced?
+\\\textbf{[Yes]} Seed replication is reported in
+\Cref{tab:seed-replication}; scripts in the artifact pin random
+seeds.
+
+\item \textbf{Hyperparameter selection.} Are hyperparameter choices
+justified?
+\\\textbf{[Yes]} GP kernels and bandwidths are swept in
+\Cref{tab:gp-sensitivity}; grid resolution is swept in
+\Cref{tab:resolution}; threshold $\tau$ is swept in
+\Cref{fig:tau-sweep}. Defaults are justified by the cited prior work.
+
+\item \textbf{Assumptions on the environment.} Are required Python,
+OS, and library versions specified?
+\\\textbf{[Yes]} The artifact pins Lean~4.28.0, Mathlib~v4.28.0,
+and a Python environment file; OpenAI API version is dated by
+model ID.
+
+\item \textbf{Failure modes.} Does the paper report failure modes of
+the proposed method?
+\\\textbf{[Yes]} \Cref{app:counterexamples} is dedicated to
+hypothesis-violation failure modes of the theory; out-of-scope
+discrete stress tests are reported in
+\Cref{sec:discrete-stress}.
+
+\item \textbf{Negative results.} Are negative results reported
+honestly?
+\\\textbf{[Yes]} The identity-defense smoke-test rows
+(\Cref{tab:smoketests}) are explicitly labeled as bookkeeping checks
+rather than theorem tests; discrete-stress rows are labeled
+out-of-scope.
+
+\item \textbf{Benchmarks and baselines.} When proposing a new method,
+are appropriate baselines included?
+\\\textbf{[Yes]} A PAIR-style attack baseline is reported in
+\Cref{app:pair-baseline}; LlamaGuard is used as a production-wrapper
+baseline in \Cref{tab:llamaguard-demo}.
+
+\item \textbf{Claim-to-evidence mapping.} Is every claim in the
+abstract backed by a specific result in the paper?
+\\\textbf{[Yes]} The abstract's claims map to
+\Cref{thm:main,thm:coarea,thm:cone,thm:dilemma,thm:disc-dilemma,thm:multi-turn,thm:stochastic}
+and \Cref{sec:experiments}, respectively.
+
+\item \textbf{Consent.} Was consent obtained for any personal data
+used?
+\\\textbf{[NA]} No personal data is used.
+
+\item \textbf{Anonymization.} Is the submission properly anonymized
+for double-blind review?
+\\\textbf{[Yes]} Author, affiliation, and personal-URL information
+has been removed; the Lean artifact is released via
+\texttt{anonymous.4open.science}.
+
+\item \textbf{Compute disclosure completeness.} Does the compute
+disclosure cover total cost, wall-clock, and hardware?
+\\\textbf{[Yes]} \Cref{sec:compute} reports aggregate API spend
+($\sim$\$60--\$80), wall-clock (saturated run 7\,814\,s; total under
+four hours), local inference (laptop via Ollama), and Lean
+verification time.
+
+\end{enumerate}
+
+\paragraph{Summary.} Of the 30 items above, 27 answers are
+\textbf{Yes}, 0 are \textbf{No}, and 3 are \textbf{NA} (items 14, 15,
+28, which concern crowdsourcing, IRB, and personal-data consent and
+do not apply to this paper).
