@@ -29,6 +29,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{counterexample}[theorem]{Counterexample}
 
+
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\cl}[1]{\overline{#1}}
@@ -164,7 +165,7 @@ Our results apply to \emph{continuous, utility-preserving wrapper defenses} on \
     LLM safety surfaces, and a forced-collapse experiment exhibits the
     discrete theorem's information-loss mechanism.
   \item \textbf{Formal verification}: the full theory is verified in
-    Lean~4 across 46 files with ${\sim}360$ theorems, no admitted
+    Lean~4 across 46 files with ${\sim}360$ declarations, no admitted
     proofs, and three standard axioms. Supporting results, full proofs,
     and additional empirical analyses appear in the appendix.
 \end{enumerate}
@@ -519,7 +520,7 @@ The defense leaves a positive-measure region that remains unsafe.
 $\mathcal{S}$ is a strict superlevel set of a continuous function,
 hence open. For $x \in \mathcal{S}$:
 $f(D(x)) \geq f(x) - \ell(K+1)\dist(x,z) > \tau$
-by \Cref{lem:input-bound} and the definition of~$\mathcal{S}$.
+by Lemma~\ref{lem:input-bound} and the definition of~$\mathcal{S}$.
 Full proof in \Cref{app:proofs}.
 \end{proof}
 
@@ -1190,7 +1191,7 @@ models. $\mathrm{FP}_{\mathrm{int}} = 0$ holds across all three.}
 \small
 \caption{Llama-Guard-3-1B applied to the $82$
 unsafe-seed prompts, demonstrating
-\Cref{thm:disc-dilemma}'s injective-incomplete horn. 52 of 82 attacks pass as \texttt{safe}.}
+\Cref{thm:disc-dilemma}'s injective-incomplete horn. 51 of 82 attacks pass as \texttt{safe}.}
 \label{tab:llamaguard-demo}
 \input{tables/llamaguard_demo.tex}
 \end{table}
@@ -1456,7 +1457,7 @@ $x \mapsto f(x) - \ell(K+1)\dist(x,z)$ at level~$\tau$, hence open.
 \textbf{(2)} Open and nonempty implies positive measure.
 
 \textbf{(3)} For $x \in \mathcal{S}$:
-$f(x) > \tau + \ell(K+1)\dist(x,z)$. By \Cref{lem:input-bound}:
+$f(x) > \tau + \ell(K+1)\dist(x,z)$. By Lemma~\ref{lem:input-bound}:
 $f(D(x)) \geq f(x) - \ell(K+1)\dist(x,z) > \tau$.
 
 \noindent\emph{Lean:
@@ -1707,11 +1708,11 @@ gpt-3.5-turbo-0125 (smoke) & $0.50$ & $9$  & $11.44$ & $11.44$ & $7$ & $7$ & $7$
 \centering
 \small
 \caption{Continuous-defense sweep on the saturated
-\texttt{gpt-3.5-turbo-0125} grid over continuous defense families
-(GP-oblique, Gaussian-smoothed nearest-safe, contractive-flow).
-Each row reports empirical $\hat\ell$, $\hat K$,
-$|\mathcal{S}_{\text{pred}}|$, $|\mathcal{S}_{\text{act}}|$, TP, and
-FP$_{\text{int}}$.}
+\texttt{gpt-3.5-turbo-0125} grid over continuous defense families.
+$\hat\ell_{\mathrm{diag}}$ is a secondary diagonal estimator used for
+relative comparison across sweep rows; the main-text estimator
+$\hat\ell$ (\Cref{sec:estimators}) gives the canonical per-cell
+value $\hat\ell = 0.86$ for \textsc{ObliqueGP}.}
 \label{tab:continuous-sweep}
 \input{tables/continuous_sweep.tex}
 \end{table}
@@ -1986,7 +1987,8 @@ It comprises 46 files:
     (MoF\_19\_OptimalDefense)
   \item 1 refined persistence with defense-path Lipschitz constant~$\ell$
     (MoF\_20\_RefinedPersistence); this file contains the primary
-    formalization of \Cref{thm:persistent,lem:input-bound,def:steep}
+    formalization of Lemma~\ref{lem:input-bound},
+    Definition~\ref{def:steep}, and Theorem~\ref{thm:persistent}
   \item 1 gradient chain: $\|\nabla f(z)\| > \ell(K+1)$ implies
     persistent unsafe region via operator-norm direction extraction
     and derivative-based local growth

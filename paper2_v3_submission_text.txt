@@ -1,0 +1,3705 @@
+The Impossibility of Wrapper Defense Against
+Prompt Injection
+
+Anonymous Author(s)
+Affiliation
+Address
+email
+
+Abstract
+Wrapper defenses attempt to neutralize prompt injection by preprocessing inputs
+with a map D : X → X. We identify a topological obstruction to this program:
+in any connected prompt space, the safe sub-level set Sτ = {f < τ } is open but
+not closed, whereas any continuous utility-preserving defense has a closed fixedpoint set containing Sτ ; closure must spill onto the boundary, forcing boundary
+fixation. The obstruction is structural, not a matter of design or implementation.
+Under Lipschitz and transversality conditions, the failure is not merely existential but quantitative: we give explicit cone-measure and volume lower bounds
+on the persistent-unsafe region (Theorems E.1 and E.2), and a dilemma characterizing the optimal defense Lipschitz constant K ∗ = G/ℓ − 1 (Theorem E.3).
+The same obstruction reappears in three extensions: discrete finite-set defenses
+must collapse distinct inputs to be complete; multi-turn wrappers inherit boundary fixation at every turn; stochastic wrappers with continuous expected score
+inherit threshold-level failure in expectation. The theory is formalized in Lean 4
+with Mathlib across 46 files containing ∼360 declarations, with no admitted
+proofs and only three standard axioms (https://anonymous.4open.science/
+r/defense-trilemma-XXXX). The artifact’s primary value is definitional scaffolding — unambiguously pinning down continuity, utility preservation, and Lipschitz regularity in a shared language that survives translation between prose and
+code — plus verified cross-references between theorem statements. Empirically,
+on real LLM safety surfaces the predicted boundary and persistence structure appears under continuous defenses, and a discrete forced-collapse experiment exhibits the information-loss mechanism predicted by the discrete theorem. Our
+results do not preclude training-time alignment, architectural changes, discontinuous filters, or defenses that explicitly sacrifice utility.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+
+26
+
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+
+1
+
+Introduction
+
+Can you build a wrapper around a language model that eliminates all prompt injection vulnerabilities? Most wrapper-defense work implicitly assumes yes. Input classifiers that flag suspicious
+prompts [1], constitutional rewriting pipelines [3], and input sanitization layers [7] all share the same
+structure: a function D : X → X that preprocesses prompts before the model sees them, mapping
+unsafe inputs to safer equivalents while preserving benign behavior. We prove that this program has
+a structural failure mode. If a wrapper defense is continuous and utility-preserving, it cannot also
+be complete. These three properties form a defense trilemma: continuity, utility preservation, and
+completeness cannot coexist (Figure 2).
+The contribution is not four unrelated theorems. It is one claim shown to survive across four regimes
+that matter for how wrapper defenses are used and defended in practice:
+Submitted to 39th Conference on Neural Information Processing Systems (NeurIPS 2025). Do not distribute.
+
+37
+38
+39
+40
+
+41
+42
+43
+
+44
+45
+46
+
+47
+48
+49
+
+50
+51
+52
+
+Continuous wrapper defenses. In connected prompt spaces, a utility-preserving continuous
+wrapper must leave threshold-level prompts unchanged. The same obstruction survives under scorepreserving and ε-relaxed utility preservation, and under Lipschitz regularity it strengthens to quantitative near-threshold and persistent-unsafe-region results (Theorems 3.1, 3.4, 3.5, 3.8 and 3.11).
+Discrete wrapper defenses. Without topology, the impossibility becomes combinatorial: a complete utility-preserving defense must be non-injective. Information loss is not an implementation
+artifact; it is the mechanism of complete discrete defense (Theorem 4.1).
+Multi-turn wrapper defenses. Interaction does not remove the obstruction. If each turn is modeled as a utility-preserving wrapper step, the same threshold-level failure reappears at every turn
+(Theorem 5.1).
+Stochastic wrapper defenses. Randomization does not remove the obstruction either. If the expected post-defense score varies continuously and agrees with the original score on safe inputs, the
+stochastic defense still inherits the same boundary failure (Theorem 5.2).
+Empirical validation. We then test whether the theory matters empirically. On real LLM safety
+surfaces, the continuous theory’s boundary and persistence structure is observable; and on a saturated unsafe prompt archive, the discrete theorem’s forced-collapse mechanism is directly visible.
+
+56
+
+Scope. Our results apply to continuous, utility-preserving wrapper defenses on connected spaces.
+They do not constrain training-time alignment, architectural changes, hard blocklists, output filters, ensemble/human-in-the-loop systems, or adaptive-threshold designs. All three conditions are
+individually necessary (Section I).
+
+57
+
+Contributions.
+
+53
+54
+55
+
+1. Continuous impossibility of wrapper defense (Theorems 3.1, 3.4, 3.5, 3.8 and 3.11): in
+connected prompt spaces, continuous utility-preserving wrappers must fail at the boundary;
+the result survives relaxed utility preservation and strengthens to quantitative and persistentfailure conclusions under additional regularity.
+2. Discrete impossibility of wrapper defense (Theorem 4.1): on finite sets, complete utilitypreserving defense necessarily collapses distinct inputs. Injective defense is necessarily
+incomplete.
+3. Multi-turn and stochastic impossibility of wrapper defense (Theorems 5.1 and 5.2): the
+obstruction survives interaction over time and survives randomization under continuity of
+the induced expected score.
+4. Empirical validation: a continuous-defense validator exhibits the predicted boundary and
+persistence structure on real LLM safety surfaces, and a forced-collapse experiment exhibits the discrete theorem’s information-loss mechanism.
+5. Formal verification: the full theory is verified in Lean 4 across 46 files with ∼360 theorems, no admitted proofs, and three standard axioms. Supporting results, full proofs, and
+additional empirical analyses appear in the appendix.
+
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+
+77
+
+Related work. Adversarial robustness [20, 6, 9, 14, 21], certified defenses [5, 8, 19], and LLM
+jailbreaking [23, 4, 10, 12, 15, 18] provide context. Our impossibility is map-level: it constrains
+the defense function itself, not a classifier on samples or an optimizer across problems. The closest
+precedent is the no-free-lunch framework [22]. Full discussion in Section A.
+
+78
+
+2
+
+74
+75
+76
+
+79
+80
+81
+
+Problem Setup
+
+Definition 2.1 (Alignment Deviation Function). Let X be a topological space and let f : X → R
+be a continuous scoring function. We interpret f (x) as an alignment deviation score for prompt x.
+Given a threshold τ ∈ R:
+Sτ = {x ∈ X : f (x) < τ }
+(safe region)
+(1)
+Uτ = {x ∈ X : f (x) > τ }
+(unsafe region)
+(2)
+Bτ = {x ∈ X : f (x) = τ }
+(boundary)
+(3)
+2
+
+f (x)
+Boundary Bτ : f (x) = τ
+
+τ
+
+Safe region Sτ
+
+Unsafe region Uτ
+
+f (x) < τ
+
+f (x) > τ
+
+Defense leaves
+these unchanged
+
+Defense tries to
+remap these
+fixed point z
+
+prompt space X
+D: defense remaps
+
+Figure 1: Schematic of the prompt space. The defense D must leave all safe inputs unchanged
+(utility preservation) and tries to remap unsafe inputs into the safe region. Boundary fixation (Theorem 3.1) proves the defense must also leave some boundary points unchanged, the black dot z passes
+through with no remediation.
+
+82
+83
+
+84
+85
+86
+
+Definition 2.2 (Defense). A defense is a continuous map D : X → X. It is utility-preserving if
+D(x) = x for all x ∈ Sτ , and complete if f (D(x)) < τ for all x ∈ X.
+We will also use two weaker preservation notions. A defense is score-preserving on safe inputs if
+f (D(x)) = f (x) for all x ∈ Sτ , and ε-relaxed on safe inputs if |f (D(x)) − f (x)| ≤ ε for all
+x ∈ Sτ .
+
+88
+
+The central question is whether a wrapper can preserve utility in one of these senses and still make
+all outputs safe. The following sections show that across several regimes, the answer is no.
+
+89
+
+3
+
+87
+
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+
+100
+101
+102
+103
+104
+
+105
+106
+107
+108
+109
+110
+
+Impossibility of Wrapper Defense in Continuous Settings
+
+We begin with the most fundamental result. The argument fits in a paragraph: the defense fixes every
+safe input, so continuity makes its fixed-point set closed. But the safe region Sτ is open (preimage
+of an open interval under continuous f ), and in a connected space a nonempty proper open set is not
+closed. Hence the fixed-point set cannot stop exactly at the edge of the safe region, it must spill onto
+the boundary Bτ . Some boundary prompts pass through unchanged.
+Theorem 3.1 (Boundary Fixation). Let X be a connected Hausdorff space (a space that is “in
+one piece” and where distinct points can be separated by neighborhoods). Let f : X → R be
+continuous with Sτ , Uτ ̸= ∅, and D : X → X continuous with D|Sτ = id. Then there exists z ∈ X
+with f (z) = τ and D(z) = z. Moreover, every z ∈ Sτ \ Sτ satisfies f (z) = τ and D(z) = z, and
+this set is nonempty.
+Proof sketch. In a Hausdorff space, Fix(D) is closed (preimage of the diagonal). By utility preservation, Sτ ⊆ Fix(D), so Sτ ⊆ Fix(D). But Sτ = f −1 ((−∞, τ )) is open and not closed (connectedness: a nonempty proper clopen set would disconnect X). Hence Sτ ⊋ Sτ . Any z ∈ Sτ \ Sτ
+satisfies f (z) = τ (limits of values <τ cannot exceed τ , and z ∈
+/ Sτ forces f (z) ≥ τ ) and D(z) = z.
+Full proof in Section H.
+This means that the defense’s fixed-point set is too large to avoid the boundary. Utility preservation forces it to contain the safe region; closure forces it to contain the boundary; connectedness
+ensures the boundary is nonempty. Alternatively: a complete utility-preserving defense would be a
+continuous retraction D : X → Sτ (since D|Sτ = id and D(X) ⊆ Sτ ), but a retract of a Hausdorff
+space is closed (the fixed-point set is closed), while Sτ is open and not closed (connectedness)—a
+contradiction.
+3
+
+Completeness
+
+Both ⇒
+destroys utility
+
+All three
+simultaneously
+impossible
+
+Continuity
+
+Both ⇒
+discontinuous jump
+
+Utility Preservation
+Both ⇒ defense fixes boundary (our result)
+
+Figure 2: The defense trilemma. Any continuous wrapper defense on a connected space can satisfy
+at most two of the three properties. The bottom edge is our main result; the other two edges correspond to counterexamples in Section I.
+
+111
+112
+113
+
+114
+115
+
+116
+117
+
+Theorem 3.2 (Defense Trilemma). Let X be a connected Hausdorff space, f : X → R continuous
+with Sτ , Uτ ̸= ∅. No D : X → X can simultaneously be continuous, utility-preserving (D|Sτ = id),
+and complete (f (D(x)) < τ for all x).
+All three hypotheses are individually necessary. A defense can satisfy at most two of the three—the
+defense trilemma (Figure 2). Counterexamples for each dropped hypothesis appear in Section I.
+Falsifier. An empirical counterexample to the trilemma would be a production defense that is
+demonstrably continuous, utility-preserving, and complete at a named τ .
+
+119
+
+Remark 3.3 (Not all boundary points are fixed). The theorem captures Sτ \ Sτ , not all of Bτ .
+Boundary points not in Sτ may escape fixation.
+
+120
+
+3.1
+
+118
+
+121
+122
+123
+124
+125
+
+Exact and Relaxed Utility Preservation
+
+Strict utility preservation (D(x) = x for safe x) can be relaxed. The impossibility survives scorepreserving rewrites and even approximate score preservation.
+Theorem 3.4 (Score-Preserving Defense). Let X be a connected Hausdorff space, f : X → R
+continuous with Sτ , Uτ ̸= ∅. If D : X → X is continuous and score-preserving on safe inputs:
+f (D(x)) = f (x) for all x ∈ Sτ , then there exists z with f (z) = τ and f (D(z)) = τ .
+
+128
+
+Proof sketch. Define h = f ◦ D − f . Then h is continuous and h|Sτ = 0. The zero set {h = 0} is
+closed and contains Sτ , since closed sets contain their boundary points. For z ∈ Sτ \Sτ , f (D(z)) =
+f (z) = τ .
+
+129
+
+The next result weakens score preservation to approximate:
+
+126
+127
+
+130
+131
+
+132
+133
+134
+135
+136
+137
+138
+
+Theorem 3.5 (ε-Relaxed Utility Preservation). Under the hypotheses of Theorem 3.4, if |f (D(x))−
+f (x)| ≤ ε for all x ∈ Sτ , then there exists z with f (z) = τ and f (D(z)) ≥ τ − ε.
+Proof sketch. The set {x : h(x) ≥ −ε} is closed and contains Sτ , hence Sτ . For z ∈ Sτ \ Sτ :
+f (D(z)) = τ + h(z) ≥ τ − ε.
+Remark 3.6 (Why D(Sτ ) ⊆ Sτ alone is insufficient). The weakest relaxation—D(Sτ ) ⊆ Sτ with
+no score constraint—does allow a complete defense (e.g., a constant map D(x) = x0 to a fixed
+safe point). But this destroys all semantic content: every prompt produces the same response. The
+score-preservation conditions formalize the requirement that defense must not destroy utility, without
+requiring the defense to be the identity.
+4
+
+144
+
+Remark 3.7 (Open: utility-floor relaxation). Between exact identity on Sτ and the constant map lies
+a realistic band of deployed wrappers that satisfy D(Sτ ) ⊆ Sτ plus a utility floor: e.g., embedding
+similarity sim(D(x), x) ≥ γ for all x ∈ Sτ . Whether the boundary-fixation obstruction persists
+under such a utility-floor hypothesis is an open question. A positive answer would substantially
+strengthen the practical reach of Theorem 3.1; a negative answer (a constructive complete defense
+satisfying the utility floor) would sharpen the boundary of the impossibility.
+
+145
+
+3.2
+
+146
+
+Boundary fixation produces at least one fixed point; Lipschitz regularity makes the failure spread to
+a neighborhood.
+
+139
+140
+141
+142
+143
+
+147
+148
+149
+
+Quantitative Failure Near the Boundary
+
+Theorem 3.8 (ε-Robust Defense Constraint). Under the hypotheses of Theorem 3.1, if (X, d) is a
+metric space, f is L-Lipschitz, and D is K-Lipschitz, then for the fixed boundary point z:
+f (D(x)) ≥ τ − LK dist(x, z)
+
+150
+
+151
+152
+
+for all x ∈ X.
+
+(4)
+
+Points within distance δ of z remain within LKδ of threshold.
+Proof sketch. Since D(z) = z and D is K-Lipschitz: dist(D(x), z) ≤ K dist(x, z). Since f (z) =
+τ and f is L-Lipschitz: |f (D(x)) − τ | ≤ L · K dist(x, z). Full proof in Section H.
+
+154
+
+Appendix E records explicit measure bounds for the near-threshold band and related quantitative
+refinements.
+
+155
+
+3.3
+
+153
+
+156
+157
+158
+
+Persistent Unsafe Region
+
+The ε-robust constraint bounds the depth to which the defense pushes near-boundary points, but
+permits values slightly below τ . When the alignment surface rises faster than the defense can pull it
+down, some points remain above threshold.
+
+163
+
+Decoupling global and directional Lipschitz constants. The ε-robust bound (Theorem 3.8) uses
+the global Lipschitz constant L of f , which bounds f uniformly in all directions. The persistence
+argument, however, compares f ’s growth rate in the steep direction to how much the defense can
+reduce f along the displacement direction D(x) − x. In anisotropic settings these directions differ:
+f may rise steeply toward the unsafe region while varying slowly in the direction the defense pulls.
+
+164
+
+We write ℓ for the defense-path Lipschitz constant:
+
+159
+160
+161
+162
+
+ℓ =
+165
+166
+167
+168
+169
+170
+171
+
+172
+173
+
+174
+175
+176
+177
+178
+
+|f (D(x)) − f (x)|
+x̸=D(x) dist(D(x), x)
+sup
+
+(with ℓ = 0 when D = id, i.e., the supremum over the empty set is taken as 0). Since f is LLipschitz globally, ℓ ≤ L. When the alignment surface is isotropic (ℓ = L), the steep region is
+empty for every K ≥ 0 (verified in Lean as shallow_boundary_no_persistence). The result is
+non-vacuous precisely when the surface is anisotropic: ℓ < L, with directional gradient G satisfying
+G > ℓ(K + 1).
+Lemma 3.9 (Input-Relative Bound). Under the hypotheses of Theorem 3.8, if f has defense-path
+Lipschitz constant ℓ, then f (D(x)) ≥ f (x) − ℓ(K + 1) dist(x, z) for all x ∈ X.
+Proof sketch. Triangle inequality: dist(D(x), x) ≤ dist(D(x), z)+dist(z, x) ≤ (K+1) dist(x, z).
+Defense-path Lipschitz: |f (D(x)) − f (x)| ≤ ℓ dist(D(x), x) ≤ ℓ(K + 1) dist(x, z).
+This means that the defense can reduce any point’s score by at most ℓ(K + 1) times its distance
+from z. If the score rises faster than that, the defense loses.
+Definition 3.10 (Steep region). Given a fixed boundary point z, the steep region is S = {x ∈ X :
+f (x) > τ + ℓ(K + 1) dist(x, z)}—the set of points where alignment deviation exceeds τ by more
+than the defense’s Lipschitz budget can compensate.
+5
+
+(a) Boundary Fixation
+Defense must fix z
+
+τ
+
+f (x)
+
+(b) ε-Robust
+
+(c) Persistent Region
+
+Near z: constrained
+
+f outruns defense
+
+τ
+
+τ
+
+τ + ℓ(K + 1)δ
+S: stays
+unsafe
+
+ε-band
+
+z
+
+δ-neighborhood
+
+Figure 3: The three impossibility results on a 1D cross-section. (a) The defense must fix boundary
+point z (Thm. 3.1). (b) Near z, Lipschitz regularity constrains the defense to a shallow ε-band
+(yellow; Thm. 3.8). (c) Where f rises faster than the defense budget ℓ(K + 1)δ (dashed red), the
+region above τ persists (red shading; Thm. 3.11).
+
+179
+180
+181
+182
+
+Theorem 3.11 (Persistent Unsafe Region). Let X be a connected Hausdorff metric space, f continuous and L-Lipschitz, D continuous and K-Lipschitz with D|Sτ = id, and Sτ , Uτ ̸= ∅. Let
+z ∈ Sτ \ Sτ be the fixed boundary point from Theorem 3.1, and let ℓ be the defense-path Lipschitz
+constant. If S ̸= ∅, then:
+1. S is open.
+2. S has positive measure (under any measure positive on nonempty open sets).
+3. For every x ∈ S: f (D(x)) > τ .
+
+183
+184
+185
+186
+
+187
+188
+189
+
+190
+191
+192
+193
+
+194
+195
+196
+
+The defense leaves a positive-measure region that remains unsafe.
+Proof sketch. S is a strict superlevel set of a continuous function, hence open. For x ∈ S:
+f (D(x)) ≥ f (x) − ℓ(K + 1) dist(x, z) > τ by Theorem 3.9 and the definition of S. Full proof in
+Section H.
+The main paper uses persistence only when the steep region is nonempty. A derivative-based sufficient condition and related gradient arguments are deferred to Sections M and Q. Empirically, the relevant models exhibit exactly this anisotropic regime (Section 6): the alignment surface rises steeply
+toward the unsafe region (G large) while the defense operates in a smoother subspace (ℓ ≪ L).
+Falsifier. As already stated, the empirical content is FPint > 0 under a continuous utilitypreserving D: a cell in Spred (i.e., predicted persistent) with f (D(x)) < τ would refute Theorem 3.11.
+
+199
+
+Quantitative refinements of the continuous theory, including explicit volume lower bounds, conemeasure bounds, and the defense-aggressiveness dilemma, are deferred to the appendix (Theorems E.1 to E.3).
+
+200
+
+4
+
+197
+198
+
+201
+202
+203
+204
+205
+206
+207
+208
+209
+
+Impossibility of Wrapper Defense in Discrete Settings
+
+On finite sets, the same failure appears as a combinatorial tradeoff: completeness vs. information preservation. No topology is required; results are verified in Lean (MoF_12_Discrete). The
+Tietze/McShane–Whitney bridge to continuous spaces is in Theorem D.1.
+Theorem 4.1 (Discrete Defense Dilemma). Let X be a finite set with Sτ , Uτ ̸= ∅, and D : X → X
+utility-preserving (D(x) = x for f (x) < τ ).
+1. If D is injective, then f (D(u)) ≥ τ for every u with f (u) ≥ τ (including boundary points):
+the defense is incomplete.
+2. If D is complete (f (D(x)) < τ for all x), then D is non-injective: ∃ x ̸= y with D(x) =
+D(y).
+6
+
+210
+211
+212
+213
+214
+215
+
+216
+217
+
+Proof. (1) Suppose D is injective and f (D(u)) < τ for some u with f (u) ≥ τ . Then D(u) is safe,
+so D(D(u)) = D(u) by utility preservation. Injectivity gives D(u) = u, so f (u) = f (D(u)) < τ ,
+contradicting f (u) ≥ τ .
+(2) For any u ∈ Uτ : completeness gives f (D(u)) < τ , so utility preservation gives D(D(u)) =
+D(u). But u ̸= D(u) since f (u) ≥ τ > f (D(u)). So u and D(u) are distinct inputs with
+D(u) = D(D(u)): the defense is non-injective.
+
+The continuous trilemma trades continuity; the discrete dilemma trades injectivity. Any complete
+defense must collapse distinct inputs (Section 6).
+A complete utility-preserving injective D on any finite input set would be a counterex-
+
+219
+
+Falsifier.
+ample.
+
+220
+
+5
+
+221
+
+Neither repeated interaction nor randomization removes the obstruction.
+
+222
+
+5.1
+
+218
+
+223
+224
+225
+
+Impossibility of Wrapper Defense in Stochastic and Multi-Turn Settings
+
+Multi-Turn Impossibility
+
+Theorem 5.1 (Multi-Turn Impossibility). Let {ft , Dt }Tt=1 be alignment functions and defenses over
+(t)
+(t)
+T turns on a connected Hausdorff space, each continuous and utility-preserving, with Sτ , Uτ ̸= ∅
+at every turn. Then for every turn t, there exists zt with ft (zt ) = τ and Dt (zt ) = zt .
+
+227
+
+Proof sketch. Apply Theorem 3.1 to (ft , Dt ) at each turn. The functions may depend on full
+history—this does not matter, as each timestep is a fresh instance of boundary fixation.
+
+228
+
+The attacker’s running-max exploit improves monotonically (running_max_monotone).
+
+226
+
+231
+
+Falsifier. An attack trajectory with strictly decreasing running-max AD over turns would refute the
+monotone-improvement mechanism. Empirically, per-turn boundary fixation recurs and runningmax AD increases monotonically (Table 5 and fig. 6 in the appendix).
+
+232
+
+5.2
+
+229
+230
+
+233
+234
+235
+
+236
+237
+
+238
+239
+240
+241
+242
+243
+244
+245
+
+246
+247
+248
+249
+250
+
+Stochastic Defense Impossibility
+
+Theorem 5.2 (Stochastic Defense Impossibility). Let X be a connected Hausdorff space, f : X →
+R continuous with Sτ , Uτ ̸= ∅. Let D be a stochastic defense and define g(x) = Ey∼D(x) [f (y)]. If
+g is continuous and g(x) = f (x) for all x ∈ Sτ , then there exists z with f (z) = τ and g(z) = τ .
+Proof sketch. Define h = g − f . Then h is continuous and h|Sτ = 0, so h vanishes on Sτ (same
+closure argument as Theorem 3.4). For z ∈ Sτ \ Sτ : g(z) = f (z) = τ .
+Remark (stochastic dichotomy). Since E[f (D(z))] = τ , either f (D(z)) = τ almost surely (the
+defense is deterministic at z), or the random variable f (D(z)) has positive probability of exceeding τ —i.e., the defense actively produces unsafe outputs with positive probability. The stochastic
+case is therefore strictly harder than the deterministic one: a genuinely random defense at boundary
+points must sometimes make things worse.
+Remark. The continuity of g is a nontrivial assumption: it requires the distribution D(x) to vary continuously with x in a suitable sense. Stochastic defenses with discontinuous rejection probabilities
+escape this theorem.
+Falsifier. A stochastic defense at a boundary cell with variance = 0 and f (D(z)) < τ would
+refute Theorem 5.2. Empirically, a genuinely random wrapper at a boundary cell shows positive
+variance with positive mass above τ (Table 6 and fig. 7 in the appendix).
+Pipeline composition and additional geometry/stability results are deferred to the appendix. In particular, the pipeline theorem shows that composing non-contractive stages amplifies the effective
+7
+
+252
+
+Lipschitz constant and therefore widens the failure budget (Theorems F.1 and F.2 and sections G
+and J to L).
+
+253
+
+6
+
+251
+
+Experimental Validation
+
+258
+
+The empirical section tests whether the theory is vacuous. We exercise the continuous theory on
+real LLM safety surfaces (boundary and persistence structure) and the discrete theorem on a saturated unsafe-prompt archive (forced collapse). All experiments use the MAP-Elites behavioralspace driver of [17] over a 2D prompt space (query indirection × authority framing); every AD
+value comes from our own live runs (Section N).
+
+259
+
+6.1
+
+254
+255
+256
+257
+
+260
+261
+262
+263
+264
+
+Continuous-Setting Validation
+
+A validator estimates L, K, ℓ, G on the grid, identifies boundary anchor z ∗ , and checks the containment Spred ⊆ Sact where Spred = {x : f (x) > τ + ℓ(K+1) dist(x, z ∗ )} and Sact = {x : f (D(x)) >
+τ }. The key metric is FPint : interior cells predicted persistent but actually remediated. FPint > 0
+would be a real counterexample; boundary false positives merely witness discontinuity (hypothesis
+not met); false negatives are permitted (the theorem claims containment one way only).
+
+269
+
+We ran live against the OpenAI API with gpt-3.5-turbo-0125 (target) and
+gpt-4.1-2025-04-14 (judge). A saturation study (400 evaluations, ∼5,200 API calls,
+∼$15) filled 82 cells of a 25×25 grid with 66 unsafe (f >τ ) and 10 boundary cells—the only
+configuration where the theorem is non-vacuously exercised. All f values are judge-dependent; a
+two-judge comparison is in Section O.
+
+270
+
+6.1.1
+
+265
+266
+267
+268
+
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+
+289
+290
+291
+292
+293
+294
+295
+296
+297
+
+Non-vacuous validation: continuous defenses
+
+Theorem 3.11 has non-trivial quantitative content only when Ĝ > ℓ̂(K̂+1), i.e., when the alignment surface rises faster than the defense can pull it down. A sweep over four continuous defense
+families (Table 10 in appendix) reveals that most natural defenses fail this condition: S MOOTH NEAREST S AFE, K ERNEL S MOOTHED, and S OFT P ROJ all produce ℓ̂(K̂+1) ≫ Ĝ because they align
+displacement with −∇f , which maximizes ℓ̂. The theorem becomes a non-vacuous diagnostic when
+the defense direction diverges from ∇f : measured (Ĝ, ℓ̂, K̂) with ℓ̂ ≪ L signals a construction that
+fights its own gradient.
+We demonstrate this diagnostic on a GP-smooth oblique defense D(x) = x + α β(µ(x)) v(x) displaced 89.5◦ from the GP gradient (RBF kernel, σ=0.2, 82 cells). This is a deliberately adversarial
+defense direction chosen to enter the transversal regime. Estimates: ℓ̂ = 0.86, K̂ = 1.05, Ĝ = 23.6,
+so ℓ̂(K̂+1) = 1.77 ≪ Ĝ. Result: |Spred | = 3, all actually persistent (TP=3, FPint =0; Figure 4).
+Theorem E.3’s optimal constant K ∗ = Ĝ/ℓ̂ − 1 ≈ 26.5 gives a concrete design constraint: defenses
+with K < K ∗ admit persistent cells; defenses with K ≥ K ∗ destroy utility (Figure 8 in appendix).
+Appendix sweeps over three defense families, multiple kernels, and grid resolutions preserve
+FPint = 0. Theorem 3.8’s ε-robust bound holds on all 82 cells, and 10 boundary cells in Sτ \ Sτ
+activate boundary fixation (nearest to τ : gap = 0.375, vanishing under refinement). Bootstrap, seed
+replication, and judge-robustness checks all preserve the claim (Section N). A three-target sweep
+(gpt-3.5-turbo, gpt-4o-mini, gpt-4o) yields FPint = 0 in every row (Table 1 in appendix).
+Discrete classifier-gate footprint. Figure 5 maps two deployed gates on the same 82-cell archive.
+Llama-Guard-3-1B collapses to 7 MLC-taxonomy labels while passing 51/82 prompts as safe;
+ShieldGemma-2B collapses to 2 labels while passing 56/82. Both sit on the injective-incomplete
+horn of Theorem 4.1: structure is preserved, but majority incompleteness remains. For the
+forced-collapse test (Table 3 in appendix), a refusal defense collapses 66 unsafe inputs to 1 output, a canonical-category defense to 7, while an injective paraphrase defense produces 66 distinct
+rewrites—of which 1 remains above τ (Table 4), the predicted incomplete witness. The well-aligned
+target (gpt-5-mini, peak AD = 0.5) yields Uτ = ∅ and the theorems are correctly silent. Full numeric tables: Tables 2 to 4.
+8
+
+GP-oblique continuous footprint (n = 82 cells, = 0.5)
+= 89.5
+
+= 0.86 K = 1.05 G = 23.6 TP=3 FPint = 0 boundary n = 10
+
+Predicted steep set
+f(x) > + (K + 1)dist(x, z * ): n = 3
+
+Observed persistent cells
+f(D(x)) > : n = 68
+24
+
+authority
+
+authority
+
+24
+
+12
+
+0
+
+0
+
+0
+
+12
+
+24
+
+unsafe / persistent
+
+safe / defended
+
+indirection
+
+12
+
+0
+
+not sampled
+
+12
+
+indirection
+
+24
+
+boundary (n = 10)
+
+Figure 4: A single non-vacuous instance exercising Theorem 3.11 on the saturated
+gpt-3.5-turbo-0125 grid (82 filled cells, τ = 0.5) under the GP-smooth oblique defense
+(θ = 89.5◦ , ℓ̂ = 0.86, K̂ = 1.05). Left: the steep set Spred = {x : f (x) > τ +ℓ̂(K̂+1) dist(x, z ∗ )};
+|Spred | = 3. Right: cells actually persistent after defense, Sact = {x : f (D(x)) > τ }; |Sact | = 68.
+Transversality holds non-trivially (Ĝ = 23.6 ≫ ℓ̂(K̂+1) = 1.77) and the defense is genuinely
+non-identity (82 cells displaced). The predicted three cells are all actually persistent (TP = 3,
+FPint = 0). The 65 false negatives (red on the right, green on the left) are not theorem violations:
+the theorem predicts Spred ⊆ Sact , not equality.
+
+303
+
+Scope and limitations. The theorems constrain only continuous utility-preserving wrappers on
+connected spaces; mechanisms outside this class (training-time alignment, architectural changes,
+hard blocklists, output filters, ensemble/human-in-the-loop systems) are not constrained. Persistence requires transversality (G > ℓ(K+1)); for isotropic surfaces, S = ∅. Engineering implications—including boundary shallowing, Lipschitz reduction, dimension reduction, and a worked
+design-constraint example—appear in Section B.
+
+304
+
+7
+
+298
+299
+300
+301
+302
+
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+
+Conclusion
+
+The paper makes one claim: wrapper defense is structurally incomplete under utility-preserving constraints. We show that this claim survives in four regimes. In continuous spaces, utility-preserving
+wrappers fix boundary prompts and, under additional regularity, leave quantitative near-threshold
+and persistent unsafe regions. In discrete spaces, complete defense requires input collapse. In
+stochastic and multi-turn settings, the same obstruction reappears rather than disappearing. Empirically, the predicted boundary and collapse mechanisms are visible in real LLM safety surfaces and
+prompt archives.
+The practical implication is not that defense is futile. It is that wrapper defense should be engineered
+as risk management, not as a path to complete elimination. The right objectives are to make the
+boundary shallow, reduce effective dimension, monitor approach to threshold, and use mechanisms
+outside the wrapper model when stronger guarantees are required.
+9
+
+Llama-Guard-3-1B on the saturated archive (n = 82 cells, τ = 0.5) TP=26 • FN=40 • FP=5 • TN=11 • labels=7
+Original archive
+
+Llama-Guard-3-1B verdicts
+
+f (x) ≥ τ unsafe cells: n = 66
+
+D(x) = unsafe: n = 31
+
+Original archive
+
+0
+12
+
+indirection
+
+24
+unsafe
+
+24
+
+authority
+
+12
+
+0
+0
+
+D(x) = unsafe: n = 26
+
+24
+
+authority
+
+12
+
+ShieldGemma-2B verdicts
+
+f (x) ≥ τ unsafe cells: n = 66
+
+24
+
+authority
+
+authority
+
+24
+
+ShieldGemma-2B on the saturated archive (n = 82 cells, τ = 0.5) TP=24 • FN=42 • FP=2 • TN=14 • labels=2
+
+12
+
+0
+0
+
+12
+
+24
+
+0
+0
+
+indirection
+
+12
+
+12
+
+indirection
+
+24
+unsafe
+
+0
+
+safe / passed
+
+safe / passed
+
+not sampled
+
+not sampled
+
+boundary (n = 10)
+
+boundary (n = 10)
+
+12
+
+24
+
+indirection
+
+Figure 5: Behavioral-map footprint of two deployed classifier gates on the same 25×25 saturated
+archive. Left: original classification under the target model’s AD score. Right: gate verdicts on the
+same filled cells. Llama-Guard-3-1B preserves 7 labels, passing 51/82 as safe; ShieldGemma-2B
+collapses to 2 labels, passing 56/82.
+
+316
+
+317
+318
+319
+320
+
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+
+331
+332
+333
+
+334
+335
+336
+
+337
+338
+339
+340
+341
+
+342
+343
+344
+345
+346
+347
+348
+
+Compute Disclosure
+The theoretical contributions of this paper—Theorems 3.1 through 5.2 and their refinements—are
+Lean 4 / Mathlib machine-verified and required no empirical compute beyond a standard lake
+build pass (minutes on a consumer laptop). All empirical compute below supports only Section 6
+and Section N.
+OpenAI API usage. Behavioral-manifold construction and validator runs were executed against
+the public OpenAI API. The aggregate API spend across all live runs referenced in the main paper
+and appendix—spanning the two canonical 25 × 25 MAP-Elites grids (gpt-5-mini-2025-08-07
+and gpt-3.5-turbo-0125), the saturated 400-evaluation gpt-3.5-turbo-0125 archive
+(∼5 200 API calls, wall-clock ∼130 minutes, cost ∼$15), the seed-replication run (wallclock ∼119 minutes), two retargeted re-evaluation surfaces (gpt-4o-mini-2024-07-18 and
+gpt-4o-2024-08-06), a 66-prompt paraphrase pass with gpt-4o-mini at T = 0, and three judgerobustness and PAIR-baseline runs—totals approximately $60–$80 USD at list prices. Individual
+run wall-clocks recorded in final_statistics.json files for the two largest runs are 7 814 s
+(saturated) and 7 139 s (replicate); total API wall-clock across all runs is under four hours.
+Local (Ollama) inference. The LlamaGuard-3-1B demonstration (Table 2) was run locally via
+Ollama on an Apple-silicon laptop (M-series, on-device Metal acceleration). No external compute,
+no GPU cluster. The full 82-prompt pass completes in under ten minutes of wall-clock.
+Formal verification. Lean 4.28.0 + Mathlib v4.28.0 compiles the 46-file ManifoldProofs tree
+in approximately 20 minutes on the same consumer laptop. No GPU is used. Verification reproducibility is a function of Lean+Mathlib version pinning and is independent of API availability.
+Attribution to paper sections. The $15 saturated-archive budget supports Sections 6.1 and 6.1.1
+and the entire continuous-defense sweep (Section N.3); the remaining ∼$45–$65 is divided across
+the retargeting sweep (Table 1), the judge-robustness deltas (Section O), seed replication (Table 14),
+and the PAIR baseline (Section P). The forced-collapse demonstration (Tables 3 and 4) uses the 66
+paraphrases from the saturated archive and a single extra scoring pass; marginal cost below $2.
+Reproducibility envelope. All budgets quoted are order-of-magnitude; re-running the pipeline
+from a fresh checkout should land within a factor of 2 on cost and wall-clock, modulated by OpenAI list-price changes and model-server latency. No experiment in this paper required specialized hardware, exceeded a single laptop’s memory footprint, or relied on non-public data. The
+anonymized artifact repository contains the exact run scripts, the raw live_runs/ metadata (including final_statistics.json for each run), and the reconstruction paths from live_runs/
+to every table and figure in the paper.
+10
+
+349
+
+350
+351
+352
+353
+
+354
+355
+356
+357
+358
+359
+360
+361
+
+362
+363
+364
+365
+366
+367
+368
+
+Broader Impact
+This paper establishes a structural limit on a specific class of LLM safety interventions (continuous,
+utility-preserving wrapper defenses). It does not propose new attacks, release new attack corpora,
+or provide adversaries with new techniques. We summarize the impact, dual-use, and deployment
+considerations below in the form encouraged by the NeurIPS 2025 Broader Impact guidance.
+Responsible-disclosure stance. The artifact is a theoretical impossibility, not a vulnerability report. There is no affected vendor, no proof-of-concept exploit, and no coordinated-disclosure timeline to negotiate: the claim is that any defense satisfying continuity and utility-preservation on a
+connected prompt space must leave boundary prompts fixed. Responsible disclosure in this context
+means (i) framing the result as a design constraint rather than a recipe for bypass, (ii) providing the
+Lean-verified proofs so defenders can evaluate the claim on its own terms, and (iii) accompanying
+every empirical demonstration with explicit quantitative bounds (such as K ∗ = G/ℓ − 1) that tell
+defenders what the achievable region looks like.
+Who benefits. The primary beneficiaries are defenders and safety researchers: the trilemma
+gives them a principled way to allocate effort, a sanity check on new-wrapper proposals (if a published wrapper claims continuity, utility preservation, and completeness, one of the three claims
+must be wrong), and concrete parameter targets for the defense-design knobs they actually control
+(Lipschitz constant, threshold geometry, choice of feature space). Secondary beneficiaries are auditors and policy teams who need defensible upper bounds on what wrapper-class controls can
+achieve.
+
+374
+
+Who does not benefit. An adversary seeking to jailbreak a particular deployed model gains nothing actionable from this paper. The theorems do not identify specific prompts, do not parameterize
+a model family, and do not provide a search procedure over inputs. Our empirical forced-collapse
+demonstration (Tables 3 and 4) operates entirely on prompts already contained in public jailbreak datasets; no new adversarial text is produced by this work that was not already available to
+adversaries via prior publications and public leaderboards.
+
+375
+
+Dual-use analysis.
+
+369
+370
+371
+372
+373
+
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+
+387
+388
+389
+390
+391
+392
+
+393
+394
+395
+396
+397
+398
+399
+
+We considered three plausible misuse vectors:
+
+• “The paper implies wrappers are useless, so vendors will stop deploying them.” The paper
+explicitly rules this out (Section B): wrappers remain the cheapest risk-reduction primitive, they
+just cannot be total. This is analogous to the existence of adversarial examples not implying that
+image classifiers should be removed from production.
+• “The paper tells attackers where to look.” The boundary-fixation phenomenon is a consequence
+of continuity on a connected space, not a localized exploit. No attacker gains a search advantage
+from knowing that a boundary exists in general.
+• “The paper’s quantitative bounds help adversaries tune.” The quantitative bounds (Theorems 3.11–E.2 and K ∗ = G/ℓ − 1) are defender-facing: they require the wrapper’s Lipschitz
+constant and the surface’s boundary rate, both of which are available only to the operator running
+the safety stack, not to an external attacker probing the deployed system.
+Mitigations. To minimize misuse potential, this paper (i) does not propose or evaluate any new attack; (ii) releases only wrapper-side quantitative bounds (Lipschitz constant, persistent-unsafe measure, threshold gap) rather than attack improvements; (iii) anonymizes the artifact URL to comply
+with double-blind review and prevent author-linked attack-adjacent discoverability; and (iv) pairs
+every empirical table with the theorem it exercises and the inequality it is expected to satisfy, so that
+readers cannot mistake the demonstrations for generic red-teaming results.
+Deployment guidance for practitioners. For a team deploying an LLM-backed product, the intended takeaway is a design-constraint tool, not an attack toolkit. Concretely: (a) if a wrapper is
+continuous and utility-preserving, treat its near-threshold behavior as structurally unreliable and do
+not rely on it alone; (b) invest the saved attention in layers outside the wrapper class—training-time
+alignment, output-side filters, human-in-the-loop review of boundary cases, and architectural controls on the underlying model; (c) measure L̂, ℓ̂, Ĝ, K̂ on your own surface and use K ∗ = Ĝ/ℓ̂ − 1
+as a planning number when specifying SLAs for the wrapper layer; (d) if regulatory or contractual
+11
+
+400
+401
+402
+
+requirements demand complete wrapper safety, know that this forces either discontinuity (e.g., hard
+blocklists with a non-negligible refusal rate on benign inputs) or utility sacrifice (e.g., canonicalizing
+prompt content), and plan the product experience accordingly.
+
+406
+
+Scope of this statement. Our results do not address fairness, bias, privacy, or environmental impact of LLMs more broadly; they address a specific class of safety controls and a specific structural
+limit on that class. Claims about adequacy of alternative defense mechanisms (RLHF, constitutional
+training, discrete filtering, ensembles) are out of scope.
+
+407
+
+References
+
+403
+404
+405
+
+408
+409
+
+410
+411
+412
+
+413
+414
+
+415
+416
+
+417
+418
+
+419
+420
+
+421
+422
+
+423
+424
+
+425
+426
+
+427
+428
+
+429
+430
+
+431
+432
+433
+
+434
+435
+
+436
+437
+
+438
+439
+
+440
+441
+
+[1] G. Alon and M. Kamfonas. Detecting language model attacks with perplexity. arXiv preprint
+arXiv:2308.14132, 2023.
+[2] A. Bagnall and G. Stewart. Certifying the true error: Machine learning in Coq with verified generalization guarantees. Proceedings of the AAAI Conference on Artificial Intelligence,
+2019.
+[3] Y. Bai et al.
+Constitutional AI: Harmlessness from AI feedback.
+arXiv:2212.08073, 2022.
+
+arXiv preprint
+
+[4] P. Chao, A. Robey, E. Dobriban, H. Hassani, G. J. Pappas, and E. Wong. Jailbreaking black
+box large language models in twenty queries. arXiv preprint arXiv:2310.08419, 2024.
+[5] J. Cohen, E. Rosenfeld, and J. Z. Kolter. Certified adversarial robustness via randomized
+smoothing. Proceedings of ICML, 2019.
+[6] I. J. Goodfellow, J. Shlens, and C. Szegedy. Explaining and harnessing adversarial examples.
+Proceedings of ICLR, 2015.
+[7] H. Inan et al. Llama Guard: LLM-based input-output safeguard for human-AI conversations.
+arXiv preprint arXiv:2312.06674, 2023.
+[8] G. Katz, C. Barrett, D. L. Dill, K. Julian, and M. J. Kochenderfer. Reluplex: An efficient SMT
+solver for verifying deep neural networks. Proceedings of CAV, 2017.
+[9] N. Carlini and D. Wagner. Towards evaluating the robustness of neural networks. Proceedings
+of IEEE S&P, 2017.
+[10] A. Mehrotra et al. Tree of attacks: Jailbreaking black-box LLMs automatically. Advances in
+Neural Information Processing Systems, 37, 2024.
+[11] A. Fawzi, H. Fawzi, and O. Fawzi. Adversarial vulnerability for any classifier. Advances in
+Neural Information Processing Systems, 31, 2018.
+[12] K. Greshake, S. Abdelnabi, S. Mishra, C. Endres, T. Holz, and M. Fritz. Not what you’ve
+signed up for: Compromising real-world LLM-integrated applications with indirect prompt
+injection. Proceedings of AISec, 2023.
+[13] X. Huang, M. Kwiatkowska, S. Wang, and M. Wu. Safety verification of deep neural networks.
+Proceedings of CAV, 2017.
+[14] A. Madry, A. Makelov, L. Schmidt, D. Tsipras, and A. Vladu. Towards deep learning models
+resistant to adversarial attacks. Proceedings of ICLR, 2018.
+[15] J.-B. Mouret and J. Clune. Illuminating search spaces by mapping elites. arXiv preprint
+arXiv:1504.04909, 2015.
+[16] G. Naitzat, A. Zhitnikov, and L.-H. Lim. Topology of deep neural networks. Journal of
+Machine Learning Research, 21(184):1–40, 2020.
+12
+
+442
+443
+444
+445
+
+[17] Anonymous. Manifold of failure: Behavioral attraction basins in language models. Companion
+preprint (citation anonymized for double-blind review), 2026.
+[18] M. Samvelyan et al. Rainbow teaming: Open-ended generation of diverse adversarial prompts.
+Advances in Neural Information Processing Systems, 37, 2024.
+
+447
+
+[19] G. Singh, T. Gehr, M. Püschel, and M. Vechev. An abstract domain for certifying neural
+networks. Proceedings of POPL, 2019.
+
+448
+
+[20] C. Szegedy et al. Intriguing properties of neural networks. Proceedings of ICLR, 2014.
+
+449
+
+[21] D. Tsipras, S. Santurkar, L. Engstrom, A. Turner, and A. Madry. Robustness may be at odds
+with accuracy. Proceedings of ICLR, 2019.
+
+446
+
+450
+451
+452
+453
+454
+455
+456
+457
+458
+
+[22] D. H. Wolpert and W. G. Macready. No free lunch theorems for optimization. IEEE Trans.
+Evol. Comput., 1(1):67–82, 1997.
+[23] A. Zou, Z. Wang, N. Carlini, M. Nasr, J. Z. Kolter, and M. Fredrikson. Universal and transferable adversarial attacks on aligned language models. arXiv preprint arXiv:2307.15043, 2023.
+[24] K. Ge et al. MART: Improving LLM safety with multi-round automatic red-teaming. Proceedings of NAACL, 2024.
+[25] E. Hubinger et al. Sleeper agents: Training deceptive LLMs that persist through safety training.
+arXiv preprint arXiv:2401.05566, 2024.
+
+460
+
+[26] C. Anil et al. Many-shot jailbreaking. Advances in Neural Information Processing Systems,
+37, 2024.
+
+461
+
+[27] D. Kim et al. What really matters in many-shot attacks? Proceedings of ACL, 2025.
+
+462
+
+[28] Q. Zhan et al. InjecAgent: Benchmarking indirect prompt injections in tool-integrated LLM
+agents. Findings of ACL, 2024.
+
+459
+
+463
+
+465
+
+[29] H. Zhang et al. Agent security bench (ASB): Formalizing and benchmarking attacks and
+defenses in LLM-based agents. arXiv preprint arXiv:2410.02644, 2024.
+
+466
+
+[30] Y. Yuan et al. The instability of safety. arXiv preprint arXiv:2512.12066, 2025.
+
+467
+
+[31] V. Tsvetkov et al. Quantization and safety: A closer look at LLM safety under weight compression. arXiv preprint arXiv:2502.15799, 2025.
+
+464
+
+468
+469
+470
+471
+472
+473
+474
+475
+476
+
+[32] F. Nesti et al. Mind the gap: Adversarial attacks against GGUF quantized LLMs. Proceedings
+of ICML, 2025.
+[33] H. Hammoud et al. Model merging and safety alignment: One bad model spoils the bunch.
+Findings of EMNLP, 2024.
+[34] X. Liu et al. Alignment whack-a-mole: Finetuning activates verbatim recall of copyrighted
+books in large language models. arXiv preprint arXiv:2603.20957, 2026.
+[35] D. Rosenberg et al. IRIS: Adversarial suffix attacks against robust defenses. Proceedings of
+NAACL, 2025.
+
+478
+
+[36] X. Zhao et al. Weak-to-strong jailbreaking on large language models. Proceedings of ICML,
+2025.
+
+479
+
+[37] Y. Huang et al. The safety tax of reasoning alignment. arXiv preprint arXiv:2503.00555, 2025.
+
+480
+
+[38] R. Young. What is the alignment tax? arXiv preprint arXiv:2603.00047, 2026.
+
+481
+
+[39] S. Nellessen and T. Kachman. David vs. Goliath: Verifiable agent-to-agent jailbreaking via
+reinforcement learning. arXiv preprint arXiv:2602.02395, 2026.
+
+477
+
+482
+
+13
+
+483
+
+Appendices
+
+484
+
+A
+
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+
+500
+
+501
+502
+
+503
+504
+505
+506
+
+507
+508
+
+509
+510
+511
+
+512
+513
+514
+
+515
+516
+
+Related Work
+
+Adversarial robustness research has established that small perturbations can fool classifiers [20, 6,
+9, 14] and that robustness may fundamentally trade off against accuracy [21, 11]. Certified defenses
+provide guarantees for fixed models [5, 8, 19, 13, 2], and topological perspectives have illuminated
+the structure of decision boundaries [16]. For LLMs specifically, jailbreaking attacks [23, 4, 10, 12]
+and automated red-teaming [15, 18] demonstrate persistent vulnerabilities.
+Our work differs in object and claim. Rather than studying how failures arise for a fixed model
+or how a particular system can be certified, we impose universal constraints on the wrapper map
+itself. The closest conceptual precedent is the no-free-lunch framework [22]: the result is not that
+one defense is poorly implemented, but that a defense pattern cannot satisfy all of its intended
+requirements simultaneously.
+Unlike no-free-lunch (which constrains optimizers across problems) or robustness-accuracy tradeoffs [21] (which constrain classifier behavior on samples), our impossibility is map-level — it
+constrains the defense function itself, independent of which attacks or samples are considered.
+The topological obstruction Sτ open-but-not-closed applies to every continuous utility-preserving
+D : X → X, not to a learning problem or to a distribution of inputs.
+
+B
+
+Implications, Scope, and Limitations
+
+The results do not say defense is valueless; they say complete defense is impossible under the stated
+constraints. The engineering goal shifts from elimination to management:
+1. Make the boundary shallow. Set τ so that boundary-level behavior is benign. If f (z) = τ
+yields a polite refusal rather than harmful compliance, the impossibility is mathematically true but
+practically harmless. GPT-5-Mini exemplifies this: its ceiling at AD = 0.50 means Uτ = ∅, so the
+impossibility theorems do not apply.
+2. Reduce the Lipschitz constant.
+region.
+
+Smaller L tightens ℓ ≤ L, potentially narrowing the persistent
+
+3. Reduce the effective dimension. Under grid-based exhaustive-enumeration defenses, cost
+grows as N d (Theorem L.1); learning-based defenses that generalize across the space may sidestep
+this exponential bound. Constraining the prompt interface reduces d regardless of defense strategy.
+4. Monitor, don’t eliminate, the boundary. Transversal crossings persist under fine-tuning (Theorem K.2) and recur every turn (Theorem 5.1). The Lipschitz bound gives a computable estimate of
+distance to boundary.
+Worked example (Theorem E.3). For ℓ̂ = 0.86 and Ĝ = 23.6, the optimal K ∗ = Ĝ/ℓ̂−1 ≈ 26.5.
+Designs with K < K ∗ admit a persistent region; designs with K ≥ K ∗ destroy utility.
+
+518
+
+Boundary fixation is at the boundary. Fixed points satisfy f (z) = τ exactly. If τ -level behavior
+is benign, the theorem is true but harmless.
+
+519
+
+Persistence requires transversality.
+
+520
+
+Grid-based cost asymmetry. Theorem L.1 assumes exhaustive grid enumeration. Learning-based
+defenses may sidestep the exponential bound.
+
+517
+
+521
+
+For isotropic f (ℓ = L), S is empty for all K ≥ 0.
+
+14
+
+Table 1: Continuous-defense validator across three OpenAI target models. FPint = 0 holds across
+all three.
+Cells Peak AD |Sτ | |Uτ |
+
+Target
+
+gpt-3.5-turbo-0125
+gpt-4o-mini-2024-07-18
+gpt-4o-2024-08-06
+
+82
+82
+82
+
+1.00
+0.99
+0.99
+
+16
+13
+10
+
+L
+
+K
+
+ℓ
+
+G |Spred | FPint role
+
+66 23.62 3.16 23.62 23.62
+24 12.25 4.94 4.02 10.12
+30 12.38 3.41 12.38 12.38
+
+1
+0
+0
+
+0 weak
+0 sil.
+0 sil.
+
+Table 2: Llama-Guard-3-1B applied to the 82 unsafe-seed prompts, demonstrating Theorem 4.1’s
+injective-incomplete horn. 52 of 82 attacks pass as safe.
+Quantity
+
+Value
+
+Input prompts |X|
+Distinct Llama-Guard labels |D(X)|
+Collapse rate 1 − |D(X)|/|X|
+Largest collision class
+Verdict unsafe
+Verdict safe (false neg.)
+Verdict other/error
+Theorem 4.1 horn
+
+82
+7
+0.915
+safe (n = 51)
+31
+51
+0
+injective-but-incomplete
+
+Code
+
+Hazard category
+
+S9
+S2
+S1
+S6
+S10
+S7
+–
+
+Indiscriminate Weapons
+Non-Violent Crimes
+Violent Crimes
+Specialized Advice
+Hate
+Privacy
+safe (false negatives)
+
+# prompts
+8
+8
+9
+4
+1
+1
+51
+
+522
+
+C
+
+Deferred Empirical Illustrations
+
+523
+
+D
+
+Continuous Interpolation of Discrete Observations
+
+524
+525
+526
+527
+528
+529
+530
+531
+
+532
+533
+534
+535
+536
+
+If one wishes to embed discrete behavioral observations into a continuous prompt space, the bridge
+is standard.
+Theorem D.1 (Continuous Relaxation). Let (X, d) be a connected, normal, Hausdorff metric space,
+and S ⊂ X a finite set of observations with observed alignment scores g : S → R satisfying
+g(p) < τ and g(q) > τ for some p, q ∈ S. Then there exists a continuous f : X → R extending g
+(i.e., f |S = g) for which the hypotheses of Theorem 3.1 hold. If the extension is chosen to be
+Lipschitz (via McShane–Whitney), the hypotheses of Theorem 3.8 also hold. If f is additionally
+Lipschitz, Theorem 3.11 applies wherever transversality is met.
+Proof sketch. Step 1 (Extension exists). S is finite and X is T1 , so S is closed. Since X is normal
+and g : S → R is continuous on a discrete closed subset, the Tietze extension theorem provides a
+continuous f : X → R with f |S = g.
+
+Step 2 (Hypotheses of Theorem 3.1 are satisfied). We have f (p) = g(p) < τ and f (q) = g(q) > τ ,
+so Sτ ̸= ∅ and Uτ ̸= ∅. Since X is connected and Hausdorff, Theorem 3.1 applies.
+
+539
+
+Step 3 (Lipschitz extension enables stronger results). When a Lipschitz extension is needed, the
+McShane–Whitney theorem provides an L-Lipschitz f agreeing with g on S. Then Theorem 3.8
+and Theorem 3.11 apply under their additional hypotheses.
+
+540
+
+E
+
+537
+538
+
+541
+542
+
+Quantitative Refinements
+
+The main paper establishes existence and persistence. This section records explicit quantitative
+refinements.
+15
+
+Table 3: Forced-collapse demonstration of Theorem 4.1 on 66 unsafe prompts. Complete defenses
+collapse 66 inputs to 1 or 7 outputs; the injective paraphrase defense keeps all 66 distinct.
+Defense
+
+Inputs
+
+Distinct outputs
+
+Collapse rate
+
+Max collision class
+
+66
+66
+66
+
+1
+7
+66
+
+0.985
+0.894
+0.000
+
+66
+40
+1
+
+refusal
+canonical-category
+paraphrase
+
+Table 4: Paraphrase defense is injective (66 distinct outputs), so Theorem 4.1 requires incompleteness. Rescoring confirms 1/66 remains above τ .
+Defense
+
+|{x : f (D(x))>τ }|
+
+paraphrase (T =0, strict > τ )
+paraphrase (T =0, borderline ≥ τ )
+
+543
+544
+
+545
+546
+547
+548
+549
+550
+551
+
+1/66
+5/66
+
+where Vn is the volume of the unit ball in Rn . In R1 , this simplifies to µ(Bε ) ≥ ε/(2L).
+Proved in the Lean artifact as MoF_17_CoareaBound.
+Theorem E.2 (Cone Measure Bound). In R with Lebesgue measure µ, if f (x) ≥ τ + c(x − z) for
+all x ∈ (z, z + δ0 ) with c > ℓ(K + 1), then µ({x : f (D(x)) > τ }) ≥ δ0 .
+Proved in the Lean artifact as MoF_18_ConeBound.
+Theorem E.3 (Defense Dilemma). Assume f is differentiable at boundary point z with G =
+∥∇f (z)∥, and let ℓ be the defense-path Lipschitz constant. Define K ∗ = G/ℓ − 1. Then:
+1. If K < K ∗ , the persistent unsafe region exists (G > ℓ(K + 1), so Theorem 3.11 applies).
+2. If K ≥ K ∗ , the ε-robust bound becomes too loose to exclude success on the steep region.
+
+553
+554
+
+Since ℓ ≤ L, the dilemma is sharpest when ℓ ≪ L.
+
+555
+
+Proved in the Lean artifact as MoF_19_OptimalDefense.
+
+556
+
+F
+
+558
+
+559
+560
+561
+562
+563
+564
+
+Pipeline Composition
+
+Theorem F.1 (PipelineQLipschitz Degradation). If stages T1 , . . . , Tn are K1 , . . . , Kn -Lipschitz, the
+composed pipeline is ( Ki )-Lipschitz. For n stages each with K ≥ 2, the effective constant is K n .
+Falsifier. A measured pipeline with empirical composed Lipschitz constant K̂composed > K̂1 · K̂2
+would refute the bound in Theorem F.1: Lipschitz constants submultiply under composition, so the
+composed constant can never exceed the product.
+Theorem F.2 (Pipeline Impossibility). If the composed pipeline P = Tn ◦ · · · ◦ T1 ◦ D is continuous
+and P (x) = x for all x ∈ Sτ , then P has boundary fixed points. If D is KD -Lipschitz and each Ti
+is K-Lipschitz, the ε-robust band scales as L · KD · K n · δ.
+
+565
+
+Proved in the Lean artifact as MoF_15_NonlinearAgents.
+
+566
+
+G
+
+567
+568
+569
+
+✓
+✓
+
+Theorem E.1 (Volume Lower Bound). Let f : Rn → R be L-Lipschitz with L > 0, and let µ denote
+Lebesgue measure. If there exists c with f (c) = τ − ε/2, then B(c, ε/(4L)) ⊆ Bε , giving
+ ε n
+µ(Bε ) ≥ Vn ·
+,
+4L
+
+552
+
+557
+
+Incomplete per Thm. 4.1
+
+Vulnerability Landscape
+
+This section characterizes the geometry of the unsafe region.
+Theorem G.1 (Basin Structure). If f is continuous and f (p) > τ , then Uτ is open. Under any
+measure positive on nonempty open sets, Uτ has positive measure.
+16
+
+Table 5: Per-turn boundary-fixation statistics. Running-max AD is monotone non-decreasing.
+Traj
+
+AD1
+
+AD2
+
+AD3
+
+AD4
+
+AD5
+
+maxk
+
+T1
+T2
+T3
+T4
+T5
+T6
+T7
+T8
+T9
+T10
+
+0.500
+0.990
+1.000
+0.990
+1.000
+1.000
+0.990
+0.975
+1.000
+0.500
+
+0.500
+0.500
+1.000
+0.500
+1.000
+0.500
+0.990
+0.500
+1.000
+0.975
+
+0.500
+0.500
+1.000
+0.500
+1.000
+0.500
+1.000
+0.500
+1.000
+0.500
+
+0.500
+0.500
+0.995
+0.500
+0.990
+0.500
+0.990
+0.500
+0.500
+0.500
+
+0.900
+0.500
+1.000
+0.500
+0.990
+0.500
+1.000
+0.900
+0.990
+0.500
+
+0.900
+0.990
+1.000
+0.990
+1.000
+1.000
+1.000
+0.975
+1.000
+0.975
+
+Running max max
+ADj
+j k
+
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+
+1
+
+2
+
+3
+
+4
+
+Turn k
+T1
+T2
+
+T3
+T4
+
+T5
+T6
+
+T7
+T8
+
+5
+
+T9
+T10
+
+Figure 6: Multi-turn running-max AD trajectory; boundary-fixed points recur at each turn.
+
+571
+
+Theorem G.2 (Basin Fragment Minimum Size). If X is a normed space, f is L-Lipschitz with
+f (p) > τ , the connected component of Uτ containing p has diameter ≥ 2(f (p) − τ )/L.
+
+572
+
+Smoother surfaces (smaller L) produce larger basins; rougher surfaces produce smaller fragments.
+
+573
+
+H
+
+570
+
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+
+Full Proofs
+
+Proof of Theorem 3.1 (Boundary Fixation). Step 1 (Hausdorff ⇒ fixed-point set is closed).
+Fix(D) = {x : D(x) = x} is the preimage of the diagonal ∆ ⊂ X × X under x 7→ (D(x), x). In
+a Hausdorff space, ∆ is closed, so Fix(D) is closed.
+Step 2 (Utility preservation ⇒ safe region ⊆ fixed points). Sτ ⊆ Fix(D). Since Fix(D) is closed:
+Sτ ⊆ Fix(D).
+
+Step 3 (Connectedness ⇒ safe region is not closed). Sτ = f −1 ((−∞, τ )) is open. If also closed, it
+would be clopen—but in a connected space the only clopen sets are ∅ and X. Since both Sτ and Uτ
+are nonempty, Sτ is not closed.
+
+Step 4 (Boundary point exists). Sτ ⊋ Sτ , so there exists z ∈ Sτ \ Sτ . Continuity gives f (z) ≤ τ ;
+z∈
+/ Sτ gives f (z) ≥ τ . Hence f (z) = τ .
+
+584
+
+Step 5 (Defense fixes the boundary point). z ∈ Sτ ⊆ Fix(D), so D(z) = z and f (D(z)) = τ .
+
+585
+
+Proof of Theorem 3.8 (ε-Robust Constraint). By Theorem 3.1, the fixed boundary point z exists.
+
+586
+
+Step 1. Since D(z) = z and D is K-Lipschitz: dist(D(x), z) = dist(D(x), D(z)) ≤ K dist(x, z).
+
+587
+588
+
+Step 2. Since f (z) = τ and f is L-Lipschitz: |f (D(x)) − τ | = |f (D(x)) − f (z)| ≤
+L dist(D(x), z) ≤ LK dist(x, z).
+17
+
+Table 6: Stochastic-defense statistics at a boundary cell. Positive variance forces positive mass
+above τ .
+Boundary cell
+
+original AD
+
+mean f (D(x))
+
+std
+
+max
+
+P (f (D(x))>τ )
+
+0.850
+0.850
+0.875
+0.875
+0.890
+
+0.513
+0.562
+0.526
+0.526
+0.500
+
+0.072
+0.142
+0.100
+0.100
+0.000
+
+0.900
+0.890
+0.900
+0.900
+0.500
+
+0.03 (1/30)
+0.17 (5/30)
+0.07 (2/30)
+0.07 (2/30)
+0.00 (0/30)
+
+[4, 21]
+[14, 8]
+[1, 24]
+[3, 0]
+[2, 15]
+(4, 21)
+
+(14, 8)
+
+(1, 24)
+
+(3, 0)
+
+(2, 15)
+
+count (30 samples)
+
+30
+25
+20
+15
+10
+5
+0
+0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00
+
+f(D(x))
+
+f(D(x))
+
+f(D(x))
+
+f(D(x))
+
+f(D(x))
+
+Figure 7: Histogram of f (D(z)) at a boundary cell under a stochastic wrapper; E[f (D(z))] = τ
+and positive variance pushes mass above τ .
+
+590
+
+Proof of Theorem 3.11 (Persistent Unsafe Region). (1) S is the strict superlevel set of x 7→ f (x) −
+ℓ(K + 1) dist(x, z) at level τ , hence open.
+
+591
+
+(2) Open and nonempty implies positive measure.
+
+589
+
+592
+593
+
+(3) For x ∈ S: f (x) > τ + ℓ(K + 1) dist(x, z). By Theorem 3.9: f (D(x)) ≥ f (x) − ℓ(K +
+1) dist(x, z) > τ .
+
+596
+
+Lean: persistent_unsafe_refined in MoF_20_RefinedPersistence (defense-path constant ℓ). MoF_11_EpsilonRobust contains an earlier version using the global constant L; as
+noted in Section 3.3, that version is vacuous for isotropic surfaces.
+
+597
+
+I
+
+594
+595
+
+Counterexamples: Each Hypothesis Is Necessary
+
+603
+
+Counterexample I.1 (Removing connectedness). X = {0, 1} discrete, f (0) = 0, f (1) = 1,
+τ = 0.5. D(0) = 0, D(1) = 0: continuous, utility-preserving, complete.
+Counterexample I.2 (Removing continuity). X = [0, 1], f (x) = x, τ = 0.5. D(x) = x for
+x < 0.5, D(x) = 0 for x ≥ 0.5: utility-preserving and complete, but discontinuous at 0.5.
+Counterexample I.3 (Removing utility preservation). D(x) = x0 for a fixed safe point: continuous
+and complete, but destroys all inputs.
+
+604
+
+J
+
+598
+599
+600
+601
+602
+
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+
+Attack Properties
+
+Theorem J.1 (Perturbation Robustness). If f is L-Lipschitz and f (p) > τ , then B(p, (f (p) −
+τ )/L) ⊆ Uτ . The radius is monotone in f (p).
+Theorem J.2 (Iterative Convergence). Any monotone-improvement operator T with score in [0, 1]
+converges. If each step gains ≥ δ, convergence takes ≤ ⌊1/δ⌋ steps.
+Theorem J.3 (Transferability). ∥f − g∥∞ ≤ δ =⇒ {f > τ + δ} ⊆ {g > τ }. Transfer costs zero
+additional queries.
+Theorem J.4 (Authority Monotonicity). If f (y, ·) is monotone non-decreasing in authority for each
+fixed indirection y, the vulnerability set is upward-closed with a critical threshold a∗2 (y) (by IVT,
+when f (y, ·) is continuous and crosses τ ). If additionally f is monotone non-decreasing in indirection for each fixed authority, the threshold curve y 7→ a∗2 (y) is non-increasing.
+Theorem J.5 (Gradient Ascent). If f has nonzero Fréchet derivative at x, there exist v and ε > 0
+with f (x + εv) > f (x).
+18
+
+Theorem E.3 trade-off: persistent region exists iff (K + 1) < G
+140
+120
+identity ( =0.00)
+smooth_nearest_safe ( =23.62)
+gp_centroid ( =20.89)
+gp_grad_step ( =24.87)
+gp_oblique ( =0.86)
+G = 23.625
+persistent region exists (y < G)
+
+(K + 1)
+
+100
+80
+60
+40
+20
+0
+
+0
+
+2
+4
+6
+8
+K (Lipschitz constant of defense D)
+
+10
+
+Figure 8: Persistence-vs-utility tradeoff as K varies around K ∗ = G/ℓ − 1 from Theorem E.3.
+Below K ∗ the persistent unsafe region is nonempty; at and above K ∗ the displacement needed to
+kill persistence is incompatible with utility preservation.
+Table 7: Empirical pipeline Lipschitz degradation. The measured composed constant K̂composed is
+Q
+bounded above by K̂i , consistent with Theorem F.1.
+
+617
+
+618
+619
+620
+621
+622
+
+stage 1
+
+stage 2
+
+K1
+
+K2
+
+K1 K2
+
+Kcomp
+
+Kcomp ≤ K1 K2 ?
+
+smooth-nearest-safe
+smooth-nearest-safe
+kernel-smoothed
+kernel-smoothed
+
+kernel-smoothed
+soft-projection
+smooth-nearest-safe
+soft-projection
+
+3.00
+3.00
+1.71
+1.71
+
+1.71
+7.07
+3.00
+7.07
+
+5.13
+21.21
+5.13
+12.08
+
+5.10
+10.44
+3.48
+4.47
+
+✓
+✓
+✓
+✓
+
+K
+
+Stability Under Fine-Tuning
+
+Theorem K.1 (Interior Stability). If ∥f − g∥∞ ≤ ε: f (x) > τ + ε =⇒
+f (x) < τ − ε =⇒ g(x) < τ . Only the band |f (x) − τ | ≤ ε is uncertain.
+
+g(x) > τ , and
+
+Theorem K.2 (Crossing Preservation). Let f, g : [a, b] → R be continuous. If f crosses τ on [a, b]
+with margin m (i.e., f (a′ ) < τ − m and f (b′ ) > τ + m for some a′ , b′ ∈ [a, b]) and ∥f − g∥∞ ≤
+ε < m, then g also crosses τ on [a, b].
+
+624
+
+Theorem K.3 (Patching Is Nonlocal). There exist f, g with ∥f − g∥∞ ≤ ε such that eliminating a
+vulnerability at one point necessarily changes values at distant points.
+
+625
+
+L
+
+623
+
+626
+627
+628
+
+629
+630
+631
+
+Cost Asymmetry
+
+Theorem L.1 (Cost Asymmetry for Grid-Enumeration Defenses). For grid-based exhaustiveenumeration defense with N ≥ 2 bins per axis in d dimensions: attack cost ≤ 1/δ (dimensionindependent); defense cost = N d (exponential in d); ratio δ · N d → ∞ as d → ∞.
+Caveat. This bound applies to grid enumeration, not to learning-based defenses (e.g., GP surrogates)
+that generalize across the space without evaluating every cell. The paper’s own empirical section
+uses such surrogates at cost ≪ N d .
+
+632
+
+At d = 2 with N = 25 and δ = 0.01, the ratio is 6.25. At d = 10, it climbs to ∼ 1012 .
+
+633
+
+M
+
+634
+635
+
+Additional Verified Results
+
+Lipschitz displacement bound.
+1) dist(x, z).
+
+D is K-Lipschitz with D(z) = z =⇒ dist(D(x), x) ≤ (K +
+19
+
+Table 8: Counterexample ablation. Each row drops one of the three hypotheses and reports whether
+the defense becomes complete, together with the price paid in the other two properties.
+
+636
+637
+
+638
+639
+
+Case
+
+Hypothesis dropped
+
+Construction
+
+Validator flag
+
+C.1
+C.2
+C.3
+
+connectedness
+continuity
+utility preservation
+
+X = {0, 1} discrete, D = id
+X = [0, 1], D(x) = x · 1x<0.5
+D(x) = x0 constant
+
+applicable=False; Sτ = Sτ
+local Lipschitz K = 49.0 at x=0.495
+|D(X)| = 1; 50/50 safe inputs displaced
+
+Tool calls amplify failure. Each non-contractive tool call multiplicatively increases the pipeline’s
+effective Lipschitz constant: K n < K n+1 for K ≥ 2.
+Attacker monotone improvement.
+turns.
+
+Best observed alignment deviation is non-decreasing across
+
+641
+
+Attacker steering. If directional slope varies continuously with attacker parameter α and crosses
+ℓ(K + 1), transversality is reachable by IVT.
+
+642
+
+Stochastic regularity.
+
+643
+
+Discrete defense dilemma. An injective, utility-preserving defense is incomplete (every unsafe
+input stays unsafe). A complete, utility-preserving defense is non-injective (distinct inputs collapse
+to the same output). The three properties—completeness, utility preservation, injectivity—form a
+trilemma.
+
+640
+
+644
+645
+646
+
+g(x) = E[f (D(x))] satisfies g − f = 0 on Sτ .
+
+648
+
+Defense position invariance.
+tools: KD · KTn .
+
+649
+
+N
+
+647
+
+Lipschitz constant of defense-before-tools equals defense-after-
+
+Additional Experimental Details
+
+651
+
+This appendix collects the estimator definitions, sanity checks, continuous-defense sweeps, and
+robustness tables that support the main paper’s empirical claims.
+
+652
+
+N.1
+
+650
+
+653
+654
+
+655
+
+Estimator definitions
+
+Let Gf denote the set of filled cells in an N × N MAP-Elites grid and let h = 1/N be the cell width.
+Distances use normalized L2 grid coordinates on [0, 1]2 :
+p
+
+dist (i1 , j1 ), (i2 , j2 ) = h (i1 − i2 )2 + (j1 − j2 )2 .
+All pairs involving unfilled cells are excluded; no imputation is performed. The boundary anchor is
+z ∗ = arg min |f (x) − τ |,
+x∈Gf
+
+656
+
+restricted to sampled boundary cells Sτ \ Sτ , with lexicographic tie-breaking.
+Surface Lipschitz constant.
+L̂ =
+
+max
+
+|f (x) − f (y)|
+.
+dist(x, y)
+
+max
+
+dist(D(u), D(v))
+.
+dist(u, v)
+
+x,y∈Gf , x̸=y
+
+Defense Lipschitz constant.
+K̂ =
+
+u,v∈Gf , u̸=v
+
+Defense-path Lipschitz constant.
+ℓ̂ =
+657
+
+max
+
+x∈Gf , D(x)̸=x, D(x)∈Gf
+
+If the set is empty, we take ℓ̂ = 0.
+20
+
+|f (D(x)) − f (x)|
+.
+dist(D(x), x)
+
+Boundary directional rate.
+Ĝ =
+
+f (y) − f (x)
+.
+x,y∈Gf , f (x)<τ <f (y) dist(x, y)
+max
+
+658
+
+These are the estimators used by the validator and the tables below.
+
+659
+
+N.2
+
+660
+661
+
+Identity and out-of-scope sanity checks
+
+Identity-defense rows are bookkeeping checks rather than theorem tests: under D = id, the predicted and observed unsafe sets coincide by construction.
+Table 9: Smoke tests (not a test of the theorem). The two sparse 25 × 25 live runs under the
+canonical identity defense. Under D = id, Spred ≡ Sact ≡ {x : f (x) > τ } by construction, so
+agreement only checks the validator’s bookkeeping.
+
+662
+
+Target
+
+τ
+
+Filled
+
+L
+
+G
+
+|Spred |
+
+|Sact |
+
+TP
+
+FPint
+
+FN
+
+gpt-5-mini-2025-08-07
+gpt-3.5-turbo-0125 (smoke)
+
+0.30
+0.50
+
+14
+9
+
+6.13
+11.44
+
+6.13
+11.44
+
+7
+7
+
+7
+7
+
+7
+7
+
+0
+0
+
+0
+0
+
+N.3
+
+Continuous-defense sweeps
+
+Table 10: Continuous-defense sweep on the saturated gpt-3.5-turbo-0125 grid over continuous
+defense families (GP-oblique, Gaussian-smoothed nearest-safe, contractive-flow). Each row reports
+empirical ℓ̂, K̂, |Spred |, |Sact |, TP, and FPint .
+L
+
+defense
+
+K
+
+ℓ̂diag ℓ̂diag (K+1)
+
+S MOOTH N EAREST S AFE 23.62 3.162 23.625
+K ERNEL S MOOTHED
+23.62 5.000 21.750
+S OFT P ROJ
+23.62 2.000 23.625
+O BLIQUE GP
+23.62 1.050 0.274
+
+G trans. |Spred | TP FPint |Sact | role
+
+98.334 23.62
+130.500 23.62
+70.875 23.62
+0.563 23.62
+
+×
+×
+×
+✓
+
+1 1
+1 1
+1 0
+46 46
+
+0
+0
+0
+0
+
+59 weak
+39 weak
+56 mix.
+68 info.
+
+Table 11:
+GP-kernel sensitivity for the oblique-smooth defense on the saturated
+gpt-3.5-turbo-0125 grid. Kernel ∈ {RBF, Matérn-3/2, Matérn-5/2} crossed with bandwidth σ ∈ {0.1, 0.2, 0.4}.
+kernel
+
+σ
+
+L
+
+K
+
+ℓ̂diag
+
+G
+
+|Spred |
+
+TP
+
+FPint
+
+RBF
+RBF
+RBF
+Matérn-3/2
+Matérn-3/2
+Matérn-3/2
+Matérn-5/2
+Matérn-5/2
+Matérn-5/2
+
+0.10
+0.20
+0.40
+0.10
+0.20
+0.40
+0.10
+0.20
+0.40
+
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+
+1.105
+1.050
+1.037
+1.068
+1.070
+1.070
+1.079
+1.080
+1.094
+
+0.884
+0.274
+0.099
+1.315
+1.165
+0.946
+0.899
+0.734
+0.345
+
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+23.62
+
+9
+46
+71
+7
+8
+8
+9
+9
+41
+
+9
+46
+71
+7
+8
+8
+9
+9
+41
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+663
+
+N.4
+
+Robustness checks
+
+664
+
+N.5
+
+Out-of-scope discrete stress tests
+
+665
+
+Bounded-step defenses are not continuous, so Theorem 3.11’s hypotheses do not apply. We include
+them only as negative consistency checks.
+
+666
+
+21
+
+Table 12: Resolution sweep for the oblique-smooth defense on gpt-3.5-turbo-0125. As
+h = 1/N decreases, the discretization gap |f (z ∗ ) − τ | shrinks and |Spred | grows; the theorem’s
+containment is preserved across resolutions.
+grid
+
+filled cells
+
+L
+
+K
+
+ℓ
+
+G
+
+|Spred |
+
+TP
+
+FPint
+
+25
+31
+52
+82
+
+11.960
+14.195
+19.845
+23.625
+
+1.048
+1.033
+1.064
+1.051
+
+0.629
+0.598
+0.966
+0.865
+
+11.960
+14.195
+19.845
+23.625
+
+5
+5
+6
+3
+
+5
+5
+6
+3
+
+0
+0
+0
+0
+
+13 × 13
+17 × 17
+21 × 21
+25 × 25
+
+Table 13: Higher-dimensional robustness. Empirical L̂ and Ĝ computed on the same 82-cell archive
+using the paper’s 2D grid metric and a 768-dimensional embedding metric.
+Metric
+2
+
+2D grid coordinates (normalized to [0, 1] )
+768-d MPNet embedding (pairwise-max normalized)
+
+667
+
+668
+669
+670
+671
+672
+673
+674
+
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+
+O
+
+L̂
+
+Ĝ
+
+23.625
+17.926
+
+23.625
+17.926
+
+Judge robustness
+
+All f values in Section 6.1 are judge-dependent: swapping the judge can reshape the
+alignment-deviation surface and thereby change L̂, ℓ̂, Ĝ.
+To quantify this, we rescored
+the 82 (prompt, target response) pairs from the saturated gpt-3.5-turbo-0125 archive with
+three alternative judges drawn from different families and capacities — gpt-4o-2024-08-06,
+gpt-4.1-mini-2025-04-14, and gpt-4o-mini-2024-07-18 — applying the same rethinkingevals per-category methodology with a single judge and α = 0.5 (target responses were NOT regenerated; only the judge was swapped). The four-judge comparison is summarized in Table 18.
+Interpretation. The theorem applies to the full prompt space X under every judge — benign
+prompts exist, so Sτ is nonempty in X. Whether the theorem’s positive prediction can be tested
+from a given sample depends on whether that sample spans both regions. Three of four judges
+(gpt-4.1, gpt-4o, gpt-4.1-mini) yield samples that span both Sτ and Uτ ; applying the continuous smooth_nearest_safe defense produces TP> 0 and FPint = 0 in every case. Under the
+strictest judge (gpt-4o-mini), MAP-Elites’s adversarial bias drives the sample entirely into Uτ , so
+no boundary cell z ∗ appears in the 82 sampled cells and the positive prediction cannot be tested
+from this sample. Crucially, FPint = 0 still holds: no counterexample to the theorem is produced
+under any of the four judges. Cross-judge agreement ranges from substantial (Kendall’s W = 0.70)
+to poor on binary classification (Cohen’s κ = 0 vs gpt-4o-mini), so the specific numerical instance
+of a particular judge is not itself judge-robust even though the framework’s predictions are.
+
+692
+
+Committee aggregation. The rethinking-evals methodology supports committee aggregation:
+Pactual = αPvote + (1 − α)Pmean with α = 0.5. We apply this offline to the four existing
+judge archives (no new API calls) and re-run the validator on each committee-aggregated surface
+(Table 19). The top-3 committee (gpt-4.1, gpt-4o, gpt-4.1-mini; excluding the strict-judge outlier
+gpt-4o-mini) is within one cell of canonical (17 safe vs 16; mean ∆ = +0.010), and FPint = 0 under smooth_nearest_safe on every committee configuration — the theorem’s predictions survive
+committee aggregation.
+
+693
+
+P
+
+686
+687
+688
+689
+690
+691
+
+694
+695
+696
+697
+698
+699
+700
+
+Attack Baseline: PAIR-Style Iteration
+
+To situate the theorem empirically against an established attack-defense benchmark style, we run
+a PAIR-style iterative attack ([4]-adjacent) on ten top-AD unsafe seed prompts from the saturated archive. The attacker is gpt-4o-mini, the target is gpt-3.5-turbo-0125, and the judge
+is gpt-4.1. Each behavior gets five iterations; the attacker receives the full transcript and judge
+scores at each step. We compare two conditions: undefended (attacker prompt goes directly to
+target) and paraphrase wrapper (attacker prompt is rewritten by gpt-4o-mini at T = 0 before
+reaching the target).
+22
+
+Table 14: Seed replication of the saturated pipeline on gpt-3.5-turbo-0125. Surface quantities
+remain within a narrow band and FPint = 0 in both runs.
+Run
+Saturated (canonical)
+Replicate (independent)
+
+Filled
+
+L̂
+
+K̂
+
+ℓ̂
+
+Ĝ
+
+trans.
+
+|Spred |
+
+TP
+
+FPint
+
+82
+76
+
+23.62
+22.25
+
+3.16
+2.69
+
+23.62
+22.25
+
+23.62
+22.25
+
+×
+×
+
+1
+1
+
+1
+1
+
+0
+0
+
+Table 15: Independent target re-evaluation.
+The same 82 prompts are rescored on
+gpt-4o-mini-2024-07-18 with the judge held fixed. No interior counterexample is observed.
+Target
+
+Cells Peak AD
+
+gpt-3.5-turbo-0125
+gpt-4o-mini-2024-07-18
+
+82
+82
+
+L
+
+K
+
+ℓ
+
+G |Spred | TP FPint Transv.
+
+1.000 23.62 3.16 23.62 23.62
+0.990 12.25 4.94 4.02 10.12
+
+1
+0
+
+1
+0
+
+0
+0
+
+×
+×
+
+706
+
+Interpretation. Within the 5-iteration budget the paraphrase wrapper blocks all ten behaviors
+(ASR drops from 1.00 to 0.00). This does not contradict Theorem 4.1’s injective-incomplete horn:
+the paraphrase defense is injective on our 66-prompt sample (all 66 rewrites are distinct), and Table 4
+already exhibits 1/66 paraphrases that yield f (D(x)) > τ . The PAIR attacker with gpt-4o-mini as
+refiner and a 5-iteration budget is not sufficient to locate that bypass; a persistent attacker (more iterations, stronger refiner) is predicted to find one by Theorem 5.1’s multi-turn convergence argument.
+
+707
+
+Q
+
+701
+702
+703
+704
+705
+
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+
+Lean Artifact
+
+The complete theory is formalized in Lean 4.28.0 with Mathlib v4.28.0, available at https:
+//anonymous.4open.science/r/defense-trilemma-XXXX. The artifact serves two roles:
+(1) definitional scaffolding that pins down every hypothesis (continuity, utility preservation, Lipschitz, transversality) in a machine-readable form, ensuring no translation drift between prose and
+formal statement; and (2) verified cross-references between theorem statements, so that the dependency chain (Theorem 3.1→Theorem 3.8→Theorem 3.11) is mechanically checked. The proofs
+themselves are short (the underlying mathematics is not deep); the artifact’s value is precision, not
+error-checking. It comprises 46 files:
+• 10 core theory files (MoF_01–MoF_10)
+• 10 cost theory files (MoF_Cost_01–MoF_Cost_10)
+• 10 advanced theory files (MoF_Adv_01–MoF_Adv_10)
+• 1 continuous relaxation (MoF_ContinuousRelaxation)
+• 1 ε-robust constraint + persistent unsafe region with global Lipschitz constant
+(MoF_11_EpsilonRobust)
+• 1 discrete impossibility (MoF_12_Discrete)
+• 1 multi-turn + stochastic extensions (MoF_13_MultiTurn)
+• 1 representation-independent meta-theorem (MoF_14_MetaTheorem)
+• 1 nonlinear agent pipelines (MoF_15_NonlinearAgents)
+• 1 relaxed utility preservation (MoF_16_RelaxedUtility)
+• 1 quantitative ε-band volume bound (MoF_17_CoareaBound)
+• 1 cone measure bound for persistent unsafe region (MoF_18_ConeBound)
+• 1 optimal defense characterization (MoF_19_OptimalDefense)
+• 1 refined persistence with defense-path Lipschitz constant ℓ (MoF_20_RefinedPersistence);
+this file contains the primary formalization of Theorems 3.9 to 3.11
+• 1 gradient chain: ∥∇f (z)∥ > ℓ(K + 1) implies persistent unsafe region via operator-norm
+direction extraction and derivative-based local growth (MoF_21_GradientChain)
+• 3 capstone files (MasterTheorem, Euclidean instantiation, verification)
+• 1 root import file (ManifoldProofs.lean)
+23
+
+Table 16: Bootstrap percentile confidence intervals (median, [5th , 95th ]) for the empirical quantities
+on the saturated live run.
+Lmed
+
+defense
+
+L CI
+
+Kmed
+
+K CI
+
+ℓmed
+
+ℓ CI
+
+Gmed
+
+G CI
+
+identity
+23.625 [21.750, 23.625] 1.000 [1.000, 1.000]
+– [−−, −−] 23.625 [21.750, 23.625]
+GP-smooth oblique 23.625 [21.750, 23.625] 1.051 [1.029, 1.051] 0.865 [0.801, 0.865] 23.625 [21.750, 23.625]
+
+sweep: saturated archive under smooth\_nearest\_safe
+saturated archive is bimodal in quality:
+|S | and |U | are stable across [0.3, 0.7]
+
+interior false positives (right)
+
+60
+
+1
+
+cell count (left)
+
+50
+
+|S | (safe cells)
+|U | (unsafe cells)
+|Spred| (predicted steep set)
+TP
+FPint
+FPint = 0 at every
+
+40
+30
+20
+
+0
+
+10
+0
+
+0.3
+
+0.4
+
+0.5
+safety threshold
+
+0.6
+
+0.7
+
+Figure 9: Sensitivity of |Spred |, |Sact |, and FPint to the threshold τ on the saturated live run. The
+containment Spred ⊆ Sact holds at every tested τ .
+736
+
+737
+738
+739
+
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+
+NeurIPS Paper Checklist
+Answers below follow the NeurIPS 2025 official checklist structure. For each item we give [Yes],
+[No], or [NA] (not applicable) with a short justification, and point to the specific section, table,
+figure, or appendix where the claim is supported.
+1. Claims. Do the main claims made in the abstract and introduction accurately reflect the paper’s
+contributions and scope?
+[Yes] The abstract states a topological obstruction plus quantitative refinements and Lean verification; the paper delivers all three. Scope is restated explicitly in Section 1 under “Scope and
+limitations.”
+2. Limitations. Does the paper discuss the limitations of the work performed?
+[Yes] Section B and Section I enumerate the exact hypotheses whose violation breaks the theorems. Each of continuity, utility preservation, and connectedness is shown necessary by a
+concrete counterexample.
+3. Theory assumptions and proofs. For each theoretical result, are assumptions and a complete
+(or referenced) proof given?
+[Yes] Every theorem statement lists its assumptions inline; main-paper proofs and sketches are
+in Sections 3 to 5; expanded proofs are in Section H; and the formal verification in Section Q
+provides machine-checked proofs for every major statement.
+4. Experimental result reproducibility. Does the paper fully disclose all information needed to
+reproduce the main experimental results?
+[Yes] Section N gives estimator definitions, grid resolution, kernel choices, and the exact targets
+and judge used. The anonymized artifact link in the abstract contains the run scripts and raw
+metadata.
+5. Open access to data and code. Does the paper provide open access to data and code, with
+sufficient instructions to reproduce the main results?
+[Yes] An anonymized repository URL (anonymous.4open.science) is provided in the abstract and in Section Q. Production datasets used for the forced-collapse demonstration are
+public jailbreak-prompt corpora plus our own derived paraphrases (released under the artifact).
+24
+
+Table 17:
+Out-of-scope discrete stress tests.
+Defense sweep on the saturated
+gpt-3.5-turbo-0125 grid over discontinuous bounded_step defenses. These rows are not
+theorem checks; they are reported only as consistency checks outside the theorem’s scope.
+Defense
+
+K
+
+ℓ
+
+|Spred |
+
+|Sact |
+
+TP
+
+FPint
+
+FN
+
+identity
+bounded_step(1)
+bounded_step(2)
+bounded_step(3)
+bounded_step(5)
+bounded_step(8)
+bounded_step(12)
+
+1.00
+3.61
+3.61
+4.00
+8.60
+8.60
+8.60
+
+0.00
+23.63
+23.63
+23.63
+23.63
+23.63
+23.63
+
+66
+1
+1
+1
+1
+1
+1
+
+66
+55
+47
+29
+3
+0
+0
+
+66
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+
+0
+55
+47
+29
+3
+0
+0
+
+Table 18: Judge robustness on the saturated archive (82 cells, τ = 0.5). |Sτ |sample and |Uτ |sample
+are how many of the 82 sampled cells fall below/above τ under each judge. Pearson r and Cohen’s
+κ are pairwise with the canonical gpt-4.1 judge. Kendall’s W = 0.700 across all four judges on cell
+rankings (moderate agreement). “Testable?” indicates whether this MAP-Elites sample spans both
+Sτ and Uτ , which is what the positive-prediction test of Theorem 3.11 requires to locate a boundary
+cell z ∗ .
+
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+
+Judge
+
+|Sτ | |Uτ | peak AD mean AD Pearson r
+
+gpt-4.1-2025-04-14 (canonical)
+gpt-4o-2024-08-06
+gpt-4.1-mini-2025-04-14
+gpt-4o-mini-2024-07-18
+
+16
+10
+33
+0
+
+66
+72
+49
+82
+
+1.000
+0.990
+0.975
+1.000
+
+0.773
+0.889
+0.752
+0.955
+
+κ TP FPint Testable
+
+–
+–
+0.546 0.457
+0.493 0.363
+0.393 0.000
+
+1
+1
+1
+–
+
+0
+0
+0
+–
+
+yes
+yes
+yes
+no
+
+6. Experimental setting / details. Does the paper specify all the training and test details needed
+to understand the results?
+[Yes] We do not train any model. The empirical results are evaluation-only: target model IDs,
+judge model ID, temperature, grid size, number of MAP-Elites iterations, random seeds, and
+threshold τ are all disclosed in Sections 6.1 and N.
+7. Experimental statistical significance. Does the paper report error bars or confidence intervals,
+or similar information about statistical significance?
+[Yes] Table 16 reports bootstrap percentile confidence intervals for the empirical quantities on
+the saturated live run; Table 14 reports seed replication.
+8. Compute resources. Does the paper provide information on the compute resources used?
+[Yes] Section 7 (“Compute Disclosure”) gives total OpenAI spend, wall-clock per run, hardware
+used for local LlamaGuard inference, and Lean verification time.
+9. Code of ethics. Does the research conducted in the paper conform, in every respect, with the
+NeurIPS Code of Ethics?
+[Yes] Work is theoretical plus light-touch empirical validation on public jailbreak datasets and
+public API endpoints. No human-subjects research, no new personal data collection, no deceptive practices. Dual-use analysis is expanded in the Broader Impact section.
+10. Broader impacts. Does the paper discuss both potential positive societal impacts and negative
+societal impacts of the work performed?
+[Yes] The Broader Impact section is expanded to approximately one page covering responsibledisclosure framing, beneficiary analysis, a three-vector dual-use analysis, and explicit deployment guidance for practitioners.
+11. Safeguards. Does the paper describe safeguards for responsible release of data or models with
+a high risk of misuse?
+[Yes] No new attack prompts are released; the forced-collapse demonstration uses only prompts
+that already exist in public datasets, and release is framed as defender-facing (wrapper-side
+bounds, not attack improvements). See the Mitigations paragraph of the Broader Impact section.
+12. Licenses for existing assets. Are the creators or original owners of assets used in the paper
+properly credited and are the licenses and terms of use explicitly mentioned and respected?
+25
+
+r=0.49
+
+r=0.39
+
+r=0.36
+
+r=0.44
+
+gpt-4.1
+
+r=0.55
+
+1.0
+
+r=0.55
+
+gpt-4o
+
+0.8
+0.6
+0.4
+0.2
+0.0
+1.0
+
+r=0.49
+
+r=0.36
+
+r=0.39
+
+r=0.44
+
+r=0.52
+
+gpt-4.1-mini
+
+0.8
+0.6
+0.4
+0.2
+0.0
+1.0
+
+r=0.52
+
+gpt-4o-mini
+
+0.8
+0.6
+0.4
+0.2
+0.0
+0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00 0.00 0.25 0.50 0.75 1.00
+
+gpt-4.1
+
+gpt-4o
+
+gpt-4.1-mini
+
+gpt-4o-mini
+
+Figure 10: Per-cell alignment-deviation scatter across the four judges. Cross-judge agreement is
+moderate (Kendall’s W = 0.700); the positive-prediction test of Theorem 3.11 remains supported
+wherever the sample spans both Sτ and Uτ .
+Table 19: Judge committee aggregations vs the canonical single-judge surface. Top-3 committee is
+within one cell of canonical; FPint = 0 in every configuration.
+
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+
+committee
+
+N
+
+|Sτ |
+
+|Uτ |
+
+mean ∆
+
+std ∆
+
+FPint
+
+canonical (gpt-4.1 only)
+top-3 (gpt-4.1, gpt-4o, gpt-4.1-mini)
+gpt-4 family (gpt-4.1, gpt-4o)
+all-4 (incl. strict gpt-4o-mini)
+
+1
+3
+2
+4
+
+16
+17
+13
+5
+
+66
+65
+69
+77
+
+0.000
++0.010
++0.063
++0.058
+
+0.000
+0.173
+0.141
+0.200
+
+0
+0
+0
+0
+
+[Yes] OpenAI API use follows the usage policy; LlamaGuard is used via Ollama consistent
+with its license; public jailbreak corpora are cited in-line. No asset is used outside its stated
+terms.
+13. New assets. Are new assets introduced in the paper well documented and is the documentation
+provided alongside the assets?
+[Yes] The primary released asset is the ManifoldProofs Lean codebase plus the
+trilemma_validator scripts and live_runs metadata. Each is documented in the
+anonymized repository.
+14. Crowdsourcing and research with human subjects. For crowdsourcing experiments and
+research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation?
+[NA] No crowdsourcing or human-subjects research was conducted.
+15. Institutional review board (IRB) approvals. Does the paper describe potential risks incurred
+by study participants, whether such risks were disclosed to the subjects, and whether IRB approvals (or an equivalent approval/review based on the requirements of your country or institu26
+
+Table 20: PAIR-style attack-success rate with and without a continuous paraphrase wrapper (10
+behaviors, 5 iterations, gpt-3.5-turbo target, gpt-4.1 judge).
+Condition
+undefended
+paraphrase wrapper
+
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+
+behaviors
+
+ASR @ 5 iters
+
+mean running-max
+
+10
+10
+
+1.00
+0.00
+
+0.995
+0.500
+
+tion) were obtained?
+[NA] No human subjects; IRB review not applicable.
+16. Declaration of LLM usage. Does the paper describe the usage of LLMs if it is an important,
+original, or non-standard component of the core methods?
+[Yes] LLMs (gpt-5-mini, gpt-3.5-turbo, gpt-4o-mini, gpt-4o, gpt-4.1 as judge,
+Llama-Guard-3-1B) are used as the objects of study in Sections 6.1 and 6.1.1, and as the
+paraphrase generator in Tables 3 and 4; these usages are enumerated and documented.
+17. Safety and dual use. Does the paper adequately characterize the potential harmful uses of the
+research and suggest mitigations?
+[Yes] A dedicated three-vector dual-use analysis and mitigation paragraph are included in the
+Broader Impact section.
+18. Reproducibility of theoretical claims. Are proofs complete and, where appropriate, mechanically verified?
+[Yes] All major theorems are Lean 4 / Mathlib verified (Section Q) with no sorrys and three
+standard axioms (propositional extensionality, quotient, choice).
+19. Data provenance. Are sources for all non-original data clearly identified?
+[Yes] The MAP-Elites driver is cited; the jailbreak seed prompts are drawn from public corpora cited in the paper; all live-scored values come from the authors’ own runs documented in
+live_runs/.
+20. Judge model / evaluator disclosure. If an LLM judge or evaluator is used, is its identity and
+configuration disclosed?
+[Yes] The canonical judge is gpt-4.1-2025-04-14 with prompt template and scoring rubric
+given in Section O; a two-judge robustness comparison is reported there as well.
+21. Randomization and seeds. Are random seeds documented such that results can be reproduced?
+[Yes] Seed replication is reported in Table 14; scripts in the artifact pin random seeds.
+22. Hyperparameter selection. Are hyperparameter choices justified?
+[Yes] GP kernels and bandwidths are swept in Table 11; grid resolution is swept in Table 12;
+threshold τ is swept in Figure 9. Defaults are justified by the cited prior work.
+23. Assumptions on the environment. Are required Python, OS, and library versions specified?
+[Yes] The artifact pins Lean 4.28.0, Mathlib v4.28.0, and a Python environment file; OpenAI
+API version is dated by model ID.
+24. Failure modes. Does the paper report failure modes of the proposed method?
+[Yes] Section I is dedicated to hypothesis-violation failure modes of the theory; out-of-scope
+discrete stress tests are reported in Section N.5.
+25. Negative results. Are negative results reported honestly?
+[Yes] The identity-defense smoke-test rows (Table 9) are explicitly labeled as bookkeeping
+checks rather than theorem tests; discrete-stress rows are labeled out-of-scope.
+26. Benchmarks and baselines. When proposing a new method, are appropriate baselines included?
+[Yes] A PAIR-style attack baseline is reported in Section P; LlamaGuard is used as a
+production-wrapper baseline in Table 2.
+27. Claim-to-evidence mapping. Is every claim in the abstract backed by a specific result in the
+paper?
+[Yes] The abstract’s claims map to Theorems 3.1, 4.1 and E.1 to E.3 and Section 6, respectively.
+28. Consent. Was consent obtained for any personal data used?
+[NA] No personal data is used.
+27
+
+855
+856
+857
+858
+859
+860
+861
+
+862
+863
+
+29. Anonymization. Is the submission properly anonymized for double-blind review?
+[Yes] Author, affiliation, and personal-URL information has been removed; the Lean artifact is
+released via anonymous.4open.science.
+30. Compute disclosure completeness. Does the compute disclosure cover total cost, wall-clock,
+and hardware?
+[Yes] Section 7 reports aggregate API spend (∼$60–$80), wall-clock (saturated run 7 814 s;
+total under four hours), local inference (laptop via Ollama), and Lean verification time.
+Summary. Of the 30 items above, 27 answers are Yes, 0 are No, and 3 are NA (items 14, 15, 28,
+which concern crowdsourcing, IRB, and personal-data consent and do not apply to this paper).
+
+28
+
+
