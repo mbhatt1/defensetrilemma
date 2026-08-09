@@ -31,15 +31,20 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\conf}{\mathrm{conf}}
 \newcommand{\ans}{\mathrm{ans}}
+\newcommand{\proofrepo}{\url{https://github.com/mbhatt1/defensetrilemma/tree/main/HallucinationProofs/HallucinationProofs}}
 
 \title{The Hallucination Trilemma: A Topological Impossibility\\
        for Faithful, Covering, and Calibrated Language Models}
 
-\author{\name Manish Bhatt \email manish.bhatt13212@gmail.com \\
-      \addr OWASP
-      \AND
-      \name Ken Huang \email ken@distributedapps.ai \\
-      \addr Distributedapps.ai}
+% Authors stacked and centred (name over affiliation over email), so the
+% byline reads as a single column rather than a name/email split.
+\author{%
+  \normalfont\centering
+  \textbf{Manish Bhatt}\quad OWASP\\
+  \texttt{manish.bhatt13212@gmail.com}\\[6pt]
+  \textbf{Ken Huang}\quad Distributedapps.ai\\
+  \texttt{ken@distributedapps.ai}%
+}
 
 \def\month{05}
 \def\year{2026}
@@ -54,30 +59,31 @@ We prove that no question-answering model with a continuous confidence map
 on a connected question space can be simultaneously \emph{faithful}
 (confidence $\geq\tfrac12$ implies a correct answer), \emph{covering} (it
 returns both correct and wrong answers), and \emph{strictly calibrated}
-(confidence above/below $\tfrac12$ iff correct/wrong). Coverage supplies
+(confidence above or below $\tfrac12$ iff correct or wrong). Coverage supplies
 witnesses on both sides of the threshold; connectedness and continuity force
 a threshold-confidence question through the intermediate value theorem;
 calibration pins its truth-distance to zero; faithfulness demands that it be
-strictly negative. The contradiction is structural---an application of the
-IVT---not a statistical claim about any current system. Crucially, the three
+strictly negative. The contradiction is structural, an application of the IVT
+rather than a statistical claim about any current system. Crucially, the three
 conditions are not an adversarial construction but the ideal that model
 builders actively strive for: a model that is trustworthy when confident,
 useful across questions, and honest about what it knows. Our result shows this
 sought-after ideal is not merely hard to reach but formally unreachable, and
-the closer a model is driven toward it---as calibration is idealized toward the
-zero-slack biconditional---the tighter the obstruction binds. The same two-line
+the closer a model is driven toward it, as calibration is idealized toward the
+zero-slack biconditional, the tighter the obstruction binds. The same two-line
 core fires with no topology once a single boundary question exists, and the
 result extends to multi-turn, stochastic, and approximately calibrated
-settings, where it becomes quantitative. All results are machine-verified in Lean~4 against
-Mathlib v4.28, sorry-free, depending only on the three standard kernel axioms.
+settings, where it becomes quantitative. All results are machine-verified in
+Lean~4 against Mathlib v4.28, sorry-free, depending only on the three standard
+kernel axioms.
 \end{abstract}
 
 % ============================================================
 \section{Introduction}
 \label{sec:intro}
 
-Hallucination---a model producing a confident but wrong answer---is one of
-the most reliably observed failures of deployed language models
+Hallucination, a model producing a confident but wrong answer, is one of the
+most reliably observed failures of deployed language models
 \citep{maynez2020faithfulness,ji2023survey,zhang2023siren}. The usual fixes
 are empirical: more data, RLHF, temperature tuning, post-hoc calibration.
 We show that under idealized conditions there is a mathematical obstruction
@@ -87,10 +93,10 @@ Consider any model that returns an answer together with a confidence score.
 Three properties are natural to want:
 \begin{itemize}[nosep,leftmargin=1.5em]
 \item \textbf{Faithful:} when at least half-confident, the answer is correct.
-\item \textbf{Covering:} the model is sometimes right and sometimes wrong---it
+\item \textbf{Covering:} the model is sometimes right and sometimes wrong; it
   does not refuse everything or output a constant.
-\item \textbf{Calibrated:} confidence tracks correctness in both
-  directions---high confidence means right, low confidence means wrong.
+\item \textbf{Calibrated:} confidence tracks correctness in both directions,
+  so that high confidence means right and low confidence means wrong.
 \end{itemize}
 For a continuous confidence map on a connected question space these three
 cannot coexist. The proof needs no training assumptions, no architecture, no
@@ -104,12 +110,12 @@ map is continuous, the IVT forces confidence to equal $\tfrac12$ at some
 $q_0$. Calibration then pins the answer at $q_0$ exactly on the truth
 boundary. But faithfulness says half-confident answers must be strictly
 correct. At $q_0$ the model is exactly half-confident and its answer is on the
-boundary, not strictly correct---a contradiction.
+boundary, not strictly correct, which is a contradiction.
 
 \paragraph{What it says about real models.}
 Coverage holds for every useful model; the binding condition is calibration.
 The theorem does \emph{not} claim deployed LLMs meet all three and derive a
-contradiction---no current model satisfies strict biconditional calibration.
+contradiction; no current model satisfies strict biconditional calibration.
 It says the design target the field is working toward is unreachable, and that
 the constraint tightens as calibration improves. \Cref{sec:extensions} makes
 this quantitative: under $\varepsilon$-calibration a threshold-confidence
@@ -122,9 +128,9 @@ capacity cannot cover all computable functions), an argument about the
 distribution boundary that ignores calibration.
 \citet{karpowicz2025impossibility} derive a conflict among four
 mechanism-design conditions via proper scoring rules. Neither uses the IVT or
-makes calibration central. Our result differs on all three counts---three
+makes calibration central. Our result differs on all three counts (three
 conditions with calibration explicit, an IVT-only proof, and machine
-verification---and is, to our knowledge, the first hallucination impossibility
+verification), and is, to our knowledge, the first hallucination impossibility
 formalized in a proof assistant.
 
 % ============================================================
@@ -190,9 +196,9 @@ $\delta_M(q_0)=0$. Since $\conf(q_0)\ge\tfrac12$, faithfulness requires
 $\delta_M(q_0)<0$, contradicting $\delta_M(q_0)=0$.
 \end{proof}
 
-The proof uses nothing about architecture, training, or parameter count---only
-continuity of $M$ and connectedness of $Q$. Any model satisfying the three
-conditions must violate one of these two.
+The proof uses nothing about architecture, training, or parameter count. It
+uses only continuity of $M$ and connectedness of $Q$. Any model satisfying the
+three conditions must violate one of these two.
 
 \paragraph{Tightness.}
 \label{par:tightness}
@@ -207,8 +213,8 @@ $[\tfrac12,\tfrac12+\varepsilon)$ is the price of escape.
 \label{sec:counterexamples}
 Dropping any single condition lets the other two coexist (the dashed edges of
 \Cref{fig:trilemma}, left).
-\emph{Not faithful:} the tightness model above---calibrated and covering, but
-$\delta_M=0$ at $\conf=\tfrac12$.
+\emph{Not faithful:} the tightness model above is calibrated and covering, but
+has $\delta_M=0$ at $\conf=\tfrac12$.
 \emph{Not covering:} constant $\conf=\tfrac34$ with $\delta_M<0$ everywhere is
 faithful and calibrated, but has no wrong-answer witness.
 \emph{Not continuous:} $\conf=\tfrac34$ on $(\tfrac12,1]$ and $\tfrac14$ on
@@ -219,10 +225,10 @@ pointwise, but jumps at $\tfrac12$.
 \centering
 \begin{tikzpicture}[x=1cm, y=1cm]
 
-%% LEFT PANEL – the trilemma triangle
-\coordinate (TF) at (3.1, 3.8);   % Faithfulness – top
-\coordinate (TC) at (0.2, 0);     % Calibration  – bottom-left
-\coordinate (TV) at (6.0, 0);     % Coverage     – bottom-right
+%% LEFT PANEL : the trilemma triangle
+\coordinate (TF) at (3.1, 3.8);   % Faithfulness (top)
+\coordinate (TC) at (0.2, 0);     % Calibration (bottom-left)
+\coordinate (TV) at (6.0, 0);     % Coverage (bottom-right)
 \fill[triblue!7] (TF) -- (TC) -- (TV) -- cycle;
 \draw[triblue,  very thick]              (TC) -- (TV);
 \draw[trigreen, thick, dashed]           (TC) -- (TF);
@@ -244,7 +250,7 @@ pointwise, but jumps at $\tfrac12$.
 \node[font=\tiny, text=black!40, align=center]
   at (3.1, -1.3) {Continuous model on connected space assumed throughout};
 
-%% RIGHT PANEL – the IVT crossing
+%% RIGHT PANEL : the IVT crossing
 \begin{scope}[shift={(7.8, 0)}]
   \draw[->, gray!55, line width=0.7pt] (0, 0) -- (5.0, 0)
     node[right, font=\tiny, text=gray!60] {$q$};
@@ -275,7 +281,7 @@ satisfies all three; the solid edge is the main result, the dashed edges the
 counterexamples. \textbf{Right:} the IVT argument. Coverage gives $q_-$
 ($\conf<\tfrac12$) and $q_+$ ($\conf>\tfrac12$); connectedness forces the
 crossing $q_0$; calibration pins $\delta(q_0)=0$; faithfulness then demands
-$\delta(q_0)<0$---contradiction.}
+$\delta(q_0)<0$, a contradiction.}
 \label{fig:trilemma}
 \end{figure}
 
@@ -296,8 +302,8 @@ Indeed, $\delta_M(q^*)=0$ makes both calibration biconditionals fail unless
 $\conf(q^*)=\tfrac12$, and faithfulness then demands $\delta_M(q^*)<0$. The
 continuous trilemma factors through this: IVT supplies $q^*$ from two-sided
 coverage and connectedness (\Cref{fig:extensions}b). On a genuinely
-disconnected set with no boundary question, all three conditions can hold---a
-real escape---so the discrete version assumes a boundary question
+disconnected set with no boundary question, all three conditions can hold (a
+real escape), so the discrete version assumes a boundary question
 (``three-sided coverage''). Equivalently: under strict calibration, a model is
 faithful iff it has \emph{no} boundary questions.
 
@@ -316,7 +322,7 @@ $\mu\{d>0\}>0$.
 \begin{proof}
 If $\mu\{d>0\}=0$ then $-d\ge0$ a.e.\ with $\int(-d)\,d\mu=0$, so $d=0$ a.e.
 But on $\{c\ge\tfrac12\}$ (positive probability) faithfulness gives $d<0$
-a.e.---a contradiction.
+a.e., a contradiction.
 \end{proof}
 
 So a stochastic model that is confident with positive probability at $q_0$
@@ -332,7 +338,7 @@ hallucinates there with positive probability (\Cref{fig:extensions}a).
 }
 \begin{tikzpicture}[x=1cm, y=1cm]
 
-%% LEFT PANEL – stochastic dichotomy
+%% LEFT PANEL : stochastic dichotomy
 \node[font=\small\bfseries\sffamily, anchor=north] at (2.75, 4.5)
   {(a) Stochastic dichotomy at $q_0$};
 \draw[->, gray!50, line width=0.7pt] (-0.2, 0) -- (5.3, 0)
@@ -364,7 +370,7 @@ hallucinates there with positive probability (\Cref{fig:extensions}a).
 \draw[->, triblue!60, line width=0.5pt, shorten >=3pt] (1.35, 3.55) -- (1.55, 3.05);
 \draw[->, trired!60, line width=0.5pt, shorten >=3pt] (4.0, 3.55) -- (3.85, 3.0);
 
-%% RIGHT PANEL – continuous vs discrete
+%% RIGHT PANEL : continuous vs discrete
 \begin{scope}[shift={(6.8, 0)}]
 \node[font=\small\bfseries\sffamily, anchor=north] at (3.1, 4.5)
   {(b) Continuous vs.\ discrete};
@@ -391,8 +397,8 @@ hallucinates there with positive probability (\Cref{fig:extensions}a).
 confident stochastic model faces a dichotomy: all mass at $\delta=0$ (boundary
 determinism) or positive mass at $\delta>0$ (hallucination). \textbf{(b)} The
 continuous and discrete trilemmas share a two-line core (right), differing only
-in how the witness $q_0$ is produced---IVT from two-sided coverage vs.\ explicit
-three-sided coverage.}
+in how the witness $q_0$ is produced: IVT from two-sided coverage versus
+explicit three-sided coverage.}
 \label{fig:extensions}
 \end{figure}
 
@@ -402,7 +408,7 @@ is connected and \Cref{thm:trilemma} applies to history-dependent
 $M\colon Q^T\to A\times\R$ unchanged: context does not remove the obstruction.
 When questions come in opposite pairs via a continuous involution
 $\sigma$ with $\delta_M(\sigma(q))=-\delta_M(q)$, the IVT forces a zero with no
-coverage hypothesis at all---coverage becomes automatic.
+coverage hypothesis at all, and coverage becomes automatic.
 
 \paragraph{Approximate calibration.}
 Real models are not strictly calibrated. Call $M$
@@ -422,11 +428,11 @@ and $\delta_M(q_0)<-\varepsilon$ would force $\conf(q_0)>c+\varepsilon$, so
 $\delta_M(q_0)\ge-\varepsilon$.
 \end{proof}
 
-At $\varepsilon=0$ the conclusion is $0\le\delta_M(q_0)<0$---the exact
+At $\varepsilon=0$ the conclusion is $0\le\delta_M(q_0)<0$, the exact
 contradiction. Improving calibration shrinks the margin: calibration and
 faithfulness are not independent. Taking $Q_{\mathrm{in}}$ correct and
 $Q_{\mathrm{ood}}$ wrong as the two witnesses, $q_0$ lies in neither, i.e.\ in
-the in-distribution/OOD transition band---the impossibility localizes there.
+the in-distribution/OOD transition band, where the impossibility localizes.
 
 % ============================================================
 \section{Formalization, Related Work, and Conclusion}
@@ -439,11 +445,10 @@ $\{\texttt{propext},\allowbreak \texttt{Quot.sound},\allowbreak
 \texttt{Classical.choice}\}$. The core (\texttt{HoF\_07}) applies
 \texttt{IsPreconnected.intermediate\_value2} for the IVT step and two
 \texttt{linarith} calls for the calibration squeeze; the discrete, stochastic,
-and approximate results appear in \texttt{HoF\_10}--\texttt{12}
+and approximate results appear in \texttt{HoF\_10} through \texttt{HoF\_12}
 (\texttt{integral\_eq\_zero\_iff\_of\_nonneg\_ae} for
 \Cref{thm:dichotomy}, \texttt{approx\_trilemma} and
-\texttt{exact\_from\_approx} for \Cref{thm:approx}). Sources are in the
-submission.
+\texttt{exact\_from\_approx} for \Cref{thm:approx}). Lean sources: \proofrepo.
 
 \begin{table}[h]
 \centering
@@ -471,8 +476,8 @@ whether it is structurally unavoidable; the two prior impossibility results
 \citep{xu2024hallucination,karpowicz2025impossibility} (\Cref{tab:comparison})
 make calibration incidental rather than central. The calibration literature
 \citep{guo2017calibration,platt1999probabilistic,zadrozny2002obtaining} treats
-miscalibration as correctable---the trilemma says correction costs one of the
-other two properties---while selective prediction
+miscalibration as correctable, whereas the trilemma says correction costs one
+of the other two properties; selective prediction
 \citep{kamath2020selective,feng2020language} is exactly dropping coverage. The
 companion Defense Trilemma \citep{anonymous2025defense} applies the same IVT
 engine to prompt-injection defenses; Lean has verified substantial mathematics
@@ -485,13 +490,13 @@ covering, and strictly calibrated, by the intermediate value theorem alone.
 Context does not help while the history space stays connected, randomization
 gives positive-probability wrong answers, and discrete token space escapes only
 until a boundary question appears. The three conditions name the three
-available relaxations---abstain, tolerate a threshold band, or accept a weaker
-confidence signal---and at least one must give; which is cheapest depends on
+available relaxations (abstain, tolerate a threshold band, or accept a weaker
+confidence signal), and at least one must give; which is cheapest depends on
 how often a deployment operates near its confidence boundary, an empirical
 quantity the theorem does not fix.
 
 {\small
-\setlength{\bibsep}{3.5pt plus 0.3ex}
+\setlength{\bibsep}{2pt plus 0.3ex}
 \bibliographystyle{tmlr}
 \bibliography{hallucination_trilemma_refs}
 }
