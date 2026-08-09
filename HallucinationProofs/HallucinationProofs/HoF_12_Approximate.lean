@@ -230,6 +230,127 @@ theorem no_boundary_in_upper_band
   have ⟨_, hlt⟩ := discrete_approx_bridge M δ c ε hε hcal hfaith q hge hle
   linarith
 
+/-! ## 5. Two-slack separation: truth units decoupled from confidence units -/
+
+/-- Two-slack separation. The truth slack `ε` is measured in truth-field
+units and the confidence margin `γ` in confidence units, so the condition
+is invariant under independent rescaling of the two fields. At `γ = ε`
+this is definitionally `EpsCalibrated`. -/
+def TwoSlackSeparating {Q A : Type*} (M : Q → A × ℝ) (δ : Q × A → ℝ)
+    (c ε γ : ℝ) : Prop :=
+  (∀ q, δ (q, (M q).1) < -ε → (M q).2 > c + γ) ∧
+  (∀ q, δ (q, (M q).1) > ε  → (M q).2 < c - γ)
+
+/-- Equal slacks recover the single-parameter condition. -/
+theorem epsCalibrated_iff_twoSlack
+    {Q A : Type*} (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε : ℝ) :
+    EpsCalibrated M δ c ε ↔ TwoSlackSeparating M δ c ε ε :=
+  Iff.rfl
+
+/--
+**Two-slack approximate coupling.**
+
+Under ε-coverage (truth units), two-slack separation, a threshold-inclusive
+guarantee, and continuity on a connected space, some query has confidence
+exactly `c` and truth-distance in `[-ε, 0)`. The conclusion's band is in
+truth units alone; the confidence margin `γ` only powers the IVT step.
+-/
+theorem two_slack_approx_coupling
+    {Q A : Type*} [TopologicalSpace Q] [ConnectedSpace Q] [TopologicalSpace A]
+    (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε γ : ℝ) (hγ : 0 ≤ γ)
+    (hconf : Continuous (fun q => (M q).2))
+    (hcov : EpsCovering M δ ε)
+    (hcal : TwoSlackSeparating M δ c ε γ)
+    (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0) :
+    ∃ q₀, (M q₀).2 = c ∧ -ε ≤ δ (q₀, (M q₀).1) ∧ δ (q₀, (M q₀).1) < 0 := by
+  obtain ⟨⟨q_t, ht⟩, ⟨q_f, hf⟩⟩ := hcov
+  have hct : (M q_t).2 > c + γ := hcal.1 q_t ht
+  have hcf : (M q_f).2 < c - γ := hcal.2 q_f hf
+  have hct' : (M q_t).2 > c := by linarith
+  have hcf' : (M q_f).2 < c := by linarith
+  obtain ⟨q₀, _, hq₀⟩ :=
+    isPreconnected_univ.intermediate_value₂
+      (mem_univ q_f) (mem_univ q_t)
+      hconf.continuousOn continuous_const.continuousOn
+      (le_of_lt hcf') (le_of_lt hct')
+  refine ⟨q₀, hq₀, ?_, hfaith q₀ (ge_of_eq hq₀)⟩
+  by_contra h
+  push_neg at h
+  have := hcal.1 q₀ h
+  linarith
+
+/--
+**The truth slack must be positive.**
+
+Under two-slack separation with any confidence margin `γ ≥ 0`, coverage at
+truth slack `ε ≥ 0`, and a threshold-inclusive guarantee, the truth slack
+satisfies `ε > 0`. Positivity attaches to the truth-side slack alone, in
+truth-field units, independent of how confidence is scaled.
+-/
+theorem truth_slack_must_be_positive
+    {Q A : Type*} [TopologicalSpace Q] [ConnectedSpace Q] [TopologicalSpace A]
+    (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε γ : ℝ) (hε : 0 ≤ ε) (hγ : 0 ≤ γ)
+    (hconf : Continuous (fun q => (M q).2))
+    (hcov : EpsCovering M δ ε)
+    (hcal : TwoSlackSeparating M δ c ε γ)
+    (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0) :
+    0 < ε := by
+  rcases hε.lt_or_eq with h | h
+  · exact h
+  · exfalso
+    subst h
+    obtain ⟨q₀, _, hle, hlt⟩ :=
+      two_slack_approx_coupling M δ c 0 γ hγ hconf hcov hcal hfaith
+    linarith
+
+/--
+**Two-slack band bridge.**
+
+For any question in the confidence band `[c, c + γ]`, two-slack separation
+and the guarantee force `δ ∈ [-ε, 0)`. The confidence band is in confidence
+units and the conclusion band in truth units.
+-/
+theorem two_slack_band_bridge
+    {Q A : Type*}
+    (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε γ : ℝ)
+    (hcal : TwoSlackSeparating M δ c ε γ)
+    (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0)
+    (q : Q)
+    (hge : (M q).2 ≥ c)
+    (hle : (M q).2 ≤ c + γ) :
+    -ε ≤ δ (q, (M q).1) ∧ δ (q, (M q).1) < 0 := by
+  constructor
+  · by_contra h
+    push_neg at h
+    have := hcal.1 q h
+    linarith
+  · exact hfaith q hge
+
+/--
+**No boundary point in the upper confidence band, two-slack form.**
+
+No query with confidence in `[c, c + γ]` sits exactly on the truth boundary.
+-/
+theorem no_boundary_in_upper_band_two_slack
+    {Q A : Type*}
+    (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε γ : ℝ)
+    (hcal : TwoSlackSeparating M δ c ε γ)
+    (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0)
+    (q : Q)
+    (hge : (M q).2 ≥ c)
+    (hle : (M q).2 ≤ c + γ)
+    (hbdy : δ (q, (M q).1) = 0) :
+    False := by
+  have ⟨_, hlt⟩ := two_slack_band_bridge M δ c ε γ hcal hfaith q hge hle
+  linarith
+
+/-! ## 6. Axiom audit -/
+
+#print axioms two_slack_approx_coupling
+#print axioms truth_slack_must_be_positive
+#print axioms two_slack_band_bridge
+#print axioms no_boundary_in_upper_band_two_slack
+
 end HoF
 
 end

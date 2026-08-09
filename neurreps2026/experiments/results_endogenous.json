@@ -1,0 +1,83 @@
+{
+  "gpt2": {
+    "endogenous": {
+      "model": "gpt2",
+      "layer": 9,
+      "template_probe_test_acc": 0.6594,
+      "n_paths": 53,
+      "n_decisive_paths": 23,
+      "frac_decisive": 0.434,
+      "median_gap_all_paths": 0.375,
+      "median_gap_decisive_paths": 0.225,
+      "mean_conf_at_crossing_decisive": 0.5042
+    },
+    "nulls": {
+      "n_paths": 83,
+      "null_permuted_median_gap": 0.475,
+      "null_permuted_gap_range": [
+        0.375,
+        0.475
+      ],
+      "null_random_median_gap": 0.325,
+      "null_random_gap_range": [
+        0.175,
+        0.45
+      ],
+      "n_null_seeds": 20
+    }
+  },
+  "pythia-410m": {
+    "endogenous": {
+      "model": "EleutherAI/pythia-410m",
+      "layer": 18,
+      "template_probe_test_acc": 0.7584,
+      "n_paths": 84,
+      "n_decisive_paths": 0,
+      "frac_decisive": 0.0,
+      "median_gap_all_paths": 0.475,
+      "median_gap_decisive_paths": null,
+      "mean_conf_at_crossing_decisive": null
+    },
+    "nulls": {
+      "n_paths": 104,
+      "null_permuted_median_gap": 0.45,
+      "null_permuted_gap_range": [
+        0.4,
+        0.525
+      ],
+      "null_random_median_gap": 0.45,
+      "null_random_gap_range": [
+        0.325,
+        0.525
+      ],
+      "n_null_seeds": 20
+    }
+  },
+  "qwen2.5-0.5b": {
+    "endogenous": {
+      "model": "Qwen/Qwen2.5-0.5B",
+      "layer": 12,
+      "template_probe_test_acc": 0.943,
+      "n_paths": 137,
+      "n_decisive_paths": 128,
+      "frac_decisive": 0.9343,
+      "median_gap_all_paths": 0.125,
+      "median_gap_decisive_paths": 0.125,
+      "mean_conf_at_crossing_decisive": 0.4268
+    },
+    "nulls": {
+      "n_paths": 137,
+      "null_permuted_median_gap": 0.425,
+      "null_permuted_gap_range": [
+        0.4,
+        0.475
+      ],
+      "null_random_median_gap": 0.4,
+      "null_random_gap_range": [
+        0.2,
+        0.475
+      ],
+      "n_null_seeds": 20
+    }
+  }
+}

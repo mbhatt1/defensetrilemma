@@ -23,7 +23,7 @@ lake build
 Expected result: the build completes with **zero errors** and the
 sources contain **no `sorry`**. Axiom audits (`#print axioms`) run in
 `HoF_FinalVerification.lean`, `HoF_11_MultiTurnProbabilistic.lean`,
-`HoF_13_BoundaryCoupling.lean`, and
+`HoF_12_Approximate.lean`, `HoF_13_BoundaryCoupling.lean`, and
 `HoF_14_QuantitativeGeometry.lean`; each headline theorem reduces to
 exactly
 
@@ -46,9 +46,9 @@ the three standard Lean kernel axioms.
 | Thm. Linear probe hyperplane | `linear_probe_boundary_coset`, `linear_probe_boundary_dim` | `HoF_14_QuantitativeGeometry` |
 | Thm. Corridor width | `confidence_gap_width` | `HoF_14_QuantitativeGeometry` |
 | Thm. Ambiguity tube | `ambiguity_tube`, `truth_margin_tube` | `HoF_14_QuantitativeGeometry` |
-| Thm. Approximate coupling | `approx_trilemma`, `exact_from_approx` | `HoF_12_Approximate` |
-| Thm. Slack must be positive | `slack_must_be_positive` | `HoF_13_BoundaryCoupling` |
-| Upper-band exclusion | `no_boundary_in_upper_band` | `HoF_12_Approximate` |
+| Thm. Approximate coupling | `two_slack_approx_coupling`, `exact_from_approx` | `HoF_12_Approximate` |
+| Thm. Truth slack must be positive | `truth_slack_must_be_positive` | `HoF_12_Approximate` |
+| Upper-band exclusion | `no_boundary_in_upper_band_two_slack` | `HoF_12_Approximate` |
 | Thm. Odd fields vanish | `antipodal_odd_has_zero` | `HoF_08_BorsukUlam` |
 | Thm. Antipodal coupling | `antipodal_hallucination_trilemma` | `HoF_08_BorsukUlam` |
 | Thm. Discrete impossibility | `boundary_question_impossible`, `faithful_iff_boundary_free` | `HoF_10_PureDiscrete` |
@@ -56,6 +56,8 @@ the three standard Lean kernel axioms.
 | Multi-turn | `multi_turn_history_dependent` | `HoF_11_MultiTurnProbabilistic` |
 | Stochastic expected-value coupling | `stochastic_coupling_expected` | `HoF_11_MultiTurnProbabilistic` |
 | Thm. Stochastic dichotomy | `stochastic_dichotomy` | `HoF_11_MultiTurnProbabilistic` |
+| Two-slack separation (definition) | `TwoSlackSeparating`, `epsCalibrated_iff_twoSlack` | `HoF_12_Approximate` |
+| Two-slack band bridge | `two_slack_band_bridge` | `HoF_12_Approximate` |
 | Bundled master theorem | `hallucination_master_theorem` | `HoF_MasterTheorem` |
 
 ## Layout

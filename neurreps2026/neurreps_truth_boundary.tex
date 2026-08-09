@@ -70,7 +70,8 @@ Consequences follow per policy. A guarantee that includes its
 threshold is impossible. A guarantee that excludes its threshold
 survives but is silent at the forced point. Under Lipschitz regularity
 the forced point widens into an ambiguity tube of computable width,
-and any feasible system must carry strictly positive separation slack.
+and any feasible system must carry strictly positive truth-side
+slack.
 For nonzero linear probes the truth boundary is exactly an affine
 hyperplane of codimension one. We further prove a symmetry version
 that needs no coverage assumption, a discrete analysis that prices
@@ -79,7 +80,8 @@ dichotomy is where genuine falsehood appears. Every theorem in this
 paper is machine-verified in Lean 4 against Mathlib, with no sorry,
 and the headline results reduce to the three standard kernel axioms.
 An appendix observes the predicted coupling in three
-sub-billion-parameter language models.
+sub-billion-parameter language models, including with the model's
+own confidence signal and against null baselines.
 \end{abstract}
 
 \begin{keywords}
@@ -102,7 +104,8 @@ We take that picture seriously as geometry and ask what follows.
 Suppose truth is a continuous scalar field on a connected
 representation space, and the model's answers and confidences are
 continuous fields on the same space. These assumptions mention no
-architecture, training method, or scale, so they apply to any model.
+architecture, training method, or scale. They apply to any model for
+which the fields are defined and continuous over the stated domain.
 What they force is a coupling law.
 
 \begin{quote}
@@ -139,7 +142,7 @@ practice, the truth boundary is literally an affine hyperplane.
   of width at least $2\gamma/L$. Around the forced point, truth
   margin and confidence margin are bounded by the Lipschitz data.
   Any system with band separation and a threshold-inclusive
-  guarantee must have strictly positive slack.
+  guarantee must have strictly positive truth-side slack.
 \item \textbf{A symmetry version} (\sectionref{sec:antipodal}). If
   semantic negation acts freely and continuously and the truth field
   is odd under it, a boundary point is forced with no coverage
@@ -254,19 +257,22 @@ A linear probe $w^\top x - b$ on activations
 \citep{marks2024geometry,burns2023discovering} is a candidate
 continuous $\dF$, and its decision boundary is the truth boundary. We
 note the gap honestly. Probing experiments fit classifiers on sampled
-representations, and treating the probe's output as a semantic truth
-value at every point is an idealization suggested by that literature
-rather than established by it. Our results hold under that
-idealization.
+representations, and the zero set of a probe is the probe's
+classification boundary. Whether it coincides with semantic truth
+away from those samples is an empirical premise, not a theorem. Our
+results hold under that premise.
 
 \begin{definition}[Truth-separating at threshold $\tau$]
 \label{def:separating}
-Fix a threshold $\tau$ and a slack $\varepsilon \ge 0$. $F$ is
-\emph{$\varepsilon$-separating at $\tau$} if for all $x$ two
-implications hold. If $\dF(x) < -\varepsilon$ then
-$\conf(x) > \tau + \varepsilon$. If $\dF(x) > \varepsilon$ then
-$\conf(x) < \tau - \varepsilon$. We say \emph{exactly separating}
-when $\varepsilon = 0$.
+Fix a threshold $\tau$, a truth slack $\varepsilon \ge 0$, and a
+confidence margin $\gamma \ge 0$. $F$ is
+\emph{$(\varepsilon, \gamma)$-separating at $\tau$} if for all $x$
+two implications hold. If $\dF(x) < -\varepsilon$ then
+$\conf(x) > \tau + \gamma$. If $\dF(x) > \varepsilon$ then
+$\conf(x) < \tau - \gamma$. The truth slack is measured in units of
+$\dF$ and the margin in units of $\conf$, so the condition survives
+independent rescaling of either field. We say \emph{exactly
+separating} when both are zero.
 \end{definition}
 
 \begin{definition}[Covering]
@@ -285,23 +291,20 @@ that $\conf(x) > \tau$ implies $\dF(x) < 0$.
 \end{definition}
 
 Covering is the weakest condition, since any deployed model that is
-ever right and ever wrong satisfies it. Exact separation is the
-idealized endpoint of using a perfect truth probe as the confidence
-signal, and the guarantees are the idealized endpoints of
-hallucination mitigation. The coupling results hold at an arbitrary
-threshold. The biconditional variants are stated at threshold one
-half.
+ever right and ever wrong satisfies it. Exact separation idealizes a
+perfect truth probe used as the confidence signal, and the guarantees
+idealize hallucination mitigation. The coupling results hold at any
+threshold, and the biconditional variants at one half.
 
 \begin{remark}[This is not statistical calibration]
 \label{rem:calibration}
 Statistical calibration asks that confidence match accuracy on
 average \citep{guo2017calibration}. Separation is pointwise and much
-stronger. Confidence classifies truth. Our results are impossibility
-results for this stronger object, not for statistically calibrated
-models. Separation is also one-way by construction. The coupling law and its
-corollaries use only the two truth-to-confidence implications. The
-symmetry and discrete results use the biconditional variant, which
-implies the one-way pair
+stronger, since confidence classifies truth, and our impossibility
+results target this stronger object. Separation is also one-way by
+construction. The coupling law and its corollaries use only the two
+truth-to-confidence implications, while the symmetry and discrete
+results use the biconditional variant, which implies them
 (Lean \leanid{strictCalibrated\_to\_epsCalibrated\_zero\_half}).
 \end{remark}
 
@@ -469,30 +472,29 @@ we can say exactly how.
 
 \begin{theorem}[Approximate coupling]
 \label{thm:approx}
-Let $\X$ satisfy (T), let $\conf$ be continuous, let
-$\varepsilon \ge 0$, and let $F$ be $\varepsilon$-covering,
-$\varepsilon$-separating at $\tau$, and carry a threshold-inclusive
-guarantee. Then some $x_0$ has $\conf(x_0) = \tau$ and
-$-\varepsilon \le \dF(x_0) < 0$. This is Lean theorem
-\leanid{approx\_trilemma}, with the exact case as
+Let $\X$ satisfy (T), let $\conf$ be continuous, and let $F$ be
+$\varepsilon$-covering, $(\varepsilon, \gamma)$-separating at $\tau$,
+and carry a threshold-inclusive guarantee. Then some $x_0$ has
+$\conf(x_0) = \tau$ and $-\varepsilon \le \dF(x_0) < 0$. This is Lean
+theorem \leanid{two\_slack\_approx\_coupling}, with the exact case as
 \leanid{exact\_from\_approx}.
 \end{theorem}
 
-\begin{theorem}[Slack must be positive]
+\begin{theorem}[Truth slack must be positive]
 \label{thm:slack}
-Under the hypotheses of \theoremref{thm:approx}, the slack satisfies
-$\varepsilon > 0$. Zero slack is infeasible. This is Lean theorem
-\leanid{slack\_must\_be\_positive}.
+Under the hypotheses of \theoremref{thm:approx}, the truth slack
+satisfies $\varepsilon > 0$ for every margin $\gamma \ge 0$. Zero
+truth slack is infeasible. This is Lean theorem
+\leanid{truth\_slack\_must\_be\_positive}.
 \end{theorem}
 
-Slack is therefore a genuine geometric budget. A feasible system must
-buy a strictly positive corridor around the truth boundary, and the
-infimum of feasible slack is an operational quantity of the system.
-We propose reading it as the system's truth-boundary width. A
-companion observation records that the corridor is clean. Under the
-guarantee, no query with confidence in the band from $\tau$ to
-$\tau + \varepsilon$ can sit exactly on the truth boundary (Lean
-theorem \leanid{no\_boundary\_in\_upper\_band}).
+Slack is therefore a genuine geometric budget, and positivity
+attaches to the truth side alone, whatever the confidence margin. We
+propose reading the infimum of feasible truth slack as the system's
+truth-boundary width. The corridor is also clean. Under the
+guarantee, no query with confidence between $\tau$ and
+$\tau + \gamma$ sits exactly on the truth boundary (Lean theorem
+\leanid{no\_boundary\_in\_upper\_band\_two\_slack}).
 
 \section{Symmetry replaces coverage}
 \label{sec:antipodal}
@@ -672,8 +674,8 @@ only the adjacent-crossing statement survives unconditionally.
 \paragraph{Separate to a band.}
 Theorems~\ref{thm:approx} and~\ref{thm:slack} make slack the correct
 optimization target. A feasible system must carry strictly positive
-slack, with guarantees available only outside the band between
-$\tau$ and $\tau + \varepsilon$. The infimum of feasible slack is
+truth slack, with guarantees available only outside the band between
+$\tau$ and $\tau + \gamma$. The infimum of feasible truth slack is
 measurable, and we propose it as a diagnostic.
 
 \paragraph{Implications for probing and steering.}
@@ -718,8 +720,11 @@ and confidence is \texttt{(M q).2}. The main conditions are named as
 follows.
 
 \begin{itemize}
-\item Separation at threshold \texttt{c} with slack \texttt{eps} is
-  \leanid{EpsCalibrated M delta c eps}.
+\item Separation at threshold \texttt{c} with truth slack \texttt{eps}
+  and confidence margin \texttt{gamma} is
+  \leanid{TwoSlackSeparating M delta c eps gamma}. The equal-slack
+  case is \leanid{EpsCalibrated M delta c eps}, definitionally
+  (\leanid{epsCalibrated\_iff\_twoSlack}).
 \item Covering with slack \texttt{eps} is
   \leanid{EpsCovering M delta eps}.
 \item The biconditional variant at threshold one half is
@@ -755,10 +760,10 @@ Thm.~\ref{thm:hyperplane} & \leanid{linear\_probe\_boundary\_coset},
 Thm.~\ref{thm:width} & \leanid{confidence\_gap\_width} \\
 Thm.~\ref{thm:tube} & \leanid{ambiguity\_tube},
   \leanid{truth\_margin\_tube} \\
-Thm.~\ref{thm:approx} & \leanid{approx\_trilemma},
+Thm.~\ref{thm:approx} & \leanid{two\_slack\_approx\_coupling},
   \leanid{exact\_from\_approx} \\
-Thm.~\ref{thm:slack} & \leanid{slack\_must\_be\_positive} \\
-Upper-band exclusion & \leanid{no\_boundary\_in\_upper\_band} \\
+Thm.~\ref{thm:slack} & \leanid{truth\_slack\_must\_be\_positive} \\
+Upper-band exclusion & \leanid{no\_boundary\_in\_upper\_band\_two\_slack} \\
 Thm.~\ref{thm:odd-zero} & \leanid{antipodal\_odd\_has\_zero} \\
 Thm.~\ref{thm:antipodal} & \leanid{antipodal\_hallucination\_trilemma} \\
 Thm.~\ref{thm:discrete} & \leanid{boundary\_question\_impossible},
@@ -860,13 +865,45 @@ shared main component for all three models, supporting the
 connectedness premise on this domain, though two models show a second
 component and we report this plainly.
 
+\paragraph{The model's own confidence.}
+The design above trains both fields on truth, so nearby boundaries
+could reflect shared fitting. We therefore repeat the experiment with
+a confidence field the model supplies itself, with no trained head.
+We capture the final block's last-token state under a question
+template, interpolate between matched pairs as before, patch the
+interpolated state back into the final block, and read the model's
+own probability of answering true over the two answer tokens. The
+truth probe is trained as before on a disjoint split of the same
+states. The endogenous field satisfies the separation premise on a
+path when it is decisive at both endpoints. \tableref{tab:endogenous}
+and \figureref{fig:endogenous} report what follows. In Qwen2.5-0.5B
+the premise holds on 128 of 137 paths, and there the model's own
+confidence crosses one half within 0.13 of the probe's zero, against
+null gaps of 0.40 and above. In Pythia-410M the premise fails on
+every path, since the model answers true regardless of the statement,
+and the theory predicts nothing. GPT-2 sits between, with 23 of 53
+paths decisive and a gap that does not separate from the random-head
+null. Coupling with the model's own uncertainty appears exactly where
+the separation premise holds, and only there.
+
+\paragraph{Null baselines.}
+To calibrate the gaps, we replace the trained confidence head with
+heads trained on permuted labels and with random directions, twenty
+seeds each (\tableref{tab:endogenous}). The trained-head gaps of
+0.25, 0.20, and 0.10 fall below the null medians for all three
+models, and below the entire null range for Pythia-410M and
+Qwen2.5-0.5B. For GPT-2 the observed gap lies inside the random-head
+null range, so the trained-head evidence is weak there on its own.
+
 \paragraph{What this does and does not show.}
 The truth field is linear, so its sign change along a linear path is
 guaranteed analytically. The empirical content lies elsewhere. The
 premises hold in real sub-billion models. The two fields are trained
 on disjoint data with different seeds, so their coupling at the
 boundary is not an artifact of shared fitting, though both target
-truth. The pinned confidence value lands at one half. And the boundary width is
+truth. The endogenous experiment removes that concern wherever the
+model itself can verbalize truth. The pinned confidence value lands
+at one half. And the boundary width is
 a measurable quantity that differentiates models. Code, results, and
 the figure are included in the supplementary material.
 
@@ -891,6 +928,40 @@ Qwen2.5-0.5B & 12/24 & 0.96 & 0.96 & 0.71 & 0.49 & 0.10 & 0.20 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{The model's own confidence and null calibration. Decisive
+counts paths where the endogenous field separates the endpoints. Endo
+is the median crossing gap on decisive paths. Perm and Rand are
+median null gaps for permuted-label and random-direction heads over
+twenty seeds. Heads repeats the trained-head gap from
+\tableref{tab:experiment}.}
+\label{tab:endogenous}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Model & Decisive & Endo & Perm & Rand & Heads \\
+\midrule
+GPT-2 (124M) & 23/53 & 0.23 & 0.48 & 0.33 & 0.25 \\
+Pythia-410M & 0/84 & none & 0.45 & 0.45 & 0.20 \\
+Qwen2.5-0.5B & 128/137 & 0.13 & 0.43 & 0.40 & 0.10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{endogenous_coupling.pdf}
+\caption{The model's own confidence couples to the probe boundary
+where the separation premise holds. Rows as in
+\figureref{fig:coupling}, but the bottom row is the model's own
+probability of answering true, obtained by patching the interpolated
+final-block state, restricted to decisive paths. Qwen2.5-0.5B sweeps
+through one half at the probe boundary. Pythia-410M answers true
+everywhere, the premise fails, and no prediction follows.}
+\label{fig:endogenous}
+\end{figure}
 
 \begin{figure}[htbp]
 \centering
@@ -917,7 +988,7 @@ v4.28.0, and seventeen source files. To reproduce, run
 \texttt{sorry}. Axiom sets of the headline theorems are printed by
 the final-verification file and by the files numbered 13 and 14. The
 experiment part includes the scripts, the public datasets of
-\citet{marks2024geometry}, the numerical results, and the figure.
+\citet{marks2024geometry}, the numerical results, and the figures.
 The theorems themselves depend on no experiment.
 
 \end{document}
