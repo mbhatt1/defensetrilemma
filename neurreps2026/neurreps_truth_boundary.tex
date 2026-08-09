@@ -71,10 +71,10 @@ threshold is impossible. A guarantee that excludes its threshold
 survives but is silent at the forced point. Under Lipschitz regularity
 the forced point widens into an ambiguity tube of computable width,
 and any feasible system must carry strictly positive separation slack.
-For linear probes the truth boundary is exactly an affine hyperplane
-of codimension one. We further prove a symmetry version that needs no
-coverage assumption, a discrete analysis that prices the removal of
-topology, and multi-turn and stochastic extensions. The stochastic
+For nonzero linear probes the truth boundary is exactly an affine
+hyperplane of codimension one. We further prove a symmetry version
+that needs no coverage assumption, a discrete analysis that prices
+the removal of topology, and multi-turn and stochastic extensions. The stochastic
 dichotomy is where genuine falsehood appears. Every theorem in this
 paper is machine-verified in Lean 4 against Mathlib, with no sorry,
 and the headline results reduce to the three standard kernel axioms.
@@ -114,23 +114,21 @@ exactly on the truth boundary.
 
 The proof is short and we do not pretend otherwise. The value of the
 law lies in what it does not mention. It contains no safety guarantee
-and no convention about thresholds. Every policy question becomes a
-corollary. A guarantee that covers its own threshold is impossible. A
-guarantee that excludes its threshold survives, but it says nothing at
-the one point topology guarantees to exist. Slack buys safety, and we
-compute exactly how much. Under Lipschitz regularity the forced point
-widens into a tube of forced ambiguity with computable width. For the
-linear probes used in practice, the truth boundary is literally an
-affine hyperplane of codimension one.
+and no convention about thresholds, so every policy question becomes
+a corollary. An inclusive guarantee is impossible. An exclusive
+guarantee survives but says nothing at the one point topology
+guarantees to exist. Slack buys safety, and we compute exactly how
+much. Under Lipschitz regularity the forced point widens into an
+ambiguity tube of computable width. For the linear probes used in
+practice, the truth boundary is literally an affine hyperplane.
 
 \paragraph{Contributions.}
 \begin{enumerate}
 \item \textbf{A boundary coupling law} (\sectionref{sec:coupling}).
   Coverage plus continuity force an exact truth-boundary point.
   Truth separation forces threshold confidence at such a point. The
-  combined law is convention-free. A taxonomy of corollaries then
-  settles each policy. Threshold-inclusive guarantees are impossible.
-  Threshold-exclusive guarantees are silent at the forced point.
+  combined law is convention-free, and a taxonomy of corollaries
+  then settles each policy.
 \item \textbf{The shape of the boundary} (\sectionref{sec:shape}).
   The truth boundary is closed. Every continuous path from a true
   answer to a false answer crosses it. For a nonzero linear probe it
@@ -138,7 +136,7 @@ affine hyperplane of codimension one.
   $d-1$. The title of this paper is meant literally.
 \item \textbf{The ambiguity tube} (\sectionref{sec:tube}). With
   Lipschitz confidence, decisive regions are separated by a corridor
-  of width at least $2\gamma/L_c$. Around the forced point, truth
+  of width at least $2\gamma/L$. Around the forced point, truth
   margin and confidence margin are bounded by the Lipschitz data.
   Any system with band separation and a threshold-inclusive
   guarantee must have strictly positive slack.
@@ -149,30 +147,27 @@ affine hyperplane of codimension one.
 \item \textbf{A discrete analysis} (\sectionref{sec:discrete}) that
   prices the removal of topology, and \textbf{extensions}
   (\sectionref{sec:extensions}) to multi-turn and stochastic models.
-  The stochastic dichotomy is where genuine falsehood appears.
 \item \textbf{Full machine verification} (\sectionref{sec:lean}).
   Every theorem in this paper corresponds to a named, sorry-free
-  Lean 4 result checked against Mathlib. The headline results reduce
-  to the three standard kernel axioms.
+  Lean 4 result checked against Mathlib.
 \end{enumerate}
 
 \paragraph{What the contribution is.}
-The mathematics is deliberately elementary. The contribution is not
-technical difficulty. It is a framing in which forced uncertainty is
-a topological property of representation space, stated in the
-vocabulary of the probing literature. It is precision. The theorems
-name the exact assumptions in play, including the threshold
-convention that other treatments leave implicit, so debate moves from
-proofs to premises. And it is verification. Every statement is
-machine-checked, so the premises are the only thing left to argue
+The mathematics is deliberately elementary, and the contribution is
+not technical difficulty. It is a framing in which forced uncertainty
+is a topological property of representation space, stated in the
+vocabulary of the probing literature. It is precision, since the
+theorems name the exact assumptions in play, including the threshold
+convention other treatments leave implicit, so debate moves from
+proofs to premises. And it is verification, since every statement is
+machine-checked and the premises are the only thing left to argue
 about.
 
 \paragraph{What the theorems do not say.}
 They do not say models err often, and they assign no probability to
 failure. The forced point of the deterministic results lies on the
-truth boundary. It is neither strictly true nor strictly false.
-Falsehood with positive probability appears only in the stochastic
-dichotomy, under its stated hypotheses.
+truth boundary, neither strictly true nor strictly false. Derived
+falsehood appears only in the stochastic dichotomy.
 
 \section{Related work}
 \label{sec:related}
@@ -183,9 +178,9 @@ must hallucinate on facts seen once in training, and
 \citet{kalai2025why} extend this line. \citet{xu2024hallucination}
 give a computability-theoretic inevitability argument. Our mechanism
 is topological, lives in representation space, and localizes the
-forced behavior at the truth boundary. It is also more modest in one
-respect. The deterministic theorems force uncertainty at the
-boundary, not confident falsehood.
+forced behavior at the truth boundary. It is also more modest, since
+the deterministic theorems force uncertainty at the boundary rather
+than confident falsehood.
 
 \paragraph{Geometry of truth in representations.}
 Linearly decodable truth \citep{marks2024geometry}, unsupervised
@@ -195,10 +190,10 @@ along truth directions \citep{li2023inference,zou2023representation}
 all model truth as a continuous decodable field on activation space.
 That is exactly our hypothesis on $\delta$, and confidence signals
 \citep{farquhar2024detecting,kadavath2022language} are treated
-similarly. Our results give this program a frontier. A system whose
-continuous probe exactly separates truth from falsehood over a
-connected domain, with both truth values realized, necessarily
-contains an exact-uncertainty point on the probe's own boundary.
+similarly. Our results give this program a frontier, since a probe
+that exactly separates truth over a connected domain with both truth
+values realized must contain an exact-uncertainty point on its own
+boundary.
 
 \paragraph{Topology, geometry, and calibration.}
 The manifold hypothesis \citep{fefferman2016testing} and the measured
@@ -231,14 +226,12 @@ topological space of answers. Our standing assumption is simple.
 
 Assumption (T) deserves care. Ambient embedding spaces are standardly
 modeled as $\R^d$ or connected submanifolds
-\citep{fefferman2016testing,cai2021isotropy}, and these satisfy (T).
-But (T) is an assumption about the domain over which the model's
-fields are defined and its guarantees asserted. The set of
-representations a token-driven model actually reaches may be a
-disconnected subset of $\R^d$. When guarantees range over the ambient
-space, as they implicitly do whenever a probe or steering vector is
-applied at arbitrary points, (T) holds.
-\sectionref{sec:discrete} analyzes what remains without it.
+\citep{fefferman2016testing,cai2021isotropy}, which satisfy (T). But
+the set of representations a token-driven model actually reaches may
+be disconnected. When guarantees range over the ambient space, as
+they implicitly do whenever a probe or steering vector is applied at
+arbitrary points, (T) holds. \sectionref{sec:discrete} analyzes what
+remains without it.
 
 \begin{definition}[Model field]
 \label{def:model}
@@ -261,10 +254,10 @@ A linear probe $w^\top x - b$ on activations
 \citep{marks2024geometry,burns2023discovering} is a candidate
 continuous $\dF$, and its decision boundary is the truth boundary. We
 note the gap honestly. Probing experiments fit classifiers on sampled
-representations. Treating the probe's output as a semantic truth value
-at every point, varying continuously through an exact zero surface, is
-an idealization suggested by that literature rather than established
-by it. Our results hold under that idealization.
+representations, and treating the probe's output as a semantic truth
+value at every point is an idealization suggested by that literature
+rather than established by it. Our results hold under that
+idealization.
 
 \begin{definition}[Truth-separating at threshold $\tau$]
 \label{def:separating}
@@ -295,7 +288,9 @@ Covering is the weakest condition, since any deployed model that is
 ever right and ever wrong satisfies it. Exact separation is the
 idealized endpoint of using a perfect truth probe as the confidence
 signal, and the guarantees are the idealized endpoints of
-hallucination mitigation. All results hold at an arbitrary threshold.
+hallucination mitigation. The coupling results hold at an arbitrary
+threshold. The biconditional variants are stated at threshold one
+half.
 
 \begin{remark}[This is not statistical calibration]
 \label{rem:calibration}
@@ -303,19 +298,19 @@ Statistical calibration asks that confidence match accuracy on
 average \citep{guo2017calibration}. Separation is pointwise and much
 stronger. Confidence classifies truth. Our results are impossibility
 results for this stronger object, not for statistically calibrated
-models. Separation is also one-way by construction. Only the two
-truth-to-confidence implications are ever used, and the biconditional
-version implies them
+models. Separation is also one-way by construction. The coupling law and its
+corollaries use only the two truth-to-confidence implications. The
+symmetry and discrete results use the biconditional variant, which
+implies the one-way pair
 (Lean \leanid{strictCalibrated\_to\_epsCalibrated\_zero\_half}).
 \end{remark}
 
 \begin{remark}[On continuity]
 \label{rem:continuity}
 Continuity idealizes the smoothness of trained networks. Softmax
-confidences and embedding maps are continuous by construction. Hard
-argmax decoding is not. Dropping continuity is a genuine escape, and
-\sectionref{sec:discrete} prices it. The boundary witness must then
-be assumed rather than derived.
+confidences and embedding maps are continuous by construction, while
+hard argmax decoding is not. Dropping continuity is a genuine escape,
+and \sectionref{sec:discrete} prices it.
 \end{remark}
 
 \section{The boundary coupling law}
@@ -368,7 +363,7 @@ is a matter of policy, and each policy is a corollary.
 \begin{corollary}[Inclusive guarantees are impossible]
 \label{cor:closed}
 Add a threshold-inclusive guarantee to the hypotheses of
-\theoremref{thm:coupling}. Then the four conditions are jointly
+\theoremref{thm:coupling}. Then the hypotheses are jointly
 contradictory. This is the trilemma.
 \end{corollary}
 
@@ -414,7 +409,7 @@ theorem \leanid{model\_truth\_boundary\_isClosed}.
 
 \begin{theorem}[Every path crosses]
 \label{thm:crossing}
-Let $\gamma$ be a continuous path in $\X$ from a query where the
+Let $p$ be a continuous path in $\X$ from a query where the
 model answers strictly truly to a query where it answers strictly
 falsely. Then some point on the path lies exactly on the truth
 boundary. This is Lean theorem
@@ -438,9 +433,9 @@ exactly $d - 1$. These are Lean theorems
 For the linear probes of the truth-direction literature, the truth
 boundary is therefore a codimension-one affine hyperplane through
 representation space, and the coupling law places a
-threshold-confidence answer somewhere on it. Truth does not merely
-have a boundary point. For linear probes it has a boundary surface,
-and the confidence threshold must meet it.
+threshold-confidence answer somewhere on it. Truth has not merely a
+boundary point but a boundary surface, and the confidence threshold
+must meet it.
 
 \section{The ambiguity tube}
 \label{sec:tube}
@@ -467,10 +462,10 @@ alone as \leanid{truth\_margin\_tube}.
 \end{theorem}
 
 The forced point is therefore not one pathological query. Around it
-sits a tube of near-ambiguous queries whose profile is controlled by
-the two Lipschitz constants, and decisive regions cannot approach
-each other closer than the corridor width allows. Slack changes what
-the forced point looks like, and we can say exactly how.
+sits a tube of near-ambiguous queries controlled by the two Lipschitz
+constants, and decisive regions cannot approach closer than the
+corridor width. Slack changes what the forced point looks like, and
+we can say exactly how.
 
 \begin{theorem}[Approximate coupling]
 \label{thm:approx}
@@ -494,10 +489,10 @@ Slack is therefore a genuine geometric budget. A feasible system must
 buy a strictly positive corridor around the truth boundary, and the
 infimum of feasible slack is an operational quantity of the system.
 We propose reading it as the system's truth-boundary width. A
-companion bound shows the corridor is clean. No query with confidence
-in the band from $\tau$ to $\tau + \varepsilon$ can sit exactly on
-the truth boundary (Lean theorem
-\leanid{no\_boundary\_in\_upper\_band}).
+companion observation records that the corridor is clean. Under the
+guarantee, no query with confidence in the band from $\tau$ to
+$\tau + \varepsilon$ can sit exactly on the truth boundary (Lean
+theorem \leanid{no\_boundary\_in\_upper\_band}).
 
 \section{Symmetry replaces coverage}
 \label{sec:antipodal}
@@ -520,7 +515,7 @@ theorem \leanid{antipodal\_odd\_has\_zero}.
 \begin{proof}
 Pick any $x$. If $g(x) = 0$ we are done. Otherwise $g(x)$ and
 $g(\sigma x) = -g(x)$ have opposite signs, and the IVT on the
-connected space gives a zero between them.
+connected space yields a zero of $g$.
 \end{proof}
 
 This is the scalar shadow of the Borsuk-Ulam theorem
@@ -538,8 +533,8 @@ theorem \leanid{antipodal\_hallucination\_trilemma}.
 
 No coverage hypothesis appears. A model answering a negation-closed
 family of questions is forced onto the truth boundary by symmetry
-alone. The moral is pointed for this community. Equivariance is
-usually a design virtue \citep{bronstein2021geometric}. Here it is
+alone. The moral is pointed for this community, since equivariance is
+usually a design virtue \citep{bronstein2021geometric} and here it is
 the engine of the obstruction.
 
 \section{What leaving the continuum costs}
@@ -575,10 +570,9 @@ some $i$ has $g(i) < 0 \le g(i+1)$. This is Lean theorem
 
 Along any token-space path from a true answer to a false one, the
 realized truth field crosses zero between two adjacent steps. This is
-weaker than the continuous law. It yields a straddling pair rather
+weaker than the continuous law, yielding a straddling pair rather
 than a state on the boundary, and hence no contradiction on its own.
-The continuum is not a crutch, but it is not free either. It is
-precisely what upgrades a crossing into a witness.
+The continuum is precisely what upgrades a crossing into a witness.
 
 \section{Products and randomness}
 \label{sec:extensions}
@@ -596,8 +590,7 @@ does not remove it.
 Applied to the expected confidence and truth fields, the coupling law
 yields a query with expected confidence one half and expected
 truth-distance zero (Lean theorem
-\leanid{stochastic\_coupling\_expected}, with the impossibility form
-as \leanid{stochastic\_trilemma\_expected}). A dichotomy then converts
+\leanid{stochastic\_coupling\_expected}). A dichotomy converts
 expectation into sampling behavior.
 
 \begin{theorem}[Stochastic dichotomy]
@@ -622,15 +615,18 @@ place in the paper where falsehood is derived.
 Every theorem and proposition in this paper corresponds to a named,
 sorry-free Lean 4 result \citep{moura2021lean} checked against
 Mathlib \citep{mathlib2020}, both pinned at v4.28.0. The anonymized
-artifact accompanies this submission with seventeen source files in
-the \leanid{HallucinationProofs} namespace. Running
+\leanid{HallucinationProofs} artifact ships seventeen source files.
+Running
 \texttt{lake build} completes with zero errors and no \texttt{sorry}.
 Axiom audits run \leanid{\#print axioms} on the headline theorems,
 and each reduces to exactly the three standard kernel axioms.
 \tableref{tab:lean} in \appendixref{app:conventions} maps every
-result to its identifier. The formal statements are slightly more
-general than the prose, and the prose claims nothing beyond what is
-formalized. Some identifiers retain historical names.
+result to its identifier. The theorem
+\leanid{hallucination\_master\_theorem} bundles the core
+impossibility together with its coverage data. The formal statements
+are slightly more general than the prose, and the prose claims
+nothing beyond what is formalized. Some identifiers retain
+historical names.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -642,33 +638,43 @@ do not claim this list is exhaustive.
 
 \paragraph{Exclude the threshold from the guarantee.}
 Corollary~\ref{cor:open} makes this stance precise. The guarantee
-survives, and the system owns a boundary point about which the
-guarantee says nothing. Saying so explicitly is healthier than
-leaving the convention implicit.
+survives but owns a boundary point about which it says nothing.
+Saying so explicitly is healthier than leaving the convention
+implicit.
 
 \paragraph{Disconnect the space.}
 Abstention breaks the argument at the IVT step. A model that declines
 to answer on an open region deletes that region from the domain where
 the fields must interpolate, which can disconnect the true region
 from the false region. Refusal training, on this reading, is
-connectedness surgery. The symmetry version sharpens the requirement.
-The cut must separate every representation from its negation image,
-so piecemeal refusal on isolated hard queries is not enough.
+connectedness surgery. Under the symmetry version the cut must
+separate every representation from its negation image, so piecemeal
+refusal on isolated hard queries is not enough.
+
+\paragraph{Quantify only over reachable queries.}
+The forced point may be an ambient activation that no real prompt
+produces, and a guarantee quantified only over reachable
+representations is then untouched. The objection is fair, and it is
+the domain version of disconnecting the space. But probing and
+steering pipelines apply their readouts at interpolated and edited
+activations, which is deployment over the ambient space, and a
+guarantee over the uncertified reachable set inherits every unknown
+of that set. Restricting the domain is a coherent design stance, and
+it should be stated as one.
 
 \paragraph{Give up coverage or continuity.}
 A model that never answers strictly falsely escapes. That is vacuous
 for general-purpose systems and meaningful for retrieval-grounded
 ones restricted to verified content. Dropping continuity also
-escapes, at the price computed in \sectionref{sec:discrete}. Only the
-adjacent-crossing statement then survives unconditionally.
+escapes, at the price computed in \sectionref{sec:discrete}, where
+only the adjacent-crossing statement survives unconditionally.
 
 \paragraph{Separate to a band.}
 Theorems~\ref{thm:approx} and~\ref{thm:slack} make slack the correct
 optimization target. A feasible system must carry strictly positive
-slack, and guarantees are available only outside the confidence band
-between $\tau$ and $\tau + \varepsilon$. The infimum of feasible
-slack is a measurable property of a system, and we propose it as a
-diagnostic.
+slack, with guarantees available only outside the band between
+$\tau$ and $\tau + \varepsilon$. The infimum of feasible slack is
+measurable, and we propose it as a diagnostic.
 
 \paragraph{Implications for probing and steering.}
 Truth-probe pipelines posit a continuous $\dF$, and steering methods
@@ -679,18 +685,14 @@ values realized, forces an exact-uncertainty point on the probe's own
 boundary. For linear probes that boundary is a hyperplane, and
 mitigation effort should go there.
 
-\paragraph{Limitations.}
+\paragraph{Limitations and outlook.}
 The results are existence statements, so nothing follows about error
-rates. The deterministic conclusions concern boundary points rather
-than confidently false answers, with \theoremref{thm:dichotomy} as
-the stochastic exception. The truth field is an idealization of probe
-behavior, exact oddness idealizes approximate negation symmetry, and
-the reachable set of activations may be disconnected even when the
-ambient domain satisfies (T).
-
-\paragraph{Outlook.}
+rates. Deterministic conclusions concern boundary points rather than
+confident falsehood, with \theoremref{thm:dichotomy} as the
+stochastic exception. The truth field idealizes probe behavior, and
+exact oddness idealizes approximate negation symmetry.
 \appendixref{app:experiment} reports a first empirical check on three
-sub-billion-parameter models. Natural next steps include higher
+sub-billion-parameter models. Natural next steps are higher
 Borsuk-Ulam machinery for jointly odd semantic axes and regular-value
 descriptions of nonlinear probe boundaries. The geometry of
 representation space can prove theorems, and machines can check them.
@@ -736,7 +738,7 @@ hyperplane results use \texttt{LinearMap} with rank-nullity.
 \centering
 \caption{Every result in the paper and its machine-checked counterpart.}
 \label{tab:lean}
-\small
+\footnotesize
 \begin{tabular}{ll}
 \toprule
 Result & Lean identifier \\
@@ -850,8 +852,9 @@ fields couple. The median gap between the zero of $\dF$ and the
 threshold crossing of $\conf$ shrinks as separation quality improves,
 from 0.25 of the path for GPT-2 to 0.10 for Qwen2.5-0.5B. Fifth, the
 relative boundary width, the median $|\dF|$ over queries whose
-confidence lies in $[0.4, 0.6]$ divided by the endpoint scale, also
-shrinks with model quality, from 0.33 to 0.20. Sixth, the kNN graph
+confidence lies in $[0.4, 0.6]$ divided by the endpoint scale,
+shrinks from 0.33 for GPT-2 to 0.20 for Qwen2.5-0.5B, though
+Pythia-410M breaks monotonicity at 0.36. Sixth, the kNN graph
 of held-out activations places true and false statements in one
 shared main component for all three models, supporting the
 connectedness premise on this domain, though two models show a second
@@ -860,19 +863,22 @@ component and we report this plainly.
 \paragraph{What this does and does not show.}
 The truth field is linear, so its sign change along a linear path is
 guaranteed analytically. The empirical content lies elsewhere. The
-premises hold in real sub-billion models. The two independently
-trained fields couple at the boundary without being trained to. The
-pinned confidence value lands at one half. And the boundary width is
+premises hold in real sub-billion models. The two fields are trained
+on disjoint data with different seeds, so their coupling at the
+boundary is not an artifact of shared fitting, though both target
+truth. The pinned confidence value lands at one half. And the boundary width is
 a measurable quantity that differentiates models. Code, results, and
 the figure are included in the supplementary material.
 
 \begin{table}[htbp]
 \centering
-\caption{Boundary coupling in three sub-1B models. Verbal is the
-model's own true or false answer accuracy. Cross is the mean
-confidence at the probe's zero crossing. Gap is the median distance
-between the two fields' crossings as a fraction of the path. Width
-is the relative boundary width.}
+\caption{Boundary coupling in three sub-1B models. Layer is the
+selected layer. Probe and Head are held-out accuracies of the truth
+probe and the confidence head. Verbal is the model's own true or
+false answer accuracy. Cross is the mean confidence at the probe's
+zero crossing. Gap is the median distance between the two fields'
+crossings as a fraction of the path. Width is the relative boundary
+width.}
 \label{tab:experiment}
 \small
 \begin{tabular}{lccccccc}
