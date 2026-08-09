@@ -189,7 +189,116 @@ theorem antipodal_hallucination_trilemma
     have hδneg : δ (q, (M q).1) < 0 := hgt.mp hc
     exact absurd hq (ne_of_lt hδneg)
 
-/-! ## 6. Summary
+/-! ## 6. Robustness and instantiation -/
+
+/--
+**Approximately odd fields nearly vanish.**
+
+Exact oddness is an idealization of the measured behavior of negation
+in representation space. If oddness holds only up to a defect `ε`,
+meaning `|g (σ q) + g q| ≤ ε` for every `q`, then some question has
+`|g q| ≤ ε / 2`. At `ε = 0` this recovers the exact vanishing theorem.
+Continuity of the action is not needed; only continuity of `g` and
+connectedness enter.
+-/
+theorem approx_odd_near_zero
+    {Q : Type*} [TopologicalSpace Q] [ConnectedSpace Q]
+    (σ : Q → Q) (g : Q → ℝ) (ε : ℝ)
+    (hg : Continuous g)
+    (hodd : ∀ q, |g (σ q) + g q| ≤ ε)
+    (q₀ : Q) :
+    ∃ q, |g q| ≤ ε / 2 := by
+  have hε : 0 ≤ ε := le_trans (abs_nonneg _) (hodd q₀)
+  by_cases h0 : |g q₀| ≤ ε / 2
+  · exact ⟨q₀, h0⟩
+  push_neg at h0
+  have hb := abs_le.mp (hodd q₀)
+  rcases lt_or_ge (g q₀) 0 with hneg | hpos
+  · have hq0 : g q₀ < -(ε / 2) := by
+      have habs : -g q₀ > ε / 2 := by rwa [abs_of_neg hneg] at h0
+      linarith
+    by_cases h1 : |g (σ q₀)| ≤ ε / 2
+    · exact ⟨σ q₀, h1⟩
+    push_neg at h1
+    have hσpos : g (σ q₀) > ε / 2 := by
+      rcases lt_or_ge (g (σ q₀)) 0 with hn | hp
+      · exfalso
+        have habs : -g (σ q₀) > ε / 2 := by rwa [abs_of_neg hn] at h1
+        linarith [hb.1]
+      · rwa [abs_of_nonneg hp] at h1
+    obtain ⟨q, _, hq⟩ :=
+      isPreconnected_univ.intermediate_value₂
+        (Set.mem_univ q₀) (Set.mem_univ (σ q₀))
+        hg.continuousOn continuous_const.continuousOn
+        (le_of_lt (by linarith : g q₀ < (0 : ℝ)))
+        (le_of_lt (by linarith : (0 : ℝ) < g (σ q₀)))
+    exact ⟨q, by rw [hq, abs_zero]; linarith⟩
+  · have hq0 : g q₀ > ε / 2 := by rwa [abs_of_nonneg hpos] at h0
+    by_cases h1 : |g (σ q₀)| ≤ ε / 2
+    · exact ⟨σ q₀, h1⟩
+    push_neg at h1
+    have hσneg : g (σ q₀) < -(ε / 2) := by
+      rcases lt_or_ge (g (σ q₀)) 0 with hn | hp
+      · have habs : -g (σ q₀) > ε / 2 := by rwa [abs_of_neg hn] at h1
+        linarith
+      · exfalso
+        have habs : g (σ q₀) > ε / 2 := by rwa [abs_of_nonneg hp] at h1
+        linarith [hb.2]
+    obtain ⟨q, _, hq⟩ :=
+      isPreconnected_univ.intermediate_value₂
+        (Set.mem_univ (σ q₀)) (Set.mem_univ q₀)
+        hg.continuousOn continuous_const.continuousOn
+        (le_of_lt (by linarith : g (σ q₀) < (0 : ℝ)))
+        (le_of_lt (by linarith : (0 : ℝ) < g q₀))
+    exact ⟨q, by rw [hq, abs_zero]; linarith⟩
+
+/--
+**Sphere instantiation.**
+
+Layer normalization places transformer states on a sphere-like shell.
+On the unit sphere of `ℝᵈ` with `d ≥ 2`, semantic negation acting as
+the antipodal map, any continuous field odd under the antipode
+vanishes somewhere on the sphere. Connectedness of the sphere is
+Mathlib's `isConnected_sphere`.
+-/
+theorem sphere_odd_has_zero {d : ℕ} (hd : 2 ≤ d)
+    (g : EuclideanSpace ℝ (Fin d) → ℝ)
+    (hg : ContinuousOn g (Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1))
+    (hodd : ∀ x ∈ Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+      g (-x) = -g x) :
+    ∃ x ∈ Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1, g x = 0 := by
+  have hrank : 1 < Module.rank ℝ (EuclideanSpace ℝ (Fin d)) := by
+    rw [← Module.finrank_eq_rank, finrank_euclideanSpace_fin]
+    exact_mod_cast (by omega : 1 < d)
+  have hconn : IsConnected
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1) :=
+    isConnected_sphere hrank 0 zero_le_one
+  obtain ⟨x₀, hx₀⟩ := hconn.nonempty
+  have hmx₀ : -x₀ ∈ Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1 := by
+    rw [mem_sphere_zero_iff_norm, norm_neg]
+    exact mem_sphere_zero_iff_norm.mp hx₀
+  rcases eq_or_ne (g x₀) 0 with h | h
+  · exact ⟨x₀, hx₀, h⟩
+  rcases lt_or_gt_of_ne h with hneg | hpos
+  · obtain ⟨x, hx, hxeq⟩ :=
+      hconn.isPreconnected.intermediate_value₂ hx₀ hmx₀
+        hg continuousOn_const
+        (le_of_lt hneg)
+        (by rw [hodd x₀ hx₀]; linarith)
+    exact ⟨x, hx, hxeq⟩
+  · obtain ⟨x, hx, hxeq⟩ :=
+      hconn.isPreconnected.intermediate_value₂ hmx₀ hx₀
+        hg continuousOn_const
+        (by rw [hodd x₀ hx₀]; linarith)
+        (le_of_lt hpos)
+    exact ⟨x, hx, hxeq⟩
+
+/-! ## 7. Axiom audit -/
+
+#print axioms approx_odd_near_zero
+#print axioms sphere_odd_has_zero
+
+/-! ## 8. Summary
 
 | # | Statement | Status |
 |---|-----------|--------|

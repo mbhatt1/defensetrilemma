@@ -1,0 +1,72 @@
+{
+  "gpt2": {
+    "sp_en": {
+      "probe_test_acc": 0.5214,
+      "conf_head_test_acc": 0.4857,
+      "n_paths": 4,
+      "frac_paths_adjacent_sign_change": 1.0,
+      "median_alpha_gap": 0.2,
+      "mean_conf_at_delta_crossing": 0.7869
+    },
+    "knn": {
+      "n_components": 2,
+      "components": [
+        {
+          "size": 298,
+          "frac_true": 0.5,
+          "frac_negated_form": 0.0
+        },
+        {
+          "size": 298,
+          "frac_true": 0.5,
+          "frac_negated_form": 1.0
+        }
+      ]
+    }
+  },
+  "pythia-410m": {
+    "sp_en": {
+      "probe_test_acc": 0.7,
+      "conf_head_test_acc": 0.6214,
+      "n_paths": 18,
+      "frac_paths_adjacent_sign_change": 1.0,
+      "median_alpha_gap": 0.525,
+      "mean_conf_at_delta_crossing": 0.497
+    },
+    "knn": {
+      "n_components": 1,
+      "components": [
+        {
+          "size": 596,
+          "frac_true": 0.5,
+          "frac_negated_form": 0.5
+        }
+      ]
+    }
+  },
+  "qwen2.5-0.5b": {
+    "sp_en": {
+      "probe_test_acc": 0.9429,
+      "conf_head_test_acc": 0.9357,
+      "n_paths": 38,
+      "frac_paths_adjacent_sign_change": 1.0,
+      "median_alpha_gap": 0.1,
+      "mean_conf_at_delta_crossing": 0.4527
+    },
+    "knn": {
+      "n_components": 2,
+      "components": [
+        {
+          "size": 298,
+          "frac_true": 0.5,
+          "frac_negated_form": 0.0
+        },
+        {
+          "size": 298,
+          "frac_true": 0.5,
+          "frac_negated_form": 1.0
+        }
+      ]
+    }
+  }
+}
