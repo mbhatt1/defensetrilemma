@@ -169,8 +169,8 @@ theorem antipodal_hallucination_trilemma
     (hδ : Continuous δ)
     (hodd : AntipodalOdd act (fun q => δ (q, (M q).1)))
     (hCal : ∀ q,
-      ((M q).2 > 1/2 ↔ δ (q, (M q).1) < 0) ∧
-      ((M q).2 < 1/2 ↔ δ (q, (M q).1) > 0))
+      ((M q).2 > 1 / 2 ↔ δ (q, (M q).1) < 0) ∧
+      ((M q).2 < 1 / 2 ↔ δ (q, (M q).1) > 0))
     (q₀ : Q) :
     ∃ q, (M q).2 = 1/2 ∧ δ (q, (M q).1) = 0 := by
   -- Step 1: extract a zero of the truth-distance composite.

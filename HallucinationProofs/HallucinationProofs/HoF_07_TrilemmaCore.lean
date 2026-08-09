@@ -176,11 +176,11 @@ theorem hallucination_trilemma_unfolded
     (hM_ans : Continuous (fun q => (M q).1))
     (hM_conf : Continuous (fun q => (M q).2))
     (hδ : Continuous δ)
-    (hF : ∀ q, (M q).2 ≥ 1/2 → δ (q, (M q).1) < 0)
+    (hF : ∀ q, (M q).2 ≥ 1 / 2 → δ (q, (M q).1) < 0)
     (hC : (∃ q, δ (q, (M q).1) < 0) ∧ (∃ q, δ (q, (M q).1) > 0))
     (hCal : ∀ q,
-      ((M q).2 > 1/2 ↔ δ (q, (M q).1) < 0) ∧
-      ((M q).2 < 1/2 ↔ δ (q, (M q).1) > 0)) :
+      ((M q).2 > 1 / 2 ↔ δ (q, (M q).1) < 0) ∧
+      ((M q).2 < 1 / 2 ↔ δ (q, (M q).1) > 0)) :
     False :=
   hallucination_trilemma M δ hM_ans hM_conf hδ hF hC hCal
 
@@ -200,8 +200,8 @@ theorem hallucination_trilemma_strict_unfolded
     (hδ : Continuous δ)
     (hC : (∃ q, δ (q, (M q).1) < 0) ∧ (∃ q, δ (q, (M q).1) > 0))
     (hCal : ∀ q,
-      ((M q).2 > 1/2 ↔ δ (q, (M q).1) < 0) ∧
-      ((M q).2 < 1/2 ↔ δ (q, (M q).1) > 0)) :
+      ((M q).2 > 1 / 2 ↔ δ (q, (M q).1) < 0) ∧
+      ((M q).2 < 1 / 2 ↔ δ (q, (M q).1) > 0)) :
     ∃ q, (M q).2 = 1/2 ∧ δ (q, (M q).1) = 0 :=
   hallucination_trilemma_strict M δ hM_ans hM_conf hδ hC hCal
 

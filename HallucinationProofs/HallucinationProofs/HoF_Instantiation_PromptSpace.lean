@@ -101,8 +101,8 @@ theorem prompt_confidence_half_exists {d k : ℕ}
     (hM_conf : Continuous (fun q => (M q).2))
     (hC : (∃ q, δ (q, (M q).1) < 0) ∧ (∃ q, δ (q, (M q).1) > 0))
     (hCal : ∀ q,
-      ((M q).2 > 1/2 ↔ δ (q, (M q).1) < 0) ∧
-      ((M q).2 < 1/2 ↔ δ (q, (M q).1) > 0)) :
+      ((M q).2 > 1 / 2 ↔ δ (q, (M q).1) < 0) ∧
+      ((M q).2 < 1 / 2 ↔ δ (q, (M q).1) > 0)) :
     ∃ q : EuclideanSpace ℝ (Fin d),
       (M q).2 = 1/2 ∧ δ (q, (M q).1) = 0 := by
   obtain ⟨⟨q_t, h_t⟩, ⟨q_f, h_f⟩⟩ := hC
@@ -144,14 +144,14 @@ theorem prompt_confidence_half_exists {d k : ℕ}
 theorem prompt_hallucination_trilemma {d k : ℕ}
     (M : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin k) × ℝ)
     (δ : EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin k) → ℝ)
-    (hM_ans : Continuous (fun q => (M q).1))
+    (_hM_ans : Continuous (fun q => (M q).1))
     (hM_conf : Continuous (fun q => (M q).2))
-    (hδ : Continuous δ)
-    (hFstrong : ∀ q, (M q).2 ≥ 1/2 → δ (q, (M q).1) < 0)
+    (_hδ : Continuous δ)
+    (hFstrong : ∀ q, (M q).2 ≥ 1 / 2 → δ (q, (M q).1) < 0)
     (hC : (∃ q, δ (q, (M q).1) < 0) ∧ (∃ q, δ (q, (M q).1) > 0))
     (hCal : ∀ q,
-      ((M q).2 > 1/2 ↔ δ (q, (M q).1) < 0) ∧
-      ((M q).2 < 1/2 ↔ δ (q, (M q).1) > 0)) :
+      ((M q).2 > 1 / 2 ↔ δ (q, (M q).1) < 0) ∧
+      ((M q).2 < 1 / 2 ↔ δ (q, (M q).1) > 0)) :
     False := by
   obtain ⟨q₀, hconf, hd⟩ :=
     prompt_confidence_half_exists M δ hM_conf hC hCal
@@ -183,10 +183,10 @@ theorem prompt_near_boundary {d k : ℕ}
 
 | # | Theorem | What it says on prompt space |
 |---|---------|-------------------------------|
-| 1 | `prompt_truth_boundary_exists` | A two-sided continuous model on ℝᵈ × ℝᵏ has a prompt where its answer lies on `∂T`. |
-| 2 | `prompt_confidence_half_exists` | A strictly-calibrated covering model has a prompt where its confidence is exactly ½ and its answer is on `∂T`. |
-| 3 | `prompt_hallucination_trilemma` | Strong faithfulness + coverage + strict calibration is impossible on prompt embedding space. |
-| 4 | `prompt_near_boundary` | Under coverage, the model's truth-distance gets arbitrarily close to zero — there is no escape from the ambiguous zone. |
+| 1 | `prompt_truth_boundary_exists` | Two-sided continuous model on ℝᵈ × ℝᵏ hits `∂T`. |
+| 2 | `prompt_confidence_half_exists` | Strict calibration + coverage force confidence ½ on `∂T`. |
+| 3 | `prompt_hallucination_trilemma` | Faithful + covering + calibrated impossible here. |
+| 4 | `prompt_near_boundary` | Truth-distance gets arbitrarily close to zero. |
 
 All four are direct specializations of the abstract HoF theorems to
 the connected metric space `EuclideanSpace ℝ (Fin d)`. The Lean kernel

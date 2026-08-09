@@ -13,10 +13,13 @@ Applying the trilemma to history-dependent models is therefore immediate.
 
 ## B. Probabilistic
 
-Two results:
-1. `stochastic_trilemma_expected` — expected-value form: apply the IVT
-   argument directly to `cbar` and `dbar`.
-2. `stochastic_dichotomy` — sample-level form: at the forced boundary point
+Three results:
+1. `stochastic_coupling_expected` — expected-value coupling: the coupling
+   law applied to the expected fields `cbar` and `dbar`. Some query has
+   `cbar = 1/2` and `dbar = 0`.
+2. `stochastic_trilemma_expected` — expected-value impossibility form:
+   adding an inclusive guarantee on the expected fields is contradictory.
+3. `stochastic_dichotomy` — sample-level form: at the forced boundary point
    where `∫ d dμ = 0`, if sample faithfulness holds a.e. and there is positive
    probability of high confidence, then `μ{d > 0} > 0` (active hallucination).
 
@@ -37,14 +40,14 @@ namespace HoF
 theorem multi_turn_per_turn
     {Q A : Type*} [TopologicalSpace Q] [ConnectedSpace Q] [TopologicalSpace A]
     (T : ℕ)
-    (M   : Fin T → Q → A × ℝ)
-    (δ   : Fin T → Q × A → ℝ)
-    (hM_ans  : ∀ t, Continuous (fun q => (M t q).1))
+    (M : Fin T → Q → A × ℝ)
+    (δ : Fin T → Q × A → ℝ)
+    (hM_ans : ∀ t, Continuous (fun q => (M t q).1))
     (hM_conf : ∀ t, Continuous (fun q => (M t q).2))
-    (hδ      : ∀ t, Continuous (δ t))
-    (hF      : ∀ t, TrilemmaFaithful  (M t) (δ t))
-    (hC      : ∀ t, TrilemmaCovering  (M t) (δ t))
-    (hCal    : ∀ t, StrictCalibrated  (M t) (δ t))
+    (hδ : ∀ t, Continuous (δ t))
+    (hF : ∀ t, TrilemmaFaithful (M t) (δ t))
+    (hC : ∀ t, TrilemmaCovering (M t) (δ t))
+    (hCal : ∀ t, StrictCalibrated (M t) (δ t))
     (t : Fin T) : False :=
   hallucination_trilemma (M t) (δ t)
     (hM_ans t) (hM_conf t) (hδ t) (hF t) (hC t) (hCal t)
@@ -58,14 +61,14 @@ to models that see the full conversation history.
 theorem multi_turn_history_dependent
     {Q A : Type*} [TopologicalSpace Q] [ConnectedSpace Q] [TopologicalSpace A]
     (T : ℕ)
-    (M   : (Fin T → Q) → A × ℝ)
-    (δ   : (Fin T → Q) × A → ℝ)
-    (hM_ans  : Continuous (fun h => (M h).1))
+    (M : (Fin T → Q) → A × ℝ)
+    (δ : (Fin T → Q) × A → ℝ)
+    (hM_ans : Continuous (fun h => (M h).1))
     (hM_conf : Continuous (fun h => (M h).2))
-    (hδ      : Continuous δ)
-    (hF      : TrilemmaFaithful M δ)
-    (hC      : TrilemmaCovering M δ)
-    (hCal    : StrictCalibrated M δ) : False := by
+    (hδ : Continuous δ)
+    (hF : TrilemmaFaithful M δ)
+    (hC : TrilemmaCovering M δ)
+    (hCal : StrictCalibrated M δ) : False := by
   haveI : ConnectedSpace (Fin T → Q) := inferInstance  -- Mathlib: Pi of connected is connected
   exact hallucination_trilemma M δ hM_ans hM_conf hδ hF hC hCal
 
@@ -84,12 +87,43 @@ theorem adversary_boundary_reachable
   ⟨fun h i => if h' : (i : ℕ) < t then h ⟨i, h'⟩ else q₀,
    fun h₁ h₂ heq => funext fun i => by
      have := congr_fun heq ⟨i, i.isLt.trans_le hle⟩
-     simp [i.isLt] at this
-     exact this⟩
+     simpa only [i.isLt, dif_pos] using this⟩
 
 /-! ## B. Probabilistic -/
 
-/-! ### B.1 Expected-value trilemma -/
+/-! ### B.1 Expected-value coupling and trilemma -/
+
+/--
+**Stochastic coupling (expected-value form).**
+
+The coupling law applied to the expected confidence field `cbar` and
+the expected truth-distance field `dbar`. Under two-sided coverage of
+the expected truth field and one-way separation at threshold `1/2`,
+some query carries expected confidence exactly `1/2` and expected
+truth-distance exactly `0`. No guarantee hypothesis appears.
+-/
+theorem stochastic_coupling_expected
+    {Q : Type*} [TopologicalSpace Q] [ConnectedSpace Q]
+    (cbar dbar : Q → ℝ)
+    (hcbar : Continuous cbar)
+    (hC : (∃ q, dbar q < 0) ∧ (∃ q, dbar q > 0))
+    (hCal : ∀ q, (dbar q < 0 → cbar q > 1 / 2) ∧ (dbar q > 0 → cbar q < 1 / 2)) :
+    ∃ q₀, cbar q₀ = 1/2 ∧ dbar q₀ = 0 := by
+  obtain ⟨⟨q_t, h_t⟩, ⟨q_f, h_f⟩⟩ := hC
+  have hct : cbar q_t > 1/2 := (hCal q_t).1 h_t
+  have hcf : cbar q_f < 1/2 := (hCal q_f).2 h_f
+  obtain ⟨q₀, _, hq₀⟩ :=
+    isPreconnected_univ.intermediate_value₂
+      (mem_univ q_f) (mem_univ q_t)
+      hcbar.continuousOn continuous_const.continuousOn
+      (le_of_lt hcf) (le_of_lt hct)
+  refine ⟨q₀, hq₀, ?_⟩
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hlt | hgt
+  · have := (hCal q₀).1 hlt
+    linarith
+  · have := (hCal q₀).2 hgt
+    linarith
 
 /--
 **Stochastic trilemma (expected-value form).**
@@ -102,10 +136,10 @@ theorem stochastic_trilemma_expected
     {Q : Type*} [TopologicalSpace Q] [ConnectedSpace Q]
     (cbar dbar : Q → ℝ)
     (hcbar : Continuous cbar)
-    (hdbar : Continuous dbar)
-    (hF   : ∀ q, cbar q ≥ 1/2 → dbar q < 0)
-    (hC   : (∃ q, dbar q < 0) ∧ (∃ q, dbar q > 0))
-    (hCal : ∀ q, (cbar q > 1/2 ↔ dbar q < 0) ∧ (cbar q < 1/2 ↔ dbar q > 0)) :
+    (_hdbar : Continuous dbar)
+    (hF : ∀ q, cbar q ≥ 1 / 2 → dbar q < 0)
+    (hC : (∃ q, dbar q < 0) ∧ (∃ q, dbar q > 0))
+    (hCal : ∀ q, (cbar q > 1 / 2 ↔ dbar q < 0) ∧ (cbar q < 1 / 2 ↔ dbar q > 0)) :
     False := by
   obtain ⟨⟨q_t, h_t⟩, ⟨q_f, h_f⟩⟩ := hC
   have hct : cbar q_t > 1/2 := (hCal q_t).1.mpr h_t
@@ -144,11 +178,9 @@ theorem stochastic_dichotomy
     {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ]
     (c d : Ω → ℝ)
-    (_hc_meas : Measurable c)
-    (_hd_meas : Measurable d)
-    (h_int   : ∫ ω, d ω ∂μ = 0)
-    (h_faith : ∀ᵐ ω ∂μ, c ω ≥ 1/2 → d ω < 0)
-    (h_conf  : μ {ω | c ω ≥ 1/2} > 0)
+    (h_int : ∫ ω, d ω ∂μ = 0)
+    (h_faith : ∀ᵐ ω ∂μ, c ω ≥ 1 / 2 → d ω < 0)
+    (h_conf : μ {ω | c ω ≥ 1/2} > 0)
     (h_int_d : Integrable d μ) :
     μ {ω | d ω > 0} > 0 := by
   by_contra h
@@ -192,16 +224,21 @@ theorem boundary_dichotomy
     {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ]
     (c d : Ω → ℝ)
-    (hc_meas : Measurable c)
-    (hd_meas : Measurable d)
-    (h_int   : ∫ ω, d ω ∂μ = 0)
-    (h_faith : ∀ᵐ ω ∂μ, c ω ≥ 1/2 → d ω < 0)
+    (h_int : ∫ ω, d ω ∂μ = 0)
+    (h_faith : ∀ᵐ ω ∂μ, c ω ≥ 1 / 2 → d ω < 0)
     (h_int_d : Integrable d μ) :
     μ {ω | c ω ≥ 1/2} = 0 ∨ μ {ω | d ω > 0} > 0 := by
   rcases eq_or_ne (μ {ω | c ω ≥ 1/2}) 0 with h | h
   · exact Or.inl h
-  · exact Or.inr (stochastic_dichotomy μ c d hc_meas hd_meas
+  · exact Or.inr (stochastic_dichotomy μ c d
         h_int h_faith (pos_of_ne_zero h) h_int_d)
+
+/-! ## C. Axiom audit -/
+
+#print axioms multi_turn_history_dependent
+#print axioms stochastic_coupling_expected
+#print axioms stochastic_trilemma_expected
+#print axioms stochastic_dichotomy
 
 end HoF
 

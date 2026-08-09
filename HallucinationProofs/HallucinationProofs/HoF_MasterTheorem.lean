@@ -81,8 +81,8 @@ private theorem boundary_half_point
     (h_true : ∃ q, δ (q, (M q).1) < 0)
     (h_false : ∃ q, δ (q, (M q).1) > 0)
     (hCal : ∀ q,
-      ((M q).2 > 1/2 ↔ δ (q, (M q).1) < 0) ∧
-      ((M q).2 < 1/2 ↔ δ (q, (M q).1) > 0)) :
+      ((M q).2 > 1 / 2 ↔ δ (q, (M q).1) < 0) ∧
+      ((M q).2 < 1 / 2 ↔ δ (q, (M q).1) > 0)) :
     ∃ q, (M q).2 = 1/2 ∧ δ (q, (M q).1) = 0 := by
   obtain ⟨q_t, h_t⟩ := h_true
   obtain ⟨q_f, h_f⟩ := h_false
@@ -189,7 +189,7 @@ theorem hallucination_trilemma_three_clause (H : HallucinationStructure) :
 | # | Statement | Status |
 |---|-----------|--------|
 | 1 | `HallucinationStructure` — bundled question/answer/model/δ data | Defined |
-| 2 | `hallucination_master_theorem` — Strong-Faithful ∧ Strict-Calibrated impossible (under bundled coverage) | Proved |
+| 2 | `hallucination_master_theorem` — Faithful ∧ Calibrated impossible | Proved |
 | 3 | `hallucination_trilemma_three_clause` — coverage + IVT-forced boundary point | Proved |
 
 All proofs are sorry-free and rely only on `Mathlib`.

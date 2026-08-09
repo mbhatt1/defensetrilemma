@@ -133,7 +133,7 @@ theorem calibrated_confHalf_nonempty
     {M : Q → A × ℝ} {δ : Q × A → ℝ}
     (hCal : Calibrated M δ)
     (q₁ q₂ : Q)
-    (h₁ : (M q₁).2 < 1/2) (h₂ : (M q₂).2 > 1/2) :
+    (h₁ : (M q₁).2 < 1 / 2) (h₂ : (M q₂).2 > 1 / 2) :
     ∃ q, (M q).2 = 1/2 := by
   have hcont : Continuous (fun q => (M q).2) := hCal.conf_continuous
   have h_conn : IsPreconnected (Set.univ : Set Q) := isPreconnected_univ
@@ -152,7 +152,7 @@ theorem confHalf_implies_truthBoundary
     {Q A : Type*} [TopologicalSpace Q]
     {M : Q → A × ℝ} {δ : Q × A → ℝ}
     (hCal : Calibrated M δ)
-    {q : Q} (hq : (M q).2 = 1/2) :
+    {q : Q} (hq : (M q).2 = 1 / 2) :
     δ (q, (M q).1) = 0 :=
   (hCal.half_on_boundary q).mp hq
 

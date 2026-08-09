@@ -35,6 +35,12 @@ import HallucinationProofs.HoF_11_MultiTurnProbabilistic
 -- Approximate bridge: ε-calibration connects idealized theorem to real models.
 import HallucinationProofs.HoF_12_Approximate
 
+-- Boundary coupling: the convention-independent headline theorem.
+import HallucinationProofs.HoF_13_BoundaryCoupling
+
+-- Quantitative geometry: corridor width, ambiguity tube, hyperplane boundaries.
+import HallucinationProofs.HoF_14_QuantitativeGeometry
+
 -- Capstone: bundled structure + master theorem + final axiom verification.
 import HallucinationProofs.HoF_MasterTheorem
 import HallucinationProofs.HoF_FinalVerification

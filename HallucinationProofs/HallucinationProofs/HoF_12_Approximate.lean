@@ -77,10 +77,10 @@ At `q₀`:
 theorem approx_trilemma
     {Q A : Type*} [TopologicalSpace Q] [ConnectedSpace Q] [TopologicalSpace A]
     (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε : ℝ) (hε : 0 ≤ ε)
-    (hconf   : Continuous (fun q => (M q).2))
-    (hcov    : EpsCovering M δ ε)
-    (hcal    : EpsCalibrated M δ c ε)
-    (hfaith  : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0) :
+    (hconf : Continuous (fun q => (M q).2))
+    (hcov : EpsCovering M δ ε)
+    (hcal : EpsCalibrated M δ c ε)
+    (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0) :
     ∃ q₀, (M q₀).2 = c ∧ -ε ≤ δ (q₀, (M q₀).1) ∧ δ (q₀, (M q₀).1) < 0 := by
   obtain ⟨⟨q_t, ht⟩, ⟨q_f, hf⟩⟩ := hcov
   -- ε-calibration gives confidence witnesses
@@ -113,9 +113,9 @@ for the IVT argument. `approx_trilemma` gives `q₀` with `conf(q₀) = c` and
 theorem exact_from_approx
     {Q A : Type*} [TopologicalSpace Q] [ConnectedSpace Q] [TopologicalSpace A]
     (M : Q → A × ℝ) (δ : Q × A → ℝ) (c : ℝ)
-    (hconf  : Continuous (fun q => (M q).2))
-    (hcov   : EpsCovering M δ 0)
-    (hcal   : EpsCalibrated M δ c 0)
+    (hconf : Continuous (fun q => (M q).2))
+    (hcov : EpsCovering M δ 0)
+    (hcal : EpsCalibrated M δ c 0)
     (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0) :
     False := by
   obtain ⟨q₀, _, hle, hlt⟩ :=
@@ -190,10 +190,10 @@ applies to any question in the upper confidence band whenever it exists.
 theorem discrete_approx_bridge
     {Q A : Type*}
     (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε : ℝ) (_hε : 0 ≤ ε)
-    (hcal   : EpsCalibrated M δ c ε)
+    (hcal : EpsCalibrated M δ c ε)
     (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0)
-    (q  : Q)
-    (hge : (M q).2 ≥ c)        -- in the upper half of the confidence band
+    (q : Q)
+    (hge : (M q).2 ≥ c) -- in the upper half of the confidence band
     (hle : (M q).2 ≤ c + ε) :  -- not above the band
     -ε ≤ δ (q, (M q).1) ∧ δ (q, (M q).1) < 0 := by
   constructor
@@ -220,9 +220,9 @@ The upper-band conclusion `δ ∈ [-ε, 0)` excludes `δ = 0`.
 theorem no_boundary_in_upper_band
     {Q A : Type*}
     (M : Q → A × ℝ) (δ : Q × A → ℝ) (c ε : ℝ) (hε : 0 ≤ ε)
-    (hcal   : EpsCalibrated M δ c ε)
+    (hcal : EpsCalibrated M δ c ε)
     (hfaith : ∀ q, (M q).2 ≥ c → δ (q, (M q).1) < 0)
-    (q  : Q)
+    (q : Q)
     (hge : (M q).2 ≥ c)
     (hle : (M q).2 ≤ c + ε)
     (hbdy : δ (q, (M q).1) = 0) :

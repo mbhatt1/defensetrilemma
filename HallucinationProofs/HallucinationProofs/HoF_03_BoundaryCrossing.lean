@@ -54,7 +54,7 @@ canonical confidence threshold of 1/2.
 -/
 theorem confidence_path_crosses_half
     (c : ℝ → ℝ) (hc : Continuous c) (a b : ℝ)
-    (hab : a ≤ b) (ha : c a < 1/2) (hb : c b > 1/2) :
+    (hab : a ≤ b) (ha : c a < 1 / 2) (hb : c b > 1 / 2) :
     ∃ t ∈ Set.Icc a b, c t = 1/2 := by
   have h_conn : IsPreconnected (Set.Icc a b) := isPreconnected_Icc
   have ha_mem : a ∈ Set.Icc a b := left_mem_Icc.mpr hab
@@ -163,7 +163,7 @@ theorem model_confidence_half_set_nonempty
     {Q : Type*} [TopologicalSpace Q] [ConnectedSpace Q]
     (M : Q → ℝ × ℝ) (hM_conf : Continuous (fun q => (M q).2))
     (q₁ q₂ : Q)
-    (h₁ : (M q₁).2 < 1/2) (h₂ : (M q₂).2 > 1/2) :
+    (h₁ : (M q₁).2 < 1 / 2) (h₂ : (M q₂).2 > 1 / 2) :
     ∃ q, (M q).2 = 1/2 := by
   have h_conn : IsPreconnected (Set.univ : Set Q) := isPreconnected_univ
   have h₁_mem : q₁ ∈ (Set.univ : Set Q) := Set.mem_univ _
@@ -187,7 +187,7 @@ This is the IVT specialized to the confidence threshold.
 theorem confidence_half_nonempty
     {Q : Type*} [TopologicalSpace Q] [ConnectedSpace Q]
     (c : Q → ℝ) (hc : Continuous c)
-    (q₁ q₂ : Q) (h₁ : c q₁ < 1/2) (h₂ : c q₂ > 1/2) :
+    (q₁ q₂ : Q) (h₁ : c q₁ < 1 / 2) (h₂ : c q₂ > 1 / 2) :
     ∃ q, c q = 1/2 := by
   have h_conn : IsPreconnected (Set.univ : Set Q) := isPreconnected_univ
   have h₁_mem : q₁ ∈ (Set.univ : Set Q) := Set.mem_univ _

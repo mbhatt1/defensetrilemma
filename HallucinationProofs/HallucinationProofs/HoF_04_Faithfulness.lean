@@ -174,7 +174,7 @@ theorem faithful_at_half_boundary
     (hM_conf : Continuous (fun q => (M q).2))
     (hδ : Continuous δ)
     (hF : Faithful M δ)
-    {q₀ : Q} (_hq₀ : (M q₀).2 = 1/2)
+    {q₀ : Q} (_hq₀ : (M q₀).2 = 1 / 2)
     (hq_lim : q₀ ∈ closure {q | (M q).2 > 1/2}) :
     δ (q₀, (M q₀).1) ≤ 0 :=
   faithful_closure_in_truth hM_ans hM_conf hδ hF hq_lim

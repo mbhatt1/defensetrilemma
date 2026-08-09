@@ -16,3 +16,7 @@ rev = "v4.28.0"
 
 [[lean_lib]]
 name = "HallucinationProofs"
+# Build the root module AND every submodule, so files not imported by the
+# root (HoF_01_Foundations, kept separate to avoid name collisions) are
+# still checked by a plain `lake build`.
+globs = ["HallucinationProofs", "HallucinationProofs.+"]

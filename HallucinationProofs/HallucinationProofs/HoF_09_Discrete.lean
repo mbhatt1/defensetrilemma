@@ -216,12 +216,12 @@ hit `(M q).2 = 1/2` somewhere — and strict calibration would then
 demand `δ = 0` at that question, violating the conclusion below.
 -/
 theorem discrete_trilemma_decisive_impossible
-    {Q A : Type*} [Fintype Q] [DecidableEq Q] [Nonempty Q]
+    {Q A : Type*} [Nonempty Q]
     (M : Q → A × ℝ) (δ : Q × A → ℝ)
     (_hF : DiscreteFaithful M δ)
     (_hC : DiscreteCovering M δ)
     (hCal : DiscreteStrictCalibrated M δ)
-    (hDecisive : ∀ q, (M q).2 ≠ 1/2) :
+    (hDecisive : ∀ q, (M q).2 ≠ 1 / 2) :
     ∀ q, δ (q, (M q).1) ≠ 0 := by
   intro q hq
   -- From strict calibration trichotomy, δ = 0 forces conf = 1/2.
@@ -245,7 +245,7 @@ theorem discrete_two_partition
     [DecidablePred fun q => δ (q, (M q).1) > 0]
     (_hCal : DiscreteStrictCalibrated M δ)
     (hC : DiscreteCovering M δ)
-    (_hDecisive : ∀ q, (M q).2 ≠ 1/2) :
+    (_hDecisive : ∀ q, (M q).2 ≠ 1 / 2) :
     (TrueQs M δ).Nonempty ∧ (FalseQs M δ).Nonempty := by
   refine ⟨?_, ?_⟩
   · obtain ⟨qt, hqt⟩ := hC.1
