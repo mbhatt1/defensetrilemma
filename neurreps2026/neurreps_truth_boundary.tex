@@ -54,39 +54,31 @@ Falsehood}
 \maketitle
 
 \begin{abstract}
-Probing studies show that truth is easy to read off a language model's
-activations. Linear probes find truth directions. True and false
-statements separate in representation space. We ask the reverse
-question. What does the shape of that space require of any model
-that answers over it? The model is any continuous map from a connected
-representation space to answers and confidences. Truth is a continuous
-signed field with the truth boundary as its zero set. Our central result
-is a coupling theorem. If the model ever answers truly and
-ever
-answers falsely, and its confidence separates true answers from false
-ones, then some query must carry confidence exactly at the decision
-threshold while its answer sits exactly on the truth boundary. The
-theorem mentions no safety guarantee, so it does not depend on how a
-guarantee treats its own threshold.
-Consequences follow per policy. A guarantee that includes its
-threshold is impossible. A guarantee that excludes its threshold
-survives but is silent at the coupled query. Under Lipschitz
+Probing studies read truth off a language model's activations,
+treating truth as a continuous decodable field over representation
+space. We ask what the shape of that space requires of any model
+answering over it. Our central result is a coupling theorem. If a
+continuous model on a connected representation space ever answers
+truly and ever answers falsely, and its confidence separates true
+answers from false ones, then some query must carry confidence
+exactly at the decision threshold while its answer sits exactly on
+the truth boundary. The theorem mentions no safety guarantee, so it
+does not depend on how a guarantee treats its own threshold. A
+guarantee including its threshold is impossible, and one excluding
+it survives but is silent at the coupled query. Under Lipschitz
 regularity the coupled point sits inside an ambiguity tube of
-computable width,
-and any feasible system must carry strictly positive truth-side
-slack.
-For nonzero linear probes the truth boundary is exactly an affine
-hyperplane of codimension one. We further prove a symmetry version
-that needs no coverage assumption, a discrete analysis that prices
-the removal of topology, and multi-turn and stochastic extensions. The stochastic
-dichotomy is where falsehood is derived. Every theorem in this
-paper is machine-verified in Lean 4 against Mathlib, with no sorry
-placeholders, and the main results reduce to the three standard
-kernel axioms.
-An appendix observes the predicted coupling in five small language
-models, with the model's own confidence signal and against null
-baselines, and an adversarial attempt to train away the slack
-plateaus strictly above zero.
+computable width, any feasible system must carry strictly positive
+truth-side slack, and for nonzero linear probes the truth boundary
+is an affine hyperplane of codimension one. A symmetry version
+needs no coverage assumption, a discrete analysis prices the
+removal of topology, and multi-turn and stochastic extensions
+follow, with falsehood derived in the stochastic dichotomy. Every
+theorem is machine-verified in Lean 4 against Mathlib with no sorry
+placeholders, the main results reducing to the three standard
+kernel axioms. An appendix observes the predicted coupling in five
+small language models, with the model's own confidence signal and
+against null baselines, and an adversarial attempt to train away
+the slack plateaus strictly above zero.
 \end{abstract}
 
 \begin{keywords}
@@ -98,246 +90,168 @@ intermediate value theorem, Borsuk-Ulam, formal verification, Lean
 \label{sec:intro}
 
 Truth is geometrically simple inside language models. Linear probes
-separate true from false statements in activation space
-\citep{marks2024geometry,azaria2023internal}. Latent knowledge can be
-found without supervision \citep{burns2023discovering}. Steering
-activations along learned directions makes models more truthful
-\citep{li2023inference,zou2023representation}. All of this work treats
-truth as a continuous, decodable field over representation space.
+separate true from false statements in activation space, latent
+knowledge can be found without supervision, and steering along
+learned directions makes models more truthful
+\citep{marks2024geometry,azaria2023internal,burns2023discovering,li2023inference,zou2023representation}.
+All of this work treats truth as a continuous, decodable field over
+representation space.
 
 We take that picture seriously as geometry and ask what follows.
 Suppose truth is a continuous scalar field on a connected
 representation space, and the model's answers and confidences are
-continuous fields on the same space. These assumptions mention no architecture, training method, or
-scale, and they apply to any model whose fields are defined and
-continuous over the stated domain.
+continuous fields on the same space. These assumptions mention no
+architecture, training, or scale, applying to any model whose
+fields are defined and continuous on the stated domain.
 What they yield is a coupling theorem. If the model ever answers
 truly
 and ever answers falsely, and its confidence separates true answers
 from false ones, then some query carries confidence exactly at the
 threshold while its answer sits exactly on the truth boundary.
 
-The proof is short. The value of the
-theorem lies in what it does not mention. It contains no safety guarantee
-and no convention about thresholds, so every policy question becomes
-a corollary. An inclusive guarantee is impossible. An exclusive
-guarantee survives but says nothing at the one point that topology
-guarantees to exist. Slack buys safety, and we quantify the
-trade. Under Lipschitz
+The proof is short, and the theorem's value lies in what it does
+not mention, no safety guarantee and no threshold convention, so
+every policy question becomes a corollary. An inclusive guarantee
+is impossible, an exclusive one survives but says nothing at the
+point topology guarantees, and slack buys safety. Under Lipschitz
 regularity the coupled point sits inside an ambiguity tube of
 computable width, and for the nonzero linear probes used in
 practice the truth boundary is an affine hyperplane.
 
 \paragraph{Contributions.}
-\begin{enumerate}
-\item \textbf{A boundary coupling theorem}
-  (\sectionref{sec:coupling}). Coverage plus continuity yield an
-  exact truth-boundary point, truth separation gives it threshold
-  confidence, and the combined theorem is convention-free, with a
-  taxonomy of corollaries classifying each policy.
-\item \textbf{The shape of the boundary} (\sectionref{sec:shape}).
-  The truth boundary is closed. Every continuous path from a true
-  answer to a false answer crosses it. For a nonzero linear probe it
-  is an affine translate of the probe's kernel, of dimension exactly
-  $d-1$.
-\item \textbf{The ambiguity tube} (\sectionref{sec:tube}). With
-  Lipschitz confidence, decisive regions are separated by a corridor
-  of width at least $2\gamma/L$, and any system with band separation
-  and a threshold-inclusive guarantee must have strictly positive
-  truth-side slack.
-\item \textbf{A symmetry version} (\sectionref{sec:antipodal}). If
-  semantic negation acts freely and continuously and the truth field
-  is odd under it, a boundary point exists with no coverage
-  assumption at all.
-\item \textbf{A discrete analysis} (\sectionref{sec:discrete}) that
-  prices the removal of topology, and \textbf{extensions}
-  (\sectionref{sec:extensions}) to multi-turn and stochastic models.
-\item \textbf{Full machine verification} (\sectionref{sec:lean}).
-  Every theorem in this paper corresponds to a named, sorry-free
-  Lean 4 result checked against Mathlib.
-\end{enumerate}
+The boundary coupling theorem with its corollary taxonomy
+(\sectionref{sec:coupling}); the geometry of the boundary, closed,
+crossed by every true-to-false path, a hyperplane for nonzero
+linear probes, with an ambiguity tube of strictly positive
+truth-side slack (\sectionref{sec:geometry}); a symmetry version
+needing no coverage (\sectionref{sec:antipodal}); a discrete
+analysis with multi-turn and stochastic extensions
+(\sectionref{sec:discrete}); and full machine verification
+(\sectionref{sec:lean}).
 
-\paragraph{What the contribution is.}
-The mathematics is elementary, and the contribution is not
-technical difficulty. It is a framing in which exact threshold
-uncertainty is a topological property of representation space, stated in the
-vocabulary of the probing literature. It is precision, since the theorems name every assumption in play,
-so debate moves from proofs to premises. And it is verification, since every statement is
-machine-checked and the premises are the only thing left to argue
-about. The theorems do not say models err often, and they assign no
-probability to failure. The coupled point of the deterministic
-results
-lies on the truth boundary, neither strictly true nor strictly false,
-and derived falsehood appears only in the stochastic dichotomy.
+The mathematics is elementary, and the contribution is not technical
+difficulty. It is a framing in which exact threshold uncertainty is
+a topological property of representation space, precision, since the
+theorems name every assumption in play, and verification, since
+every statement is machine-checked, leaving the premises as the only
+thing to argue about. The theorems do not say models err often and
+assign no probability to failure. The coupled point is neither
+strictly true nor strictly false, and derived falsehood appears only
+in the stochastic dichotomy.
 
-\section{Related work}
-\label{sec:related}
-
-\paragraph{Hallucination inevitability.}
-\citet{kalai2024calibrated} show statistically that calibrated
-models must hallucinate on facts seen once in training,
-\citet{kalai2025why} extend this line, and
-\citet{xu2024hallucination} give a computability-theoretic
-inevitability argument. Our mechanism
-is topological, lives in representation space, localizes the
-conclusion at the truth boundary, and is more modest, since the
-deterministic theorems yield uncertainty rather than confident
-falsehood.
-
-\paragraph{Geometry of truth in representations.}
-Linearly decodable truth \citep{marks2024geometry}, unsupervised
-latent-knowledge discovery \citep{burns2023discovering}, lie detection
-from internal states \citep{azaria2023internal}, and causal steering
-along truth directions \citep{li2023inference,zou2023representation}
-all model truth as a continuous decodable field on activation space,
-and the linear representation hypothesis formalizes concepts as
-directions in that space \citep{park2024linear}.
-That is exactly our hypothesis on $\delta$, and confidence signals
-\citep{farquhar2024detecting,kadavath2022language} are treated
-similarly. Our results give this program a frontier, since a probe
-that exactly separates truth over a connected domain with both truth
-values realized must have an exact-uncertainty point on its own
-boundary.
-
-\paragraph{Topology, geometry, and calibration.}
-The manifold hypothesis \citep{fefferman2016testing} and the measured
-geometry of embedding spaces \citep{cai2021isotropy} motivate
-connected-domain modeling. Topological analyses of networks
-\citep{naitzat2020topology,hensel2021survey} and geometric deep
-learning \citep{bronstein2021geometric} engineer or analyze such
-structure. We derive constraints from it. The symmetry section is a
-one-dimensional relative of the Borsuk-Ulam theorem
-\citep{borsuk1933drei,matousek2003using}. Our separation condition is
-not statistical calibration in the sense of \citet{guo2017calibration},
-and \remarkref{rem:calibration} spells out the difference.
-
-\paragraph{Formalized machine learning theory.}
-To our knowledge this is the first fully machine-verified
-impossibility-style result on model truthfulness at the level of
-representation geometry \citep{moura2021lean,mathlib2020}.
+\paragraph{Related work.}
+Statistical and computability arguments make hallucination
+inevitable in other senses
+\citep{kalai2024calibrated,kalai2025why,xu2024hallucination}; ours
+is topological and yields uncertainty rather than confident
+falsehood. The probing literature models truth as a continuous
+decodable field
+\citep{marks2024geometry,burns2023discovering,azaria2023internal,li2023inference,zou2023representation,park2024linear},
+exactly our hypothesis on $\delta$, and our results give that
+program a frontier. Connected-domain modeling follows the manifold
+hypothesis \citep{fefferman2016testing,cai2021isotropy}, and the
+symmetry section is a scalar relative of Borsuk-Ulam
+\citep{borsuk1933drei,matousek2003using}. To our knowledge this is
+the first fully machine-verified impossibility-style result on
+model truthfulness at the level of representation geometry
+\citep{moura2021lean,mathlib2020}. \appendixref{app:extended}
+extends all four threads.
 
 \section{The setting}
 \label{sec:setting}
 
 $\X$ is a topological space of queries as the model represents
-them, such as prompt embeddings or residual-stream states. $\A$ is a
-topological space of answers. Our standing assumption is simple.
+them, prompt embeddings or residual-stream states, $\A$ a
+topological space of answers, and our standing assumption is simple.
 
 \begin{quote}
 \textbf{(T)} $\X$ is connected and nonempty.
 \end{quote}
 
-Assumption (T) deserves care. Ambient embedding spaces are standardly
-modeled as $\R^d$ or connected submanifolds
-\citep{fefferman2016testing,cai2021isotropy}, which satisfy (T). But
-the set of representations a token-driven model reaches may be
-disconnected. When guarantees range over the ambient space, as
-they implicitly do whenever a probe or steering vector is applied at
-arbitrary points, (T) holds. \sectionref{sec:discrete} analyzes what
-remains without it.
+Ambient embedding spaces are standardly modeled as $\R^d$ or
+connected submanifolds, which satisfy (T), though the reachable set
+of a token-driven model may be disconnected. When guarantees range
+over the ambient space, as they do whenever a probe or steering
+vector applies at arbitrary points, (T) holds. Continuity likewise
+idealizes trained networks, softmax and embeddings being continuous
+while argmax decoding is not, and \sectionref{sec:discrete} prices
+dropping either idealization.
 
-\begin{definition}[Model field]
+\begin{definition}[Model and truth fields]
 \label{def:model}
 A \emph{model} is a map $F = (a, \conf)$ from $\X$ to
-$\A \times \R$. Here $a(x)$ is the answer at representation $x$ and
-$\conf(x)$ is its scalar confidence. $F$ is \emph{continuous} if both
-component maps are.
-\end{definition}
-
-\begin{definition}[Truth field]
-\label{def:truth}
-A \emph{truth field} is a continuous map $\delta$ from
-$\X \times \A$ to $\R$, read as a signed truth-distance. Negative
-means the answer is strictly true. Positive means strictly false.
-Zero is the \emph{truth boundary}. The \emph{realized truth field} of
-a model is $\dF(x) = \delta(x, a(x))$.
+$\A \times \R$, with answer $a(x)$ and scalar confidence $\conf(x)$,
+\emph{continuous} if both components are. A \emph{truth field} is a
+continuous $\delta$ from $\X \times \A$ to $\R$, a signed
+truth-distance, negative on strictly true answers, positive on
+strictly false ones, with the \emph{truth boundary} as its zero set.
+The \emph{realized truth field} is $\dF(x) = \delta(x, a(x))$.
 \end{definition}
 
 A linear probe $w^\top x - b$ on activations
 \citep{marks2024geometry,burns2023discovering} is a candidate
-continuous $\dF$, and its decision boundary is the truth boundary.
-Probing experiments fit classifiers on sampled
-representations, and the zero set of a probe is the probe's
-classification boundary. Whether it coincides with semantic truth
-away from those samples is an empirical premise, not a theorem. Our
-results hold under that premise.
+continuous $\dF$, its zero set the probe's classification boundary.
+Whether that coincides with semantic truth away from the fitted
+samples is an empirical premise, not a theorem, and our results
+hold under it.
 
 \begin{definition}[Truth-separating at threshold $\tau$]
 \label{def:separating}
 Fix a threshold $\tau$, a truth slack $\varepsilon \ge 0$, and a
 confidence margin $\gamma \ge 0$. $F$ is
-\emph{$(\varepsilon, \gamma)$-separating at $\tau$} if for all $x$
-two implications hold. If $\dF(x) < -\varepsilon$ then
-$\conf(x) > \tau + \gamma$. If $\dF(x) > \varepsilon$ then
-$\conf(x) < \tau - \gamma$. The truth slack is measured in units of
-$\dF$ and the margin in units of $\conf$, so the condition survives
-independent rescaling of either field. We say \emph{exactly
-separating} when both are zero.
+\emph{$(\varepsilon, \gamma)$-separating at $\tau$} if
+$\dF(x) < -\varepsilon$ implies $\conf(x) > \tau + \gamma$ and
+$\dF(x) > \varepsilon$ implies $\conf(x) < \tau - \gamma$. The slack
+is in units of $\dF$ and the margin in units of $\conf$, so the
+condition survives independent rescaling. \emph{Exactly separating}
+means both are zero.
 \end{definition}
 
 \begin{definition}[Covering]
 \label{def:covering}
 $F$ is \emph{$\varepsilon$-covering} if some query has
-$\dF < -\varepsilon$ and some query has $\dF > \varepsilon$. At
-$\varepsilon = 0$ this says the model is somewhere strictly right and
-somewhere strictly wrong.
+$\dF < -\varepsilon$ and some has $\dF > \varepsilon$, at
+$\varepsilon = 0$ somewhere strictly right and somewhere strictly
+wrong.
 \end{definition}
 
 \begin{definition}[Guarantees]
 \label{def:guarantees}
-A \emph{threshold-inclusive guarantee} says that $\conf(x) \ge \tau$
-implies $\dF(x) < 0$. A \emph{threshold-exclusive guarantee} says
-that $\conf(x) > \tau$ implies $\dF(x) < 0$.
+A \emph{threshold-inclusive guarantee} says that
+$\conf(x) \ge \tau$ implies $\dF(x) < 0$, and a
+\emph{threshold-exclusive} one that $\conf(x) > \tau$ implies
+$\dF(x) < 0$.
 \end{definition}
 
-Covering is the weakest condition, since any model that is ever
-right and ever wrong satisfies it. Exact separation idealizes a
-perfect truth probe used as confidence, the guarantees idealize
-hallucination mitigation, the coupling results hold at any
+Covering is satisfied by any model ever right and ever wrong,
+separation idealizes a perfect truth probe used as confidence, the
+guarantees idealize mitigation, the coupling results hold at any
 threshold, and the biconditional variants sit at one half.
 
 \begin{remark}[This is not statistical calibration]
-\label{rem:calibration}
-Statistical calibration asks that confidence match accuracy on
-average \citep{guo2017calibration}. Separation is pointwise and much
-stronger, since confidence classifies truth. It is also one-way by
-construction, and the coupling theorem and its corollaries use only
-the
-two truth-to-confidence implications. The \emph{biconditional}
-variant adds the converses, so the sign of $\dF$ and the side of the
-threshold determine each other. The symmetry and discrete results
-use it, and it implies the one-way pair
-(Lean \leanid{strictCalibrated\_to\_epsCalibrated\_zero\_half}).
-\end{remark}
-
-\begin{remark}[On continuity]
-\label{rem:continuity}
-Continuity idealizes trained networks, since softmax confidences and
-embedding maps are continuous by construction while hard argmax
-decoding is not. Dropping continuity is an escape, and
-\sectionref{sec:discrete} prices it.
+\label{rem:calibration}\sloppy
+Separation is pointwise and much stronger than statistical
+calibration \citep{guo2017calibration}, and one-way by construction.
+The \emph{biconditional} variant adds the converses, so the sign of
+$\dF$ and the side of the threshold determine each other. The
+symmetry and discrete results use it, and it implies the one-way
+pair, Lean
+\leanid{strictCalibrated\_to\_epsCalibrated\_zero\_half}.
 \end{remark}
 
 \section{The boundary coupling theorem}
 \label{sec:coupling}
 
-Topology enters through one theorem, which needs no confidence at all.
+Topology enters through one theorem needing no confidence.
 
 \begin{theorem}[Boundary existence]
 \label{thm:boundary}
-Let $\X$ satisfy (T). Let the answer map and the truth field be
-continuous, and let $F$ be $0$-covering. Then some $x_0$ has
-$\dF(x_0) = 0$.
+Let $\X$ satisfy (T), the answer map and truth field be continuous,
+and $F$ be $0$-covering. Then some $x_0$ has $\dF(x_0) = 0$, since
+$\dF$ is continuous with both signs and the IVT applies on the
+connected space. Lean \leanid{model\_truth\_boundary\_nonempty}, IVT
+step \leanid{IsPreconnected.intermediate\_value2}.
 \end{theorem}
-
-\begin{proof}
-The realized truth field $\dF$ is continuous as a composite,
-negative somewhere and positive somewhere, so the intermediate value
-theorem on the connected space $\X$ gives an exact zero. This is
-Lean theorem \leanid{model\_truth\_boundary\_nonempty}, and the IVT
-step is Mathlib's
-\leanid{IsPreconnected.intermediate\_value2}.
-\end{proof}
 
 \begin{theorem}[Boundary coupling]
 \label{thm:coupling}
@@ -350,232 +264,167 @@ satisfies both
 \end{theorem}
 
 \begin{proof}
-Separation converts the coverage witnesses into confidence witnesses
-above and below $\tau$, and the IVT gives $x_0$ with
-$\conf(x_0) = \tau$. If $\dF(x_0)$ were negative, separation would
-give $\conf(x_0) > \tau$, and if positive, $\conf(x_0) < \tau$.
-Both fail, so $\dF(x_0) = 0$. This is Lean theorem
-\leanid{boundary\_coupling}.
+Separation converts the coverage witnesses into confidence
+witnesses on both sides of $\tau$, and the IVT gives $x_0$ with
+$\conf(x_0) = \tau$. Were $\dF(x_0)$ negative, separation would give
+$\conf(x_0) > \tau$, and positive, $\conf(x_0) < \tau$, so
+$\dF(x_0) = 0$. This is Lean theorem \leanid{boundary\_coupling}.
 \end{proof}
 
 The theorem mentions no guarantee, so no threshold convention
-affects it. We call such an $x_0$ a \emph{coupled point}. The model
-carries exact threshold confidence where truth changes sign, and
-what that means for safety is a matter of policy, with each policy a
-corollary.
+affects it. We call such an $x_0$ a \emph{coupled point}, and what
+it means for safety is policy, with each policy a corollary.
 
-\begin{corollary}[Inclusive guarantees are impossible]
-\label{cor:closed}
-Add a threshold-inclusive guarantee to the hypotheses of
-\theoremref{thm:coupling}. Then the hypotheses are jointly
-contradictory. This is the trilemma, since coverage, exact
-separation, and an inclusive guarantee cannot jointly hold.
-\end{corollary}
-
-Corollary~\ref{cor:closed} is Lean theorem
-\leanid{closed\_guarantee\_impossible}, and its fixed-threshold
-biconditional version is \leanid{hallucination\_trilemma}.
-
-\begin{corollary}[Exclusive guarantees go silent]
-\label{cor:open}
-Add a threshold-exclusive guarantee instead. No contradiction
-follows, but the coupled point satisfies $\conf(x_0) = \tau$, so
-the
-guarantee's antecedent fails exactly there. The system owns a query
-about which its guarantee says nothing, and that query sits on the
-truth boundary. This is Lean theorem
+\begin{corollary}[Policy taxonomy]
+\label{cor:policy}
+Adding a threshold-inclusive guarantee to
+\theoremref{thm:coupling}'s hypotheses is jointly contradictory,
+the trilemma, since coverage, exact separation, and an inclusive
+guarantee cannot jointly hold. Adding a threshold-exclusive
+guarantee yields no contradiction, but the coupled point satisfies
+$\conf(x_0) = \tau$, its antecedent fails exactly there, and the
+system owns a boundary query about which its guarantee says
+nothing. Lean theorems \leanid{closed\_guarantee\_impossible},
+\leanid{hallucination\_trilemma}, and
 \leanid{open\_guarantee\_silent}.
 \end{corollary}
 
-\begin{remark}[The convention question]
-\label{rem:threshold}
-A natural objection says that defining the guarantee with a strict
-inequality dissolves the contradiction, so the impossibility is an
-artifact of convention. The taxonomy above is our answer. The
-coupling theorem is convention-free, and the convention only
-selects which corollary describes the coupled point, a contradiction
-under an inclusive guarantee and silence under an exclusive one. The
-coupled point exists under either convention.
-\end{remark}
+Defining the guarantee with a strict inequality therefore does not
+dissolve the impossibility. The coupling theorem is convention-free,
+the convention only selects which clause of the taxonomy applies,
+and the coupled point exists under either convention.
 
-\section{The shape of the boundary}
-\label{sec:shape}
+\section{The geometry of the boundary}
+\label{sec:geometry}
 
-The truth boundary is not an isolated curiosity. It has structure,
-and
-for the probes used in practice it is a hyperplane.
-
-\begin{theorem}[The boundary is closed]
+\begin{theorem}[Closed, and crossed by every path]
 \label{thm:closed}
 For any topological $\X$ and $\A$, continuous $\delta$ and answer
-map, the set $\{x \mid \dF(x) = 0\}$ is closed in $\X$. This is Lean
-theorem \leanid{model\_truth\_boundary\_isClosed}.
-\end{theorem}
-
-\begin{theorem}[Every path crosses]
-\label{thm:crossing}
-Let $p$ be a continuous path in $\X$ from a query where the
-model answers strictly truly to a query where it answers strictly
-falsely. Then some point on the path lies exactly on the truth
-boundary. This is Lean theorem
+map, $\{x \mid \dF(x) = 0\}$ is closed in $\X$, and any continuous
+path from a query answered strictly truly to one answered strictly
+falsely contains a point exactly on the truth boundary. Lean
+theorems \leanid{model\_truth\_boundary\_isClosed} and
 \leanid{path\_crosses\_truth\_boundary}.
 \end{theorem}
 
-The boundary therefore separates the true region from the false
-region. For linear probes we can say exactly what it is.
-
 \begin{theorem}[Linear probes have hyperplane boundaries]
 \label{thm:hyperplane}
-Let $f$ be a nonzero linear probe on a $d$-dimensional real space,
-with offset $b$. Then the boundary set $\{x \mid f(x) = b\}$ is an
-affine translate of the kernel of $f$, and that kernel has dimension
-exactly $d - 1$. These are Lean theorems
+Let $f$ be a nonzero linear probe on a $d$-dimensional real space
+with offset $b$. Then $\{x \mid f(x) = b\}$ is an affine translate
+of the kernel of $f$, of dimension exactly $d - 1$. Lean theorems
 \leanid{linear\_probe\_boundary\_coset} and
-\leanid{linear\_probe\_boundary\_dim}, the latter by rank-nullity.
+\leanid{linear\_probe\_boundary\_dim}, by rank-nullity.
 \end{theorem}
 
-The truth boundary of practical probes is therefore a
-codimension-one affine hyperplane, and the coupling theorem places
-a
-threshold-confidence answer on it. Truth has a boundary surface,
-not only a boundary point.
+The coupling theorem therefore places a threshold-confidence answer
+on a codimension-one affine hyperplane. Next we quantify what slack
+changes.
 
-\section{The ambiguity tube}
-\label{sec:tube}
-
-Exact separation is an idealization, so we quantify what slack
-changes. Two Lipschitz facts come first and need only a metric
-space.
-
-\begin{theorem}[Corridor width]
+\begin{theorem}[Corridor and tube]
 \label{thm:width}
-Let $\conf$ be $L$-Lipschitz with $L > 0$ and let $\gamma > 0$. Then
-any query with $\conf \ge \tau + \gamma$ and any query with
-$\conf \le \tau - \gamma$ are at distance at least $2\gamma/L$. This
-is Lean theorem \leanid{confidence\_gap\_width}.
+Let $\conf$ be $L_c$-Lipschitz and $\dF$ be $L_\delta$-Lipschitz.
+For $\gamma > 0$, queries with $\conf \ge \tau + \gamma$ and with
+$\conf \le \tau - \gamma$ are at distance at least $2\gamma/L_c$,
+and for a coupled point $x_0$, every query within distance $r$ of
+$x_0$ has truth margin at most $L_\delta \, r$ and confidence
+within $L_c \, r$ of the threshold. Lean theorems
+\leanid{confidence\_gap\_width}, \leanid{ambiguity\_tube}, and
+\leanid{truth\_margin\_tube}.
 \end{theorem}
 
-\begin{theorem}[Ambiguity tube]
-\label{thm:tube}
-Let $\conf$ be $L_c$-Lipschitz and $\dF$ be $L_\delta$-Lipschitz, and
-let $x_0$ be a coupled point from \theoremref{thm:coupling}. Then
-every query within distance $r$ of $x_0$ has truth margin at most
-$L_\delta \, r$ and confidence within $L_c \, r$ of the threshold.
-This is Lean theorem \leanid{ambiguity\_tube}, with the margin bound
-alone as \leanid{truth\_margin\_tube}.
-\end{theorem}
+The coupled point is therefore the center of a tube of
+near-ambiguous queries, and decisive regions cannot approach closer
+than the corridor width.
 
-The coupled point is therefore not one pathological query. Around
-it sits a tube of near-ambiguous queries controlled by the two
-Lipschitz constants, and decisive regions cannot approach closer
-than the corridor width. Slack changes what the coupled point looks
-like, and we can say exactly how.
-
-\begin{theorem}[Approximate coupling]
+\begin{theorem}[Approximate coupling, and slack must be positive]
 \label{thm:approx}
 Let $\X$ satisfy (T), let $\conf$ be continuous, and let $F$ be
-$\varepsilon$-covering, $(\varepsilon, \gamma)$-separating at $\tau$,
-and carry a threshold-inclusive guarantee. Then some $x_0$ has
-$\conf(x_0) = \tau$ and $-\varepsilon \le \dF(x_0) < 0$. This is Lean
-theorem \leanid{two\_slack\_approx\_coupling}, with the exact case as
-\leanid{exact\_from\_approx}.
-\end{theorem}
-
-\begin{theorem}[Truth slack must be positive]
-\label{thm:slack}
-Under the hypotheses of \theoremref{thm:approx}, the truth slack
-satisfies $\varepsilon > 0$ for every margin $\gamma \ge 0$. Zero
-truth slack is infeasible. This is Lean theorem
+$\varepsilon$-covering, $(\varepsilon, \gamma)$-separating at
+$\tau$, and carry a threshold-inclusive guarantee. Then some $x_0$
+has $\conf(x_0) = \tau$ and $-\varepsilon \le \dF(x_0) < 0$, and
+consequently the truth slack satisfies $\varepsilon > 0$ for every
+margin $\gamma \ge 0$, so zero truth slack is infeasible. These are
+Lean theorems \leanid{two\_slack\_approx\_coupling},
+\leanid{exact\_from\_approx}, and
 \leanid{truth\_slack\_must\_be\_positive}.
 \end{theorem}
 
-Slack is therefore a geometric budget, and positivity
-attaches to the truth side alone, whatever the confidence margin. We
-propose reading the infimum of feasible truth slack as the system's
-truth-boundary width, and the relative boundary width measured in
-\appendixref{app:experiment} gives a dimensionless proxy for this
-quantity. The corridor is also clean. Under the
-guarantee, no query with confidence between $\tau$ and
-$\tau + \gamma$ sits exactly on the truth boundary (Lean theorem
+Slack is therefore a geometric budget, positivity attaching to the
+truth side alone. We read the infimum of feasible truth slack as
+the system's truth-boundary width, with the relative width of
+\appendixref{app:experiment} as a dimensionless proxy, and under
+the guarantee no query with confidence between $\tau$ and
+$\tau + \gamma$ sits exactly on the boundary (Lean
 \leanid{no\_boundary\_in\_upper\_band\_two\_slack}).
 
 \section{Symmetry replaces coverage}
 \label{sec:antipodal}
 
-The coupling theorem uses coverage to seed the IVT, and symmetry
-can
-replace it entirely. Suppose semantic negation acts on $\X$ as a
-continuous involution $\sigma$ with no fixed point, and the realized
-truth field is odd under it, idealizing the observation that negation
-approximately reflects truth directions
-\citep{marks2024geometry,burns2023discovering}.
+Symmetry can replace coverage. Suppose semantic negation acts on
+$\X$ as a continuous involution $\sigma$ with no fixed point and
+the realized truth field is odd under it, idealizing the measured
+reflection of truth directions by negation \citep{marks2024geometry}.
 
 \begin{theorem}[Odd fields vanish]
 \label{thm:odd-zero}
 Let $\X$ satisfy (T) with such an action $\sigma$, and let $g$ be
-continuous and odd under $\sigma$. Then $g$ has a zero. The proof
-picks any $x$ and applies the IVT between $x$ and $\sigma x$. This is
-Lean theorem \leanid{antipodal\_odd\_has\_zero}.
+continuous and odd under $\sigma$. Then $g$ has a zero, by the IVT
+between any $x$ and $\sigma x$. This is Lean theorem
+\leanid{antipodal\_odd\_has\_zero}.
 \end{theorem}
 
-This is the scalar shadow of the Borsuk-Ulam theorem
-\citep{borsuk1933drei,matousek2003using}. It needs no sphere, since
-any connected space with a free continuous $\mathbb{Z}/2$ action
-supports it. Two refinements make the section robust and concrete.
+This is the scalar shadow of Borsuk-Ulam, needing no sphere. Two
+refinements make it robust and concrete.
 
 \begin{theorem}[Robust and concrete oddness]
 \label{thm:approx-odd}
-Let $\X$ satisfy (T), let $\sigma$ map $\X$ to itself, and let $g$ be
+Let $\X$ satisfy (T), $\sigma$ map $\X$ to itself, and $g$ be
 continuous with $|g(\sigma x) + g(x)| \le \varepsilon$ for all $x$.
 Then some $x$ has $|g(x)| \le \varepsilon/2$. Moreover, on the unit
-sphere of $\R^d$ with $d \ge 2$ and negation acting as the antipodal
-map, every continuous field odd under the antipode vanishes somewhere
-on the sphere. These are Lean theorems
+sphere of $\R^d$, $d \ge 2$, with negation the antipodal map, every
+continuous odd field vanishes somewhere on the sphere. Lean theorems
 \leanid{approx\_odd\_near\_zero} and \leanid{sphere\_odd\_has\_zero}.
 \end{theorem}
 
-The near-boundary point degrades linearly with the oddness
-defect, and the sphere case is, up to a learned affine map, where
-layer normalization places its normalized states, with negation as a
-candidate antipode.
+The near-boundary point degrades linearly with the defect, and the
+sphere is, up to a learned affine map, where layer normalization
+places its states, negation the candidate antipode.
 
 \begin{theorem}[Antipodal coupling]
 \label{thm:antipodal}
 Let $\X$ satisfy (T) with a free continuous involution $\sigma$,
-let $F$ be continuous with biconditional separation at $\tfrac12$,
-and let $\dF$ be odd. Then
-some $x$ has $\conf(x) = \tfrac12$ and $\dF(x) = 0$. This is Lean
-theorem \leanid{antipodal\_hallucination\_trilemma}.
+$F$ be continuous with biconditional separation at $\tfrac12$, and
+$\dF$ be odd. Then some $x$ has $\conf(x) = \tfrac12$ and
+$\dF(x) = 0$. Lean \leanid{antipodal\_hallucination\_trilemma}.
 \end{theorem}
 
-No coverage hypothesis appears, and a model answering a
-negation-closed family of questions meets the truth boundary by
-symmetry alone. Equivariance is usually a design virtue
-\citep{bronstein2021geometric}, and here it is the engine of the
-obstruction.
+No coverage hypothesis appears, so a negation-closed family of
+questions meets the truth boundary by symmetry alone. Equivariance,
+usually a design virtue \citep{bronstein2021geometric}, is here the
+engine of the obstruction.
 
-\section{What leaving the continuum costs}
+\section{Leaving the continuum, adding turns and randomness}
 \label{sec:discrete}
+\label{sec:extensions}
 
 Token spaces are finite, and one may object that connectedness does
-illegitimate work. The discrete analysis makes the objection and its
-price exact. Without topology the boundary witness must be assumed
-rather than derived.
+illegitimate work. The discrete analysis prices the objection, since
+without topology the boundary witness must be assumed rather than
+derived.
 
 \begin{theorem}[Discrete impossibility]
 \label{thm:discrete}
-Let $\X$ and $\A$ be arbitrary sets with arbitrary $F$ and $\delta$.
-Suppose $F$ has biconditional separation at $\tfrac12$ and some query
-has $\dF = 0$. Then a threshold-inclusive guarantee fails. Moreover,
-under separation, such a guarantee is possible exactly when no
-boundary query exists. These are Lean theorems
+Let $\X$ and $\A$ be arbitrary sets with arbitrary $F$ and
+$\delta$, with biconditional separation at $\tfrac12$. If some query
+has $\dF = 0$, a threshold-inclusive guarantee fails, and such a
+guarantee is possible exactly when no boundary query exists. These
+are Lean theorems
 \leanid{boundary\_question\_impossible} and
 \leanid{faithful\_iff\_boundary\_free}.
 \end{theorem}
 
-The boundary witness is assumed here, and it is exactly what
-connectedness derived for free in \theoremref{thm:boundary}. What
-survives without any witness assumption is a crossing.
+The assumed witness is what connectedness derived free in
+\theoremref{thm:boundary}, and without it a crossing survives.
 
 \begin{proposition}[Discrete sign change]
 \label{prop:discrete-ivt}
@@ -584,29 +433,16 @@ some $i$ has $g(i) < 0 \le g(i+1)$. This is Lean theorem
 \leanid{discrete\_sign\_change}.
 \end{proposition}
 
-Along any token-space path from true to false, the realized truth
-field crosses zero between adjacent steps. This yields a straddling
-pair rather than a boundary state, hence no contradiction on its
-own. The continuum is precisely what upgrades a crossing into a
-witness.
-
-\section{Products and randomness}
-\label{sec:extensions}
-
-\paragraph{Multi-turn models.}
-A $T$-turn model sees a history in $\X^T$, products of connected
-spaces are connected, and the connectedness arguments apply verbatim
-to history-dependent models. The Lean artifact transports the
-trilemma this way (\leanid{multi\_turn\_history\_dependent}).
-Conversation context moves the truth boundary into history space
-rather than removing it.
-
-\paragraph{Stochastic models, where falsehood appears.}
-Applied to the expected fields, the coupling theorem yields a
-query
-with expected confidence one half and expected truth-distance zero
-(Lean theorem \leanid{stochastic\_coupling\_expected}). A dichotomy
-converts expectation into sampling behavior.
+Along any token path from true to false, $\dF$ crosses zero between
+adjacent steps, a straddling pair rather than a boundary state,
+hence no contradiction alone. The continuum upgrades the
+crossing into a witness. Interaction does not escape, since $\X^T$
+is connected and the arguments transport verbatim
+(\leanid{multi\_turn\_history\_dependent}). Nor does randomization.
+On the expected fields the coupling theorem yields expected
+confidence one half at expected truth-distance zero
+(\leanid{stochastic\_coupling\_expected}), and a dichotomy converts
+expectation into sampling behavior.
 
 \begin{theorem}[Stochastic dichotomy]
 \label{thm:dichotomy}
@@ -619,43 +455,88 @@ theorem \leanid{stochastic\_dichotomy}.
 \end{theorem}
 
 A model faithful on almost every sample and confident with positive
-probability at a coupled point must emit strictly false
-answers with positive probability. Randomization spreads the
-boundary across samples, and this is where falsehood is derived.
+probability at a coupled point must emit strictly false answers with
+positive probability. Randomization spreads the boundary across
+samples, and here falsehood is derived.
 
-\section{Machine verification}
-\label{sec:lean}
-
-Every theorem and proposition in this paper corresponds to a named,
-sorry-free Lean 4 result \citep{moura2021lean} checked against
-Mathlib \citep{mathlib2020}, both pinned at v4.28.0. The anonymized
-\leanid{HallucinationProofs} artifact ships seventeen source files,
-\texttt{lake build} completes with zero errors and no \texttt{sorry},
-and axiom audits reduce each main theorem to exactly the three
-standard kernel axioms. \tableref{tab:lean} in
-\appendixref{app:conventions} maps every result to its identifier,
-with \leanid{hallucination\_master\_theorem} bundling the core
-impossibility. The formal statements are slightly more general than
-the prose, and the prose claims nothing beyond what is formalized.
+\paragraph{Machine verification.}
+\phantomsection\label{sec:lean}
+Every theorem and proposition corresponds to a named, sorry-free
+Lean 4 result \citep{moura2021lean,mathlib2020}. The artifact
+builds with zero errors, axiom audits reduce each main theorem to
+exactly the three standard kernel axioms, and \tableref{tab:lean}
+maps every result to its identifier,
+\leanid{hallucination\_master\_theorem} bundling the core
+impossibility. The prose claims nothing beyond what is
+formalized.
 
 \section{Discussion}
 \label{sec:discussion}
 
-The coupling theorem rests on connectedness, continuity, coverage,
-and
-separation, and the trilemma adds a threshold-inclusive guarantee.
-Each hypothesis can be relaxed, and each relaxation is a design
-stance. Corollary~\ref{cor:open} addresses the stance that
-excludes the threshold, whose guarantee survives but owns a silent
-boundary point.
+The theorem rests on connectedness, continuity, coverage, and
+separation, the trilemma adding an inclusive guarantee. Each
+hypothesis can be relaxed, each relaxation is a design stance, and
+each carries a named price, developed in
+\appendixref{app:extended}. Refusal training is connectedness
+surgery, restricting to reachable queries is the same move while
+probing and steering deploy over the ambient space, giving up
+coverage is vacuous for general systems, and dropping continuity
+keeps only the adjacent crossing. The recommended stance is
+\theoremref{thm:approx}'s, separate to a band, with the infimum of
+feasible truth slack as a measurable diagnostic.
+
+\paragraph{Limitations and outlook.}
+The results are existence statements, so nothing follows about
+error rates, boundary points are the deterministic conclusion with
+\theoremref{thm:dichotomy} the stochastic exception, and the truth
+field idealizes probe behavior, \theoremref{thm:approx-odd} pricing
+oddness. \appendixref{app:experiment} reports empirical checks on
+five small models, and next steps are higher Borsuk-Ulam
+machinery and nonlinear probe boundaries \citep{engels2025not}, in
+brains and machines alike. The geometry of representation space can
+prove theorems, and machines can check them.
+
+% Acknowledgments omitted for anonymous review.
+
+\bibliography{neurreps_truth_boundary}
+
+\appendix
+
+\section{Extended discussion and related work}
+\label{app:extended}
+
+\paragraph{Hallucination inevitability.}
+\citet{kalai2024calibrated} show statistically that calibrated
+models must hallucinate on facts seen once in training,
+\citet{kalai2025why} extend this line, and
+\citet{xu2024hallucination} give a computability-theoretic
+inevitability argument. Our mechanism is topological, lives in
+representation space, localizes the conclusion at the truth
+boundary, and is more modest, since the deterministic theorems
+yield uncertainty rather than confident falsehood.
+
+\paragraph{Geometry of truth in representations.}
+Linearly decodable truth \citep{marks2024geometry}, unsupervised
+latent-knowledge discovery \citep{burns2023discovering}, lie
+detection from internal states \citep{azaria2023internal}, and
+causal steering along truth directions
+\citep{li2023inference,zou2023representation} all model truth as a
+continuous decodable field on activation space, and the linear
+representation hypothesis formalizes concepts as directions in that
+space \citep{park2024linear}. Confidence signals
+\citep{farquhar2024detecting,kadavath2022language} are treated
+similarly. Topological analyses of networks
+\citep{naitzat2020topology,hensel2021survey} and geometric deep
+learning \citep{bronstein2021geometric} engineer or analyze such
+structure, and we derive constraints from it.
 
 \paragraph{Disconnect the space.}
 Abstention breaks the argument at the IVT step, since declining to
 answer on an open region deletes it from the domain and can
 disconnect the true region from the false region. Refusal training,
-on this reading, is connectedness surgery. Under the symmetry version
-the cut must separate every representation from its negation image,
-so piecemeal refusal is not enough.
+on this reading, is connectedness surgery. Under the symmetry
+version the cut must separate every representation from its
+negation image, so piecemeal refusal is not enough.
 
 \paragraph{Quantify only over reachable queries.}
 The coupled point may be an ambient activation that no real prompt
@@ -669,18 +550,12 @@ of that set. Restricting the domain is a coherent stance if stated
 as one.
 
 \paragraph{Give up coverage or continuity.}
-A model that never answers strictly falsely escapes. That is vacuous
-for general-purpose systems and meaningful for retrieval-grounded
-ones restricted to verified content. Dropping continuity also
-escapes, at the price computed in \sectionref{sec:discrete}, where
-only the adjacent-crossing statement survives unconditionally.
-
-\paragraph{Separate to a band.}
-Theorems~\ref{thm:approx} and~\ref{thm:slack} make slack the correct
-optimization target. A feasible system must carry strictly positive
-truth slack, with guarantees available only outside the band between
-$\tau$ and $\tau + \gamma$. The infimum of feasible truth slack is
-measurable, and we propose it as a diagnostic.
+A model that never answers strictly falsely escapes. That is
+vacuous for general-purpose systems and meaningful for
+retrieval-grounded ones restricted to verified content. Dropping
+continuity also escapes, at the price computed in
+\sectionref{sec:discrete}, where only the adjacent-crossing
+statement survives unconditionally.
 
 \paragraph{Implications for probing and steering.}
 Truth-probe pipelines posit a continuous $\dF$, and steering moves
@@ -688,25 +563,8 @@ representations relative to its zero set
 \citep{li2023inference,zou2023representation}. Completing such a
 pipeline over a connected domain with both truth values realized
 yields an exact-uncertainty point on the probe's own boundary, a
-hyperplane for linear probes, and mitigation effort should go there.
-
-\paragraph{Limitations and outlook.}
-The results are existence statements, so nothing follows about error
-rates. Deterministic conclusions concern boundary points, with
-\theoremref{thm:dichotomy} as the stochastic exception. The truth field idealizes probe behavior, and
-\theoremref{thm:approx-odd} prices oddness.
-\appendixref{app:experiment} reports empirical checks on five
-small models. Next steps are higher Borsuk-Ulam machinery for
-jointly odd axes
-and nonlinear probe boundaries \citep{engels2025not}, in brains and
-in machines alike. The geometry of representation space can prove
-theorems, and machines can check them.
-
-% Acknowledgments omitted for anonymous review.
-
-\bibliography{neurreps_truth_boundary}
-
-\appendix
+hyperplane for linear probes, and mitigation effort should go
+there.
 
 \section{Formal statement conventions}
 \label{app:conventions}
@@ -747,25 +605,24 @@ hyperplane results use \texttt{LinearMap} with rank-nullity.
 \caption{Every result in the paper and its machine-checked counterpart.}
 \label{tab:lean}
 \footnotesize
-\begin{tabular}{ll}
+\begin{tabular}{l@{\hspace{1em}}p{8.2cm}}
 \toprule
 Result & Lean identifier \\
 \midrule
 Thm.~\ref{thm:boundary} & \leanid{model\_truth\_boundary\_nonempty} \\
 Thm.~\ref{thm:coupling} & \leanid{boundary\_coupling} \\
-Cor.~\ref{cor:closed} & \leanid{closed\_guarantee\_impossible},
-  \leanid{hallucination\_trilemma} \\
-Cor.~\ref{cor:open} & \leanid{open\_guarantee\_silent} \\
-Thm.~\ref{thm:closed} & \leanid{model\_truth\_boundary\_isClosed} \\
-Thm.~\ref{thm:crossing} & \leanid{path\_crosses\_truth\_boundary} \\
+Cor.~\ref{cor:policy} & \leanid{closed\_guarantee\_impossible},
+  \leanid{hallucination\_trilemma},
+  \leanid{open\_guarantee\_silent} \\
+Thm.~\ref{thm:closed} & \leanid{model\_truth\_boundary\_isClosed},
+  \leanid{path\_crosses\_truth\_boundary} \\
 Thm.~\ref{thm:hyperplane} & \leanid{linear\_probe\_boundary\_coset},
   \leanid{linear\_probe\_boundary\_dim} \\
-Thm.~\ref{thm:width} & \leanid{confidence\_gap\_width} \\
-Thm.~\ref{thm:tube} & \leanid{ambiguity\_tube},
-  \leanid{truth\_margin\_tube} \\
+Thm.~\ref{thm:width} & \leanid{confidence\_gap\_width},
+  \leanid{ambiguity\_tube}, \leanid{truth\_margin\_tube} \\
 Thm.~\ref{thm:approx} & \leanid{two\_slack\_approx\_coupling},
-  \leanid{exact\_from\_approx} \\
-Thm.~\ref{thm:slack} & \leanid{truth\_slack\_must\_be\_positive} \\
+  \leanid{exact\_from\_approx},
+  \leanid{truth\_slack\_must\_be\_positive} \\
 Upper-band exclusion & \leanid{no\_boundary\_in\_upper\_band\_two\_slack} \\
 Thm.~\ref{thm:odd-zero} & \leanid{antipodal\_odd\_has\_zero} \\
 Thm.~\ref{thm:approx-odd} & \leanid{approx\_odd\_near\_zero},
@@ -965,7 +822,7 @@ Exact oddness fails in real representations, which is why
 near-boundary point survives any defect, and empirically every
 kept path crosses zero regardless. The width column of
 \tableref{tab:experiment} also gives the slack diagnostic of
-\sectionref{sec:tube} an empirical proxy, between 0.11 and 0.37 of the endpoint scale on
+\sectionref{sec:geometry} an empirical proxy, between 0.11 and 0.37 of the endpoint scale on
 these models.
 
 \paragraph{Nonlinear probes.}
@@ -991,7 +848,7 @@ wherever it says false or boundary, with the guarantee side weighted
 five times harder. The adversary trains on all non-test statements
 plus fresh continuum interpolants every epoch, and is evaluated on
 21{,}000 to 30{,}000 held-out path points per model.
-\theoremref{thm:slack} predicts three things. The achieved truth
+\theoremref{thm:approx} predicts three things. The achieved truth
 slack must stay positive, the residual failures must localize at the
 boundary, and slack must trade against guarantee violations. All
 three appear. The achieved slack falls and then plateaus between 0.22 and 0.91 of
