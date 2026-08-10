@@ -867,7 +867,10 @@ threshold crossing of $\conf$ tracks probe accuracy, from
 0.31 of the path for Phi-1.5, whose probe is weakest, to 0.10 for
 Qwen2.5-0.5B, whose probe is strongest. The ordering follows
 separation quality and not parameter count, since Phi-1.5 is the
-largest model in the set and the weakest separator on this domain. Fifth, the
+largest model in the set and the weakest separator on this domain. A
+sweep of all 24 of its layers finds no linear probe above 0.73, so
+the weakness is a property of the model on this domain and not of
+the layer choice. Fifth, the
 relative boundary width, the median $|\dF|$ over queries whose
 confidence lies in $[0.4, 0.6]$ divided by the endpoint scale,
 runs from 0.37 for the weakest probe to 0.20 for the strongest. Sixth, the kNN graph
