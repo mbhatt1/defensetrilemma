@@ -1,0 +1,17 @@
+{
+  "gpt2": {
+    "n_paths": 83,
+    "median_rel_oddness_defect": 0.3954,
+    "p90_rel_oddness_defect": 0.8176
+  },
+  "pythia-410m": {
+    "n_paths": 104,
+    "median_rel_oddness_defect": 0.4348,
+    "p90_rel_oddness_defect": 0.905
+  },
+  "qwen2.5-0.5b": {
+    "n_paths": 137,
+    "median_rel_oddness_defect": 0.2976,
+    "p90_rel_oddness_defect": 0.6156
+  }
+}

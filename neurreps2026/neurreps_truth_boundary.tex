@@ -480,7 +480,9 @@ truth slack is infeasible. This is Lean theorem
 Slack is therefore a genuine geometric budget, and positivity
 attaches to the truth side alone, whatever the confidence margin. We
 propose reading the infimum of feasible truth slack as the system's
-truth-boundary width. The corridor is also clean. Under the
+truth-boundary width, and the relative boundary width measured in
+\appendixref{app:experiment} estimates a dimensionless version of
+exactly this quantity. The corridor is also clean. Under the
 guarantee, no query with confidence between $\tau$ and
 $\tau + \gamma$ sits exactly on the truth boundary (Lean theorem
 \leanid{no\_boundary\_in\_upper\_band\_two\_slack}).
@@ -908,6 +910,19 @@ and false statements in equal measure. What separates activations is
 syntax, not truth, and both truth values coexist inside each
 component. The interpolation paths are line segments in the ambient
 space, which are connected regardless of how the data clusters.
+
+\paragraph{Measuring the oddness defect.}
+The symmetry section rests on negation acting oddly on the truth
+field, and the matched pairs measure how odd it actually is. The
+defect $|\dF(x) + \dF(\sigma x)|$ relative to the endpoint scale has
+median 0.40, 0.43, and 0.30 for GPT-2, Pythia-410M, and Qwen2.5-0.5B.
+Exact oddness clearly fails in real representations, which is why
+\theoremref{thm:approx-odd} carries the approximate version. Its
+forced near-boundary point survives any defect, and empirically every
+kept path crosses zero regardless. The width column of
+\tableref{tab:experiment} also gives the slack diagnostic of
+\sectionref{sec:tube} its empirical value, between 0.20 and 0.36 of
+the endpoint scale on these models.
 
 \paragraph{What this does and does not show.}
 The truth field is linear, so its sign change along a linear path is
