@@ -118,10 +118,11 @@ law lies in what it does not mention. It contains no safety guarantee
 and no convention about thresholds, so every policy question becomes
 a corollary. An inclusive guarantee is impossible. An exclusive
 guarantee survives but says nothing at the one point that topology
-guarantees to exist. Slack buys safety, and we compute exactly how much. Under Lipschitz
+guarantees to exist. Slack buys safety, and we quantify the
+trade. Under Lipschitz
 regularity the forced point widens into an ambiguity tube of
-computable width, and for the linear probes used in practice the
-truth boundary is literally an affine hyperplane.
+computable width, and for the nonzero linear probes used in
+practice the truth boundary is literally an affine hyperplane.
 
 \paragraph{Contributions.}
 \begin{enumerate}
@@ -482,8 +483,8 @@ Slack is therefore a genuine geometric budget, and positivity
 attaches to the truth side alone, whatever the confidence margin. We
 propose reading the infimum of feasible truth slack as the system's
 truth-boundary width, and the relative boundary width measured in
-\appendixref{app:experiment} estimates a dimensionless version of
-exactly this quantity. The corridor is also clean. Under the
+\appendixref{app:experiment} gives a dimensionless proxy for this
+quantity. The corridor is also clean. Under the
 guarantee, no query with confidence between $\tau$ and
 $\tau + \gamma$ sits exactly on the truth boundary (Lean theorem
 \leanid{no\_boundary\_in\_upper\_band\_two\_slack}).
@@ -859,8 +860,8 @@ component. A diagnostic below identifies what that component is.
 The design above trains both fields on truth, so nearby boundaries
 could reflect shared fitting. We therefore repeat the experiment with
 a confidence field the model supplies itself, with no trained head,
-read out through a direction fixed by pretraining before our data
-existed.
+read out through unembedding weights fixed by pretraining before
+our data existed.
 We capture the final block's last-token state under a question
 template, interpolate between matched pairs as before, patch the
 interpolated state back into the final block, and read the model's
@@ -873,13 +874,13 @@ it is decisive at both endpoints, meaning its confidence lies on the
 correct side of one half at both. \tableref{tab:endogenous}
 and \figureref{fig:endogenous} report what follows. In Qwen2.5-0.5B
 the premise holds on 128 of 137 paths, and there the model's own
-confidence crosses one half within 0.13 of the probe's zero, against
-null gaps of 0.40 and above. In Pythia-410M the premise fails on
+confidence crosses one half a median 0.13 from the probe's zero,
+against null gaps of 0.40 and above. In Pythia-410M the premise fails on
 every path, since the model answers true regardless of the statement,
 and the theory predicts nothing. GPT-2 sits between, with 23 of 53
 paths decisive and a gap that does not separate from the random-head
-null. Coupling with the model's own uncertainty appears exactly where
-the separation premise holds, and only there.
+null. Coupling with the model's own uncertainty appears cleanly where
+the separation premise holds throughout, and never where it fails.
 
 \paragraph{Null baselines.}
 To calibrate the gaps, we replace the trained confidence head with
@@ -928,7 +929,7 @@ Exact oddness clearly fails in real representations, which is why
 forced near-boundary point survives any defect, and empirically every
 kept path crosses zero regardless. The width column of
 \tableref{tab:experiment} also gives the slack diagnostic of
-\sectionref{sec:tube} its empirical value, between 0.20 and 0.36 of
+\sectionref{sec:tube} an empirical proxy, between 0.20 and 0.36 of
 the endpoint scale on these models.
 
 \paragraph{Nonlinear probes.}
@@ -967,7 +968,7 @@ points throughout. The theorem forbids only exactly zero slack for
 any fixed continuous head, so a stronger adversary could push the
 floor lower, and \theoremref{thm:width} prices that escape, since a
 sharper transition requires a proportionally larger Lipschitz
-constant. The observed plateau is the floor at this adversary's
+constant. The observed plateau reflects the floor set by this adversary's
 regularity, and the localization shows what sharpening buys, a
 thinner tube around a boundary that does not go away.
 
@@ -979,8 +980,8 @@ content lies elsewhere. The
 premises hold in real sub-billion models. The two fields are trained
 on disjoint data with different seeds, so their coupling at the
 boundary is not an artifact of shared training data, though both
-target truth. The endogenous experiment removes the residual concern
-wherever the model itself can verbalize truth. The pinned confidence value lands
+target truth. The endogenous experiment addresses the residual concern where the
+model itself can verbalize truth. The pinned confidence value lands
 at one half. And the boundary width is
 a measurable quantity that differentiates models. Code, results, and
 the figure are included in the supplementary material.
