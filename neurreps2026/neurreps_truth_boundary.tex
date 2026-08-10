@@ -75,7 +75,7 @@ removal of topology, and multi-turn and stochastic extensions
 follow, with falsehood derived in the stochastic dichotomy. Every
 theorem is machine-verified in Lean 4 against Mathlib with no sorry
 placeholders, the main results reducing to the three standard
-kernel axioms. An appendix observes the predicted coupling in five
+kernel axioms. Experiments observe the predicted coupling in five
 small language models, with the model's own confidence signal and
 against null baselines, and an adversarial attempt to train away
 the slack plateaus strictly above zero.
@@ -352,7 +352,7 @@ Lean theorems \leanid{two\_slack\_approx\_coupling},
 Slack is therefore a geometric budget, positivity attaching to the
 truth side alone. We read the infimum of feasible truth slack as
 the system's truth-boundary width, with the relative width of
-\appendixref{app:experiment} as a dimensionless proxy, and under
+\sectionref{sec:experiments} as a dimensionless proxy, and under
 the guarantee no query with confidence between $\tau$ and
 $\tau + \gamma$ sits exactly on the boundary (Lean
 \leanid{no\_boundary\_in\_upper\_band\_two\_slack}).
@@ -464,37 +464,227 @@ samples, and here falsehood is derived.
 Every theorem and proposition corresponds to a named, sorry-free
 Lean 4 result \citep{moura2021lean,mathlib2020}. The artifact
 builds with zero errors, axiom audits reduce each main theorem to
-exactly the three standard kernel axioms, and \tableref{tab:lean}
-maps every result to its identifier,
-\leanid{hallucination\_master\_theorem} bundling the core
-impossibility. The prose claims nothing beyond what is
-formalized.
+the three standard kernel axioms, \tableref{tab:lean} maps every
+result to its identifier, and the prose claims nothing beyond the
+formal statements.
+
+\section{Empirical illustration}
+\label{sec:experiments}
+\phantomsection\label{app:experiment}
+
+We checked whether the idealized theory is visible in five open
+models, GPT-2 (124M), Pythia-410M, Qwen2.5-0.5B, Phi-1.5 (1.3B),
+and Qwen2.5-1.5B, on the 1496 matched city statements and
+negations of \citet{marks2024geometry}.
+
+\paragraph{Setup.}
+We embed each statement at its final token, select the layer whose
+probe validates best, train the truth field $\dF$ as a linear
+logistic probe on one city split and the confidence field $\conf$
+as a second head on a disjoint split with a different seed, so the
+two fields are independently trained readouts of the same space,
+the canonical construction the theory models. We interpolate hidden
+states from each true statement to its negation, record both fields,
+and keep paths whose endpoints the probe classifies correctly, 83,
+104, 137, 66, and 148 paths respectively, with test cities held out
+from both splits.
+
+\begin{table}[t]
+\centering
+\caption{Boundary coupling in five small models. Probe and Head
+are held-out accuracies, Verbal the model's own answer accuracy,
+Cross the mean confidence at the probe's zero crossing, Gap the
+median crossing distance as a fraction of the path, Width the
+relative boundary width.}
+\label{tab:experiment}
+\footnotesize
+\begin{tabular}{lccccccc}
+\toprule
+Model & Layer & Probe & Head & Verbal & Cross & Gap & Width \\
+\midrule
+GPT-2 (124M) & 9/12 & 0.77 & 0.72 & 0.48 & 0.52 & 0.25 & 0.33 \\
+Pythia-410M & 18/24 & 0.82 & 0.77 & 0.50 & 0.51 & 0.20 & 0.36 \\
+Qwen2.5-0.5B & 12/24 & 0.96 & 0.96 & 0.71 & 0.49 & 0.10 & 0.20 \\
+Phi-1.5 (1.3B) & 18/24 & 0.72 & 0.72 & 0.56 & 0.43 & 0.31 & 0.37 \\
+Qwen2.5-1.5B & 14/28 & 1.00 & 1.00 & 0.96 & 0.54 & 0.05 & 0.11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{boundary_coupling.pdf}\\[2pt]
+\includegraphics[width=0.74\linewidth]{endogenous_coupling.pdf}
+\caption{Upper pair of rows, the truth probe (normalized, median and
+interquartile band) and the independently trained confidence along
+true-to-negation paths, the dotted line marking the mean probe zero
+crossing where confidence passes one half in every model. Lower pair,
+the same with the model's own probability of answering true from
+patched final-block states, decisive paths only. The Qwens sweep
+through one half at the boundary, Pythia-410M answers true
+everywhere so the premise fails, and GPT-2 and Phi-1.5 sit between.}
+\label{fig:coupling}
+\end{figure}
+
+\paragraph{Findings.}
+\tableref{tab:experiment} and \figureref{fig:coupling} summarize.
+Probes separate truth at 0.72 to 1.00 while only the Qwens
+verbalize it above chance, 0.71 and 0.96 against 0.48 to 0.56, the
+known represented-verbalized gap. Every kept path shows the
+predicted adjacent sign change, mean confidence at the probe's zero
+crossing is 0.52, 0.51, 0.49, 0.43, and 0.54, and the gap between
+the two crossings tracks probe accuracy monotonically, 0.31 for
+Phi-1.5, the weakest probe, to 0.05 for Qwen2.5-1.5B, the
+strongest. The ordering follows separation, not parameter count,
+since Phi-1.5 outweighs all but Qwen2.5-1.5B yet separates worst,
+with no layer of its 24 probing above 0.73, while the Qwen pair
+shows scale helping through separation, probe 0.96 to 1.00 and the
+gap halved. The relative boundary width, median $|\dF|$ where
+confidence is in $[0.4, 0.6]$ over endpoint scale, runs 0.37 to
+0.11, and the kNN graph keeps true and false in one shared main
+component in all five models, though three show a second component,
+identified below.
+
+\paragraph{The model's own confidence.}
+Both fields above target truth, so we repeat the experiment with a
+confidence field the model supplies itself, no trained head, read
+through unembedding weights fixed by pretraining. We capture the
+final block's last-token state under a question template,
+interpolate as before, patch the state back in, and read the
+model's own probability of answering true, the probe trained on a
+disjoint split of the same states, 53, 84, 137, 80, and 147 kept
+paths. A path satisfies the separation premise when this field is
+decisive, on the correct side of one half, at both endpoints. \tableref{tab:endogenous} and \figureref{fig:coupling} report
+the result. Qwen2.5-1.5B meets the premise on 146 of 147 paths at
+gap 0.08 and Qwen2.5-0.5B on 128 of 137 at 0.13, against nulls of
+0.40 and above. Pythia-410M answers true regardless, so the premise
+fails everywhere and the theory predicts nothing. GPT-2 (23 of 53
+decisive) and Phi-1.5 (53 of 80, verbal 0.56) have gaps at null, so
+endpoint decisiveness without verbal capability is not separation.
+Coupling with the model's own uncertainty appears cleanly where the
+premise holds throughout, and never where it fails.
+
+\begin{table}[t]
+\centering
+\caption{Endogenous confidence and null calibration. Decisive
+counts endpoint-decisive paths, Endo the median gap on them, Perm
+and Rand the median null gaps over twenty seeds, Heads the
+trained-head gap.}
+\label{tab:endogenous}
+\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+Model & Decisive & Endo & Perm & Rand & Heads \\
+\midrule
+GPT-2 (124M) & 23/53 & 0.23 & 0.48 & 0.33 & 0.25 \\
+Pythia-410M & 0/84 & none & 0.45 & 0.45 & 0.20 \\
+Qwen2.5-0.5B & 128/137 & 0.13 & 0.43 & 0.40 & 0.10 \\
+Phi-1.5 (1.3B) & 53/80 & 0.40 & 0.48 & 0.38 & 0.31 \\
+Qwen2.5-1.5B & 146/147 & 0.08 & 0.45 & 0.45 & 0.05 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\paragraph{Null baselines.}
+Permuted-label and random-direction heads, twenty seeds each on the
+same kept paths, calibrate the gaps (\tableref{tab:endogenous}).
+The trained-head gaps of 0.25, 0.20, 0.10, 0.31, and 0.05 fall
+below every null median, and below the entire null range for
+Pythia-410M and both Qwens, while for GPT-2 and Phi-1.5 they lie
+inside the random-head range, weak evidence on its own. Bootstrap
+95 percent intervals over ten thousand path resamples are 0.175 to
+0.325, 0.15 to 0.287, 0.10 to 0.125, 0.175 to 0.375, and 0.05 to
+0.075, with 0.10 to 0.15 for Qwen2.5-0.5B's endogenous field and
+0.075 to 0.10 for Qwen2.5-1.5B's, every upper bound below the
+corresponding null median except the endogenous GPT-2 and Phi-1.5.
+
+\paragraph{A second dataset.}
+The same pipeline on the 354 Spanish-English translation pairs from
+the same source replicates in both Qwens, probes 0.98 and 0.94 with
+gaps 0.05 and 0.10, while Pythia-410M and Phi-1.5 drop to probes
+0.70 and 0.71 with gaps at null and GPT-2 is at chance with too few
+paths to score, so coupling again appears exactly where separation
+holds.
+
+\paragraph{What the second component is.}
+Where a second kNN component appears it splits exactly by surface
+form, positives in one and negations in the other, with true and
+false in equal measure inside each. Syntax separates activations,
+not truth, and the interpolation paths are ambient line segments,
+connected regardless of how the data clusters.
+
+\paragraph{Measuring the oddness defect.}
+The matched pairs also measure the oddness premise of
+\sectionref{sec:antipodal}. The defect $|\dF(x) + \dF(\sigma x)|$
+relative to endpoint scale has median 0.40, 0.43, 0.30, 0.53, and
+0.17, smallest for the strongest model. Exact oddness fails, which
+is why \theoremref{thm:approx-odd} carries the approximate version,
+whose near-boundary point survives any defect, and every kept path
+crosses zero regardless. The width column of
+\tableref{tab:experiment} likewise gives the slack diagnostic of
+\sectionref{sec:geometry} an empirical proxy, 0.11 to 0.37.
+
+\paragraph{Nonlinear probes.}
+A linear truth field crosses zero along a linear path by
+construction, so we replace both fields with one-hidden-layer MLPs
+on the same splits, removing that guarantee and the hyperplane
+boundary. The MLP probes reach 0.79, 0.87, 0.97, 0.80, and 1.00
+with 124, 121, 144, 104, and 149 kept paths, every path still
+crosses zero, at least 98 percent cross exactly once, and the
+coupling tightens or holds, gaps 0.15, 0.20, 0.075, 0.175, and
+0.05, confidence at the crossing 0.42, 0.50, 0.42, 0.38, and 0.49.
+The coupling is not an artifact of linearity.
+
+\paragraph{An adversarial falsification attempt.}
+The strongest test of an impossibility result is a maximally
+empowered attempt to violate it. We freeze the truth field and
+train a confidence head on the forbidden objective, above one half
+where the field says true and below elsewhere, guarantee weighted
+five to one, on all non-test statements plus fresh interpolants
+each epoch, evaluated on 21{,}000 to 30{,}000 held-out path points
+per model. \theoremref{thm:approx} predicts a positive slack floor,
+boundary-localized failures, and a trade against guarantee
+violations, and all three appear. The slack plateaus between 0.22
+and 0.91 of endpoint scale, exactly flat over Qwen2.5-0.5B's final
+fifteen epochs, never zero; median failing depth shrinks from 0.40
+or more to 0.04 to 0.11, concentrating in the boundary tube; and
+guarantee violations persist. The theorem forbids only exactly zero
+slack for a fixed head, \theoremref{thm:width} pricing the escape,
+so the plateau reflects this adversary's regularity and sharpening
+only buys a thinner tube around a boundary that does not go away.
+
+\paragraph{What this does and does not show.}
+The premises hold to varying degrees, disjoint splits rule out
+shared training data, the nonlinear replication removes the
+analytic sign-change guarantee, and the endogenous experiment
+addresses the shared-target concern where the model can verbalize
+truth. Code, data, and results are in the supplementary material.
+
+
+
+
 
 \section{Discussion}
 \label{sec:discussion}
 
 The theorem rests on connectedness, continuity, coverage, and
 separation, the trilemma adding an inclusive guarantee. Each
-hypothesis can be relaxed, each relaxation is a design stance, and
-each carries a named price, developed in
-\appendixref{app:extended}. Refusal training is connectedness
+hypothesis can be relaxed at a named price
+(\appendixref{app:extended}). Refusal training is connectedness
 surgery, restricting to reachable queries is the same move while
 probing and steering deploy over the ambient space, giving up
 coverage is vacuous for general systems, and dropping continuity
 keeps only the adjacent crossing. The recommended stance is
 \theoremref{thm:approx}'s, separate to a band, with the infimum of
-feasible truth slack as a measurable diagnostic.
-
-\paragraph{Limitations and outlook.}
-The results are existence statements, so nothing follows about
-error rates, boundary points are the deterministic conclusion with
-\theoremref{thm:dichotomy} the stochastic exception, and the truth
-field idealizes probe behavior, \theoremref{thm:approx-odd} pricing
-oddness. \appendixref{app:experiment} reports empirical checks on
-five small models, and next steps are higher Borsuk-Ulam
-machinery and nonlinear probe boundaries \citep{engels2025not}, in
-brains and machines alike. The geometry of representation space can
-prove theorems, and machines can check them.
+feasible truth slack as a measurable diagnostic. The results are
+existence statements, so nothing follows about error rates,
+\theoremref{thm:dichotomy} is where falsehood is derived, and the
+truth field idealizes probe behavior, \theoremref{thm:approx-odd}
+pricing oddness. Next steps are higher Borsuk-Ulam machinery and
+nonlinear probe boundaries \citep{engels2025not}, in brains and
+machines alike, where geometry can prove theorems and machines can
+check them.
 
 % Acknowledgments omitted for anonymous review.
 
@@ -677,283 +867,6 @@ theorem boundary_coupling
   . have := hcal.2 q0 hgt
     linarith
 \end{verbatim}
-
-\section{Empirical illustration on small language models}
-\label{app:experiment}
-
-The theorems are about idealized fields, so we checked whether their
-predictions are visible in real models. We used five open language
-models, namely GPT-2 with 124M parameters, Pythia-410M,
-Qwen2.5-0.5B, Phi-1.5 with 1.3B parameters, and Qwen2.5-1.5B, the
-first three below one billion parameters. The data are the matched city
-statements and their negations from the geometry-of-truth datasets of
-\citet{marks2024geometry}, giving 1496 true and false statement pairs
-such as ``The city of Paris is in France'' and its negation.
-
-\paragraph{Setup.}
-We embed each raw statement at its final token and select the layer
-whose probe has the best validation accuracy. The truth field $\dF$
-is a linear logistic probe trained on one split of cities. The
-confidence field $\conf$ is a second linear logistic head trained on
-a disjoint split with a different seed, so the two fields are
-independently trained readouts of the same representation space. This
-is the canonical construction the theory models, since a probing
-pipeline that uses a truth readout as a confidence signal is exactly
-a truth-separating $\conf$. We then interpolate hidden states between
-each matched pair, from the true statement to its negation, and
-record both fields along each path. We keep the paths whose endpoints
-the probe classifies correctly, which is 83 paths for GPT-2, 104
-for Pythia-410M, 137 for Qwen2.5-0.5B, 66 for Phi-1.5, and 148 for
-Qwen2.5-1.5B. Test cities are held out from
-both training splits.
-
-\paragraph{Findings.}
-\tableref{tab:experiment} and \figureref{fig:coupling} summarize.
-First, the premises hold approximately. Linear probes separate truth
-with accuracy 0.72 to 1.00, and only the two Qwen models are well
-above chance when asked the question verbally, at 0.71 and 0.96
-against 0.48 to 0.56 for the rest, which replicates the known gap
-between represented and verbalized truth. Second, every kept
-path shows the adjacent sign change predicted by the discrete
-result. Third, confidence is pinned near the threshold at
-the boundary. The mean value of $\conf$ at the probe's zero crossing
-is 0.52, 0.51, 0.49, 0.43, and 0.54 for the five models, against
-decisive values
-near 0 and 1 at the endpoints. Fourth, the two independently trained
-fields couple. The median gap between the zero of $\dF$ and the
-threshold crossing of $\conf$ tracks probe accuracy monotonically across all five models, from
-0.31 of the path for Phi-1.5, whose probe is weakest, to 0.05 for
-Qwen2.5-1.5B, whose probe is strongest. The ordering follows
-separation quality and not parameter count alone, since Phi-1.5
-outweighs every model except Qwen2.5-1.5B yet is the weakest
-separator on this domain. A sweep of all 24 of its layers finds no
-linear probe above 0.73, so the weakness is a property of the model
-on this domain and not of the layer choice. The two Qwen models
-give a within-family scale comparison, and there scale helps
-through separation quality, raising the probe from 0.96 to 1.00 and
-halving the gap from 0.10 to 0.05. Fifth, the
-relative boundary width, the median $|\dF|$ over queries whose
-confidence lies in $[0.4, 0.6]$ divided by the endpoint scale,
-runs from 0.37 for the weakest probe to 0.11 for the strongest. Sixth, the kNN graph
-of held-out activations places true and false statements in one
-shared main component for all five models, so truth values are not
-separated into different components, though three models show a
-second component. A diagnostic below identifies what that component is.
-
-\paragraph{The model's own confidence.}
-The design above trains both fields on truth, so nearby boundaries
-could reflect shared fitting. We therefore repeat the experiment with
-a confidence field the model supplies itself, with no trained head,
-read out through unembedding weights fixed by pretraining before
-our data existed.
-We capture the final block's last-token state under a question
-template, interpolate between matched pairs as before, patch the
-interpolated state back into the final block, and read the model's
-own probability of answering true over the two answer tokens. The
-truth probe is trained as before on a disjoint split of the same
-states. The question-template states change which endpoint pairs the
-probe classifies correctly, giving 53, 84, 137, 80, and 147 kept
-paths here.
-The endogenous field satisfies the separation premise on a path when
-it is decisive at both endpoints, meaning its confidence lies on the
-correct side of one half at both. \tableref{tab:endogenous}
-and \figureref{fig:endogenous} report what follows. In Qwen2.5-1.5B the
-premise holds on 146 of 147 paths with median gap 0.08, and in
-Qwen2.5-0.5B on 128 of 137 paths with median gap 0.13, both against
-null gaps of 0.40 and above. In Pythia-410M the premise fails on
-every path, since the model answers true regardless of the statement,
-and the theory predicts nothing. GPT-2 sits between, with 23 of 53
-paths decisive and a gap that does not separate from the random-head
-null. Phi-1.5 is endpoint decisive on 53 of 80 paths, but its verbal
-accuracy is 0.56 and its gap stays at null level, so endpoint
-decisiveness without verbal capability does not amount to
-separation. Coupling with the model's own uncertainty appears cleanly where
-the separation premise holds throughout, and never where it fails.
-
-\paragraph{Null baselines.}
-To calibrate the gaps, we replace the trained confidence head with
-heads trained on permuted labels and with random directions, twenty
-seeds each, evaluated on the same kept paths as the trained heads
-(\tableref{tab:endogenous}). The trained-head gaps of
-0.25, 0.20, 0.10, 0.31, and 0.05 fall below the null medians for
-all five models, and below the entire null range for Pythia-410M
-and both Qwen models. For GPT-2 and Phi-1.5 the observed gaps lie inside the
-random-head null range, so the trained-head evidence is weak there
-on its own.
-Bootstrap intervals over paths, with ten thousand replicates, make
-the gaps precise. The 95 percent intervals for the median trained-head
-gap are 0.175 to 0.325, 0.15 to 0.287, 0.10 to 0.125, 0.175 to
-0.375, and 0.05 to 0.075 across the five models, with 0.10 to 0.15
-for Qwen2.5-0.5B's endogenous field and 0.075 to 0.10 for
-Qwen2.5-1.5B's. Every interval upper bound sits below the
-corresponding null median except the endogenous cases of GPT-2 and
-Phi-1.5.
-
-\paragraph{A second dataset.}
-The same pipeline runs on the Spanish-English translation statements
-from the same source, 354 matched pairs, with splits by statement
-since no city structure exists. Both Qwen models replicate the cities result, with probe accuracies
-0.98 and 0.94 and median crossing gaps 0.05 and 0.10.
-Pythia-410M's probe drops to 0.70 on this harder set and its gap
-rises to null level, and Phi-1.5's probe reaches 0.71 with its gap
-at null level too. GPT-2's probe is at chance there, with too few
-valid paths to score. Coupling again appears exactly where separation
-holds.
-
-\paragraph{What the second component is.}
-The kNN check deserves one more look, since three models showed a
-second component holding half the points. The diagnostic answer is
-clean. The components split exactly by surface form. One holds the
-positive statements, the other the negations, and each contains true
-and false statements in equal measure. What separates activations is
-syntax, not truth, and both truth values coexist inside each
-component. The interpolation paths are line segments in the ambient
-space, which are connected regardless of how the data clusters.
-
-\paragraph{Measuring the oddness defect.}
-The symmetry section rests on negation acting oddly on the truth
-field, and the matched pairs measure how odd it is. The
-defect $|\dF(x) + \dF(\sigma x)|$ relative to the endpoint scale
-has median 0.40, 0.43, 0.30, 0.53, and 0.17 for GPT-2, Pythia-410M,
-Qwen2.5-0.5B, Phi-1.5, and Qwen2.5-1.5B, smallest for the strongest
-model.
-Exact oddness fails in real representations, which is why
-\theoremref{thm:approx-odd} carries the approximate version. Its
-near-boundary point survives any defect, and empirically every
-kept path crosses zero regardless. The width column of
-\tableref{tab:experiment} also gives the slack diagnostic of
-\sectionref{sec:geometry} an empirical proxy, between 0.11 and 0.37 of the endpoint scale on
-these models.
-
-\paragraph{Nonlinear probes.}
-The linear truth field crosses zero along a linear path by
-construction, so we replace both fields with one-hidden-layer MLPs
-trained on the same splits. Nothing about the path behavior is then
-guaranteed, the boundary is no longer a hyperplane, and multiple
-crossings become possible. The nonlinear probes reach 0.79, 0.87, 0.97, 0.80, and 1.00, and
-give 124, 121, 144, 104, and 149 kept paths. Every
-kept path still crosses zero, and at least 98 percent of paths in
-every model cross exactly once, so the nonlinear boundary is still
-met transversally along these paths. The coupling tightens or holds in every model, with median gaps
-0.15, 0.20, 0.075, 0.175, and 0.05, and confidence at the crossing
-averaging 0.42, 0.50, 0.42, 0.38, and 0.49. The
-coupling is therefore not an artifact of linearity.
-
-\paragraph{An adversarial falsification attempt.}
-The strongest test of an impossibility result is a maximally
-empowered attempt to violate it. We freeze the truth field and train
-a confidence head directly on the forbidden objective, confidence
-above one half wherever the field says true and below one half
-wherever it says false or boundary, with the guarantee side weighted
-five times harder. The adversary trains on all non-test statements
-plus fresh continuum interpolants every epoch, and is evaluated on
-21{,}000 to 30{,}000 held-out path points per model.
-\theoremref{thm:approx} predicts three things. The achieved truth
-slack must stay positive, the residual failures must localize at the
-boundary, and slack must trade against guarantee violations. All
-three appear. The achieved slack falls and then plateaus between 0.22 and 0.91 of
-the endpoint scale across the five models, exactly flat over the
-final fifteen epochs for Qwen2.5-0.5B, and never reaches zero. The
-median depth of failing points shrinks from 0.40 or more to between
-0.04 and 0.11, so failures concentrate in the tube around the boundary.
-And the guarantee stays violated on a small fraction of points
-throughout. The theorem forbids only exactly zero slack for
-any fixed continuous head, so a stronger adversary could push the
-floor lower, and \theoremref{thm:width} prices that escape, since a
-sharper transition requires a proportionally larger Lipschitz
-constant. The observed plateau reflects the floor set by this adversary's
-regularity, and the localization shows what sharpening buys, a
-thinner tube around a boundary that does not go away.
-
-\paragraph{What this does and does not show.}
-The truth field of the main design is linear, so its sign change
-along a linear path is guaranteed analytically, and the nonlinear
-replication above removes exactly that guarantee. The empirical
-content lies elsewhere. The
-premises hold to varying degrees in real small models. The two fields are trained
-on disjoint data with different seeds, so their coupling at the
-boundary is not an artifact of shared training data, though both
-target truth. The endogenous experiment addresses the residual concern where the
-model itself can verbalize truth. The pinned confidence value lands
-at one half. And the boundary width is
-a measurable quantity that differentiates models. Code, results, and
-the figure are included in the supplementary material.
-
-\begin{table}[htbp]
-\centering
-\caption{Boundary coupling in five small models. Layer is the
-selected layer. Probe and Head are held-out accuracies of the truth
-probe and the confidence head. Verbal is the model's own true or
-false answer accuracy. Cross is the mean confidence at the probe's
-zero crossing. Gap is the median distance between the two fields'
-crossings as a fraction of the path. Width is the relative boundary
-width.}
-\label{tab:experiment}
-\small
-\begin{tabular}{lccccccc}
-\toprule
-Model & Layer & Probe & Head & Verbal & Cross & Gap & Width \\
-\midrule
-GPT-2 (124M) & 9/12 & 0.77 & 0.72 & 0.48 & 0.52 & 0.25 & 0.33 \\
-Pythia-410M & 18/24 & 0.82 & 0.77 & 0.50 & 0.51 & 0.20 & 0.36 \\
-Qwen2.5-0.5B & 12/24 & 0.96 & 0.96 & 0.71 & 0.49 & 0.10 & 0.20 \\
-Phi-1.5 (1.3B) & 18/24 & 0.72 & 0.72 & 0.56 & 0.43 & 0.31 & 0.37 \\
-Qwen2.5-1.5B & 14/28 & 1.00 & 1.00 & 0.96 & 0.54 & 0.05 & 0.11 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{boundary_coupling.pdf}
-\caption{The predicted picture, observed. Top row shows the truth
-probe field along interpolation paths from a true statement to its
-negation, median and interquartile band over paths, normalized per
-path. Bottom row shows the independently trained confidence field on
-the same paths. The dotted vertical line marks the mean probe zero
-crossing. Confidence passes through its threshold of one half at the
-probe boundary in every model, most sharply in the strongest
-model.}
-\label{fig:coupling}
-\end{figure}
-
-\begin{table}[htbp]
-\centering
-\caption{The model's own confidence and null calibration. Decisive
-counts paths where the endogenous field separates the endpoints. Endo
-is the median crossing gap on decisive paths. Perm and Rand are
-median null gaps for permuted-label and random-direction heads over
-twenty seeds. Heads repeats the trained-head gap from
-\tableref{tab:experiment}.}
-\label{tab:endogenous}
-\small
-\begin{tabular}{lccccc}
-\toprule
-Model & Decisive & Endo & Perm & Rand & Heads \\
-\midrule
-GPT-2 (124M) & 23/53 & 0.23 & 0.48 & 0.33 & 0.25 \\
-Pythia-410M & 0/84 & none & 0.45 & 0.45 & 0.20 \\
-Qwen2.5-0.5B & 128/137 & 0.13 & 0.43 & 0.40 & 0.10 \\
-Phi-1.5 (1.3B) & 53/80 & 0.40 & 0.48 & 0.38 & 0.31 \\
-Qwen2.5-1.5B & 146/147 & 0.08 & 0.45 & 0.45 & 0.05 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{endogenous_coupling.pdf}
-\caption{The model's own confidence couples to the probe boundary
-where the separation premise holds. Rows as in
-\figureref{fig:coupling}, but the bottom row is the model's own
-probability of answering true, obtained by patching the interpolated
-final-block state, restricted to decisive paths. Qwen2.5-0.5B sweeps
-through one half at the probe boundary. Pythia-410M answers true
-everywhere, the premise fails, and no prediction follows. GPT-2 and
-Phi-1.5 sit between.}
-\label{fig:endogenous}
-\end{figure}
-
 
 \section{Artifact checklist}
 \label{app:artifact}
