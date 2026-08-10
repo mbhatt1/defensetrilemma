@@ -41,6 +41,9 @@ import HallucinationProofs.HoF_13_BoundaryCoupling
 -- Quantitative geometry: corridor width, ambiguity tube, hyperplane boundaries.
 import HallucinationProofs.HoF_14_QuantitativeGeometry
 
+-- Nonlinear boundaries: regular points are crossings with tangent hyperplanes.
+import HallucinationProofs.HoF_15_NonlinearBoundary
+
 -- Capstone: bundled structure + master theorem + final axiom verification.
 import HallucinationProofs.HoF_MasterTheorem
 import HallucinationProofs.HoF_FinalVerification

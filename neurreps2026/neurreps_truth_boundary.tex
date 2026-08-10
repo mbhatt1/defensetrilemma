@@ -105,19 +105,29 @@ continuous fields on the same space. These assumptions mention no
 architecture, training, or scale, applying to any model whose
 fields are defined and continuous on the stated domain.
 What they yield is a coupling theorem. If the model ever answers
-truly
-and ever answers falsely, and its confidence separates true answers
-from false ones, then some query carries confidence exactly at the
-threshold while its answer sits exactly on the truth boundary.
+truly and ever answers falsely, and its confidence separates true
+answers from false ones, then some query carries confidence exactly
+at the threshold while its answer sits exactly on the truth
+boundary (\figureref{fig:schematic}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{schematic_coupling.pdf}
+\caption{The coupling theorem in one picture. Along any true-to-false
+path, separation forces confidence above $\tau$ on the strictly true
+side and below on the strictly false side, so both fields must cross,
+and the crossings coincide at the coupled point $x_0$ inside the
+ambiguity tube of \theoremref{thm:width}.}
+\label{fig:schematic}
+\end{figure}
 
 The proof is short, and the theorem's value lies in what it does
 not mention, no safety guarantee and no threshold convention, so
 every policy question becomes a corollary. An inclusive guarantee
 is impossible, an exclusive one survives but says nothing at the
-point topology guarantees, and slack buys safety. Under Lipschitz
-regularity the coupled point sits inside an ambiguity tube of
-computable width, and for the nonzero linear probes used in
-practice the truth boundary is an affine hyperplane.
+point topology guarantees, slack buys safety, and for the nonzero
+linear probes used in practice the truth boundary is an affine
+hyperplane.
 
 \paragraph{Contributions.}
 The boundary coupling theorem with its corollary taxonomy
@@ -135,10 +145,9 @@ difficulty. It is a framing in which exact threshold uncertainty is
 a topological property of representation space, precision, since the
 theorems name every assumption in play, and verification, since we
 machine-check every statement, leaving the premises as the only
-thing to argue about. The theorems do not say models err often and
-assign no probability to failure. The coupled point is neither
-strictly true nor strictly false, and derived falsehood appears only
-in the stochastic dichotomy.
+thing to argue about. The theorems do not say models err often,
+the coupled point is neither strictly true nor strictly false, and
+derived falsehood appears only in the stochastic dichotomy.
 
 \paragraph{Related work.}
 Statistical and computability arguments make hallucination
@@ -273,8 +282,9 @@ $\dF(x_0) = 0$. This is Lean theorem \leanid{boundary\_coupling}.
 \end{proof}
 
 The theorem mentions no guarantee, so no threshold convention
-affects it. We call such an $x_0$ a \emph{coupled point}, and what
-it means for safety is policy, with each policy a corollary.
+affects it. We call such an $x_0$ a \emph{coupled point}
+(\figureref{fig:schematic}), and what it means for safety is
+policy, with each policy a corollary.
 
 \begin{corollary}[Policy taxonomy]
 \label{cor:policy}
@@ -317,9 +327,23 @@ of the kernel of $f$, of dimension exactly $d - 1$. Lean theorems
 \leanid{linear\_probe\_boundary\_dim}, by rank-nullity.
 \end{theorem}
 
-The coupling theorem therefore places a threshold-confidence answer
-on a codimension-one affine hyperplane. Next we quantify what slack
-changes.
+\begin{theorem}[Nonlinear boundaries are hyperplanes to first order]
+\label{thm:nonlinear}
+Let $f$ be differentiable at a boundary point $x_0$ with nonzero
+derivative $L$. Then every neighborhood of $x_0$ contains strictly
+true and strictly false points, and for every $\varepsilon > 0$
+some $\delta > 0$ has every boundary point $x$ within $\delta$
+satisfying $|L(x - x_0)| \le \varepsilon \|x - x_0\|$, deviating
+sublinearly from the tangent hyperplane $x_0 + \ker L$ of dimension
+$d - 1$. Lean theorems \leanid{regular\_point\_is\_crossing},
+\leanid{nonlinear\_boundary\_tangent}, and
+\leanid{tangent\_hyperplane\_dim}.
+\end{theorem}
+
+The hyperplane picture therefore survives nonlinearity to first
+order, every regular point a sign crossing generating local coverage
+for free against a codimension-one tangent hyperplane. Next we
+quantify what slack changes.
 
 \begin{theorem}[Corridor and tube]
 \label{thm:width}
@@ -333,9 +357,8 @@ within $L_c \, r$ of the threshold. Lean theorems
 \leanid{truth\_margin\_tube}.
 \end{theorem}
 
-The coupled point is therefore the center of a tube of
-near-ambiguous queries, and decisive regions cannot approach closer
-than the corridor width.
+The coupled point therefore centers a tube of near-ambiguous
+queries, decisive regions no closer than the corridor width.
 
 \begin{theorem}[Approximate coupling, and slack must be positive]
 \label{thm:approx}
@@ -363,8 +386,8 @@ $\tau + \gamma$ sits exactly on the boundary (Lean
 
 Symmetry can replace coverage. Suppose semantic negation acts on
 $\X$ as a continuous involution $\sigma$ with no fixed point and
-the realized truth field is odd under it, idealizing the measured
-reflection of truth directions by negation \citep{marks2024geometry}.
+the realized truth field is odd under it, idealizing negation's
+measured reflection of truth directions \citep{marks2024geometry}.
 
 \begin{theorem}[Odd fields vanish]
 \label{thm:odd-zero}
@@ -475,47 +498,54 @@ formal statements.
 
 We checked whether the idealized theory is visible in five open
 models, GPT-2 (124M), Pythia-410M, Qwen2.5-0.5B, Phi-1.5 (1.3B),
-and Qwen2.5-1.5B, on the 1496 matched city statements and
-negations of \citet{marks2024geometry}.
-
-\paragraph{Setup.}
-We embed each statement at its final token, select the layer whose
-probe validates best, train the truth field $\dF$ as a linear
-logistic probe on one city split and the confidence field $\conf$
-as a second head on a disjoint split with a different seed, so the
-two fields are independently trained readouts of the same space,
+and Qwen2.5-1.5B, on the 1496 matched city statements and negations
+of \citet{marks2024geometry}. We embed each statement at its final
+token, select the layer whose probe validates best, train the truth
+field $\dF$ as a linear logistic probe on one city split and the
+confidence field $\conf$ as a second head on a disjoint split with
+a different seed, independently trained readouts of the same space,
 the canonical construction the theory models. We interpolate hidden
-states from each true statement to its negation, record both fields,
-and keep paths whose endpoints the probe classifies correctly, 83,
-104, 137, 66, and 148 paths respectively, and we hold test cities
-out of both splits.
+states from each true statement to its negation, record both
+fields, and keep paths whose endpoints the probe classifies
+correctly, 83, 104, 137, 66, and 148 paths, holding test cities out
+of both splits.
 
 \begin{table}[t]
 \centering
-\caption{Boundary coupling in five small models. Probe and Head
-are held-out accuracies, Verbal the model's own answer accuracy,
-Cross the mean confidence at the probe's zero crossing, Gap the
-median crossing distance as a fraction of the path, Width the
-relative boundary width.}
+\caption{Boundary coupling and null calibration in five small
+models. Probe and Head are held-out accuracies, Verbal the model's
+own answer accuracy, Cross the mean confidence at the probe's zero
+crossing, Gap the median crossing distance as a fraction of the
+path, Width the relative boundary width, Decisive the
+endpoint-decisive paths of the endogenous field, Endo its median
+gap on them, Perm and Rand the median null gaps over twenty seeds.}
 \label{tab:experiment}
+\label{tab:endogenous}
 \footnotesize
-\begin{tabular}{lccccccc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccccccccccc}
 \toprule
-Model & Layer & Probe & Head & Verbal & Cross & Gap & Width \\
+Model & Layer & Probe & Head & Verbal & Cross & Gap & Width &
+Decisive & Endo & Perm & Rand \\
 \midrule
-GPT-2 (124M) & 9/12 & 0.77 & 0.72 & 0.48 & 0.52 & 0.25 & 0.33 \\
-Pythia-410M & 18/24 & 0.82 & 0.77 & 0.50 & 0.51 & 0.20 & 0.36 \\
-Qwen2.5-0.5B & 12/24 & 0.96 & 0.96 & 0.71 & 0.49 & 0.10 & 0.20 \\
-Phi-1.5 (1.3B) & 18/24 & 0.72 & 0.72 & 0.56 & 0.43 & 0.31 & 0.37 \\
-Qwen2.5-1.5B & 14/28 & 1.00 & 1.00 & 0.96 & 0.54 & 0.05 & 0.11 \\
+GPT-2 (124M) & 9/12 & 0.77 & 0.72 & 0.48 & 0.52 & 0.25 & 0.33 &
+23/53 & 0.23 & 0.48 & 0.33 \\
+Pythia-410M & 18/24 & 0.82 & 0.77 & 0.50 & 0.51 & 0.20 & 0.36 &
+0/84 & none & 0.45 & 0.45 \\
+Qwen2.5-0.5B & 12/24 & 0.96 & 0.96 & 0.71 & 0.49 & 0.10 & 0.20 &
+128/137 & 0.13 & 0.43 & 0.40 \\
+Phi-1.5 (1.3B) & 18/24 & 0.72 & 0.72 & 0.56 & 0.43 & 0.31 & 0.37 &
+53/80 & 0.40 & 0.48 & 0.38 \\
+Qwen2.5-1.5B & 14/28 & 1.00 & 1.00 & 0.96 & 0.54 & 0.05 & 0.11 &
+146/147 & 0.08 & 0.45 & 0.45 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.74\linewidth]{boundary_coupling.pdf}\\[2pt]
-\includegraphics[width=0.74\linewidth]{endogenous_coupling.pdf}
+\includegraphics[width=0.60\linewidth]{boundary_coupling.pdf}\\[2pt]
+\includegraphics[width=0.60\linewidth]{endogenous_coupling.pdf}
 \caption{Upper pair of rows, the truth probe (normalized, median and
 interquartile band) and the independently trained confidence along
 true-to-negation paths, the dotted line marking the mean probe zero
@@ -553,9 +583,9 @@ through unembedding weights fixed by pretraining. We capture the
 final block's last-token state under a question template,
 interpolate as before, patch the state back in, and read the
 model's own probability of answering true, the probe trained on a
-disjoint split of the same states, 53, 84, 137, 80, and 147 kept
-paths. A path satisfies the separation premise when this field is
-decisive, on the correct side of one half, at both endpoints. \tableref{tab:endogenous} and \figureref{fig:coupling} report
+disjoint split of the same states, giving 53, 84, 137, 80, and 147
+kept paths. A path satisfies the separation premise when this field
+sits on the correct side of one half at both endpoints. \tableref{tab:endogenous} and \figureref{fig:coupling} report
 the result. Qwen2.5-1.5B meets the premise on 146 of 147 paths at
 gap 0.08 and Qwen2.5-0.5B on 128 of 137 at 0.13, against nulls of
 0.40 and above. Pythia-410M answers true regardless, so the premise
@@ -565,40 +595,19 @@ endpoint decisiveness without verbal capability is not separation.
 Coupling with the model's own uncertainty appears cleanly where the
 premise holds throughout, and never where it fails.
 
-\begin{table}[t]
-\centering
-\caption{Endogenous confidence and null calibration. Decisive
-counts endpoint-decisive paths, Endo the median gap on them, Perm
-and Rand the median null gaps over twenty seeds, Heads the
-trained-head gap.}
-\label{tab:endogenous}
-\footnotesize
-\begin{tabular}{lccccc}
-\toprule
-Model & Decisive & Endo & Perm & Rand & Heads \\
-\midrule
-GPT-2 (124M) & 23/53 & 0.23 & 0.48 & 0.33 & 0.25 \\
-Pythia-410M & 0/84 & none & 0.45 & 0.45 & 0.20 \\
-Qwen2.5-0.5B & 128/137 & 0.13 & 0.43 & 0.40 & 0.10 \\
-Phi-1.5 (1.3B) & 53/80 & 0.40 & 0.48 & 0.38 & 0.31 \\
-Qwen2.5-1.5B & 146/147 & 0.08 & 0.45 & 0.45 & 0.05 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 
 \paragraph{Null baselines.}
-Permuted-label and random-direction heads, twenty seeds each on the
-same kept paths, calibrate the gaps (\tableref{tab:endogenous}).
-The trained-head gaps of 0.25, 0.20, 0.10, 0.31, and 0.05 fall
-below every null median, and below the entire null range for
-Pythia-410M and both Qwens, while for GPT-2 and Phi-1.5 they lie
-inside the random-head range, weak evidence on its own. Bootstrap
-95 percent intervals over ten thousand path resamples are 0.175 to
-0.325, 0.15 to 0.287, 0.10 to 0.125, 0.175 to 0.375, and 0.05 to
-0.075, with 0.10 to 0.15 for Qwen2.5-0.5B's endogenous field and
-0.075 to 0.10 for Qwen2.5-1.5B's, every upper bound below the
-corresponding null median except the endogenous GPT-2 and Phi-1.5.
+Permuted-label and random-direction heads, twenty seeds each on
+the same kept paths, calibrate the gaps
+(\tableref{tab:endogenous}). The trained-head gaps of 0.25, 0.20,
+0.10, 0.31, and 0.05 fall below every null median, and below the
+entire null range for Pythia-410M and both Qwens, while GPT-2 and
+Phi-1.5 sit inside the random-head range, weak evidence alone.
+Bootstrap 95 percent intervals over ten thousand path resamples are
+0.175 to 0.325, 0.15 to 0.287, 0.10 to 0.125, 0.175 to 0.375, and
+0.05 to 0.075, with 0.10 to 0.15 and 0.075 to 0.10 for the Qwens'
+endogenous fields, every upper bound below its null median except
+endogenous GPT-2 and Phi-1.5.
 
 \paragraph{A second dataset.}
 The same pipeline on the 354 Spanish-English translation pairs from
@@ -682,10 +691,10 @@ feasible truth slack as a measurable diagnostic. The results are
 existence statements, so nothing follows about error rates,
 \theoremref{thm:dichotomy} alone derives falsehood, and the truth
 field idealizes probe behavior, \theoremref{thm:approx-odd} pricing
-oddness. We already verify the scalar Borsuk-Ulam analog on the
-sphere and exercise nonlinear boundaries empirically. What remains
-is the full theorem for jointly odd axes and a theory of nonlinear
-boundaries \citep{engels2025not}.
+oddness. With the scalar Borsuk-Ulam analog and the first-order
+nonlinear theory verified (\theoremref{thm:nonlinear}), what
+remains is the full theorem for jointly odd axes
+\citep{engels2025not}.
 
 % Acknowledgments omitted for anonymous review.
 
@@ -809,6 +818,9 @@ Thm.~\ref{thm:closed} & \leanid{model\_truth\_boundary\_isClosed},
   \leanid{path\_crosses\_truth\_boundary} \\
 Thm.~\ref{thm:hyperplane} & \leanid{linear\_probe\_boundary\_coset},
   \leanid{linear\_probe\_boundary\_dim} \\
+Thm.~\ref{thm:nonlinear} & \leanid{regular\_point\_is\_crossing},
+  \leanid{nonlinear\_boundary\_tangent},
+  \leanid{tangent\_hyperplane\_dim} \\
 Thm.~\ref{thm:width} & \leanid{confidence\_gap\_width},
   \leanid{ambiguity\_tube}, \leanid{truth\_margin\_tube} \\
 Thm.~\ref{thm:approx} & \leanid{two\_slack\_approx\_coupling},
@@ -875,7 +887,7 @@ theorem boundary_coupling
 The anonymized supplementary zip contains the complete Lean project
 and the experiment. The Lean part includes the build configuration,
 the toolchain pin for Lean v4.28.0, the manifest pin for Mathlib
-v4.28.0, and seventeen source files. To reproduce, run
+v4.28.0, and eighteen source files. To reproduce, run
 \texttt{lake build}. It completes with zero errors and no
 \texttt{sorry}. The final-verification file and the files numbered
 13 and 14 print the axiom sets of the main theorems. The

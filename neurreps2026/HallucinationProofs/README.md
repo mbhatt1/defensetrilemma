@@ -23,8 +23,9 @@ lake build
 Expected result: the build completes with **zero errors** and the
 sources contain **no `sorry`**. Axiom audits (`#print axioms`) run in
 `HoF_FinalVerification.lean`, `HoF_08_BorsukUlam.lean`, `HoF_11_MultiTurnProbabilistic.lean`,
-`HoF_12_Approximate.lean`, `HoF_13_BoundaryCoupling.lean`, and
-`HoF_14_QuantitativeGeometry.lean`; each headline theorem reduces to
+`HoF_12_Approximate.lean`, `HoF_13_BoundaryCoupling.lean`,
+`HoF_14_QuantitativeGeometry.lean`, and
+`HoF_15_NonlinearBoundary.lean`; each headline theorem reduces to
 exactly
 
 ```
@@ -44,6 +45,7 @@ the three standard Lean kernel axioms.
 | Thm. Boundary is closed | `model_truth_boundary_isClosed` | `HoF_03_BoundaryCrossing` |
 | Thm. Every path crosses | `path_crosses_truth_boundary` | `HoF_03_BoundaryCrossing` |
 | Thm. Linear probe hyperplane | `linear_probe_boundary_coset`, `linear_probe_boundary_dim` | `HoF_14_QuantitativeGeometry` |
+| Thm. Nonlinear boundaries first order | `regular_point_is_crossing`, `nonlinear_boundary_tangent`, `tangent_hyperplane_dim` | `HoF_15_NonlinearBoundary` |
 | Thm. Corridor width | `confidence_gap_width` | `HoF_14_QuantitativeGeometry` |
 | Thm. Ambiguity tube | `ambiguity_tube`, `truth_margin_tube` | `HoF_14_QuantitativeGeometry` |
 | Thm. Approximate coupling | `two_slack_approx_coupling`, `exact_from_approx` | `HoF_12_Approximate` |
@@ -64,7 +66,7 @@ the three standard Lean kernel axioms.
 
 ## Layout
 
-Seventeen source files under `HallucinationProofs/`:
+Eighteen source files under `HallucinationProofs/`:
 
 - `HoF_01`--`HoF_06`: vocabulary (spaces, truth-distance, the
   conditions `TrilemmaFaithful`, `TrilemmaCovering`,
@@ -83,6 +85,8 @@ Seventeen source files under `HallucinationProofs/`:
   and its corollary taxonomy (Section 4).
 - `HoF_14_QuantitativeGeometry`: corridor width, ambiguity tube, and
   linear-probe hyperplane results (Sections 5 and 6).
+- `HoF_15_NonlinearBoundary`: regular boundary points are sign
+  crossings with codimension-one tangent hyperplanes.
 - `HoF_Instantiation_PromptSpace`: Euclidean instantiation.
 - `HoF_MasterTheorem`, `HoF_FinalVerification`: bundled statement and
   axiom audit.
