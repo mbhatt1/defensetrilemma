@@ -61,8 +61,8 @@ answering over it. Our central result is a coupling theorem. If a
 continuous model on a connected representation space ever answers
 truly and ever answers falsely, and its confidence separates true
 answers from false ones, then some query must carry confidence
-exactly at the decision threshold while its answer sits exactly on
-the truth boundary. The theorem mentions no safety guarantee, so it
+exactly at the threshold while its answer sits exactly on the truth
+boundary. The theorem mentions no safety guarantee, so it
 does not depend on how a guarantee treats its own threshold. A
 guarantee including its threshold is impossible, and one excluding
 it survives but is silent at the coupled query. Under Lipschitz
@@ -169,9 +169,9 @@ topological space of answers, and our standing assumption is simple.
 \textbf{(T)} $\X$ is connected and nonempty.
 \end{quote}
 
-The literature standardly models ambient embedding spaces as
-$\R^d$ or connected submanifolds, which satisfy (T), though the
-reachable set of a token-driven model may be disconnected. When guarantees range
+Standard practice models ambient embedding spaces as $\R^d$ or
+connected submanifolds, satisfying (T), though a token-driven
+model's reachable set may be disconnected. When guarantees range
 over the ambient space, as they do whenever a probe or steering
 vector applies at arbitrary points, (T) holds. Continuity likewise
 idealizes trained networks, softmax and embeddings being continuous
@@ -613,7 +613,7 @@ Where a second kNN component appears it splits exactly by surface
 form, positives in one and negations in the other, with true and
 false in equal measure inside each. Syntax separates activations,
 not truth, and the interpolation paths are ambient line segments,
-connected regardless of how the data clusters.
+connected regardless of clustering.
 
 \paragraph{Measuring the oddness defect.}
 The matched pairs also measure the oddness premise of
@@ -653,7 +653,7 @@ or more to 0.04 to 0.11, concentrating in the boundary tube; and
 guarantee violations persist. The theorem forbids only exactly zero
 slack for a fixed head, \theoremref{thm:width} pricing the escape,
 so the plateau reflects this adversary's regularity and sharpening
-only buys a thinner tube around a boundary that does not go away.
+only thins the tube around a boundary that does not go away.
 
 \paragraph{What this does and does not show.}
 The premises hold to varying degrees, disjoint splits rule out
@@ -677,15 +677,15 @@ surgery, restricting to reachable queries is the same move while
 probing and steering deploy over the ambient space, giving up
 coverage is vacuous for general systems, and dropping continuity
 keeps only the adjacent crossing. The recommended stance is
-\theoremref{thm:approx}'s, separate to a band, with the infimum of
+\theoremref{thm:approx}'s band separation, with the infimum of
 feasible truth slack as a measurable diagnostic. The results are
 existence statements, so nothing follows about error rates,
 \theoremref{thm:dichotomy} alone derives falsehood, and the truth
 field idealizes probe behavior, \theoremref{thm:approx-odd} pricing
-oddness. Next steps are higher Borsuk-Ulam machinery and
-nonlinear probe boundaries \citep{engels2025not}, in brains and
-machines alike, where geometry can prove theorems and machines can
-check them.
+oddness. We already verify the scalar Borsuk-Ulam analog on the
+sphere and exercise nonlinear boundaries empirically. What remains
+is the full theorem for jointly odd axes and a theory of nonlinear
+boundaries \citep{engels2025not}.
 
 % Acknowledgments omitted for anonymous review.
 
