@@ -76,7 +76,7 @@ For nonzero linear probes the truth boundary is exactly an affine
 hyperplane of codimension one. We further prove a symmetry version
 that needs no coverage assumption, a discrete analysis that prices
 the removal of topology, and multi-turn and stochastic extensions. The stochastic
-dichotomy is where genuine falsehood appears. Every theorem in this
+dichotomy is where falsehood is derived. Every theorem in this
 paper is machine-verified in Lean 4 against Mathlib, with no sorry
 placeholders, and the headline results reduce to the three standard
 kernel axioms.
@@ -113,7 +113,7 @@ and ever answers falsely, and its confidence separates true answers
 from false ones, then some query carries confidence exactly at the
 threshold while its answer sits exactly on the truth boundary.
 
-The proof is short and we do not pretend otherwise. The value of the
+The proof is short. The value of the
 law lies in what it does not mention. It contains no safety guarantee
 and no convention about thresholds, so every policy question becomes
 a corollary. An inclusive guarantee is impossible. An exclusive
@@ -122,7 +122,7 @@ guarantees to exist. Slack buys safety, and we quantify the
 trade. Under Lipschitz
 regularity the forced point widens into an ambiguity tube of
 computable width, and for the nonzero linear probes used in
-practice the truth boundary is literally an affine hyperplane.
+practice the truth boundary is an affine hyperplane.
 
 \paragraph{Contributions.}
 \begin{enumerate}
@@ -154,8 +154,8 @@ practice the truth boundary is literally an affine hyperplane.
 \end{enumerate}
 
 \paragraph{What the contribution is.}
-The mathematics is deliberately elementary, and the contribution is
-not technical difficulty. It is a framing in which forced uncertainty
+The mathematics is elementary, and the contribution is not
+technical difficulty. It is a framing in which forced uncertainty
 is a topological property of representation space, stated in the
 vocabulary of the probing literature. It is precision, since the theorems name every assumption in play,
 so debate moves from proofs to premises. And it is verification, since every statement is
@@ -225,8 +225,8 @@ topological space of answers. Our standing assumption is simple.
 Assumption (T) deserves care. Ambient embedding spaces are standardly
 modeled as $\R^d$ or connected submanifolds
 \citep{fefferman2016testing,cai2021isotropy}, which satisfy (T). But
-the set of representations a token-driven model actually reaches may
-be disconnected. When guarantees range over the ambient space, as
+the set of representations a token-driven model reaches may be
+disconnected. When guarantees range over the ambient space, as
 they implicitly do whenever a probe or steering vector is applied at
 arbitrary points, (T) holds. \sectionref{sec:discrete} analyzes what
 remains without it.
@@ -250,8 +250,8 @@ a model is $\dF(x) = \delta(x, a(x))$.
 
 A linear probe $w^\top x - b$ on activations
 \citep{marks2024geometry,burns2023discovering} is a candidate
-continuous $\dF$, and its decision boundary is the truth boundary. We
-note the gap honestly. Probing experiments fit classifiers on sampled
+continuous $\dF$, and its decision boundary is the truth boundary.
+Probing experiments fit classifiers on sampled
 representations, and the zero set of a probe is the probe's
 classification boundary. Whether it coincides with semantic truth
 away from those samples is an empirical premise, not a theorem. Our
@@ -308,7 +308,7 @@ use it, and it implies the one-way pair
 \label{rem:continuity}
 Continuity idealizes trained networks, since softmax confidences and
 embedding maps are continuous by construction while hard argmax
-decoding is not. Dropping continuity is a genuine escape, and
+decoding is not. Dropping continuity is an escape, and
 \sectionref{sec:discrete} prices it.
 \end{remark}
 
@@ -394,7 +394,7 @@ forced point exists regardless.
 \label{sec:shape}
 
 The forced set is not an isolated curiosity. It has structure, and
-for the probes used in practice it is literally a hyperplane.
+for the probes used in practice it is a hyperplane.
 
 \begin{theorem}[The boundary is closed]
 \label{thm:closed}
@@ -427,8 +427,8 @@ exactly $d - 1$. These are Lean theorems
 
 The truth boundary of practical probes is therefore a
 codimension-one affine hyperplane, and the coupling law places a
-threshold-confidence answer on it. Truth has not merely a boundary
-point but a boundary surface.
+threshold-confidence answer on it. Truth has a boundary surface,
+not only a boundary point.
 
 \section{The ambiguity tube}
 \label{sec:tube}
@@ -479,7 +479,7 @@ truth slack is infeasible. This is Lean theorem
 \leanid{truth\_slack\_must\_be\_positive}.
 \end{theorem}
 
-Slack is therefore a genuine geometric budget, and positivity
+Slack is therefore a geometric budget, and positivity
 attaches to the truth side alone, whatever the confidence margin. We
 propose reading the infimum of feasible truth slack as the system's
 truth-boundary width, and the relative boundary width measured in
@@ -539,9 +539,9 @@ theorem \leanid{antipodal\_hallucination\_trilemma}.
 
 No coverage hypothesis appears, and a model answering a
 negation-closed family of questions is forced onto the truth boundary
-by symmetry alone. The moral is pointed for this community, since equivariance is
-usually a design virtue \citep{bronstein2021geometric} and here it is
-the engine of the obstruction.
+by symmetry alone. Equivariance is usually a design virtue
+\citep{bronstein2021geometric}, and here it is the engine of the
+obstruction.
 
 \section{What leaving the continuum costs}
 \label{sec:discrete}
@@ -921,10 +921,10 @@ space, which are connected regardless of how the data clusters.
 
 \paragraph{Measuring the oddness defect.}
 The symmetry section rests on negation acting oddly on the truth
-field, and the matched pairs measure how odd it actually is. The
+field, and the matched pairs measure how odd it is. The
 defect $|\dF(x) + \dF(\sigma x)|$ relative to the endpoint scale has
 median 0.40, 0.43, and 0.30 for GPT-2, Pythia-410M, and Qwen2.5-0.5B.
-Exact oddness clearly fails in real representations, which is why
+Exact oddness fails in real representations, which is why
 \theoremref{thm:approx-odd} carries the approximate version. Its
 forced near-boundary point survives any defect, and empirically every
 kept path crosses zero regardless. The width column of
@@ -963,8 +963,8 @@ three appear. The achieved slack falls and then plateaus at 0.91,
 fifteen epochs for Qwen2.5-0.5B, and never reaches zero. The median
 depth of failing points shrinks from 0.42 or more to between 0.06
 and 0.11, so failures concentrate in the tube around the boundary.
-And the guarantee stays violated on a small stubborn fraction of
-points throughout. The theorem forbids only exactly zero slack for
+And the guarantee stays violated on a small fraction of points
+throughout. The theorem forbids only exactly zero slack for
 any fixed continuous head, so a stronger adversary could push the
 floor lower, and \theoremref{thm:width} prices that escape, since a
 sharper transition requires a proportionally larger Lipschitz
