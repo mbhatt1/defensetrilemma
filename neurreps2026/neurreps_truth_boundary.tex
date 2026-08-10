@@ -924,9 +924,25 @@ kept path crosses zero regardless. The width column of
 \sectionref{sec:tube} its empirical value, between 0.20 and 0.36 of
 the endpoint scale on these models.
 
+\paragraph{Nonlinear probes.}
+The linear truth field crosses zero along a linear path by
+construction, so we replace both fields with one-hidden-layer MLPs
+trained on the same splits. Nothing about the path behavior is then
+guaranteed, the boundary is no longer a hyperplane, and multiple
+crossings become possible. The nonlinear probes are more accurate, at
+0.79, 0.87, and 0.97, and give 124, 121, and 144 kept paths. Every
+kept path still crosses zero, and at least 98 percent of paths in
+every model cross exactly once, so the nonlinear boundary is still
+met transversally along these paths. The coupling tightens rather
+than dissolving, with median gaps 0.15, 0.20, and 0.075, and
+confidence at the crossing averaging 0.42, 0.50, and 0.42. The
+coupling is therefore not an artifact of linearity.
+
 \paragraph{What this does and does not show.}
-The truth field is linear, so its sign change along a linear path is
-guaranteed analytically. The empirical content lies elsewhere. The
+The truth field of the main design is linear, so its sign change
+along a linear path is guaranteed analytically, and the nonlinear
+replication above removes exactly that guarantee. The empirical
+content lies elsewhere. The
 premises hold in real sub-billion models. The two fields are trained
 on disjoint data with different seeds, so their coupling at the
 boundary is not an artifact of shared training data, though both

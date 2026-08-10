@@ -1,0 +1,32 @@
+{
+  "gpt2": {
+    "mlp_probe_test_acc": 0.7869,
+    "mlp_head_test_acc": 0.7416,
+    "n_paths": 124,
+    "frac_paths_with_sign_change": 1.0,
+    "median_n_crossings": 1.0,
+    "frac_single_crossing": 0.9839,
+    "median_alpha_gap": 0.15,
+    "mean_conf_at_delta_crossing": 0.4229
+  },
+  "pythia-410m": {
+    "mlp_probe_test_acc": 0.8658,
+    "mlp_head_test_acc": 0.7081,
+    "n_paths": 121,
+    "frac_paths_with_sign_change": 1.0,
+    "median_n_crossings": 1.0,
+    "frac_single_crossing": 1.0,
+    "median_alpha_gap": 0.2,
+    "mean_conf_at_delta_crossing": 0.4994
+  },
+  "qwen2.5-0.5b": {
+    "mlp_probe_test_acc": 0.9732,
+    "mlp_head_test_acc": 0.9362,
+    "n_paths": 144,
+    "frac_paths_with_sign_change": 1.0,
+    "median_n_crossings": 1.0,
+    "frac_single_crossing": 1.0,
+    "median_alpha_gap": 0.075,
+    "mean_conf_at_delta_crossing": 0.4197
+  }
+}
