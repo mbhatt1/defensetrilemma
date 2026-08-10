@@ -77,8 +77,9 @@ hyperplane of codimension one. We further prove a symmetry version
 that needs no coverage assumption, a discrete analysis that prices
 the removal of topology, and multi-turn and stochastic extensions. The stochastic
 dichotomy is where genuine falsehood appears. Every theorem in this
-paper is machine-verified in Lean 4 against Mathlib, with no sorry,
-and the headline results reduce to the three standard kernel axioms.
+paper is machine-verified in Lean 4 against Mathlib, with no sorry
+placeholders, and the headline results reduce to the three standard
+kernel axioms.
 An appendix observes the predicted coupling in three
 sub-billion-parameter language models, including with the model's
 own confidence signal and against null baselines.
@@ -103,9 +104,9 @@ truth as a continuous, decodable field over representation space.
 We take that picture seriously as geometry and ask what follows.
 Suppose truth is a continuous scalar field on a connected
 representation space, and the model's answers and confidences are
-continuous fields on the same space. These assumptions mention no
-architecture, training method, or scale. They apply to any model for
-which the fields are defined and continuous over the stated domain.
+continuous fields on the same space. These assumptions mention no architecture, training method, or
+scale, and they apply to any model whose fields are defined and
+continuous over the stated domain.
 What they force is a coupling law. If the model ever answers truly
 and ever answers falsely, and its confidence separates true answers
 from false ones, then some query carries confidence exactly at the
@@ -115,7 +116,7 @@ The proof is short and we do not pretend otherwise. The value of the
 law lies in what it does not mention. It contains no safety guarantee
 and no convention about thresholds, so every policy question becomes
 a corollary. An inclusive guarantee is impossible. An exclusive
-guarantee survives but says nothing at the one point topology
+guarantee survives but says nothing at the one point that topology
 guarantees to exist. Slack buys safety, and we compute exactly how
 much. Under Lipschitz regularity the forced point widens into an
 ambiguity tube of computable width. For the linear probes used in
@@ -124,10 +125,10 @@ practice, the truth boundary is literally an affine hyperplane.
 \paragraph{Contributions.}
 \begin{enumerate}
 \item \textbf{A boundary coupling law} (\sectionref{sec:coupling}).
-  Coverage plus continuity force an exact truth-boundary point.
-  Truth separation forces threshold confidence at such a point. The
-  combined law is convention-free, and a taxonomy of corollaries
-  then settles each policy.
+  Coverage plus continuity force an exact truth-boundary point,
+  truth separation forces threshold confidence there, and the
+  combined law is convention-free, with a taxonomy of corollaries
+  settling each policy.
 \item \textbf{The shape of the boundary} (\sectionref{sec:shape}).
   The truth boundary is closed. Every continuous path from a true
   answer to a false answer crosses it. For a nonzero linear probe it
@@ -135,10 +136,9 @@ practice, the truth boundary is literally an affine hyperplane.
   $d-1$.
 \item \textbf{The ambiguity tube} (\sectionref{sec:tube}). With
   Lipschitz confidence, decisive regions are separated by a corridor
-  of width at least $2\gamma/L$. Around the forced point, truth
-  margin and confidence margin are bounded by the Lipschitz data.
-  Any system with band separation and a threshold-inclusive
-  guarantee must have strictly positive truth-side slack.
+  of width at least $2\gamma/L$, and any system with band separation
+  and a threshold-inclusive guarantee must have strictly positive
+  truth-side slack.
 \item \textbf{A symmetry version} (\sectionref{sec:antipodal}). If
   semantic negation acts freely and continuously and the truth field
   is odd under it, a boundary point is forced with no coverage
@@ -171,10 +171,10 @@ and derived falsehood appears only in the stochastic dichotomy.
 must hallucinate on facts seen once in training, and
 \citet{kalai2025why} extend this line. \citet{xu2024hallucination}
 give a computability-theoretic inevitability argument. Our mechanism
-is topological, lives in representation space, and localizes the
-forced behavior at the truth boundary. It is also more modest, since
-the deterministic theorems force uncertainty at the boundary rather
-than confident falsehood.
+is topological, lives in representation space, localizes the forced
+behavior at the truth boundary, and is more modest, since the
+deterministic theorems force uncertainty rather than confident
+falsehood.
 
 \paragraph{Geometry of truth in representations.}
 Linearly decodable truth \citep{marks2024geometry}, unsupervised
@@ -188,7 +188,7 @@ That is exactly our hypothesis on $\delta$, and confidence signals
 \citep{farquhar2024detecting,kadavath2022language} are treated
 similarly. Our results give this program a frontier, since a probe
 that exactly separates truth over a connected domain with both truth
-values realized must contain an exact-uncertainty point on its own
+values realized must have an exact-uncertainty point on its own
 boundary.
 
 \paragraph{Topology, geometry, and calibration.}
@@ -212,8 +212,8 @@ stated at the level of representation geometry.
 \section{The setting}
 \label{sec:setting}
 
-$\X$ is a topological space of queries as the model represents them.
-Think of prompt embeddings or residual-stream states. $\A$ is a
+$\X$ is a topological space of queries as the model represents
+them, such as prompt embeddings or residual-stream states. $\A$ is a
 topological space of answers. Our standing assumption is simple.
 
 \begin{quote}
@@ -283,30 +283,31 @@ implies $\dF(x) < 0$. A \emph{threshold-exclusive guarantee} says
 that $\conf(x) > \tau$ implies $\dF(x) < 0$.
 \end{definition}
 
-Covering is the weakest condition, since any deployed model that is
-ever right and ever wrong satisfies it. Exact separation idealizes a
-perfect truth probe used as the confidence signal, and the guarantees
-idealize hallucination mitigation. The coupling results hold at any
-threshold, and the biconditional variants at one half.
+Covering is the weakest condition, since any model that is ever
+right and ever wrong satisfies it. Exact separation idealizes a
+perfect truth probe used as confidence, the guarantees idealize
+hallucination mitigation, the coupling results hold at any
+threshold, and the biconditional variants sit at one half.
 
 \begin{remark}[This is not statistical calibration]
 \label{rem:calibration}
 Statistical calibration asks that confidence match accuracy on
 average \citep{guo2017calibration}. Separation is pointwise and much
-stronger, since confidence classifies truth, and our impossibility
-results target this stronger object. Separation is one-way by
-construction, the coupling law and its corollaries use only the two
-truth-to-confidence implications, and the symmetry and discrete
-results use the biconditional variant, which implies them
+stronger, since confidence classifies truth. It is also one-way by
+construction, and the coupling law and its corollaries use only the
+two truth-to-confidence implications. The \emph{biconditional}
+variant adds the converses, so the sign of $\dF$ and the side of the
+threshold determine each other. The symmetry and discrete results
+use it, and it implies the one-way pair
 (Lean \leanid{strictCalibrated\_to\_epsCalibrated\_zero\_half}).
 \end{remark}
 
 \begin{remark}[On continuity]
 \label{rem:continuity}
-Continuity idealizes the smoothness of trained networks. Softmax
-confidences and embedding maps are continuous by construction, while
-hard argmax decoding is not. Dropping continuity is a genuine escape,
-and \sectionref{sec:discrete} prices it.
+Continuity idealizes trained networks, since softmax confidences and
+embedding maps are continuous by construction while hard argmax
+decoding is not. Dropping continuity is a genuine escape, and
+\sectionref{sec:discrete} prices it.
 \end{remark}
 
 \section{The boundary coupling law}
@@ -322,12 +323,12 @@ $\dF(x_0) = 0$.
 \end{theorem}
 
 \begin{proof}
-The realized truth field $\dF$ is continuous as a composite. It is
-negative somewhere and positive somewhere. The intermediate value
+The realized truth field $\dF$ is continuous as a composite,
+negative somewhere and positive somewhere, so the intermediate value
 theorem on the connected space $\X$ gives an exact zero. This is
 Lean theorem \leanid{model\_truth\_boundary\_nonempty}, and the IVT
 step is Mathlib's
-\leanid{IsPreconnected.intermediate\_value\textsubscript{2}}.
+\leanid{IsPreconnected.intermediate\_value2}.
 \end{proof}
 
 \begin{theorem}[Boundary coupling]
@@ -342,23 +343,24 @@ satisfies both
 
 \begin{proof}
 Separation converts the coverage witnesses into confidence witnesses
-above and below $\tau$. The IVT gives $x_0$ with
+above and below $\tau$, and the IVT gives $x_0$ with
 $\conf(x_0) = \tau$. If $\dF(x_0)$ were negative, separation would
-force $\conf(x_0) > \tau$. If it were positive, separation would
-force $\conf(x_0) < \tau$. Both fail, so $\dF(x_0) = 0$. This is
-Lean theorem \leanid{boundary\_coupling}.
+force $\conf(x_0) > \tau$, and if positive, $\conf(x_0) < \tau$.
+Both fail, so $\dF(x_0) = 0$. This is Lean theorem
+\leanid{boundary\_coupling}.
 \end{proof}
 
 The law mentions no guarantee, so no threshold convention can
-dissolve it. The model is forced into total uncertainty at exactly
-the place where truth changes sign. What that point means for safety
-is a matter of policy, and each policy is a corollary.
+dissolve it. The model is forced into total uncertainty exactly where
+truth changes sign, and what that means for safety is a matter of
+policy, with each policy a corollary.
 
 \begin{corollary}[Inclusive guarantees are impossible]
 \label{cor:closed}
 Add a threshold-inclusive guarantee to the hypotheses of
 \theoremref{thm:coupling}. Then the hypotheses are jointly
-contradictory. This is the trilemma.
+contradictory. This is the trilemma, since coverage, exact
+separation, and an inclusive guarantee cannot jointly hold.
 \end{corollary}
 
 Corollary~\ref{cor:closed} is Lean theorem
@@ -368,10 +370,10 @@ biconditional version is \leanid{hallucination\_trilemma}.
 \begin{corollary}[Exclusive guarantees go silent]
 \label{cor:open}
 Add a threshold-exclusive guarantee instead. No contradiction
-follows. Instead the forced point satisfies $\conf(x_0) = \tau$, so
-the guarantee's antecedent fails exactly there. The system owns a
-query about which its guarantee says nothing, and that query sits on
-the truth boundary. This is Lean theorem
+follows, but the forced point satisfies $\conf(x_0) = \tau$, so the
+guarantee's antecedent fails exactly there. The system owns a query
+about which its guarantee says nothing, and that query sits on the
+truth boundary. This is Lean theorem
 \leanid{open\_guarantee\_silent}.
 \end{corollary}
 
@@ -518,13 +520,15 @@ on the sphere. These are Lean theorems
 \end{theorem}
 
 The forced near-boundary point degrades linearly with the oddness
-defect, and the sphere case is where layer normalization actually
-places transformer states, with negation as the candidate antipode.
+defect, and the sphere case is, up to a learned affine map, where
+layer normalization places its normalized states, with negation as a
+candidate antipode.
 
 \begin{theorem}[Antipodal coupling]
 \label{thm:antipodal}
-Let $\X$ satisfy (T) with such an action, let $F$ be continuous with
-biconditional separation at $\tfrac12$, and let $\dF$ be odd. Then
+Let $\X$ satisfy (T) with a free continuous involution $\sigma$,
+let $F$ be continuous with biconditional separation at $\tfrac12$,
+and let $\dF$ be odd. Then
 some $x$ has $\conf(x) = \tfrac12$ and $\dF(x) = 0$. This is Lean
 theorem \leanid{antipodal\_hallucination\_trilemma}.
 \end{theorem}
@@ -628,8 +632,8 @@ The coupling law rests on connectedness, continuity, coverage, and
 separation, and the trilemma adds a threshold-inclusive guarantee.
 Each hypothesis can be relaxed, and each relaxation is a design
 stance. Corollary~\ref{cor:open} settles the stance that excludes
-the threshold from the guarantee, which survives but owns a boundary
-point about which it says nothing.
+the threshold, whose guarantee survives but owns a silent boundary
+point.
 
 \paragraph{Disconnect the space.}
 Abstention breaks the argument at the IVT step, since declining to
@@ -678,11 +682,10 @@ rates. Deterministic conclusions concern boundary points, with
 \theoremref{thm:dichotomy} as the stochastic exception. The truth field idealizes probe behavior, and
 \theoremref{thm:approx-odd} prices oddness.
 \appendixref{app:experiment} reports empirical checks on three
-sub-billion-parameter models. Next steps are higher Borsuk-Ulam
-machinery for jointly odd axes and regular-value descriptions of
-nonlinear probe boundaries \citep{engels2025not}, in brains or in
-machines. The geometry of representation space can prove theorems,
-and machines can check them.
+sub-billion-parameter models. Next steps are higher Borsuk-Ulam machinery for jointly odd axes
+and nonlinear probe boundaries \citep{engels2025not}, in brains and
+in machines alike. The geometry of representation space can prove
+theorems, and machines can check them.
 
 % Acknowledgments omitted for anonymous review.
 
@@ -807,8 +810,8 @@ theorem boundary_coupling
 
 The theorems are about idealized fields, so we checked whether their
 predictions are visible in real models. We used three open language
-models below one billion parameters. GPT-2 with 124M parameters,
-Pythia-410M, and Qwen2.5-0.5B. The data are the matched city
+models below one billion parameters, namely GPT-2 with 124M
+parameters, Pythia-410M, and Qwen2.5-0.5B. The data are the matched city
 statements and their negations from the geometry-of-truth datasets of
 \citet{marks2024geometry}, giving 1496 true and false statement pairs
 such as ``The city of Paris is in France'' and its negation.
@@ -848,8 +851,8 @@ confidence lies in $[0.4, 0.6]$ divided by the endpoint scale,
 shrinks from 0.33 for GPT-2 to 0.20 for Qwen2.5-0.5B, though
 Pythia-410M breaks monotonicity at 0.36. Sixth, the kNN graph
 of held-out activations places true and false statements in one
-shared main component for all three models, supporting the
-connectedness premise on this domain, though two models show a second
+shared main component for all three models, so truth values are not
+separated into different components, though two models show a second
 component. A diagnostic below identifies what that component is.
 
 \paragraph{The model's own confidence.}
@@ -861,8 +864,11 @@ template, interpolate between matched pairs as before, patch the
 interpolated state back into the final block, and read the model's
 own probability of answering true over the two answer tokens. The
 truth probe is trained as before on a disjoint split of the same
-states. The endogenous field satisfies the separation premise on a
-path when it is decisive at both endpoints. \tableref{tab:endogenous}
+states. The question-template states change which endpoint pairs the
+probe classifies correctly, giving 53, 84, and 137 kept paths here.
+The endogenous field satisfies the separation premise on a path when
+it is decisive at both endpoints, meaning its confidence lies on the
+correct side of one half at both. \tableref{tab:endogenous}
 and \figureref{fig:endogenous} report what follows. In Qwen2.5-0.5B
 the premise holds on 128 of 137 paths, and there the model's own
 confidence crosses one half within 0.13 of the probe's zero, against
@@ -876,7 +882,8 @@ the separation premise holds, and only there.
 \paragraph{Null baselines.}
 To calibrate the gaps, we replace the trained confidence head with
 heads trained on permuted labels and with random directions, twenty
-seeds each (\tableref{tab:endogenous}). The trained-head gaps of
+seeds each, evaluated on the same kept paths as the trained heads
+(\tableref{tab:endogenous}). The trained-head gaps of
 0.25, 0.20, and 0.10 fall below the null medians for all three
 models, and below the entire null range for Pythia-410M and
 Qwen2.5-0.5B. For GPT-2 the observed gap lies inside the random-head
@@ -907,9 +914,9 @@ The truth field is linear, so its sign change along a linear path is
 guaranteed analytically. The empirical content lies elsewhere. The
 premises hold in real sub-billion models. The two fields are trained
 on disjoint data with different seeds, so their coupling at the
-boundary is not an artifact of shared fitting, though both target
-truth. The endogenous experiment removes that concern wherever the
-model itself can verbalize truth. The pinned confidence value lands
+boundary is not an artifact of shared training data, though both
+target truth. The endogenous experiment removes the residual concern
+wherever the model itself can verbalize truth. The pinned confidence value lands
 at one half. And the boundary width is
 a measurable quantity that differentiates models. Code, results, and
 the figure are included in the supplementary material.
@@ -935,6 +942,20 @@ Qwen2.5-0.5B & 12/24 & 0.96 & 0.96 & 0.71 & 0.49 & 0.10 & 0.20 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{boundary_coupling.pdf}
+\caption{The predicted picture, observed. Top row shows the truth
+probe field along interpolation paths from a true statement to its
+negation, median and interquartile band over paths, normalized per
+path. Bottom row shows the independently trained confidence field on
+the same paths. The dotted vertical line marks the mean probe zero
+crossing. Confidence passes through its threshold of one half at the
+probe boundary in all three models, most sharply in the strongest
+model.}
+\label{fig:coupling}
+\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -970,19 +991,6 @@ everywhere, the premise fails, and no prediction follows.}
 \label{fig:endogenous}
 \end{figure}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{boundary_coupling.pdf}
-\caption{The predicted picture, observed. Top row shows the truth
-probe field along interpolation paths from a true statement to its
-negation, median and interquartile band over paths, normalized per
-path. Bottom row shows the independently trained confidence field on
-the same paths. The dotted vertical line marks the mean probe zero
-crossing. Confidence passes through its threshold of one half at the
-probe boundary in all three models, most sharply in the strongest
-model.}
-\label{fig:coupling}
-\end{figure}
 
 \section{Artifact checklist}
 \label{app:artifact}
