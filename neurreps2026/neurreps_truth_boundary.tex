@@ -41,7 +41,8 @@
 \newcommand{\leanid}[1]{{\def\_{\textunderscore\allowbreak}\texttt{#1}}}
 
 \title[Truth Has a Boundary]{Truth Has a Boundary. A Machine-Verified
-Topological Law for Models That Separate Truth from Falsehood}
+Topological Constraint on Models That Separate Truth from
+Falsehood}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % THE MANUSCRIPT, DATA AND CODE MUST BE ANONYMIZED DURING THE REVIEW PROCESS.
@@ -56,20 +57,22 @@ Topological Law for Models That Separate Truth from Falsehood}
 Probing studies show that truth is easy to read off a language model's
 activations. Linear probes find truth directions. True and false
 statements separate in representation space. We ask the reverse
-question. What does the shape of that space force on any model that
-answers over it? The model is any continuous map from a connected
+question. What does the shape of that space require of any model
+that answers over it? The model is any continuous map from a connected
 representation space to answers and confidences. Truth is a continuous
-signed field with the truth boundary as its zero set. Our headline
-result is a coupling law. If the model ever answers truly and ever
+signed field with the truth boundary as its zero set. Our central result
+is a coupling theorem. If the model ever answers truly and
+ever
 answers falsely, and its confidence separates true answers from false
-ones, then some query is forced to carry confidence exactly at the
-decision threshold while its answer sits exactly on the truth
-boundary. The law mentions no safety guarantee, so it cannot be
-dissolved by adjusting how a guarantee treats its own threshold.
+ones, then some query must carry confidence exactly at the decision
+threshold while its answer sits exactly on the truth boundary. The
+theorem mentions no safety guarantee, so it does not depend on how a
+guarantee treats its own threshold.
 Consequences follow per policy. A guarantee that includes its
 threshold is impossible. A guarantee that excludes its threshold
-survives but is silent at the forced point. Under Lipschitz regularity
-the forced point widens into an ambiguity tube of computable width,
+survives but is silent at the coupled query. Under Lipschitz
+regularity the coupled point sits inside an ambiguity tube of
+computable width,
 and any feasible system must carry strictly positive truth-side
 slack.
 For nonzero linear probes the truth boundary is exactly an affine
@@ -78,7 +81,7 @@ that needs no coverage assumption, a discrete analysis that prices
 the removal of topology, and multi-turn and stochastic extensions. The stochastic
 dichotomy is where falsehood is derived. Every theorem in this
 paper is machine-verified in Lean 4 against Mathlib, with no sorry
-placeholders, and the headline results reduce to the three standard
+placeholders, and the main results reduce to the three standard
 kernel axioms.
 An appendix observes the predicted coupling in three
 sub-billion-parameter language models, including with the model's
@@ -108,29 +111,30 @@ representation space, and the model's answers and confidences are
 continuous fields on the same space. These assumptions mention no architecture, training method, or
 scale, and they apply to any model whose fields are defined and
 continuous over the stated domain.
-What they force is a coupling law. If the model ever answers truly
+What they yield is a coupling theorem. If the model ever answers
+truly
 and ever answers falsely, and its confidence separates true answers
 from false ones, then some query carries confidence exactly at the
 threshold while its answer sits exactly on the truth boundary.
 
 The proof is short. The value of the
-law lies in what it does not mention. It contains no safety guarantee
+theorem lies in what it does not mention. It contains no safety guarantee
 and no convention about thresholds, so every policy question becomes
 a corollary. An inclusive guarantee is impossible. An exclusive
 guarantee survives but says nothing at the one point that topology
 guarantees to exist. Slack buys safety, and we quantify the
 trade. Under Lipschitz
-regularity the forced point widens into an ambiguity tube of
+regularity the coupled point sits inside an ambiguity tube of
 computable width, and for the nonzero linear probes used in
 practice the truth boundary is an affine hyperplane.
 
 \paragraph{Contributions.}
 \begin{enumerate}
-\item \textbf{A boundary coupling law} (\sectionref{sec:coupling}).
-  Coverage plus continuity force an exact truth-boundary point,
-  truth separation forces threshold confidence there, and the
-  combined law is convention-free, with a taxonomy of corollaries
-  settling each policy.
+\item \textbf{A boundary coupling theorem}
+  (\sectionref{sec:coupling}). Coverage plus continuity yield an
+  exact truth-boundary point, truth separation gives it threshold
+  confidence, and the combined theorem is convention-free, with a
+  taxonomy of corollaries classifying each policy.
 \item \textbf{The shape of the boundary} (\sectionref{sec:shape}).
   The truth boundary is closed. Every continuous path from a true
   answer to a false answer crosses it. For a nonzero linear probe it
@@ -143,7 +147,7 @@ practice the truth boundary is an affine hyperplane.
   truth-side slack.
 \item \textbf{A symmetry version} (\sectionref{sec:antipodal}). If
   semantic negation acts freely and continuously and the truth field
-  is odd under it, a boundary point is forced with no coverage
+  is odd under it, a boundary point exists with no coverage
   assumption at all.
 \item \textbf{A discrete analysis} (\sectionref{sec:discrete}) that
   prices the removal of topology, and \textbf{extensions}
@@ -155,13 +159,14 @@ practice the truth boundary is an affine hyperplane.
 
 \paragraph{What the contribution is.}
 The mathematics is elementary, and the contribution is not
-technical difficulty. It is a framing in which forced uncertainty
-is a topological property of representation space, stated in the
+technical difficulty. It is a framing in which exact threshold
+uncertainty is a topological property of representation space, stated in the
 vocabulary of the probing literature. It is precision, since the theorems name every assumption in play,
 so debate moves from proofs to premises. And it is verification, since every statement is
 machine-checked and the premises are the only thing left to argue
 about. The theorems do not say models err often, and they assign no
-probability to failure. The forced point of the deterministic results
+probability to failure. The coupled point of the deterministic
+results
 lies on the truth boundary, neither strictly true nor strictly false,
 and derived falsehood appears only in the stochastic dichotomy.
 
@@ -174,9 +179,9 @@ models must hallucinate on facts seen once in training,
 \citet{kalai2025why} extend this line, and
 \citet{xu2024hallucination} give a computability-theoretic
 inevitability argument. Our mechanism
-is topological, lives in representation space, localizes the forced
-behavior at the truth boundary, and is more modest, since the
-deterministic theorems force uncertainty rather than confident
+is topological, lives in representation space, localizes the
+conclusion at the truth boundary, and is more modest, since the
+deterministic theorems yield uncertainty rather than confident
 falsehood.
 
 \paragraph{Geometry of truth in representations.}
@@ -296,7 +301,8 @@ threshold, and the biconditional variants sit at one half.
 Statistical calibration asks that confidence match accuracy on
 average \citep{guo2017calibration}. Separation is pointwise and much
 stronger, since confidence classifies truth. It is also one-way by
-construction, and the coupling law and its corollaries use only the
+construction, and the coupling theorem and its corollaries use only
+the
 two truth-to-confidence implications. The \emph{biconditional}
 variant adds the converses, so the sign of $\dF$ and the side of the
 threshold determine each other. The symmetry and discrete results
@@ -312,7 +318,7 @@ decoding is not. Dropping continuity is an escape, and
 \sectionref{sec:discrete} prices it.
 \end{remark}
 
-\section{The boundary coupling law}
+\section{The boundary coupling theorem}
 \label{sec:coupling}
 
 Topology enters through one theorem, which needs no confidence at all.
@@ -347,15 +353,16 @@ satisfies both
 Separation converts the coverage witnesses into confidence witnesses
 above and below $\tau$, and the IVT gives $x_0$ with
 $\conf(x_0) = \tau$. If $\dF(x_0)$ were negative, separation would
-force $\conf(x_0) > \tau$, and if positive, $\conf(x_0) < \tau$.
+give $\conf(x_0) > \tau$, and if positive, $\conf(x_0) < \tau$.
 Both fail, so $\dF(x_0) = 0$. This is Lean theorem
 \leanid{boundary\_coupling}.
 \end{proof}
 
-The law mentions no guarantee, so no threshold convention can
-dissolve it. The model is forced into total uncertainty exactly where
-truth changes sign, and what that means for safety is a matter of
-policy, with each policy a corollary.
+The theorem mentions no guarantee, so no threshold convention
+affects it. We call such an $x_0$ a \emph{coupled point}. The model
+carries exact threshold confidence where truth changes sign, and
+what that means for safety is a matter of policy, with each policy a
+corollary.
 
 \begin{corollary}[Inclusive guarantees are impossible]
 \label{cor:closed}
@@ -372,28 +379,30 @@ biconditional version is \leanid{hallucination\_trilemma}.
 \begin{corollary}[Exclusive guarantees go silent]
 \label{cor:open}
 Add a threshold-exclusive guarantee instead. No contradiction
-follows, but the forced point satisfies $\conf(x_0) = \tau$, so the
+follows, but the coupled point satisfies $\conf(x_0) = \tau$, so
+the
 guarantee's antecedent fails exactly there. The system owns a query
 about which its guarantee says nothing, and that query sits on the
 truth boundary. This is Lean theorem
 \leanid{open\_guarantee\_silent}.
 \end{corollary}
 
-\begin{remark}[The convention question, settled]
+\begin{remark}[The convention question]
 \label{rem:threshold}
 A natural objection says that defining the guarantee with a strict
 inequality dissolves the contradiction, so the impossibility is an
 artifact of convention. The taxonomy above is our answer. The
-coupling law is convention-free, and the convention only selects
-which corollary describes the forced point, a contradiction under an
-inclusive guarantee and forced silence under an exclusive one. The
-forced point exists regardless.
+coupling theorem is convention-free, and the convention only
+selects which corollary describes the coupled point, a contradiction
+under an inclusive guarantee and silence under an exclusive one. The
+coupled point exists under either convention.
 \end{remark}
 
 \section{The shape of the boundary}
 \label{sec:shape}
 
-The forced set is not an isolated curiosity. It has structure, and
+The truth boundary is not an isolated curiosity. It has structure,
+and
 for the probes used in practice it is a hyperplane.
 
 \begin{theorem}[The boundary is closed]
@@ -426,7 +435,8 @@ exactly $d - 1$. These are Lean theorems
 \end{theorem}
 
 The truth boundary of practical probes is therefore a
-codimension-one affine hyperplane, and the coupling law places a
+codimension-one affine hyperplane, and the coupling theorem places
+a
 threshold-confidence answer on it. Truth has a boundary surface,
 not only a boundary point.
 
@@ -455,11 +465,11 @@ This is Lean theorem \leanid{ambiguity\_tube}, with the margin bound
 alone as \leanid{truth\_margin\_tube}.
 \end{theorem}
 
-The forced point is therefore not one pathological query. Around it
-sits a tube of near-ambiguous queries controlled by the two Lipschitz
-constants, and decisive regions cannot approach closer than the
-corridor width. Slack changes what the forced point looks like, and
-we can say exactly how.
+The coupled point is therefore not one pathological query. Around
+it sits a tube of near-ambiguous queries controlled by the two
+Lipschitz constants, and decisive regions cannot approach closer
+than the corridor width. Slack changes what the coupled point looks
+like, and we can say exactly how.
 
 \begin{theorem}[Approximate coupling]
 \label{thm:approx}
@@ -492,7 +502,8 @@ $\tau + \gamma$ sits exactly on the truth boundary (Lean theorem
 \section{Symmetry replaces coverage}
 \label{sec:antipodal}
 
-The coupling law uses coverage to seed the IVT, and symmetry can
+The coupling theorem uses coverage to seed the IVT, and symmetry
+can
 replace it entirely. Suppose semantic negation acts on $\X$ as a
 continuous involution $\sigma$ with no fixed point, and the realized
 truth field is odd under it, idealizing the observation that negation
@@ -523,7 +534,7 @@ on the sphere. These are Lean theorems
 \leanid{approx\_odd\_near\_zero} and \leanid{sphere\_odd\_has\_zero}.
 \end{theorem}
 
-The forced near-boundary point degrades linearly with the oddness
+The near-boundary point degrades linearly with the oddness
 defect, and the sphere case is, up to a learned affine map, where
 layer normalization places its normalized states, with negation as a
 candidate antipode.
@@ -538,8 +549,8 @@ theorem \leanid{antipodal\_hallucination\_trilemma}.
 \end{theorem}
 
 No coverage hypothesis appears, and a model answering a
-negation-closed family of questions is forced onto the truth boundary
-by symmetry alone. Equivariance is usually a design virtue
+negation-closed family of questions meets the truth boundary by
+symmetry alone. Equivariance is usually a design virtue
 \citep{bronstein2021geometric}, and here it is the engine of the
 obstruction.
 
@@ -591,7 +602,8 @@ Conversation context moves the truth boundary into history space
 rather than removing it.
 
 \paragraph{Stochastic models, where falsehood appears.}
-Applied to the expected fields, the coupling law yields a query
+Applied to the expected fields, the coupling theorem yields a
+query
 with expected confidence one half and expected truth-distance zero
 (Lean theorem \leanid{stochastic\_coupling\_expected}). A dichotomy
 converts expectation into sampling behavior.
@@ -607,7 +619,7 @@ theorem \leanid{stochastic\_dichotomy}.
 \end{theorem}
 
 A model faithful on almost every sample and confident with positive
-probability at a forced boundary point must emit strictly false
+probability at a coupled point must emit strictly false
 answers with positive probability. Randomization spreads the
 boundary across samples, and this is where falsehood is derived.
 
@@ -619,7 +631,7 @@ sorry-free Lean 4 result \citep{moura2021lean} checked against
 Mathlib \citep{mathlib2020}, both pinned at v4.28.0. The anonymized
 \leanid{HallucinationProofs} artifact ships seventeen source files,
 \texttt{lake build} completes with zero errors and no \texttt{sorry},
-and axiom audits reduce each headline theorem to exactly the three
+and axiom audits reduce each main theorem to exactly the three
 standard kernel axioms. \tableref{tab:lean} in
 \appendixref{app:conventions} maps every result to its identifier,
 with \leanid{hallucination\_master\_theorem} bundling the core
@@ -629,12 +641,13 @@ the prose, and the prose claims nothing beyond what is formalized.
 \section{Discussion}
 \label{sec:discussion}
 
-The coupling law rests on connectedness, continuity, coverage, and
+The coupling theorem rests on connectedness, continuity, coverage,
+and
 separation, and the trilemma adds a threshold-inclusive guarantee.
 Each hypothesis can be relaxed, and each relaxation is a design
-stance. Corollary~\ref{cor:open} settles the stance that excludes
-the threshold, whose guarantee survives but owns a silent boundary
-point.
+stance. Corollary~\ref{cor:open} addresses the stance that
+excludes the threshold, whose guarantee survives but owns a silent
+boundary point.
 
 \paragraph{Disconnect the space.}
 Abstention breaks the argument at the IVT step, since declining to
@@ -645,7 +658,7 @@ the cut must separate every representation from its negation image,
 so piecemeal refusal is not enough.
 
 \paragraph{Quantify only over reachable queries.}
-The forced point may be an ambient activation that no real prompt
+The coupled point may be an ambient activation that no real prompt
 produces, and a guarantee quantified only over reachable
 representations is then untouched. The objection is fair, and it is
 the domain version of disconnecting the space. But probing and
@@ -674,7 +687,7 @@ Truth-probe pipelines posit a continuous $\dF$, and steering moves
 representations relative to its zero set
 \citep{li2023inference,zou2023representation}. Completing such a
 pipeline over a connected domain with both truth values realized
-forces an exact-uncertainty point on the probe's own boundary, a
+yields an exact-uncertainty point on the probe's own boundary, a
 hyperplane for linear probes, and mitigation effort should go there.
 
 \paragraph{Limitations and outlook.}
@@ -771,7 +784,8 @@ Bundled master theorem & \leanid{hallucination\_master\_theorem} \\
 \section{Core proof term}
 \label{app:leanproof}
 
-The Lean proof of the coupling law, lightly annotated and rendered in
+The Lean proof of the coupling theorem, lightly annotated and
+rendered in
 ASCII.
 
 \begin{verbatim}
@@ -926,7 +940,7 @@ defect $|\dF(x) + \dF(\sigma x)|$ relative to the endpoint scale has
 median 0.40, 0.43, and 0.30 for GPT-2, Pythia-410M, and Qwen2.5-0.5B.
 Exact oddness fails in real representations, which is why
 \theoremref{thm:approx-odd} carries the approximate version. Its
-forced near-boundary point survives any defect, and empirically every
+near-boundary point survives any defect, and empirically every
 kept path crosses zero regardless. The width column of
 \tableref{tab:experiment} also gives the slack diagnostic of
 \sectionref{sec:tube} an empirical proxy, between 0.20 and 0.36 of
@@ -1065,7 +1079,7 @@ and the experiment. The Lean part includes the build configuration,
 the toolchain pin for Lean v4.28.0, the manifest pin for Mathlib
 v4.28.0, and seventeen source files. To reproduce, run
 \texttt{lake build}. It completes with zero errors and no
-\texttt{sorry}. Axiom sets of the headline theorems are printed by
+\texttt{sorry}. Axiom sets of the main theorems are printed by
 the final-verification file and by the files numbered 13 and 14. The
 experiment part includes the scripts, the public datasets of
 \citet{marks2024geometry}, the numerical results, and the figures.
