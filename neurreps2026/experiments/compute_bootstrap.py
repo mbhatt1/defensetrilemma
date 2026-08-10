@@ -29,7 +29,7 @@ def boot_ci(gaps):
 
 
 out = {}
-for name in ["gpt2", "pythia-410m", "qwen2.5-0.5b", "phi-1.5"]:
+for name in ["gpt2", "pythia-410m", "qwen2.5-0.5b", "phi-1.5", "qwen2.5-1.5b"]:
     entry = {}
     z = np.load(f"curves_{name}.npz")
     g = gap_stat(z["D"], z["C"], z["alphas"])

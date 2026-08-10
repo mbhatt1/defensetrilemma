@@ -82,5 +82,26 @@
     "knn_components": 1,
     "frac_in_main_component": 1.0,
     "true_and_false_share_main_component": true
+  },
+  "qwen2.5-1.5b": {
+    "model": "Qwen/Qwen2.5-1.5B",
+    "layer": 14,
+    "n_layers": 28,
+    "probe_test_acc": 0.9966,
+    "conf_head_test_acc": 0.9983,
+    "verbalized_test_acc": 0.9614,
+    "n_paths": 148,
+    "frac_paths_adjacent_sign_change": 1.0,
+    "mean_alpha_gap_delta_vs_conf_crossing": 0.0681,
+    "median_alpha_gap": 0.05,
+    "mean_conf_at_delta_crossing": 0.5379,
+    "mean_abs_conf_margin_at_crossing": 0.2405,
+    "mean_abs_conf_margin_at_ends": 0.4965,
+    "boundary_width_delta_units": 1.2832,
+    "endpoint_delta_scale": 11.5156,
+    "boundary_width_relative": 0.1114,
+    "knn_components": 2,
+    "frac_in_main_component": 0.5,
+    "true_and_false_share_main_component": true
   }
 }

@@ -30,6 +30,7 @@ MODELS = {
     "pythia-410m": ("EleutherAI/pythia-410m", 18),
     "qwen2.5-0.5b": ("Qwen/Qwen2.5-0.5B", 12),
     "phi-1.5": ("microsoft/phi-1_5", 18),
+    "qwen2.5-1.5b": ("Qwen/Qwen2.5-1.5B", 14),
 }
 N_ALPHA = 41
 

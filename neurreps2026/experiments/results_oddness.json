@@ -18,5 +18,10 @@
     "n_paths": 66,
     "median_rel_oddness_defect": 0.5277,
     "p90_rel_oddness_defect": 0.889
+  },
+  "qwen2.5-1.5b": {
+    "n_paths": 148,
+    "median_rel_oddness_defect": 0.1723,
+    "p90_rel_oddness_defect": 0.4108
   }
 }

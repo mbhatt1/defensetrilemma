@@ -88,5 +88,30 @@
         }
       ]
     }
+  },
+  "qwen2.5-1.5b": {
+    "sp_en": {
+      "probe_test_acc": 0.9786,
+      "conf_head_test_acc": 0.9786,
+      "n_paths": 41,
+      "frac_paths_adjacent_sign_change": 1.0,
+      "median_alpha_gap": 0.05,
+      "mean_conf_at_delta_crossing": 0.5429
+    },
+    "knn": {
+      "n_components": 2,
+      "components": [
+        {
+          "size": 298,
+          "frac_true": 0.5,
+          "frac_negated_form": 0.0
+        },
+        {
+          "size": 298,
+          "frac_true": 0.5,
+          "frac_negated_form": 1.0
+        }
+      ]
+    }
   }
 }

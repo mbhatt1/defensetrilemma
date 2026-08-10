@@ -106,5 +106,32 @@
       ],
       "n_null_seeds": 20
     }
+  },
+  "qwen2.5-1.5b": {
+    "endogenous": {
+      "model": "Qwen/Qwen2.5-1.5B",
+      "layer": 14,
+      "template_probe_test_acc": 0.9966,
+      "n_paths": 147,
+      "n_decisive_paths": 146,
+      "frac_decisive": 0.9932,
+      "median_gap_all_paths": 0.075,
+      "median_gap_decisive_paths": 0.075,
+      "mean_conf_at_crossing_decisive": 0.5866
+    },
+    "nulls": {
+      "n_paths": 148,
+      "null_permuted_median_gap": 0.45,
+      "null_permuted_gap_range": [
+        0.425,
+        0.475
+      ],
+      "null_random_median_gap": 0.45,
+      "null_random_gap_range": [
+        0.275,
+        0.475
+      ],
+      "n_null_seeds": 20
+    }
   }
 }

@@ -12,7 +12,7 @@ import json
 import numpy as np
 
 out = {}
-for name in ["gpt2", "pythia-410m", "qwen2.5-0.5b", "phi-1.5"]:
+for name in ["gpt2", "pythia-410m", "qwen2.5-0.5b", "phi-1.5", "qwen2.5-1.5b"]:
     z = np.load(f"curves_{name}.npz")
     D = z["D"]
     defect = np.abs(D[:, 0] + D[:, -1])

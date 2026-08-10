@@ -38,5 +38,15 @@
     "frac_single_crossing": 0.9904,
     "median_alpha_gap": 0.175,
     "mean_conf_at_delta_crossing": 0.3776
+  },
+  "qwen2.5-1.5b": {
+    "mlp_probe_test_acc": 0.995,
+    "mlp_head_test_acc": 0.9983,
+    "n_paths": 149,
+    "frac_paths_with_sign_change": 1.0,
+    "median_n_crossings": 1.0,
+    "frac_single_crossing": 1.0,
+    "median_alpha_gap": 0.05,
+    "mean_conf_at_delta_crossing": 0.4902
   }
 }

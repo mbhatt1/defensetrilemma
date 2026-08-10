@@ -46,6 +46,7 @@ MODELS = {
     "pythia-410m": "EleutherAI/pythia-410m",  # 410M
     "qwen2.5-0.5b": "Qwen/Qwen2.5-0.5B",      # 494M
     "phi-1.5": "microsoft/phi-1_5",           # 1.3B
+    "qwen2.5-1.5b": "Qwen/Qwen2.5-1.5B",      # 1.5B
 }
 N_PATHS = 150
 N_ALPHA = 41
