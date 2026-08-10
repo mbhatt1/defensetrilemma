@@ -72,10 +72,11 @@ truth-side slack, and for nonzero linear probes the truth boundary
 is an affine hyperplane of codimension one. A symmetry version
 needs no coverage assumption, a discrete analysis prices the
 removal of topology, and multi-turn and stochastic extensions
-follow, with falsehood derived in the stochastic dichotomy. Every
-theorem is machine-verified in Lean 4 against Mathlib with no sorry
-placeholders, the main results reducing to the three standard
-kernel axioms. Experiments observe the predicted coupling in five
+follow, with the stochastic dichotomy deriving falsehood. We
+machine-verify every theorem in Lean 4 against Mathlib with no
+sorry placeholders, and the main results reduce to the three
+standard kernel axioms. Experiments observe the predicted coupling
+in five
 small language models, with the model's own confidence signal and
 against null baselines, and an adversarial attempt to train away
 the slack plateaus strictly above zero.
@@ -90,8 +91,8 @@ intermediate value theorem, Borsuk-Ulam, formal verification, Lean
 \label{sec:intro}
 
 Truth is geometrically simple inside language models. Linear probes
-separate true from false statements in activation space, latent
-knowledge can be found without supervision, and steering along
+separate true from false statements in activation space,
+unsupervised methods find latent knowledge, and steering along
 learned directions makes models more truthful
 \citep{marks2024geometry,azaria2023internal,burns2023discovering,li2023inference,zou2023representation}.
 All of this work treats truth as a continuous, decodable field over
@@ -132,8 +133,8 @@ analysis with multi-turn and stochastic extensions
 The mathematics is elementary, and the contribution is not technical
 difficulty. It is a framing in which exact threshold uncertainty is
 a topological property of representation space, precision, since the
-theorems name every assumption in play, and verification, since
-every statement is machine-checked, leaving the premises as the only
+theorems name every assumption in play, and verification, since we
+machine-check every statement, leaving the premises as the only
 thing to argue about. The theorems do not say models err often and
 assign no probability to failure. The coupled point is neither
 strictly true nor strictly false, and derived falsehood appears only
@@ -168,9 +169,9 @@ topological space of answers, and our standing assumption is simple.
 \textbf{(T)} $\X$ is connected and nonempty.
 \end{quote}
 
-Ambient embedding spaces are standardly modeled as $\R^d$ or
-connected submanifolds, which satisfy (T), though the reachable set
-of a token-driven model may be disconnected. When guarantees range
+The literature standardly models ambient embedding spaces as
+$\R^d$ or connected submanifolds, which satisfy (T), though the
+reachable set of a token-driven model may be disconnected. When guarantees range
 over the ambient space, as they do whenever a probe or steering
 vector applies at arbitrary points, (T) holds. Continuity likewise
 idealizes trained networks, softmax and embeddings being continuous
@@ -223,7 +224,7 @@ $\conf(x) \ge \tau$ implies $\dF(x) < 0$, and a
 $\dF(x) < 0$.
 \end{definition}
 
-Covering is satisfied by any model ever right and ever wrong,
+Any model ever right and ever wrong satisfies covering,
 separation idealizes a perfect truth probe used as confidence, the
 guarantees idealize mitigation, the coupling results hold at any
 threshold, and the biconditional variants sit at one half.
@@ -409,8 +410,8 @@ engine of the obstruction.
 
 Token spaces are finite, and one may object that connectedness does
 illegitimate work. The discrete analysis prices the objection, since
-without topology the boundary witness must be assumed rather than
-derived.
+without topology we must assume the boundary witness rather than
+derive it.
 
 \begin{theorem}[Discrete impossibility]
 \label{thm:discrete}
@@ -457,7 +458,7 @@ theorem \leanid{stochastic\_dichotomy}.
 A model faithful on almost every sample and confident with positive
 probability at a coupled point must emit strictly false answers with
 positive probability. Randomization spreads the boundary across
-samples, and here falsehood is derived.
+samples, and here alone the theory derives falsehood.
 
 \paragraph{Machine verification.}
 \phantomsection\label{sec:lean}
@@ -486,8 +487,8 @@ two fields are independently trained readouts of the same space,
 the canonical construction the theory models. We interpolate hidden
 states from each true statement to its negation, record both fields,
 and keep paths whose endpoints the probe classifies correctly, 83,
-104, 137, 66, and 148 paths respectively, with test cities held out
-from both splits.
+104, 137, 66, and 148 paths respectively, and we hold test cities
+out of both splits.
 
 \begin{table}[t]
 \centering
@@ -642,8 +643,8 @@ empowered attempt to violate it. We freeze the truth field and
 train a confidence head on the forbidden objective, above one half
 where the field says true and below elsewhere, guarantee weighted
 five to one, on all non-test statements plus fresh interpolants
-each epoch, evaluated on 21{,}000 to 30{,}000 held-out path points
-per model. \theoremref{thm:approx} predicts a positive slack floor,
+each epoch, and evaluate on 21{,}000 to 30{,}000 held-out path
+points per model. \theoremref{thm:approx} predicts a positive slack floor,
 boundary-localized failures, and a trade against guarantee
 violations, and all three appear. The slack plateaus between 0.22
 and 0.91 of endpoint scale, exactly flat over Qwen2.5-0.5B's final
@@ -670,7 +671,7 @@ truth. Code, data, and results are in the supplementary material.
 
 The theorem rests on connectedness, continuity, coverage, and
 separation, the trilemma adding an inclusive guarantee. Each
-hypothesis can be relaxed at a named price
+hypothesis admits relaxation at a named price
 (\appendixref{app:extended}). Refusal training is connectedness
 surgery, restricting to reachable queries is the same move while
 probing and steering deploy over the ambient space, giving up
@@ -679,9 +680,9 @@ keeps only the adjacent crossing. The recommended stance is
 \theoremref{thm:approx}'s, separate to a band, with the infimum of
 feasible truth slack as a measurable diagnostic. The results are
 existence statements, so nothing follows about error rates,
-\theoremref{thm:dichotomy} is where falsehood is derived, and the
-truth field idealizes probe behavior, \theoremref{thm:approx-odd}
-pricing oddness. Next steps are higher Borsuk-Ulam machinery and
+\theoremref{thm:dichotomy} alone derives falsehood, and the truth
+field idealizes probe behavior, \theoremref{thm:approx-odd} pricing
+oddness. Next steps are higher Borsuk-Ulam machinery and
 nonlinear probe boundaries \citep{engels2025not}, in brains and
 machines alike, where geometry can prove theorems and machines can
 check them.
@@ -713,9 +714,9 @@ causal steering along truth directions
 \citep{li2023inference,zou2023representation} all model truth as a
 continuous decodable field on activation space, and the linear
 representation hypothesis formalizes concepts as directions in that
-space \citep{park2024linear}. Confidence signals
-\citep{farquhar2024detecting,kadavath2022language} are treated
-similarly. Topological analyses of networks
+space \citep{park2024linear}, and the literature treats confidence
+signals \citep{farquhar2024detecting,kadavath2022language} the same
+way. Topological analyses of networks
 \citep{naitzat2020topology,hensel2021survey} and geometric deep
 learning \citep{bronstein2021geometric} engineer or analyze such
 structure, and we derive constraints from it.
@@ -767,8 +768,8 @@ instance on \texttt{Q}, a model \texttt{M} from \texttt{Q} to
 \begin{center}
 \texttt{fun q => delta (q, (M q).1)}
 \end{center}
-and confidence is \texttt{(M q).2}. The main conditions are named as follows, and some identifiers
-retain historical names.
+and confidence is \texttt{(M q).2}. We name the main conditions as
+follows, and some identifiers retain historical names.
 
 \begin{itemize}
 \item \leanid{TwoSlackSeparating M delta c eps gamma} is separation
@@ -876,8 +877,8 @@ and the experiment. The Lean part includes the build configuration,
 the toolchain pin for Lean v4.28.0, the manifest pin for Mathlib
 v4.28.0, and seventeen source files. To reproduce, run
 \texttt{lake build}. It completes with zero errors and no
-\texttt{sorry}. Axiom sets of the main theorems are printed by
-the final-verification file and by the files numbered 13 and 14. The
+\texttt{sorry}. The final-verification file and the files numbered
+13 and 14 print the axiom sets of the main theorems. The
 experiment part includes the scripts, the public datasets of
 \citet{marks2024geometry}, the numerical results, and the figures.
 The theorems themselves depend on no experiment.
