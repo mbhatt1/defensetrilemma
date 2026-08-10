@@ -858,7 +858,9 @@ component. A diagnostic below identifies what that component is.
 \paragraph{The model's own confidence.}
 The design above trains both fields on truth, so nearby boundaries
 could reflect shared fitting. We therefore repeat the experiment with
-a confidence field the model supplies itself, with no trained head.
+a confidence field the model supplies itself, with no trained head,
+read out through a direction fixed by pretraining before our data
+existed.
 We capture the final block's last-token state under a question
 template, interpolate between matched pairs as before, patch the
 interpolated state back into the final block, and read the model's
@@ -888,6 +890,13 @@ seeds each, evaluated on the same kept paths as the trained heads
 models, and below the entire null range for Pythia-410M and
 Qwen2.5-0.5B. For GPT-2 the observed gap lies inside the random-head
 null range, so the trained-head evidence is weak there on its own.
+Bootstrap intervals over paths, with ten thousand replicates, make
+the gaps precise. The 95 percent intervals for the median trained-head
+gap are 0.175 to 0.325, 0.15 to 0.287, and 0.10 to 0.125 across the
+three models, with 0.10 to 0.15 for Qwen2.5-0.5B's endogenous field
+and 0.05 to 0.10 for its nonlinear probes. Every interval upper bound
+except GPT-2's endogenous case sits below the corresponding null
+median.
 
 \paragraph{A second dataset.}
 The same pipeline runs on the Spanish-English translation statements
@@ -954,9 +963,13 @@ fifteen epochs for Qwen2.5-0.5B, and never reaches zero. The median
 depth of failing points shrinks from 0.42 or more to between 0.06
 and 0.11, so failures concentrate in the tube around the boundary.
 And the guarantee stays violated on a small stubborn fraction of
-points throughout. A stronger adversary could push the floor lower,
-and the localization shows what that buys, a thinner tube around a
-boundary that does not go away.
+points throughout. The theorem forbids only exactly zero slack for
+any fixed continuous head, so a stronger adversary could push the
+floor lower, and \theoremref{thm:width} prices that escape, since a
+sharper transition requires a proportionally larger Lipschitz
+constant. The observed plateau is the floor at this adversary's
+regularity, and the localization shows what sharpening buys, a
+thinner tube around a boundary that does not go away.
 
 \paragraph{What this does and does not show.}
 The truth field of the main design is linear, so its sign change
