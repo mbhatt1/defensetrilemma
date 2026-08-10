@@ -82,7 +82,8 @@ placeholders, and the headline results reduce to the three standard
 kernel axioms.
 An appendix observes the predicted coupling in three
 sub-billion-parameter language models, including with the model's
-own confidence signal and against null baselines.
+own confidence signal and against null baselines, and an adversarial
+attempt to train away the slack plateaus strictly above zero.
 \end{abstract}
 
 \begin{keywords}
@@ -117,10 +118,10 @@ law lies in what it does not mention. It contains no safety guarantee
 and no convention about thresholds, so every policy question becomes
 a corollary. An inclusive guarantee is impossible. An exclusive
 guarantee survives but says nothing at the one point that topology
-guarantees to exist. Slack buys safety, and we compute exactly how
-much. Under Lipschitz regularity the forced point widens into an
-ambiguity tube of computable width. For the linear probes used in
-practice, the truth boundary is literally an affine hyperplane.
+guarantees to exist. Slack buys safety, and we compute exactly how much. Under Lipschitz
+regularity the forced point widens into an ambiguity tube of
+computable width, and for the linear probes used in practice the
+truth boundary is literally an affine hyperplane.
 
 \paragraph{Contributions.}
 \begin{enumerate}
@@ -167,10 +168,11 @@ and derived falsehood appears only in the stochastic dichotomy.
 \label{sec:related}
 
 \paragraph{Hallucination inevitability.}
-\citet{kalai2024calibrated} show statistically that calibrated models
-must hallucinate on facts seen once in training, and
-\citet{kalai2025why} extend this line. \citet{xu2024hallucination}
-give a computability-theoretic inevitability argument. Our mechanism
+\citet{kalai2024calibrated} show statistically that calibrated
+models must hallucinate on facts seen once in training,
+\citet{kalai2025why} extend this line, and
+\citet{xu2024hallucination} give a computability-theoretic
+inevitability argument. Our mechanism
 is topological, lives in representation space, localizes the forced
 behavior at the truth boundary, and is more modest, since the
 deterministic theorems force uncertainty rather than confident
@@ -204,10 +206,9 @@ not statistical calibration in the sense of \citet{guo2017calibration},
 and \remarkref{rem:calibration} spells out the difference.
 
 \paragraph{Formalized machine learning theory.}
-All claims are verified in Lean 4 \citep{moura2021lean} against
-Mathlib \citep{mathlib2020}. To our knowledge this is the first fully
-machine-verified impossibility-style result on model truthfulness
-stated at the level of representation geometry.
+To our knowledge this is the first fully machine-verified
+impossibility-style result on model truthfulness at the level of
+representation geometry \citep{moura2021lean,mathlib2020}.
 
 \section{The setting}
 \label{sec:setting}
@@ -423,10 +424,10 @@ exactly $d - 1$. These are Lean theorems
 \leanid{linear\_probe\_boundary\_dim}, the latter by rank-nullity.
 \end{theorem}
 
-The truth boundary of the probes used in practice is therefore a
+The truth boundary of practical probes is therefore a
 codimension-one affine hyperplane, and the coupling law places a
-threshold-confidence answer somewhere on it. Truth has not merely a
-boundary point but a boundary surface.
+threshold-confidence answer on it. Truth has not merely a boundary
+point but a boundary surface.
 
 \section{The ambiguity tube}
 \label{sec:tube}
@@ -571,30 +572,28 @@ some $i$ has $g(i) < 0 \le g(i+1)$. This is Lean theorem
 \leanid{discrete\_sign\_change}.
 \end{proposition}
 
-Along any token-space path from a true answer to a false one, the
-realized truth field crosses zero between two adjacent steps. This is
-weaker than the continuous law, yielding a straddling pair rather
-than a state on the boundary, and hence no contradiction on its own.
-The continuum is precisely what upgrades a crossing into a witness.
+Along any token-space path from true to false, the realized truth
+field crosses zero between adjacent steps. This yields a straddling
+pair rather than a boundary state, hence no contradiction on its
+own. The continuum is precisely what upgrades a crossing into a
+witness.
 
 \section{Products and randomness}
 \label{sec:extensions}
 
 \paragraph{Multi-turn models.}
-A $T$-turn model sees a history in $\X^T$. Products of connected
-spaces are connected, so hypothesis (T) is inherited by history space
-and the connectedness arguments above apply verbatim to
-history-dependent models. The Lean artifact transports the trilemma
-this way (Lean theorem \leanid{multi\_turn\_history\_dependent}).
+A $T$-turn model sees a history in $\X^T$, products of connected
+spaces are connected, and the connectedness arguments apply verbatim
+to history-dependent models. The Lean artifact transports the
+trilemma this way (\leanid{multi\_turn\_history\_dependent}).
 Conversation context moves the truth boundary into history space
 rather than removing it.
 
 \paragraph{Stochastic models, where falsehood appears.}
-Applied to the expected confidence and truth fields, the coupling law
-yields a query with expected confidence one half and expected
-truth-distance zero (Lean theorem
-\leanid{stochastic\_coupling\_expected}). A dichotomy converts
-expectation into sampling behavior.
+Applied to the expected fields, the coupling law yields a query
+with expected confidence one half and expected truth-distance zero
+(Lean theorem \leanid{stochastic\_coupling\_expected}). A dichotomy
+converts expectation into sampling behavior.
 
 \begin{theorem}[Stochastic dichotomy]
 \label{thm:dichotomy}
@@ -606,11 +605,10 @@ $\mu\{c \ge \tfrac12\} > 0$. Then $\mu\{d > 0\} > 0$. This is Lean
 theorem \leanid{stochastic\_dichotomy}.
 \end{theorem}
 
-At a forced boundary point, a model faithful on almost every sample
-and confident with positive probability must emit strictly false
-answers with positive probability. Randomization spreads the boundary
-across samples, and this is the one place in the paper where
-falsehood is derived.
+A model faithful on almost every sample and confident with positive
+probability at a forced boundary point must emit strictly false
+answers with positive probability. Randomization spreads the
+boundary across samples, and this is where falsehood is derived.
 
 \section{Machine verification}
 \label{sec:lean}
@@ -653,8 +651,8 @@ the domain version of disconnecting the space. But probing and
 steering pipelines apply their readouts at interpolated and edited
 activations, which is deployment over the ambient space, and a
 guarantee over the uncertified reachable set inherits every unknown
-of that set. Restricting the domain is a coherent design stance, and
-it should be stated as one.
+of that set. Restricting the domain is a coherent stance if stated
+as one.
 
 \paragraph{Give up coverage or continuity.}
 A model that never answers strictly falsely escapes. That is vacuous
@@ -937,6 +935,28 @@ met transversally along these paths. The coupling tightens rather
 than dissolving, with median gaps 0.15, 0.20, and 0.075, and
 confidence at the crossing averaging 0.42, 0.50, and 0.42. The
 coupling is therefore not an artifact of linearity.
+
+\paragraph{An adversarial falsification attempt.}
+The strongest test of an impossibility result is a maximally
+empowered attempt to violate it. We freeze the truth field and train
+a confidence head directly on the forbidden objective, confidence
+above one half wherever the field says true and below one half
+wherever it says false or boundary, with the guarantee side weighted
+five times harder. The adversary trains on all non-test statements
+plus fresh continuum interpolants every epoch, and is evaluated on
+22{,}000 to 29{,}000 held-out path points per model.
+\theoremref{thm:slack} predicts three things. The achieved truth
+slack must stay positive, the residual failures must localize at the
+boundary, and slack must trade against guarantee violations. All
+three appear. The achieved slack falls and then plateaus at 0.91,
+0.80, and 0.38 of the endpoint scale, exactly flat over the final
+fifteen epochs for Qwen2.5-0.5B, and never reaches zero. The median
+depth of failing points shrinks from 0.42 or more to between 0.06
+and 0.11, so failures concentrate in the tube around the boundary.
+And the guarantee stays violated on a small stubborn fraction of
+points throughout. A stronger adversary could push the floor lower,
+and the localization shows what that buys, a thinner tube around a
+boundary that does not go away.
 
 \paragraph{What this does and does not show.}
 The truth field of the main design is linear, so its sign change

@@ -1,0 +1,314 @@
+{
+  "gpt2": {
+    "probe_acc_nontest_fit": 0.866,
+    "n_eval_paths": 109,
+    "n_eval_points": 21909,
+    "floor_curve": [
+      {
+        "eps_hat_rel": 3.1031,
+        "median_fail_depth_rel": 0.5298,
+        "frac_guarantee_violations": 0.0,
+        "frac_true_points_failing": 1.0,
+        "epoch": 1
+      },
+      {
+        "eps_hat_rel": 3.1031,
+        "median_fail_depth_rel": 0.5183,
+        "frac_guarantee_violations": 0.0,
+        "frac_true_points_failing": 0.9826,
+        "epoch": 5
+      },
+      {
+        "eps_hat_rel": 2.495,
+        "median_fail_depth_rel": 0.3763,
+        "frac_guarantee_violations": 0.009,
+        "frac_true_points_failing": 0.581,
+        "epoch": 10
+      },
+      {
+        "eps_hat_rel": 2.0493,
+        "median_fail_depth_rel": 0.3018,
+        "frac_guarantee_violations": 0.0,
+        "frac_true_points_failing": 0.4901,
+        "epoch": 15
+      },
+      {
+        "eps_hat_rel": 1.419,
+        "median_fail_depth_rel": 0.2393,
+        "frac_guarantee_violations": 0.003,
+        "frac_true_points_failing": 0.3493,
+        "epoch": 20
+      },
+      {
+        "eps_hat_rel": 1.2478,
+        "median_fail_depth_rel": 0.1843,
+        "frac_guarantee_violations": 0.0035,
+        "frac_true_points_failing": 0.2825,
+        "epoch": 25
+      },
+      {
+        "eps_hat_rel": 1.172,
+        "median_fail_depth_rel": 0.1904,
+        "frac_guarantee_violations": 0.0078,
+        "frac_true_points_failing": 0.2562,
+        "epoch": 30
+      },
+      {
+        "eps_hat_rel": 1.0763,
+        "median_fail_depth_rel": 0.146,
+        "frac_guarantee_violations": 0.0071,
+        "frac_true_points_failing": 0.2037,
+        "epoch": 35
+      },
+      {
+        "eps_hat_rel": 1.0505,
+        "median_fail_depth_rel": 0.1475,
+        "frac_guarantee_violations": 0.0071,
+        "frac_true_points_failing": 0.2041,
+        "epoch": 40
+      },
+      {
+        "eps_hat_rel": 0.9544,
+        "median_fail_depth_rel": 0.1397,
+        "frac_guarantee_violations": 0.0056,
+        "frac_true_points_failing": 0.2011,
+        "epoch": 45
+      },
+      {
+        "eps_hat_rel": 0.8638,
+        "median_fail_depth_rel": 0.1201,
+        "frac_guarantee_violations": 0.0077,
+        "frac_true_points_failing": 0.1649,
+        "epoch": 50
+      },
+      {
+        "eps_hat_rel": 0.8638,
+        "median_fail_depth_rel": 0.1096,
+        "frac_guarantee_violations": 0.0063,
+        "frac_true_points_failing": 0.1535,
+        "epoch": 55
+      },
+      {
+        "eps_hat_rel": 0.9091,
+        "median_fail_depth_rel": 0.1104,
+        "frac_guarantee_violations": 0.0053,
+        "frac_true_points_failing": 0.1499,
+        "epoch": 60
+      }
+    ],
+    "final": {
+      "eps_hat_rel": 0.9091,
+      "median_fail_depth_rel": 0.1104,
+      "frac_guarantee_violations": 0.0053,
+      "frac_true_points_failing": 0.1499
+    }
+  },
+  "pythia-410m": {
+    "probe_acc_nontest_fit": 0.9353,
+    "n_eval_paths": 123,
+    "n_eval_points": 24723,
+    "floor_curve": [
+      {
+        "eps_hat_rel": 2.0898,
+        "median_fail_depth_rel": 0.423,
+        "frac_guarantee_violations": 0.1249,
+        "frac_true_points_failing": 0.6845,
+        "epoch": 1
+      },
+      {
+        "eps_hat_rel": 2.3929,
+        "median_fail_depth_rel": 0.4368,
+        "frac_guarantee_violations": 0.0012,
+        "frac_true_points_failing": 0.9112,
+        "epoch": 5
+      },
+      {
+        "eps_hat_rel": 1.5157,
+        "median_fail_depth_rel": 0.2283,
+        "frac_guarantee_violations": 0.0059,
+        "frac_true_points_failing": 0.4014,
+        "epoch": 10
+      },
+      {
+        "eps_hat_rel": 1.1568,
+        "median_fail_depth_rel": 0.187,
+        "frac_guarantee_violations": 0.0093,
+        "frac_true_points_failing": 0.2942,
+        "epoch": 15
+      },
+      {
+        "eps_hat_rel": 1.0807,
+        "median_fail_depth_rel": 0.1677,
+        "frac_guarantee_violations": 0.0079,
+        "frac_true_points_failing": 0.3036,
+        "epoch": 20
+      },
+      {
+        "eps_hat_rel": 0.8748,
+        "median_fail_depth_rel": 0.1253,
+        "frac_guarantee_violations": 0.0135,
+        "frac_true_points_failing": 0.1858,
+        "epoch": 25
+      },
+      {
+        "eps_hat_rel": 0.9217,
+        "median_fail_depth_rel": 0.1223,
+        "frac_guarantee_violations": 0.0115,
+        "frac_true_points_failing": 0.1941,
+        "epoch": 30
+      },
+      {
+        "eps_hat_rel": 0.8691,
+        "median_fail_depth_rel": 0.1292,
+        "frac_guarantee_violations": 0.0098,
+        "frac_true_points_failing": 0.2031,
+        "epoch": 35
+      },
+      {
+        "eps_hat_rel": 0.8435,
+        "median_fail_depth_rel": 0.1025,
+        "frac_guarantee_violations": 0.0149,
+        "frac_true_points_failing": 0.1489,
+        "epoch": 40
+      },
+      {
+        "eps_hat_rel": 0.8904,
+        "median_fail_depth_rel": 0.1093,
+        "frac_guarantee_violations": 0.0122,
+        "frac_true_points_failing": 0.171,
+        "epoch": 45
+      },
+      {
+        "eps_hat_rel": 0.9217,
+        "median_fail_depth_rel": 0.1038,
+        "frac_guarantee_violations": 0.0155,
+        "frac_true_points_failing": 0.1465,
+        "epoch": 50
+      },
+      {
+        "eps_hat_rel": 0.8748,
+        "median_fail_depth_rel": 0.1077,
+        "frac_guarantee_violations": 0.0159,
+        "frac_true_points_failing": 0.146,
+        "epoch": 55
+      },
+      {
+        "eps_hat_rel": 0.7966,
+        "median_fail_depth_rel": 0.106,
+        "frac_guarantee_violations": 0.0158,
+        "frac_true_points_failing": 0.1438,
+        "epoch": 60
+      }
+    ],
+    "final": {
+      "eps_hat_rel": 0.7966,
+      "median_fail_depth_rel": 0.106,
+      "frac_guarantee_violations": 0.0158,
+      "frac_true_points_failing": 0.1438
+    }
+  },
+  "qwen2.5-0.5b": {
+    "probe_acc_nontest_fit": 0.9804,
+    "n_eval_paths": 144,
+    "n_eval_points": 28944,
+    "floor_curve": [
+      {
+        "eps_hat_rel": 1.7205,
+        "median_fail_depth_rel": 0.5602,
+        "frac_guarantee_violations": 0.0,
+        "frac_true_points_failing": 1.0,
+        "epoch": 1
+      },
+      {
+        "eps_hat_rel": 1.0678,
+        "median_fail_depth_rel": 0.2847,
+        "frac_guarantee_violations": 0.0119,
+        "frac_true_points_failing": 0.3903,
+        "epoch": 5
+      },
+      {
+        "eps_hat_rel": 0.9555,
+        "median_fail_depth_rel": 0.232,
+        "frac_guarantee_violations": 0.0006,
+        "frac_true_points_failing": 0.3099,
+        "epoch": 10
+      },
+      {
+        "eps_hat_rel": 0.7552,
+        "median_fail_depth_rel": 0.1946,
+        "frac_guarantee_violations": 0.0095,
+        "frac_true_points_failing": 0.2096,
+        "epoch": 15
+      },
+      {
+        "eps_hat_rel": 0.5306,
+        "median_fail_depth_rel": 0.1188,
+        "frac_guarantee_violations": 0.0038,
+        "frac_true_points_failing": 0.1222,
+        "epoch": 20
+      },
+      {
+        "eps_hat_rel": 0.4715,
+        "median_fail_depth_rel": 0.1054,
+        "frac_guarantee_violations": 0.0018,
+        "frac_true_points_failing": 0.1137,
+        "epoch": 25
+      },
+      {
+        "eps_hat_rel": 0.4172,
+        "median_fail_depth_rel": 0.0773,
+        "frac_guarantee_violations": 0.006,
+        "frac_true_points_failing": 0.066,
+        "epoch": 30
+      },
+      {
+        "eps_hat_rel": 0.4172,
+        "median_fail_depth_rel": 0.0709,
+        "frac_guarantee_violations": 0.0056,
+        "frac_true_points_failing": 0.056,
+        "epoch": 35
+      },
+      {
+        "eps_hat_rel": 0.3875,
+        "median_fail_depth_rel": 0.0689,
+        "frac_guarantee_violations": 0.0035,
+        "frac_true_points_failing": 0.0576,
+        "epoch": 40
+      },
+      {
+        "eps_hat_rel": 0.375,
+        "median_fail_depth_rel": 0.0684,
+        "frac_guarantee_violations": 0.0032,
+        "frac_true_points_failing": 0.0643,
+        "epoch": 45
+      },
+      {
+        "eps_hat_rel": 0.375,
+        "median_fail_depth_rel": 0.0616,
+        "frac_guarantee_violations": 0.0031,
+        "frac_true_points_failing": 0.0544,
+        "epoch": 50
+      },
+      {
+        "eps_hat_rel": 0.375,
+        "median_fail_depth_rel": 0.0617,
+        "frac_guarantee_violations": 0.0025,
+        "frac_true_points_failing": 0.0564,
+        "epoch": 55
+      },
+      {
+        "eps_hat_rel": 0.375,
+        "median_fail_depth_rel": 0.058,
+        "frac_guarantee_violations": 0.0012,
+        "frac_true_points_failing": 0.0594,
+        "epoch": 60
+      }
+    ],
+    "final": {
+      "eps_hat_rel": 0.375,
+      "median_fail_depth_rel": 0.058,
+      "frac_guarantee_violations": 0.0012,
+      "frac_true_points_failing": 0.0594
+    }
+  }
+}
