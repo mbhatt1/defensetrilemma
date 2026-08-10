@@ -28,5 +28,15 @@
     "frac_single_crossing": 1.0,
     "median_alpha_gap": 0.075,
     "mean_conf_at_delta_crossing": 0.4197
+  },
+  "phi-1.5": {
+    "mlp_probe_test_acc": 0.7987,
+    "mlp_head_test_acc": 0.7433,
+    "n_paths": 104,
+    "frac_paths_with_sign_change": 1.0,
+    "median_n_crossings": 1.0,
+    "frac_single_crossing": 0.9904,
+    "median_alpha_gap": 0.175,
+    "mean_conf_at_delta_crossing": 0.3776
   }
 }

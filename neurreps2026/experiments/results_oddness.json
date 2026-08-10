@@ -13,5 +13,10 @@
     "n_paths": 137,
     "median_rel_oddness_defect": 0.2976,
     "p90_rel_oddness_defect": 0.6156
+  },
+  "phi-1.5": {
+    "n_paths": 66,
+    "median_rel_oddness_defect": 0.5277,
+    "p90_rel_oddness_defect": 0.889
   }
 }

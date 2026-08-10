@@ -79,5 +79,32 @@
       ],
       "n_null_seeds": 20
     }
+  },
+  "phi-1.5": {
+    "endogenous": {
+      "model": "microsoft/phi-1_5",
+      "layer": 18,
+      "template_probe_test_acc": 0.7752,
+      "n_paths": 80,
+      "n_decisive_paths": 53,
+      "frac_decisive": 0.6625,
+      "median_gap_all_paths": 0.45,
+      "median_gap_decisive_paths": 0.4,
+      "mean_conf_at_crossing_decisive": 0.6275
+    },
+    "nulls": {
+      "n_paths": 66,
+      "null_permuted_median_gap": 0.4813,
+      "null_permuted_gap_range": [
+        0.35,
+        0.6
+      ],
+      "null_random_median_gap": 0.3813,
+      "null_random_gap_range": [
+        0.25,
+        0.5375
+      ],
+      "n_null_seeds": 20
+    }
   }
 }

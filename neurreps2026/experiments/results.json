@@ -61,5 +61,26 @@
     "knn_components": 2,
     "frac_in_main_component": 0.5,
     "true_and_false_share_main_component": true
+  },
+  "phi-1.5": {
+    "model": "microsoft/phi-1_5",
+    "layer": 18,
+    "n_layers": 24,
+    "probe_test_acc": 0.7198,
+    "conf_head_test_acc": 0.7248,
+    "verbalized_test_acc": 0.5638,
+    "n_paths": 66,
+    "frac_paths_adjacent_sign_change": 1.0,
+    "mean_alpha_gap_delta_vs_conf_crossing": 0.339,
+    "median_alpha_gap": 0.3125,
+    "mean_conf_at_delta_crossing": 0.4261,
+    "mean_abs_conf_margin_at_crossing": 0.3929,
+    "mean_abs_conf_margin_at_ends": 0.4427,
+    "boundary_width_delta_units": 1.3588,
+    "endpoint_delta_scale": 3.7014,
+    "boundary_width_relative": 0.3671,
+    "knn_components": 1,
+    "frac_in_main_component": 1.0,
+    "true_and_false_share_main_component": true
   }
 }

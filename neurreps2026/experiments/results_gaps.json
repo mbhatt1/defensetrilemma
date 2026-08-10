@@ -68,5 +68,25 @@
         }
       ]
     }
+  },
+  "phi-1.5": {
+    "sp_en": {
+      "probe_test_acc": 0.7143,
+      "conf_head_test_acc": 0.6429,
+      "n_paths": 19,
+      "frac_paths_adjacent_sign_change": 1.0,
+      "median_alpha_gap": 0.325,
+      "mean_conf_at_delta_crossing": 0.4982
+    },
+    "knn": {
+      "n_components": 1,
+      "components": [
+        {
+          "size": 596,
+          "frac_true": 0.5,
+          "frac_negated_form": 0.5
+        }
+      ]
+    }
   }
 }
