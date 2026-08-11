@@ -1,7 +1,8 @@
 -- HallucinationProofs: Topological Theory of Hallucination Trilemma
 -- A faithful, calibrated, covering language model is topologically impossible.
 --
--- Each HoF_* file is self-contained and imports only `Mathlib`. Several files
+-- Most HoF_* files import only `Mathlib` (a few later files import
+-- earlier HoF modules they build on). Several files
 -- introduce overlapping `HoF`-namespace definitions (TruthSet, FalseSet,
 -- TruthBoundary, StrictTruth, etc.) — they are intentional duplicates so that
 -- each file can be machine-checked independently. Because of this, the

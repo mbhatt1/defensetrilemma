@@ -98,13 +98,13 @@ learned directions makes models more truthful
 All of this work treats truth as a continuous, decodable field over
 representation space.
 
-We take that picture seriously as geometry and ask what follows.
-Suppose truth is a continuous scalar field on a connected
-representation space, and the model's answers and confidences are
-continuous fields on the same space. These assumptions mention no
-architecture, training, or scale, applying to any model whose
-fields are defined and continuous on the stated domain.
-What they yield is a coupling theorem. If the model ever answers
+We take that picture seriously as geometry. Suppose truth is a
+continuous scalar field on a connected representation space, and
+the model's answers and confidences are continuous fields on the
+same space, assumptions mentioning no architecture, training, or
+scale, applying to any model whose fields are defined and
+continuous on the stated domain. What they yield is a coupling
+theorem. If the model ever answers
 truly and ever answers falsely, and its confidence separates true
 answers from false ones, then some query carries confidence exactly
 at the threshold while its answer sits exactly on the truth
@@ -112,7 +112,7 @@ boundary (\figureref{fig:schematic}).
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.74\linewidth]{schematic_coupling.pdf}
+\includegraphics[width=0.64\linewidth]{schematic_coupling.pdf}
 \caption{The coupling theorem in one picture. Along any true-to-false
 path, separation forces confidence above $\tau$ on the strictly true
 side and below on the strictly false side, so both fields must cross,
@@ -138,16 +138,16 @@ truth-side slack (\sectionref{sec:geometry}); a symmetry version
 needing no coverage (\sectionref{sec:antipodal}); a discrete
 analysis with multi-turn and stochastic extensions
 (\sectionref{sec:discrete}); and full machine verification
-(\sectionref{sec:lean}).
+(\sectionref{sec:lean}, \tableref{tab:lean}).
 
-The mathematics is elementary, and the contribution is not technical
-difficulty. It is a framing in which exact threshold uncertainty is
-a topological property of representation space, precision, since the
-theorems name every assumption in play, and verification, since we
-machine-check every statement, leaving the premises as the only
-thing to argue about. The theorems do not say models err often,
-the coupled point is neither strictly true nor strictly false, and
-derived falsehood appears only in the stochastic dichotomy.
+The mathematics is elementary, and the contribution is not
+technical difficulty. It is a framing in which exact threshold
+uncertainty is a topological property of representation space,
+precision, since the theorems name every assumption in play, and
+verification, since we machine-check every statement, leaving the
+premises as the only thing to argue about. The theorems do not say
+models err often, and the coupled point is neither strictly true
+nor strictly false.
 
 \paragraph{Related work.}
 Statistical and computability arguments make hallucination
@@ -329,8 +329,8 @@ of the kernel of $f$, of dimension exactly $d - 1$. Lean theorems
 
 \begin{theorem}[Nonlinear boundaries are hyperplanes to first order]
 \label{thm:nonlinear}
-Let $f$ be differentiable at a boundary point $x_0$ with nonzero
-derivative $L$. Then every neighborhood of $x_0$ contains strictly
+Let $f$ be differentiable at a boundary point $x_0$ of a
+$d$-dimensional real space, with nonzero derivative $L$. Then every neighborhood of $x_0$ contains strictly
 true and strictly false points, and for every $\varepsilon > 0$
 some $\delta > 0$ has every boundary point $x$ within $\delta$
 satisfying $|L(x - x_0)| \le \varepsilon \|x - x_0\|$, deviating
@@ -544,16 +544,17 @@ Qwen2.5-1.5B & 14/28 & 1.00 & 1.00 & 0.96 & 0.54 & 0.05 & 0.11 &
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.60\linewidth]{boundary_coupling.pdf}\\[2pt]
-\includegraphics[width=0.60\linewidth]{endogenous_coupling.pdf}
+\includegraphics[width=0.54\linewidth]{boundary_coupling.pdf}\\[2pt]
+\includegraphics[width=0.54\linewidth]{endogenous_coupling.pdf}
 \caption{Upper pair of rows, the truth probe (normalized, median and
 interquartile band) and the independently trained confidence along
 true-to-negation paths, the dotted line marking the mean probe zero
-crossing where confidence passes one half in every model. Lower pair,
+crossing where confidence passes near one half. Lower pair,
 the same with the model's own probability of answering true from
-patched final-block states, decisive paths only. The Qwens sweep
-through one half at the boundary, Pythia-410M answers true
-everywhere so the premise fails, and GPT-2 and Phi-1.5 sit between.}
+patched final-block states, decisive paths where any exist. The
+Qwens sweep through one half at the boundary, Pythia-410M answers
+true everywhere so the premise fails, and GPT-2 and Phi-1.5 sit
+between.}
 \label{fig:coupling}
 \end{figure}
 
@@ -564,11 +565,12 @@ verbalize it above chance, 0.71 and 0.96 against 0.48 to 0.56, the
 known represented-verbalized gap. Every kept path shows the
 predicted adjacent sign change, mean confidence at the probe's zero
 crossing is 0.52, 0.51, 0.49, 0.43, and 0.54, and the gap between
-the two crossings tracks probe accuracy monotonically, 0.31 for
+the two crossings tracks probe accuracy monotonically, from 0.31 for
 Phi-1.5, the weakest probe, to 0.05 for Qwen2.5-1.5B, the
 strongest. The ordering follows separation, not parameter count,
 since Phi-1.5 outweighs all but Qwen2.5-1.5B yet separates worst,
-with no layer of its 24 probing above 0.73, while the Qwen pair
+a sweep of all its 24 layers topping out at 0.73 test accuracy,
+while the Qwen pair
 shows scale helping through separation, probe 0.96 to 1.00 and the
 gap halved. The relative boundary width, median $|\dF|$ where
 confidence is in $[0.4, 0.6]$ over endpoint scale, runs 0.37 to
@@ -583,9 +585,9 @@ through unembedding weights fixed by pretraining. We capture the
 final block's last-token state under a question template,
 interpolate as before, patch the state back in, and read the
 model's own probability of answering true, the probe trained on a
-disjoint split of the same states, giving 53, 84, 137, 80, and 147
-kept paths. A path satisfies the separation premise when this field
-sits on the correct side of one half at both endpoints. \tableref{tab:endogenous} and \figureref{fig:coupling} report
+disjoint split of the same states, 53, 84, 137, 80, and 147 kept
+paths. A path satisfies the separation premise when this field sits
+on the correct side of one half at both endpoints. \tableref{tab:endogenous} and \figureref{fig:coupling} report
 the result. Qwen2.5-1.5B meets the premise on 146 of 147 paths at
 gap 0.08 and Qwen2.5-0.5B on 128 of 137 at 0.13, against nulls of
 0.40 and above. Pythia-410M answers true regardless, so the premise
@@ -606,7 +608,7 @@ Phi-1.5 sit inside the random-head range, weak evidence alone.
 Bootstrap 95 percent intervals over ten thousand path resamples are
 0.175 to 0.325, 0.15 to 0.287, 0.10 to 0.125, 0.175 to 0.375, and
 0.05 to 0.075, with 0.10 to 0.15 and 0.075 to 0.10 for the Qwens'
-endogenous fields, every upper bound below its null median except
+endogenous fields, every upper bound at or below its null median except
 endogenous GPT-2 and Phi-1.5.
 
 \paragraph{A second dataset.}
@@ -629,11 +631,11 @@ The matched pairs also measure the oddness premise of
 \sectionref{sec:antipodal}. The defect $|\dF(x) + \dF(\sigma x)|$
 relative to endpoint scale has median 0.40, 0.43, 0.30, 0.53, and
 0.17, smallest for the strongest model. Exact oddness fails, which
-is why \theoremref{thm:approx-odd} carries the approximate version,
-whose near-boundary point survives any defect, and every kept path
-crosses zero regardless. The width column of
-\tableref{tab:experiment} likewise gives the slack diagnostic of
-\sectionref{sec:geometry} an empirical proxy, 0.11 to 0.37.
+is why \theoremref{thm:approx-odd} carries the approximate
+version, whose near-boundary point survives any defect. The width
+column of \tableref{tab:experiment} likewise gives the slack
+diagnostic of \sectionref{sec:geometry} an empirical proxy, 0.11
+to 0.37.
 
 \paragraph{Nonlinear probes.}
 A linear truth field crosses zero along a linear path by
@@ -641,19 +643,21 @@ construction, so we replace both fields with one-hidden-layer MLPs
 on the same splits, removing that guarantee and the hyperplane
 boundary. The MLP probes reach 0.79, 0.87, 0.97, 0.80, and 1.00
 with 124, 121, 144, 104, and 149 kept paths, every path still
-crosses zero, at least 98 percent cross exactly once, and the
-coupling tightens or holds, gaps 0.15, 0.20, 0.075, 0.175, and
-0.05, confidence at the crossing 0.42, 0.50, 0.42, 0.38, and 0.49.
-The coupling is not an artifact of linearity.
+crosses zero, and at least 98 percent cross exactly once, each
+crossing the clean sign change \theoremref{thm:nonlinear} derives
+at regular points. The coupling tightens or holds, gaps 0.15, 0.20,
+0.075, 0.175, and 0.05, confidence at the crossing 0.42, 0.50,
+0.42, 0.38, and 0.49, so the coupling is not an artifact of
+linearity.
 
 \paragraph{An adversarial falsification attempt.}
 The strongest test of an impossibility result is a maximally
-empowered attempt to violate it. We freeze the truth field and
-train a confidence head on the forbidden objective, above one half
-where the field says true and below elsewhere, guarantee weighted
-five to one, on all non-test statements plus fresh interpolants
-each epoch, and evaluate on 21{,}000 to 30{,}000 held-out path
-points per model. \theoremref{thm:approx} predicts a positive slack floor,
+empowered attempt to violate it. We freeze the truth field, train a
+confidence head on the forbidden objective, above one half where
+the field says true and below elsewhere, guarantee weighted five to
+one, on all non-test statements plus fresh interpolants each epoch,
+and evaluate on 21{,}000 to 30{,}000 held-out path points per
+model. \theoremref{thm:approx} predicts a positive slack floor,
 boundary-localized failures, and a trade against guarantee
 violations, and all three appear. The slack plateaus between 0.22
 and 0.91 of endpoint scale, exactly flat over Qwen2.5-0.5B's final
@@ -668,7 +672,7 @@ only thins the tube around a boundary that does not go away.
 The premises hold to varying degrees, disjoint splits rule out
 shared training data, the nonlinear replication removes the
 analytic sign-change guarantee, and the endogenous experiment
-addresses the shared-target concern where the model can verbalize
+addresses the shared-target concern where the model verbalizes
 truth. Code, data, and results are in the supplementary material.
 
 
@@ -679,22 +683,20 @@ truth. Code, data, and results are in the supplementary material.
 \label{sec:discussion}
 
 The theorem rests on connectedness, continuity, coverage, and
-separation, the trilemma adding an inclusive guarantee. Each
+separation, the trilemma adding an inclusive guarantee, and each
 hypothesis admits relaxation at a named price
 (\appendixref{app:extended}). Refusal training is connectedness
 surgery, restricting to reachable queries is the same move while
-probing and steering deploy over the ambient space, giving up
-coverage is vacuous for general systems, and dropping continuity
-keeps only the adjacent crossing. The recommended stance is
-\theoremref{thm:approx}'s band separation, with the infimum of
-feasible truth slack as a measurable diagnostic. The results are
+probing and steering deploy over the ambient space, and dropping
+continuity keeps only the adjacent crossing. The recommended stance
+is band separation (\theoremref{thm:approx}), the infimum of
+feasible truth slack a measurable diagnostic. The results are
 existence statements, so nothing follows about error rates,
 \theoremref{thm:dichotomy} alone derives falsehood, and the truth
 field idealizes probe behavior, \theoremref{thm:approx-odd} pricing
-oddness. With the scalar Borsuk-Ulam analog and the first-order
-nonlinear theory verified (\theoremref{thm:nonlinear}), what
-remains is the full theorem for jointly odd axes
-\citep{engels2025not}.
+oddness. With \theoremref{thm:nonlinear} and the scalar
+Borsuk-Ulam analog verified, what remains is the full theorem for
+jointly odd axes \citep{engels2025not}.
 
 % Acknowledgments omitted for anonymous review.
 
@@ -838,6 +840,9 @@ Multi-turn & \leanid{multi\_turn\_history\_dependent} \\
 Stochastic expected-value coupling & \leanid{stochastic\_coupling\_expected} \\
 Thm.~\ref{thm:dichotomy} & \leanid{stochastic\_dichotomy} \\
 Bundled master theorem & \leanid{hallucination\_master\_theorem} \\
+Definitional bridges &
+  \leanid{strictCalibrated\_to\_epsCalibrated\_zero\_half},
+  \leanid{epsCalibrated\_iff\_twoSlack} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -890,7 +895,7 @@ the toolchain pin for Lean v4.28.0, the manifest pin for Mathlib
 v4.28.0, and eighteen source files. To reproduce, run
 \texttt{lake build}. It completes with zero errors and no
 \texttt{sorry}. The final-verification file and the files numbered
-13 and 14 print the axiom sets of the main theorems. The
+13 through 15 print the axiom sets of the main theorems. The
 experiment part includes the scripts, the public datasets of
 \citet{marks2024geometry}, the numerical results, and the figures.
 The theorems themselves depend on no experiment.

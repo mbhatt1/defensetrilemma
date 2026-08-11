@@ -15,8 +15,8 @@
 
   Because of these collisions, we cannot import HoF_01 and HoF_02
   together. Instead, we verify each file independently by building it
-  via `lake build`. Every HoF file imports only `Mathlib` (not other
-  HoF files), so they are all independently checkable. The collisions
+  via `lake build`. Most HoF files import only `Mathlib`, and the later
+  files import the earlier HoF modules they build on. The collisions
   only matter when one tries to import multiple HoF files into a
   single Lean file.
 
