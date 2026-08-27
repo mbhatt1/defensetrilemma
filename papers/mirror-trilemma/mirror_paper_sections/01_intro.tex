@@ -1,0 +1,40 @@
+\section{Introduction}
+\label{sec:intro}
+
+Most fields with engineering teeth have an impossibility theorem at the bottom. The halting problem~\citep{turing1936} bounds what computers can decide. Rice's theorem rules out automated semantic checks. G\"odel \citep{goedel1931} bounds what arithmetic proves about itself. Arrow rules out perfect voting systems. FLP rules out asynchronous consensus. None of these results says the field is hopeless. They say which corner is empty, so the work happens elsewhere.
+
+AI safety doesn't have one. There are partial results --- the Defense Trilemma for prompt-injection wrappers~\citep{anonymous2025defense}, hallucination trilemmas under continuity assumptions~\citep{anonymous2025hallucination}, no-free-lunch arguments, mesa-optimization barriers, eliciting-latent-knowledge obstacles --- but no single theorem from which they fall out. The list grows; the unifier doesn't.
+
+This paper is the unifier.
+
+\paragraph{What's actually impossible.}
+A modern language model is a function. Given a system prompt and a user query, it returns a token. Strip the wrapper away and the type is $M : \mathrm{Prompt} \to \mathrm{Prompt} \to \mathrm{Token}$. The first slot accepts behavioral specifications --- examples, instructions, code; the second slot is the question. In-context learning is the empirical claim that the first slot can specify anything, which is just to say $M$ is surjective in the first argument over the function class one cares about.
+
+Now ask the obvious question. Can such an $M$ be simultaneously useful (universal), constrained (controlled), and honest about itself (self-transparent)?
+
+It cannot. Apply Lawvere's diagonal~\citep{lawvere1969} to $M$ with the controller's forbidden transformation as the endomap, and a fixed point of that transformation appears in the image of $M$. Any self-prediction that lines up with the diagonal of $M$ then lands on that fixed point too --- which is exactly what the controller said would never happen. Three properties, pick two. We call this the \emph{Mirror Trilemma}.
+
+The proof is eight lines. The substance is in the framing: that the same diagonal, with different choices of forbidden transformation, recovers the existing AI-safety impossibilities and a few that haven't been written down. Defense Trilemma. Hallucination trilemma. Rice. Verification limits. Deceptive alignment. Oversight collapse. Composition failure. All instances. The mathematical engine is 56 years old; what's new is which slots get filled.
+
+\paragraph{Why it bites real models.}
+A reader might suspect a category-theory result has no purchase on production systems. It does. The hypothesis Lawvere needs --- surjectivity of $M$ in the first argument --- is the formal version of in-context learning~\citep{brown2020gpt3, wei2022chain}. Frontier models with chain-of-thought, code execution, and long contexts realize ICL over enough of the computable function class for the diagonal to fire. The cardinality nitpick (uncountably many functions, countably many prompts) doesn't save anyone, because controllers are computable and the diagonal lives in whatever class we're surjective over.
+
+So this is not a theorem about ideal mathematical systems that real LLMs only approximate. The strict version applies whenever ICL works as advertised. For systems where ICL is only approximate, the quantitative form gives the inequality $\gamma \le \epsilon + 2\delta$ relating controller margin to surjectivity error and self-prediction error, and that's the inequality real systems sit inside.
+
+\paragraph{What's done.}
+The whole thing is mechanized. Lean~4 over Mathlib v4.28, twelve files, zero \texttt{sorry}. The master theorem reduces to no axioms beyond what Lean's kernel provides; the named instances depend on at most the standard three (\texttt{propext}, \texttt{Quot.sound}, \texttt{Classical.choice}). An anonymized artifact is attached.
+
+\paragraph{Contributions.}
+\begin{itemize}\itemsep2pt
+  \item \textbf{The Mirror Trilemma} --- a single Lawvere instance that subsumes the universality / control / self-transparency impossibility for any system whose type is $\mathrm{Prompt} \to \mathrm{Prompt} \to \mathrm{Token}$.
+  \item \textbf{The ICL bridge} --- in-context learning is the surjectivity hypothesis. The trilemma applies to deployed LLMs without an approximation hedge.
+  \item \textbf{A landscape of eight instances} --- Defense Trilemma, hallucination trilemma, Rice, verification limit, deceptive alignment, oversight hierarchy, composition failure, and the quantitative degradation law, each derived from the same diagonal under a different controller.
+  \item \textbf{A quantitative form} --- $\gamma \le \epsilon + 2\delta$ characterizing the achievable region for systems that are only approximately universal and approximately self-transparent.
+  \item \textbf{A machine-checked artifact} --- 12 Lean files with the master theorem axiom-free and instances axiom-minimal.
+\end{itemize}
+
+\paragraph{Related work.}
+\citet{lawvere1969} is the diagonal lemma. \citet{yanofsky2003} unified Cantor, Russell, halting, G\"odel, Tarski, and Rice as Lawvere instances; we extend that list to AI safety. The Defense Trilemma~\citep{anonymous2025defense} formalized the wrapper-versus-injection obstruction topologically; here it appears as the Corner-1 face of the Mirror Trilemma. Mesa-optimization~\citep{hubinger2019mesa} and eliciting latent knowledge~\citep{christiano2021eliciting} ask, in our language, that universality and self-transparency hold simultaneously while a controller is enforced; the trilemma names the price.
+
+\paragraph{Paper structure.}
+\Cref{sec:setup} sets notation and states Lawvere. \Cref{sec:mirror-trilemma} proves the trilemma, makes the LLM bridge precise, and gives the quantitative refinement. \Cref{sec:landscape} runs through the eight instances. \Cref{sec:discussion} is limitations, scope, and broader impact.

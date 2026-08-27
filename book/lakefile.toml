@@ -1,0 +1,28 @@
+name = "TrilemmaBook"
+defaultTargets = ["trilemmabook"]
+
+# Verso supplies the live-embedded, elaborated-at-build-time book toolchain.
+# Pinned to v4.28.0 to match the proof libraries' Lean toolchain.
+[[require]]
+name = "verso"
+git = "https://github.com/leanprover/verso"
+rev = "v4.28.0"
+
+# Mathlib, so that the analytic half of the book can be elaborated in these
+# pages rather than only cited. Pinned to the same tag as the companion proof
+# libraries; the sole shared dependency with Verso is `plausible`, which both
+# resolve to the same revision.
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "v4.28.0"
+
+# The book content library: the root document plus one module per chapter.
+[[lean_lib]]
+name = "TrilemmaBook"
+
+# The generator executable: emits the multi-page HTML book and the TeX/print
+# edition from the same source (see Config in TrilemmaBookMain.lean).
+[[lean_exe]]
+name = "trilemmabook"
+root = "TrilemmaBookMain"

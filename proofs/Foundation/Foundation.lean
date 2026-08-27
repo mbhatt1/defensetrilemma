@@ -35,3 +35,15 @@ import Foundation.F_09_QuantitativeDegradation
 -- Master foundation theorem + final axiom verification.
 import Foundation.F_10_MasterFoundation
 import Foundation.F_10_FinalVerification
+
+-- Hallucination Trilemma via Gödel's diagonal / Tarski's liar (Bool, t = not).
+import Foundation.F_11_HallucinationGodel
+
+-- Defense Trilemma via the same Gödel diagonal.
+import Foundation.F_12_DefenseGodel
+
+-- One diagonal, three trilemmata: the unification.
+import Foundation.F_13_UnifiedTrilemmata
+
+-- J-space readout inherits the coupling impossibility.
+import Foundation.F_14_JSpace

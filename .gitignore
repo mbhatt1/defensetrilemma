@@ -16,3 +16,6 @@
 
 # IDE
 .claude/
+
+# Generated Verso book output
+book/_out/

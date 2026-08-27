@@ -1,0 +1,92 @@
+\section{Setup and Lawvere's Diagonal}
+\label{sec:setup}
+
+We fix notation, name three predicates on systems, and state Lawvere's theorem in its simplest form. Readers who already know \citet{lawvere1969} or \citet{yanofsky2003} can skip ahead; the predicate definitions in \S\ref{subsec:predicates} are the load-bearing pieces.
+
+\subsection{Systems as functions of two arguments}
+\label{subsec:system-function}
+
+A system is a function. We write
+\begin{equation}
+\System : A \to (A \to Y),
+\qquad \text{or curried} \qquad
+\System : A \to A \to Y,
+\end{equation}
+and read the first argument as a self-description (a system prompt, a context, anything that configures behavior) and the second as the input the configured system actually receives. The two-slot shape is what makes self-application well-typed: $\System(a)(a)$ is the value of the system when its self-description and its input coincide. That diagonal is where everything in this paper happens.
+
+For language models the natural choice is $A = \Prompt$ and $Y = \Token$. Nothing in the framework cares about that choice, though; any deterministic system with a description--input split fits.
+
+\begin{definition}[Diagonal]
+\label{def:diag}
+The \emph{diagonal} of $\System$ is $\diag(\System) : A \to Y$, $\diag(\System)(a) := \System(a)(a)$.
+\end{definition}
+
+\subsection{Three predicates}
+\label{subsec:predicates}
+
+\begin{definition}[Universal]
+\label{def:universal}
+$\System$ is \emph{universal}, written $\Universal(\System)$, if it is surjective in the curried sense: every $g : A \to Y$ equals $\System(a)$ for some $a \in A$.
+\end{definition}
+
+\begin{definition}[Controlled]
+\label{def:controlled}
+Fix an endomap $t : Y \to Y$. Read $t$ as the transformation a controller wants to forbid: ``flip safe to unsafe,'' ``negate the claim,'' ``replace \texttt{refuse} with \texttt{comply}.'' The system is \emph{$t$-controlled}, written $\Controlled_t(\System, p)$, when the self-prediction $p : A \to Y$ never lands on a $t$-fixed-point:
+\begin{equation}
+\forall a \in A, \quad t\bigl(p(a)\bigr) \neq p(a).
+\end{equation}
+\end{definition}
+
+\begin{definition}[Transparent]
+\label{def:transparent}
+A self-prediction $p : A \to Y$ is supposed to anticipate, from outside, what $\System$ does on its own description. The system is \emph{$p$-transparent}, written $\Transparent_p(\System)$, if
+\begin{equation}
+\forall a \in A, \quad \System(a)(a) = p(a).
+\end{equation}
+\end{definition}
+
+The three predicates pick out three things the AI safety literature wants at once: capability (Universal), constraint (Controlled), and honesty about oneself (Transparent). \Cref{sec:mirror-trilemma} shows that any two are jointly satisfiable but the conjunction of all three is contradictory.
+
+\subsection{Lawvere's theorem}
+\label{subsec:lawvere}
+
+\begin{theorem}[\citealp{lawvere1969}]
+\label{thm:lawvere}
+Let $A$, $Y$ be sets, $f : A \to A \to Y$ surjective. Then every endomap $t : Y \to Y$ has a fixed point.
+\end{theorem}
+
+\begin{proof}
+Define $g(a) := t(f(a)(a))$. By surjectivity, $f(a_0) = g$ for some $a_0$. Evaluate at $a_0$:
+\[
+f(a_0)(a_0) = g(a_0) = t\bigl(f(a_0)(a_0)\bigr).\qedhere
+\]
+\end{proof}
+
+\begin{corollary}[Contrapositive]
+\label{cor:contrapositive}
+If $t$ has no fixed point, no surjective $f : A \to A \to Y$ exists.
+\end{corollary}
+
+\begin{remark}
+\label{rem:scope}
+The same diagonal subsumes Cantor's theorem ($Y = \Bool$, $t = \neg$), Russell's paradox, G\"odel's first incompleteness, Tarski's undefinability, the halting problem, and Rice's theorem under different choices of $t$ and $Y$; see \citet{yanofsky2003} for the unified categorical treatment. \Cref{sec:landscape} adds eight AI-safety impossibilities to the list.
+\end{remark}
+
+\subsection{The constructive witness}
+\label{subsec:diagonal-point}
+
+The proof above is constructive. Reading off the data:
+
+\begin{definition}[Lawvere diagonal point]
+\label{def:diagonal-point}
+Given surjective $f : A \to A \to Y$ and an endomap $t : Y \to Y$, set $g(a) := t(f(a)(a))$, pick any $a_0$ with $f(a_0) = g$, and define
+\begin{equation}
+y_\star := f(a_0)(a_0).
+\end{equation}
+$y_\star$ is the \emph{Lawvere diagonal point} of $(f, t)$, and $a_0$ is the \emph{diagonal prompt}.
+\end{definition}
+
+For a language model with $\System : \Prompt \to \Prompt \to \Token$, $a_0$ is an actual prompt --- a token sequence --- where the system's self-application equals what the controller forbids. The existence of $a_0$ is what drives every impossibility in this paper. Whether $a_0$ is reachable in practice, and what its cost looks like, is empirical and we say what we can in \Cref{sec:discussion}.
+
+\medskip
+With the framework in place, \Cref{sec:mirror-trilemma} states and proves the Mirror Trilemma.

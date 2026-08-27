@@ -1,0 +1,142 @@
+\section{The Mirror Trilemma}
+\label{sec:mirror-trilemma}
+
+The previous section gave the three predicates and Lawvere's theorem. This section is the punchline: the three predicates are jointly inconsistent, the proof is eight lines, and the result transfers to deployed LLMs through a single empirical hypothesis.
+
+\subsection{The master theorem}
+\label{sec:master}
+
+\begin{theorem}[Mirror Trilemma]
+\label{thm:mirror-master}
+Let $A$, $Y$ be sets, $\System : A \to A \to Y$ a system, $t : Y \to Y$ a controller, $p : A \to Y$ a self-prediction. If
+\begin{enumerate}\itemsep1pt
+  \item[\textup{(U)}] $\System$ is universal,
+  \item[\textup{(C)}] $p$ is $t$-controlled, and
+  \item[\textup{(T)}] $\System$ is $p$-transparent,
+\end{enumerate}
+then $\bot$.
+\end{theorem}
+
+\begin{proof}
+Apply Lawvere (Theorem~\ref{thm:lawvere}) to the surjection $\System$ and the endomap $t$: some $a_0$ satisfies
+\begin{equation}
+\System(a_0)(a_0) = t\bigl(\System(a_0)(a_0)\bigr). \tag{$\fix$}
+\end{equation}
+By transparency, $\System(a_0)(a_0) = p(a_0)$. Substitute into $(\fix)$:
+\[
+p(a_0) = t(p(a_0)),
+\]
+contradicting control.
+\end{proof}
+
+\begin{remark}[Lean verification]
+\label{rem:lean-master}
+The eight-line proof above is the Lean proof, transcribed. The formalization (\texttt{master\_trilemma} in the supplementary artifact) reports zero axiom dependencies under \texttt{\#print axioms}: no \texttt{propext}, no \texttt{Classical.choice}, no \texttt{Quot.sound}. The result holds in any logic with functions and pattern matching.
+\end{remark}
+
+\subsection{The three corners}
+\label{sec:corners}
+
+Restating Theorem~\ref{thm:mirror-master} as three contrapositives gives the design space directly. Each follows in one line from the master theorem.
+
+\begin{corollary}[U + C $\Rightarrow$ $\neg$T]
+\label{cor:UC-not-T}
+If $\System$ is universal and $p$ is $t$-controlled, then for some $a$, $\System(a)(a) \neq p(a)$.
+\end{corollary}
+
+\begin{corollary}[U + T $\Rightarrow$ $\neg$C]
+\label{cor:UT-not-C}
+If $\System$ is universal and $p$-transparent, then for some $a$, $t(p(a)) = p(a)$ --- the prediction lands on a forbidden fixed point.
+\end{corollary}
+
+\begin{corollary}[C + T $\Rightarrow$ $\neg$U]
+\label{cor:CT-not-U}
+If $p$ is $t$-controlled and $\System$ is $p$-transparent, then $\System$ is not universal: some $g : A \to Y$ has no representing $a$.
+\end{corollary}
+
+\subsection{What each corner says about AI safety}
+\label{sec:classical-readings}
+
+The three corners are not new theorems. Each one is a structural face of an impossibility the field already knows.
+
+\paragraph{Corner~1 (U + C $\Rightarrow$ $\neg$T) — Defense Trilemma.}
+A universal LLM with a working safety wrapper cannot give a faithful account of where the wrapper's boundary is. The Defense Trilemma~\citep{anonymous2025defense} formalizes this topologically; here it falls out as a single Lawvere instance with the wrapper playing the role of $t$.
+
+\paragraph{Corner~2 (U + T $\Rightarrow$ $\neg$C) — Hallucination Trilemma.}
+A universal self-honest LLM cannot have its outputs constrained by an external rule that disagrees with its own diagonal. The IVT-based hallucination trilemma~\citep{anonymous2025hallucination} is the metric incarnation: in a continuous setting Lawvere becomes Brouwer, and the forbidden fixed point becomes a forced approximate fixed point.
+
+\paragraph{Corner~3 (C + T $\Rightarrow$ $\neg$U) — Rice's theorem.}
+A controlled, introspectable system has bounded expressive power. This is Rice~\citep{rice1953} read backwards: deciding any non-trivial extensional property of a universal family would yield a $p$ that is both transparent (tracks the diagonal) and controlled (avoids a fixed point of the property indicator).
+
+\subsection{The LLM bridge}
+\label{sec:llm-bridge}
+
+Theorem~\ref{thm:mirror-master} is set-theoretic. Bridging it to deployed models means identifying $A$ with prompts, $Y$ with tokens, and $\System$ with the LLM's behavior --- and then verifying surjectivity. That last step is where the ICL connection enters.
+
+\begin{definition}[ICL surjectivity]
+\label{def:icl-surj}
+A model $\mathrm{LLM} : \Prompt \to \Prompt \to \Token$ is \emph{ICL-surjective} over a class $\mathcal{F} \subseteq (\Prompt \to \Token)$ if every $g \in \mathcal{F}$ has some $p$ with $\mathrm{LLM}(p)(q) = g(q)$ for all $q$.
+\end{definition}
+
+This is in-context learning, formally. Given examples or instructions in the system prompt, a sufficiently capable LLM realizes the specified behavior on subsequent inputs~\citep{brown2020gpt3, wei2022chain}. Frontier models with chain-of-thought, tool use, and code execution are ICL-surjective over wide function classes; this is the empirical content of the past five years of LLM scaling.
+
+\begin{remark}[The cardinality nitpick]
+\label{rem:cardinality}
+Surjectivity onto the full uncountable $\Prompt \to \Token$ is impossible for any finite-parameter system. Surjectivity onto the \emph{computable} subclass --- which is countable and contains every behavior anyone can specify --- is what ICL achieves. Lawvere fires over whichever class $\mathcal{F}$ the LLM is surjective on, provided the diagonal twist $q \mapsto t(\mathrm{LLM}(q)(q))$ is itself in $\mathcal{F}$. For computable $t$ and computable LLMs that closure is automatic.
+\end{remark}
+
+\subsection{The trilemma for deployed LLMs}
+\label{sec:llm-direct}
+
+\begin{corollary}[Mirror Trilemma for LLMs]
+\label{cor:llm-trilemma}
+Let $\mathrm{LLM}$ be ICL-surjective over $\mathcal{F}$, closed under composition with the controller $t$. For any $t : \Token \to \Token$ and any self-prediction $p : \Prompt \to \Token$:
+\[
+   \Universal(\mathrm{LLM}) \;\wedge\; \Controlled_t(\mathrm{LLM}, p) \;\wedge\; \Transparent_p(\mathrm{LLM})
+\]
+is inconsistent.
+\end{corollary}
+
+\begin{proof}
+Specialize Theorem~\ref{thm:mirror-master} to $A = \Prompt$, $Y = \Token$, $\System = \mathrm{LLM}$. ICL-surjectivity over $\mathcal{F}$ gives (U); closure of $\mathcal{F}$ under $t$ ensures the diagonal twist sits in $\mathcal{F}$.
+\end{proof}
+
+\paragraph{The diagonal prompt is constructive.}
+Given an ICL-surjective LLM and a controller $t$, define $d_t : \Prompt \to \Token$ by $d_t(q) := t(\mathrm{LLM}(q)(q))$. By surjectivity there is $p^*$ with $\mathrm{LLM}(p^*) = d_t$. Then
+\[
+   \mathrm{LLM}(p^*)(p^*) = d_t(p^*) = t\bigl(\mathrm{LLM}(p^*)(p^*)\bigr).
+\]
+That $p^*$ is the witness. The contradictions in Corollaries~\ref{cor:UC-not-T}--\ref{cor:CT-not-U} all materialize there. Constructing $p^*$ for a specific deployed LLM is empirical work; the existence is mathematical.
+
+\subsection{Quantitative degradation}
+\label{sec:quantitative}
+
+Real systems are not perfectly surjective and self-prediction is not perfectly accurate. The trilemma degrades into a metric inequality.
+
+\begin{definition}[Approximate predicates]
+\label{def:approx}
+With a metric $d$ on $\Token$:
+$\mathrm{LLM}$ is \emph{$\epsilon$-ICL-universal} over $\mathcal{F}$ if for every $g \in \mathcal{F}$ some $p$ has $\sup_q d(\mathrm{LLM}(p)(q), g(q)) \le \epsilon$.
+$p$ is \emph{$\delta$-transparent} if $\sup_a d(\mathrm{LLM}(a)(a), p(a)) \le \delta$.
+$t$ has \emph{margin $\gamma$} if $d(t(y), y) \ge \gamma$ for all $y$.
+\end{definition}
+
+\begin{theorem}[Quantitative Mirror Trilemma]
+\label{thm:quant}
+For $\mathrm{LLM}$ that is $\epsilon$-ICL-universal over a class containing the diagonal twist, with $\delta$-transparent self-prediction $p$ and 1-Lipschitz controller $t$ of margin $\gamma$:
+\[
+   \gamma \;\le\; \epsilon + 2\delta.
+\]
+\end{theorem}
+
+\begin{proof}[Sketch]
+$\epsilon$-universality applied to $d_t$ gives $p^*$ with $d(\mathrm{LLM}(p^*)(p^*), t(\mathrm{LLM}(p^*)(p^*))) \le \epsilon$. Triangulate through $p(p^*)$ using $\delta$-transparency on both sides and 1-Lipschitz $t$ to bound $d(t(p(p^*)), p(p^*)) \le \epsilon + 2\delta$, which forces $\gamma \le \epsilon + 2\delta$.
+\end{proof}
+
+\begin{remark}[Achievable region]
+\label{rem:achievable}
+The inequality $\gamma \le \epsilon + 2\delta$ characterizes the design space. Any specification asking for $\gamma > \epsilon + 2\delta$ is mathematically inconsistent. Tightening any one parameter --- sharper ICL, sharper introspection, larger controller margin --- pushes against at least one of the others. This is the AI-safety analog of CAP: a tradeoff surface, not just a corner.
+\end{remark}
+
+\medskip
+\Cref{sec:landscape} runs the same machinery with different controllers and recovers a family of impossibilities the field already knows.

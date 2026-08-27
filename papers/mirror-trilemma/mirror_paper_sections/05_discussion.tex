@@ -1,0 +1,58 @@
+\section{Discussion, Limitations, and Broader Impact}
+\label{sec:discussion}
+
+\subsection{Implications for alignment research}
+\label{sec:alignment-implications}
+
+The Mirror Trilemma names an empty corner of the design space. Frontier scale (capability), RLHF and post-training (control), and mechanistic interpretability (self-transparency) jointly target that corner, and Theorem~\ref{thm:mirror-master} says it cannot be inhabited. Alignment research aiming for the triple is aiming at a contradiction.
+
+What can be aimed at is the achievable region: any two of the three at full strength, or all three relaxed by the amount $\gamma \le \epsilon + 2\delta$ permits. This reframes several debates as disagreements over which corner each program inhabits, rather than over technique.
+
+A second effect is that several apparently-separate phenomena collapse to one signature. Jailbreaks, hallucinations, deceptive alignment, sandbagging, prompt injection, capability elicitation, mesa-optimization, and oversight collapse all instantiate Theorem~\ref{thm:master} with different controllers. Defenses that improve one face by relaxing universality, control, or transparency necessarily affect the others. A defense that claims to preserve all three is an accounting error.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+\paragraph{ICL surjectivity is empirical.}
+The bridge from abstract trilemma to deployed LLMs runs through Definition~\ref{def:icl-surj}. We argue this matches frontier behavior with chain-of-thought, code execution, and tool use, but we do not formally verify it for any specific deployed model. The strict trilemma fires only insofar as the hypothesis holds. For weaker ICL the quantitative form (Theorem~\ref{thm:quant}) bounds the residual achievable region but does not exclude it.
+
+\paragraph{Existence is not magnitude.}
+Lawvere theorems are existence results. They guarantee the diagonal point is there; they do not say how reachable it is by adversarial search, how severe the failure is when reached, or how the failure rate scales with model size. Open empirical questions.
+
+\paragraph{Not all safety properties are no-fixed-point-shaped.}
+Calibration of uncertainty across distributions, adversarial robustness under distribution shift, and resource-bounded verifiability have a different mathematical signature and may need separate impossibility arguments. The eight instances we cover are the ones expressible as a no-fixed-point endomap on a controlled output type.
+
+\paragraph{The unification is empirical at the meta-level.}
+We claim eight specific obstructions are Lawvere instances and provide Lean proofs. We do not claim every conceivable AI-safety obstruction is.
+
+\subsection{What this does not say}
+\label{sec:what-it-does-not-say}
+
+\begin{itemize}\itemsep1pt
+\item It does not say AI is dangerous. It says certain joint guarantees are not available.
+\item It does not say alignment is hopeless. It says alignment must explicitly choose which corner to relax. The achievable region is nonempty.
+\item It does not predict specific failures. Existence of the diagonal is mathematical; reachability and severity in deployed systems are not.
+\item It does not subsume empirical safety evaluation. Empirical work measures where systems sit inside the achievable region; the theorem alone cannot.
+\end{itemize}
+
+\subsection{Empirical predictions}
+\label{sec:empirical-predictions}
+
+Two falsifiable predictions. First, the diagonal prompt $q^* \in \mathrm{LLM}^{-1}(q \mapsto t(\mathrm{LLM}(q)(q)))$ exists and, under ICL surjectivity, can be elicited by adversarial search; cost grows as the model deviates from strict surjectivity, bounded by the quantitative form. Second, the inequality $\gamma \le \epsilon + 2\delta$ predicts that no triple of independent measurements on the same model violates it. Both are sharp tests across model families and require no theoretical machinery to run.
+
+\subsection{Broader impact}
+\label{sec:broader-impact}
+
+\paragraph{Policy.}
+Several proposed regulatory frameworks demand AI systems that are simultaneously capable, controllable, and verifiable. As stated, that is the inadmissible corner. Policy must choose: cap universality, accept controller failure on a measured fraction of inputs, or accept incomplete self-transparency. None comfortable; all achievable.
+
+\paragraph{Public claims.}
+Statements that a frontier system is ``fully aligned'' are inconsistent with the system being universal in the sense of Definition~\ref{def:universal}. Honest communication requires naming which corner is being relaxed.
+
+\paragraph{Risk.}
+The result does not constitute capability uplift. Lawvere's diagonal is a 56-year-old technique; applying it to LLMs is conceptually accessible. Publication does not change the threat landscape, only the framework for understanding it. The construction is non-specific: existence of $q^*$, not weaponization.
+
+\subsection{Conclusion}
+\label{sec:conclusion}
+
+We formalized the Mirror Trilemma in Lean 4, exhibited eight AI-safety impossibilities as instances of one Lawvere obstruction, and bridged the abstract framework to deployed LLMs through ICL surjectivity. The quantitative form $\gamma \le \epsilon + 2\delta$ characterizes the achievable region when the strict hypotheses are weakened. The result is halting-problem-shaped, not G\"odel-shaped~\citep{turing1936, rice1953, goedel1931}: it bounds what alignment can promise, not what is true. We do not claim a breakthrough. The unification is the contribution; the math is Lawvere's. Future work: extending off the Lawvere axis (complexity, measure-theoretic, sample-complexity bounds), constructing diagonal prompts on deployed systems, and integrating the trilemma into existing evaluation pipelines.

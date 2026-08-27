@@ -1,0 +1,64 @@
+\section*{NeurIPS Paper Checklist}
+\label{sec:checklist}
+
+Per NeurIPS 2025 submission requirements. Each item is answered \textbf{[Yes]}, \textbf{[No]}, or \textbf{[NA]}, with the relevant section pointer.
+
+\begin{enumerate}[leftmargin=1.9em,itemsep=0.25em]
+
+\item \textbf{Claims.} Do the main claims accurately reflect the paper's contributions and scope?\\
+\textbf{[Yes]} The abstract and \Cref{sec:intro} state a Lawvere-instance unification, a quantitative degradation form, and a Lean formalization. All three are delivered in \Cref{sec:mirror-trilemma}, \Cref{sec:landscape}, and the supplementary artifact.
+
+\item \textbf{Limitations.} Are the limitations of the work discussed?\\
+\textbf{[Yes]} \Cref{sec:limitations} enumerates four: ICL surjectivity is empirical and not formally verified for any deployed model, the theorem secures existence not magnitude, not all safety properties fit the no-fixed-point form, and the meta-level unification is not exhaustive.
+
+\item \textbf{Theory: assumptions and proofs.} Are assumptions stated and proofs given (or referenced)?\\
+\textbf{[Yes]} Each theorem statement lists its assumptions inline. Main-paper proofs are given for \Cref{thm:lawvere}, \Cref{thm:mirror-master}, and \Cref{thm:quant}; the remaining instance theorems are proved by specialization and cite the Lean witness in the supplementary artifact.
+
+\item \textbf{Experimental result reproducibility.} Are experimental results reproducibly described?\\
+\textbf{[NA]} No experiments are run in this paper. The work is theoretical; the reproducibility unit is the Lean formalization, which is mechanically reproducible by running \texttt{lake build} on the supplementary artifact.
+
+\item \textbf{Open access to data and code.} Is code and data open?\\
+\textbf{[Yes]} The Lean formalization is provided as a supplementary artifact via an anonymous link (e.g.\ \texttt{anonymous.4open.science}). No data is used.
+
+\item \textbf{Experimental setting / details.} Are training/test details disclosed?\\
+\textbf{[NA]} No models are trained. The paper makes empirical predictions in \Cref{sec:empirical-predictions}; running them is future work and not in the present submission.
+
+\item \textbf{Statistical significance.} Are error bars or confidence intervals reported?\\
+\textbf{[NA]} No empirical measurements are reported. Predictions are stated as inequalities to be tested.
+
+\item \textbf{Compute resources.} Are compute resources disclosed?\\
+\textbf{[Yes]} Lean verification compiles in approximately 8\,minutes on a 2024 MacBook Pro (M3 Pro) with Mathlib v4.28 prebuilt. No GPU or large-scale compute was used.
+
+\item \textbf{Code of ethics.} Does the work conform to the NeurIPS Code of Ethics?\\
+\textbf{[Yes]} The paper is theoretical and does not involve human subjects, sensitive data, or deployed systems. Broader-impact considerations are addressed in \Cref{sec:broader-impact}.
+
+\item \textbf{Broader impact.} Are positive and negative societal impacts discussed?\\
+\textbf{[Yes]} \Cref{sec:broader-impact} addresses policy implications, public-claim calibration, research-effort redirection, and explicit risk discussion (the result does not constitute a capability uplift).
+
+\item \textbf{Safeguards for high-risk releases.} Are safeguards described for high-risk artifacts?\\
+\textbf{[NA]} The artifact is a Lean proof object. Lawvere's diagonal is a 56-year-old technique; applying it to LLMs requires no novel attack capability. The construction is non-specific (existence, not weaponization).
+
+\item \textbf{Licenses and terms of assets.} Are licenses respected?\\
+\textbf{[Yes]} The artifact uses Lean 4 (Apache 2.0) and Mathlib (Apache 2.0). No other assets are used.
+
+\item \textbf{New assets.} Are new assets documented?\\
+\textbf{[Yes]} The supplementary Lean development is the new asset. A README in the artifact documents file structure, build instructions, axiom dependencies, and theorem-to-paper mapping.
+
+\item \textbf{Crowdsourcing and human subjects.} Is crowdsourcing or IRB-relevant work disclosed?\\
+\textbf{[NA]} No crowdsourcing or human-subjects work.
+
+\item \textbf{IRB approvals.} Is IRB approval reported where relevant?\\
+\textbf{[NA]} No human-subjects work.
+
+\item \textbf{LLM usage in research.} Was an LLM used as part of the research methodology?\\
+\textbf{[No]} The paper's mathematical content is a unification of pre-existing results (Lawvere 1969; \citealp{yanofsky2003}) and the formalization is human-directed against a published proof. LLMs may have been used incidentally for prose drafting; no LLM contributed to the proofs or to the choice of unification.
+
+\item \textbf{Anonymization.} Is the submission properly anonymized?\\
+\textbf{[Yes]} Author and affiliation fields are anonymous. Self-citations to prior author work are listed as \textbf{Anonymous} in the bibliography, with full references to be restored in camera-ready. The Lean artifact is provided via an anonymous link.
+
+\item \textbf{Reproducibility of theory.} Is the theoretical content fully self-contained or referenced to a stable source?\\
+\textbf{[Yes]} All theorem statements include explicit hypotheses; the proofs cite the Lean lemma names. The supplementary artifact builds verbatim against Lean 4.28.0 / Mathlib v4.28.0.
+
+\end{enumerate}
+
+\paragraph{Summary.} Of the 18 items above, 11 are \textbf{[Yes]}, 1 is \textbf{[No]} (LLM usage in research --- prose drafting only, not proof generation), and 6 are \textbf{[NA]} (items concerning experiments, training, IRB, and crowdsourcing, which do not apply to a purely theoretical paper).

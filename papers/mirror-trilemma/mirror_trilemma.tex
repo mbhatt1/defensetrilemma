@@ -1,0 +1,92 @@
+\documentclass[11pt]{article}
+
+% NeurIPS 2025 style — anonymous submission (default; pass [final] for camera-ready)
+\PassOptionsToPackage{numbers, compress}{natbib}
+\usepackage{neurips_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% Compact macros — \ensuremath so they work in text and math contexts
+\newcommand{\System}{\ensuremath{\mathcal{S}}}
+\newcommand{\Prompt}{\ensuremath{\mathcal{P}}}
+\newcommand{\Token}{\ensuremath{\mathcal{T}}}
+\newcommand{\Output}{\ensuremath{\mathcal{Y}}}
+\newcommand{\Universal}{\ensuremath{\mathsf{U}}}
+\newcommand{\Controlled}{\ensuremath{\mathsf{C}}}
+\newcommand{\Transparent}{\ensuremath{\mathsf{T}}}
+\newcommand{\diag}{\ensuremath{\mathsf{diag}}}
+\newcommand{\fix}{\ensuremath{\mathsf{fix}}}
+\newcommand{\Bool}{\ensuremath{\mathbb{B}}}
+\newcommand{\Nat}{\ensuremath{\mathbb{N}}}
+
+\title{The Mirror Trilemma: A Lawvere-Theoretic Foundation\\
+       for AI Safety Impossibility Theorems}
+
+\author{%
+  Anonymous Authors\\
+  Paper under double-blind review
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We prove that no system whose forward pass has the type signature
+$\mathcal{S} : \mathrm{Prompt} \to \mathrm{Prompt} \to \mathrm{Token}$
+can simultaneously be \emph{universal} (every behavior
+$\mathrm{Prompt} \to \mathrm{Token}$ in some class is realized by some
+prompt), \emph{controlled} (its diagonal output avoids the fixed-point
+set of a non-trivial endomap on $\mathrm{Token}$), and
+\emph{self-transparent} (its self-prediction matches its actual
+self-application). We call this the \textbf{Mirror Trilemma}; it
+follows from a single application of Lawvere's diagonal theorem.
+The bridge to deployed language models is one definition: in-context
+learning is exactly the surjectivity hypothesis the theorem requires,
+so frontier systems satisfy the type-level conditions and the trilemma
+fires directly.
+We further exhibit eight existing AI-safety impossibilities ---
+including the Defense Trilemma, hallucination trilemmas, Rice's
+theorem, the verification limit, deceptive alignment, oversight
+collapse, composition failure, and a quantitative
+$\gamma \le \epsilon + 2\delta$ degradation law --- as instances of
+the same diagonal applied with different controllers. The full
+development is mechanized in Lean~4 (Mathlib v4.28); the master
+theorem is axiom-free, and the named instances depend at most on the
+three standard Lean axioms (\texttt{propext}, \texttt{Quot.sound},
+\texttt{Classical.choice}). An anonymized artifact accompanies the
+submission. Our contribution is a unification and a formalization,
+not a new mathematical fact: the diagonal is Lawvere's, and we apply
+it to AI safety with empirical bite.
+\end{abstract}
+
+\input{mirror_paper_sections/01_intro}
+\input{mirror_paper_sections/02_setup_lawvere}
+\input{mirror_paper_sections/03_mirror_trilemma}
+\input{mirror_paper_sections/04_landscape}
+\input{mirror_paper_sections/05_discussion}
+
+\bibliographystyle{plainnat}
+\bibliography{mirror_paper_sections/references}
+
+\appendix
+\input{mirror_paper_sections/checklist}
+
+\end{document}

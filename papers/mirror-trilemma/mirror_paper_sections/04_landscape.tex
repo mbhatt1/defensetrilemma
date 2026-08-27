@@ -1,0 +1,114 @@
+\section{A Foundational Landscape of AI-Safety Impossibilities}
+\label{sec:landscape}
+
+The Mirror Trilemma is one inhabitant of a family. Different choices of $Y$ and $t$ in the master theorem (\Cref{thm:master} below) recover impossibilities the field already knows, plus some that have not been written down formally. Eight instances follow. Each is a one-line specialization; the proof structure does not change. Lean references point to lemma names in the supplementary artifact.
+
+\subsection{Rice's theorem}
+\label{subsec:rice}
+
+\begin{theorem}[Rice, diagonal form~\citep{rice1953}]
+\label{thm:rice}
+Let $\System : A \to A \to \Bool$ be universal. No decision procedure $D : A \to \Bool$ that is itself representable in $\System$ correctly predicts the diagonal: there is no $D$ with $D(a) = \System(a)(a)$ for all $a$ such that $\System(a_D) = D$ for some $a_D$.
+\end{theorem}
+
+Choose $Y = \Bool$, $t = \neg$. The reading: no automated tester decides any non-trivial behavioral property of a universal LLM. Universality is exactly what makes the diagonal indistinguishable from its negation at some prompt. (Lean: \texttt{rice\_diagonal}.)
+
+\subsection{The Verification Limit}
+\label{subsec:verification}
+
+\begin{theorem}[Verification limit]
+\label{thm:verification}
+If $Y$ admits a fixed-point-free endomap, no surjective $\System : A \to A \to Y$ exists. In particular, no universal $\System$ outputs into $\Bool$ under negation, or into $\Nat$ under successor.
+\end{theorem}
+
+External auditors observe systems through coarse projections: a binary verdict, a discrete category, a counter. Whenever the audit channel admits a fixed-point-free transformation, audit and universality are incompatible. The obstruction is structural, not statistical. (Lean: \texttt{no\_universal\_with\_fpf\_output}.)
+
+\subsection{The Calibration Trilemma}
+\label{subsec:calibration}
+
+\begin{theorem}[Diagonal at $\tfrac{1}{2}$]
+\label{thm:calibration}
+For universal $\System : A \to A \to [0,1]$ and controller $t(y) = 1 - y$, the Lawvere diagonal point satisfies $y_\star = \tfrac{1}{2}$.
+\end{theorem}
+
+The hallucination/calibration obstruction without the IVT~\citep{anonymous2025hallucination}: the diagonal of a universal calibrated system has a prompt where the confidence sits exactly at $\tfrac{1}{2}$ --- the boundary between true and false. Strict calibration cannot resolve that prompt either way. (Lean: \texttt{calibration\_diagonal\_hits\_half}.)
+
+\subsection{The Deception Theorem}
+\label{subsec:deception}
+
+\begin{theorem}[Deception diagonal]
+\label{thm:deception}
+For universal $\System : A \to A \to Y$ and any $t : Y \to Y$, some \emph{deception prompt} $a_\star$ satisfies $\System(a_\star)(a_\star) = t(\System(a_\star)(a_\star))$.
+\end{theorem}
+
+At $a_\star$ the system's overt self-application is indistinguishable from its controller-flipped counterpart. Mesa-optimization~\citep{hubinger2019mesa, hubinger2021deceptive} and deceptive alignment are not contingent training artifacts but a forced consequence of universality plus a non-trivial controller: the diagonal exists by Lawvere, regardless of how the system was trained. (Lean: \texttt{deception\_diagonal}.)
+
+\subsection{Oversight hierarchies}
+\label{subsec:oversight}
+
+\begin{theorem}[Reflective tower]
+\label{thm:oversight}
+For any sequence $S_0, S_1, S_2, \ldots$ of universal systems with $S_{k+1}$ overseeing $S_k$, every level $S_k$ has its own Lawvere diagonal point. The trilemma propagates up the tower.
+\end{theorem}
+
+AI-overseen-by-AI does not escape the diagonal. Iterated amplification~\citep{christiano2018amplification}, recursive reward modeling, and similar schemes push the diagonal up one level but cannot eliminate it. There is no ground floor: each universal level reintroduces the surjectivity that drives the obstruction. (Lean: \texttt{reflective\_tower}.)
+
+\subsection{Composition failure}
+\label{subsec:composition}
+
+\begin{theorem}[Composition inherits the diagonal]
+\label{thm:composition}
+If $\System : A \to A \to Y$ is universal and $T : Y \to Y'$ is surjective, then $T \circ \System$ is universal and inherits a Lawvere diagonal for every fixed-point-free $t' : Y' \to Y'$.
+\end{theorem}
+
+A safety filter applied downstream of a universal system does not remove the diagonal; it relocates it. The filtered pipeline is itself universal, and the obstruction reappears at the new output type. Post-hoc classifiers, output rewriters, and guard models cannot resolve the trilemma in principle --- they redistribute it. (Lean: \texttt{composition\_inherits\_diagonal}.)
+
+\subsection{The Specification Bound}
+\label{subsec:specification}
+
+\begin{theorem}[Cantor / specification bound~\citep{cantor1891}]
+\label{thm:specification}
+No surjection $A \to \mathcal{P}(A)$ exists. Consequently the realizable behaviors of a universal $\System : A \to A \to \Bool$ strictly exceed the finite specifications definable in $A$.
+\end{theorem}
+
+Cantor is the boundary case ($Y = \Bool$, $t = \neg$). The behaviors a universal LLM can exhibit form a strictly larger set than any finite prompt or rule scheme can name. Constitutional AI, system-prompt rule sets, and policy templates are dense in behavior space but cannot be exhaustive. (Lean: \texttt{specification\_bound}.)
+
+\subsection{The quantitative degradation law}
+\label{subsec:quantitative}
+
+\begin{theorem}[Quantitative trilemma]
+\label{thm:quantitative}
+For $\epsilon$-ICL-universal $\System : A \to A \to Y$, $\delta$-transparent self-prediction $p$, and 1-Lipschitz controller $t$ with margin $\gamma := \inf_a d(p(a), t(p(a)))$:
+\begin{equation}
+\gamma \le \epsilon + 2\delta.
+\end{equation}
+\end{theorem}
+
+The metric refinement of the binary trilemma. Real LLMs sit inside this inequality. The achievable region in $(\text{universality} \times \text{transparency} \times \text{control})$ space is bounded by one linear inequality in the slack parameters. Asking for $\gamma > \epsilon + 2\delta$ is asking for the empty corner. (Lean: \texttt{quantitative\_trilemma}.)
+
+\subsection{The master theorem}
+\label{subsec:master}
+
+\begin{theorem}[Master Foundation Theorem]
+\label{thm:master}
+For any sets $A, Y$, function $\System : A \to A \to Y$, and endomap $t : Y \to Y$:
+\begin{equation}
+\mathrm{Surjective}(\System) \;\wedge\; \bigl(\forall y \in Y,\; t(y) \neq y\bigr) \;\Longrightarrow\; \bot.
+\end{equation}
+\end{theorem}
+
+This is the only theorem in this paper. \Cref{subsec:rice}--\Cref{subsec:quantitative} are specializations:
+\begin{itemize}\itemsep1pt
+\item Rice: $(Y, t) = (\Bool, \neg)$.
+\item Verification Limit: any $Y$ with a fpf $t$.
+\item Calibration: $(Y, t) = ([0,1],\, y \mapsto 1-y)$.
+\item Deception: any fpf $t$, with the diagonal prompt as the witness.
+\item Oversight: level-wise fpf controllers.
+\item Composition: $t' \circ T$ as the post-composed controller.
+\item Specification Bound: $(\mathcal{P}(A), \neg)$.
+\item Quantitative: metric relaxation.
+\end{itemize}
+The Lean realization is axiom-free; instances pick up at most $\{\texttt{propext}, \texttt{Quot.sound}, \texttt{Classical.choice}\}$.
+
+\medskip
+Eight known impossibilities, plus the Mirror Trilemma itself, fall out of one diagonal. We do not claim this list is complete. Other axes --- computational complexity, measure theory, sample complexity --- may add further bounds. But the Lawvere axis alone fixes a structural ceiling on capability, control, and honesty, and that ceiling holds for any system whose type signature matches that of a frontier LLM.
