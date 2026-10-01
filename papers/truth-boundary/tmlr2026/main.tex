@@ -869,6 +869,25 @@ closest to the premise. Among the other three the order differs from the
 linear case: Pythia-410M has the most accurate MLP probe of the three but
 the largest slack.
 
+\paragraph{Unmatched paths.}
+For the linear readouts, $\dF$ and the logit of $\conf$ are affine along
+a straight path, so every path is determined by the readout values at its
+endpoints; reconstructing the matched paths this way reproduces the saved
+curves exactly. This lets us build paths from the true affirmative of one
+test city to the negation of a different city, removing the matched
+pairing (4{,}290 to 21{,}756 paths per model;
+\texttt{compute\_crosspairs.py}). On these paths exact separation holds
+on 3\% to 11\%, and the median slack is 0.35, 0.26, 0.26, 0.16 and 0.09
+for Phi-1.5, GPT-2, Pythia-410M, Qwen2.5-0.5B and Qwen2.5-1.5B (95\%
+intervals from a bootstrap over cities: $[0.27,0.42]$, $[0.20,0.31]$,
+$[0.22,0.31]$, $[0.14,0.18]$, $[0.07,0.10]$). Slack stays clearly positive
+in every model and is somewhat lower than on matched paths for the three
+weaker models. The rank agreement with probe accuracy holds except that
+GPT-2 and Pythia-410M become indistinguishable. These paths still flip
+truth and polarity together, because every stored statement is a true
+affirmative or a false negation, so this check addresses the matched
+pairing, not the confound of Section~\ref{sec:observe}.
+
 \paragraph{Oddness defect.}
 Using each matched pair as $(x,\sigma x)$, the endpoint defect
 $|\dF(x)+\dF(\sigma x)|/\max(|\dF(x)|,|\dF(\sigma x)|)$ has median 0.40,
@@ -1155,8 +1174,9 @@ Mathlib pinned at \texttt{v4.28.0}; build with \texttt{lake build}), the
 experiment scripts, the public datasets of \citet{marks2024geometry}, all
 result files, and the plotting scripts that regenerate
 Figures~\ref{fig:coupling} and~\ref{fig:endo} from them.
-\texttt{compute\_separation.py}, \texttt{compute\_crossing\_conf.py},
-\texttt{compute\_controls.py} and \texttt{compute\_paired.py} compute
+\texttt{compute\_separation.py}, \texttt{compute\_crosspairs.py},
+\texttt{compute\_crossing\_conf.py}, \texttt{compute\_controls.py} and
+\texttt{compute\_paired.py} compute
 every statistic of Section~\ref{sec:experiments} from the saved curves,
 without model runs. Package versions used for the model runs were not recorded.
 

@@ -14,6 +14,7 @@ experiment.
 
 ## Analyses from saved curves (CPU, NumPy only; reproduce every number in Section 9)
 - `compute_separation.py`: violation fraction, exact-separation rate, empirical truth slack (Tables 2 and 3).
+- `compute_crosspairs.py`: separation statistics on unmatched (cross-city) paths, linear readouts.
 - `compute_paired.py`: per-path crossing gap vs midpoint baseline, exact sign tests (Section 9.5).
 - `compute_controls.py`: gaps on separating paths and midpoint baseline (Appendix Table 4).
 - `compute_crossing_conf.py`: confidence at the probe's zero crossing.
