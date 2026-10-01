@@ -1,0 +1,128 @@
+{
+  "microsoft/phi-1_5": {
+    "n_layers": 24,
+    "per_layer": [
+      {
+        "layer": 1,
+        "val_acc": 0.514,
+        "test_acc": 0.495
+      },
+      {
+        "layer": 2,
+        "val_acc": 0.527,
+        "test_acc": 0.495
+      },
+      {
+        "layer": 3,
+        "val_acc": 0.53,
+        "test_acc": 0.503
+      },
+      {
+        "layer": 4,
+        "val_acc": 0.503,
+        "test_acc": 0.5
+      },
+      {
+        "layer": 5,
+        "val_acc": 0.51,
+        "test_acc": 0.512
+      },
+      {
+        "layer": 6,
+        "val_acc": 0.517,
+        "test_acc": 0.51
+      },
+      {
+        "layer": 7,
+        "val_acc": 0.554,
+        "test_acc": 0.545
+      },
+      {
+        "layer": 8,
+        "val_acc": 0.564,
+        "test_acc": 0.577
+      },
+      {
+        "layer": 9,
+        "val_acc": 0.578,
+        "test_acc": 0.576
+      },
+      {
+        "layer": 10,
+        "val_acc": 0.595,
+        "test_acc": 0.591
+      },
+      {
+        "layer": 11,
+        "val_acc": 0.618,
+        "test_acc": 0.587
+      },
+      {
+        "layer": 12,
+        "val_acc": 0.608,
+        "test_acc": 0.596
+      },
+      {
+        "layer": 13,
+        "val_acc": 0.662,
+        "test_acc": 0.641
+      },
+      {
+        "layer": 14,
+        "val_acc": 0.672,
+        "test_acc": 0.644
+      },
+      {
+        "layer": 15,
+        "val_acc": 0.696,
+        "test_acc": 0.683
+      },
+      {
+        "layer": 16,
+        "val_acc": 0.696,
+        "test_acc": 0.686
+      },
+      {
+        "layer": 17,
+        "val_acc": 0.709,
+        "test_acc": 0.691
+      },
+      {
+        "layer": 18,
+        "val_acc": 0.713,
+        "test_acc": 0.72
+      },
+      {
+        "layer": 19,
+        "val_acc": 0.74,
+        "test_acc": 0.713
+      },
+      {
+        "layer": 20,
+        "val_acc": 0.74,
+        "test_acc": 0.713
+      },
+      {
+        "layer": 21,
+        "val_acc": 0.676,
+        "test_acc": 0.703
+      },
+      {
+        "layer": 22,
+        "val_acc": 0.699,
+        "test_acc": 0.705
+      },
+      {
+        "layer": 23,
+        "val_acc": 0.75,
+        "test_acc": 0.708
+      },
+      {
+        "layer": 24,
+        "val_acc": 0.733,
+        "test_acc": 0.727
+      }
+    ],
+    "max_test_acc": 0.727
+  }
+}

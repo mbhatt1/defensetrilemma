@@ -1,0 +1,22 @@
+name = "HallucinationProofs"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["HallucinationProofs"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.28.0"
+
+[[lean_lib]]
+name = "HallucinationProofs"
+# Build the root module AND every submodule, so files not imported by the
+# root (HoF_01_Foundations, kept separate to avoid name collisions) are
+# still checked by a plain `lake build`.
+globs = ["HallucinationProofs", "HallucinationProofs.+"]

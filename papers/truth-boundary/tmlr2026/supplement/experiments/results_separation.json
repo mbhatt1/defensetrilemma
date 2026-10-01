@@ -1,0 +1,248 @@
+{
+  "linear": {
+    "gpt2": {
+      "n_paths": 83,
+      "frac_paths_exact": 0.0241,
+      "median_viol_frac": 0.2439,
+      "mean_viol_frac": 0.2892,
+      "mean_viol_frac_ci95": [
+        0.2401,
+        0.3397
+      ],
+      "median_eps_hat": 0.347,
+      "median_eps_hat_ci95": [
+        0.2148,
+        0.4422
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "pythia-410m": {
+      "n_paths": 104,
+      "frac_paths_exact": 0.0,
+      "median_viol_frac": 0.1951,
+      "mean_viol_frac": 0.2723,
+      "mean_viol_frac_ci95": [
+        0.2308,
+        0.315
+      ],
+      "median_eps_hat": 0.2888,
+      "median_eps_hat_ci95": [
+        0.2134,
+        0.4146
+      ],
+      "p90_eps_hat": 0.9493
+    },
+    "qwen2.5-0.5b": {
+      "n_paths": 137,
+      "frac_paths_exact": 0.0438,
+      "median_viol_frac": 0.0976,
+      "mean_viol_frac": 0.1444,
+      "mean_viol_frac_ci95": [
+        0.1225,
+        0.1681
+      ],
+      "median_eps_hat": 0.1595,
+      "median_eps_hat_ci95": [
+        0.1118,
+        0.1818
+      ],
+      "p90_eps_hat": 0.4731
+    },
+    "phi-1.5": {
+      "n_paths": 66,
+      "frac_paths_exact": 0.0,
+      "median_viol_frac": 0.2927,
+      "mean_viol_frac": 0.3411,
+      "mean_viol_frac_ci95": [
+        0.2864,
+        0.3973
+      ],
+      "median_eps_hat": 0.4208,
+      "median_eps_hat_ci95": [
+        0.3171,
+        0.5747
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "qwen2.5-1.5b": {
+      "n_paths": 148,
+      "frac_paths_exact": 0.1284,
+      "median_viol_frac": 0.0488,
+      "mean_viol_frac": 0.0662,
+      "mean_viol_frac_ci95": [
+        0.0564,
+        0.077
+      ],
+      "median_eps_hat": 0.0744,
+      "median_eps_hat_ci95": [
+        0.0514,
+        0.0998
+      ],
+      "p90_eps_hat": 0.1992
+    }
+  },
+  "mlp": {
+    "gpt2": {
+      "n_paths": 124,
+      "frac_paths_exact": 0.0323,
+      "median_viol_frac": 0.1463,
+      "mean_viol_frac": 0.2236,
+      "mean_viol_frac_ci95": [
+        0.1904,
+        0.2614
+      ],
+      "median_eps_hat": 0.3506,
+      "median_eps_hat_ci95": [
+        0.2789,
+        0.4489
+      ],
+      "p90_eps_hat": 1.0089
+    },
+    "pythia-410m": {
+      "n_paths": 121,
+      "frac_paths_exact": 0.0579,
+      "median_viol_frac": 0.2439,
+      "mean_viol_frac": 0.2884,
+      "mean_viol_frac_ci95": [
+        0.2459,
+        0.3324
+      ],
+      "median_eps_hat": 0.4143,
+      "median_eps_hat_ci95": [
+        0.2891,
+        0.5095
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "qwen2.5-0.5b": {
+      "n_paths": 144,
+      "frac_paths_exact": 0.0972,
+      "median_viol_frac": 0.0732,
+      "mean_viol_frac": 0.134,
+      "mean_viol_frac_ci95": [
+        0.1059,
+        0.1655
+      ],
+      "median_eps_hat": 0.2067,
+      "median_eps_hat_ci95": [
+        0.1676,
+        0.2647
+      ],
+      "p90_eps_hat": 0.6954
+    },
+    "phi-1.5": {
+      "n_paths": 104,
+      "frac_paths_exact": 0.0288,
+      "median_viol_frac": 0.1707,
+      "mean_viol_frac": 0.2566,
+      "mean_viol_frac_ci95": [
+        0.2155,
+        0.2992
+      ],
+      "median_eps_hat": 0.3394,
+      "median_eps_hat_ci95": [
+        0.2656,
+        0.4282
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "qwen2.5-1.5b": {
+      "n_paths": 149,
+      "frac_paths_exact": 0.1745,
+      "median_viol_frac": 0.0488,
+      "mean_viol_frac": 0.0647,
+      "mean_viol_frac_ci95": [
+        0.0548,
+        0.0756
+      ],
+      "median_eps_hat": 0.0865,
+      "median_eps_hat_ci95": [
+        0.0606,
+        0.1183
+      ],
+      "p90_eps_hat": 0.2818
+    }
+  },
+  "endogenous": {
+    "gpt2": {
+      "n_paths": 53,
+      "frac_paths_exact": 0.0,
+      "median_viol_frac": 0.3659,
+      "mean_viol_frac": 0.4091,
+      "mean_viol_frac_ci95": [
+        0.3332,
+        0.4878
+      ],
+      "median_eps_hat": 0.6033,
+      "median_eps_hat_ci95": [
+        0.2763,
+        0.8502
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "pythia-410m": {
+      "n_paths": 84,
+      "frac_paths_exact": 0.0,
+      "median_viol_frac": 0.4756,
+      "mean_viol_frac": 0.489,
+      "mean_viol_frac_ci95": [
+        0.4364,
+        0.5409
+      ],
+      "median_eps_hat": 0.9139,
+      "median_eps_hat_ci95": [
+        0.7879,
+        1.0
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "qwen2.5-0.5b": {
+      "n_paths": 137,
+      "frac_paths_exact": 0.0803,
+      "median_viol_frac": 0.122,
+      "mean_viol_frac": 0.1798,
+      "mean_viol_frac_ci95": [
+        0.152,
+        0.2095
+      ],
+      "median_eps_hat": 0.1818,
+      "median_eps_hat_ci95": [
+        0.1419,
+        0.2502
+      ],
+      "p90_eps_hat": 0.5979
+    },
+    "phi-1.5": {
+      "n_paths": 80,
+      "frac_paths_exact": 0.0,
+      "median_viol_frac": 0.439,
+      "mean_viol_frac": 0.4107,
+      "mean_viol_frac_ci95": [
+        0.3582,
+        0.4634
+      ],
+      "median_eps_hat": 0.6563,
+      "median_eps_hat_ci95": [
+        0.5341,
+        0.7653
+      ],
+      "p90_eps_hat": 1.0
+    },
+    "qwen2.5-1.5b": {
+      "n_paths": 147,
+      "frac_paths_exact": 0.0816,
+      "median_viol_frac": 0.0732,
+      "mean_viol_frac": 0.0991,
+      "mean_viol_frac_ci95": [
+        0.0859,
+        0.113
+      ],
+      "median_eps_hat": 0.1191,
+      "median_eps_hat_ci95": [
+        0.0848,
+        0.156
+      ],
+      "p90_eps_hat": 0.3744
+    }
+  }
+}
