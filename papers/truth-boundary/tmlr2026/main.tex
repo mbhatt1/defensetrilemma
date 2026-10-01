@@ -293,7 +293,7 @@ Each premise is an idealization, and we flag the evidence against each.
 and steering vectors are applied. The set of activations reachable from
 actual prompts is finite, and contextual embeddings show clustered
 structure \citep{cai2021isotropy}; Section~\ref{sec:discrete} prices
-dropping (T). \emph{(C)} holds for compositions of continuous layers but
+dropping (T) and says where a language model does and does not meet it. \emph{(C)} holds for compositions of continuous layers but
 fails at argmax decoding. \emph{Coverage} holds for any model that is
 sometimes right and sometimes wrong. \emph{Exact separation} is
 pointwise and much stronger than statistical calibration
@@ -568,6 +568,29 @@ Along a sequence of token-level edits from a true to a false statement,
 $\dF$ therefore changes sign between adjacent steps, but no step need sit
 exactly on the boundary. Connectedness is what turns this straddling pair
 into a boundary query (Theorem~\ref{thm:boundary}).
+
+\paragraph{Where a language model meets the premises.}
+From its input embeddings onward, a transformer is a composition of
+continuous maps (linear layers, attention softmax, normalization, smooth
+activations), so as a function of its embeddings or hidden states it is
+continuous on a connected space. Probes, steering vectors, soft prompts
+and embedding-space attacks all act at this level, and there (T) and (C)
+hold without idealization. For models whose inputs are themselves
+continuous, such as images or audio, the actual input domain is a
+connected set (for example $[0,1]^n$ for pixel intensities), so (T) holds
+for real inputs as well. Discreteness enters only at the text interface:
+the representations of actual prompts form a finite set for a bounded
+context length, so a coupled
+query need not be the representation of any prompt, and a guarantee
+stated only over prompts is not contradicted by
+Theorem~\ref{thm:coupling}. Theorem~\ref{thm:width} bounds how much this
+helps. If a prompt's representation lies within distance $r$ of a coupled
+query, its confidence is within $L_c r$ of $\tau$ and its truth margin is
+at most $L_\delta r$, so prompts near a coupled query inherit near-ambiguity
+in proportion to their distance. How close real prompts come to coupled
+queries is an empirical question we do not measure here. In every case
+coverage and exact separation remain premises; settling the domain
+premise does not settle them.
 
 \paragraph{Multiple turns.}
 If a model maps a length-$T$ history in $\X^T$ to one answer and
@@ -948,10 +971,13 @@ bound how often a model errs, and except for
 Theorem~\ref{thm:dichotomy} they conclude uncertainty, not falsehood.
 They apply to a deployed system only through the modelling step that
 identifies its representation space, confidence and truth readout with
-$\X$, $\conf$ and $\dF$. The coupled query may be an ambient activation no
-prompt produces. A guarantee quantified only over reachable inputs is
-untouched, and Section~\ref{sec:discrete} shows that a finite domain needs
-an assumed boundary query. Abstaining on an open region removes it from
+$\X$, $\conf$ and $\dF$. For text inputs the coupled query may be an
+ambient activation no prompt produces; a guarantee quantified only over
+prompts is then not contradicted, Section~\ref{sec:discrete} shows that a
+finite domain needs an assumed boundary query, and
+Theorem~\ref{thm:width} only bounds the confidence and truth margin of
+prompts that lie near a coupled query. For continuous-input models this
+gap does not arise (Section~\ref{sec:discrete}). Abstaining on an open region removes it from
 the domain and can disconnect the true region from the false one, so
 refusal is an escape that the theorems explicitly allow. None of these
 escape routes is mechanized.
