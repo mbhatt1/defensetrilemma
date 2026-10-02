@@ -1,10 +1,10 @@
 # Truth Has a Boundary — TMLR version
 
-TMLR revision of the NeurReps 2026 paper in `../neurreps2026/`.
+TMLR version of the paper. An earlier, unsubmitted draft is in `../neurreps2026/`.
 
 - `main.tex`, `refs.bib`: manuscript (TMLR style files included). Build with
   `latexmk -pdf main.tex`. The compiled PDF is `truth_has_a_boundary_tmlr.pdf`.
-- `experiments/`: the NeurReps experiment code, data, saved curves and results,
+- `experiments/`: the original experiment code, data, saved curves and results,
   plus new NumPy-only analyses that compute every statistic in Section 9 from
   the saved curves (no model runs):
   `compute_separation.py` (violation fraction, exact-separation rate, empirical

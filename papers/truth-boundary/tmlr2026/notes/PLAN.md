@@ -91,7 +91,7 @@ Prior inevitability results bound hallucination *rates* statistically or computa
 | E7 | Adversarial slack floor (old claim) | — | results_adversarial.json | 60 Adam steps, guarantee violated | premises fail | CONTRADICTED as a test; demoted to an appendix "exploratory" note |
 | E8 | "Coupling observed in five models" (old abstract) | — | Table 3 | — | fails in 3 of 5 endogenous | CONTRADICTED; removed |
 
-## What changed from the NeurReps version (substantive)
+## What changed from the earlier draft (substantive)
 
 1. The abstract and introduction now state all four premises; "impossible" is always conditioned on them.
 2. The "machine-check every statement" and "prose claims nothing beyond the formal statements" claims are replaced by Table 1, which carries a mechanized/paper status column.

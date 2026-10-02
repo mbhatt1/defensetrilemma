@@ -11,7 +11,7 @@ An independent reviewer pass ran four personas (Novelty, Experimental validity, 
 | 5 | MAJOR | Truth is confounded with polarity on every path. | Yes. Every path is affirmative-true → negated-false. | Disclosed in §9.4 and the limitations; decoupled-path and polarity-head controls marked **[EVIDENCE NEEDED]**. These cannot be run here: Hugging Face is blocked and there is no torch. |
 | 6 | MAJOR | Novelty is thin; the Defense Trilemma already has discrete, ε-relaxed, Lipschitz, boundary and multi-turn variants. | Yes. Analogues found in `ManifoldProofs/MoF_12, MoF_16, MoF_Adv_02`. | Remark 1 added (topology only gives nonemptiness). Related work and Contribution 2 credit the transfer. New elements are stated narrowly. |
 | 7 | MAJOR | Unresolved [EVIDENCE NEEDED] markers. | Yes. | Kept visible on purpose; they are real gaps. See the list of open items below. |
-| 8 | MAJOR | The supplement README names NeurReps 2026 and an older title; risk of dual-submission or anonymity issues. | Yes. README lines 1–5. | **Your decision.** See the open items below. |
+| 8 | MAJOR | The supplement README names a workshop venue and an older title from an earlier draft; anonymity risk. | Yes. README lines 1–5. | Fixed: venue and title removed from the supplement. The earlier draft was never submitted, so there is no prior-submission issue. |
 | 9 | MINOR | "Shrinks as" trend language. | Yes. | Removed. Wording is now "smaller in models with…" and "rank ordering". |
 | 10 | MINOR | Contribution 3 overstated the controls. | Yes. | Rewritten. |
 | 11 | MINOR | Lean statements carry extra hypotheses (antipodal: continuous c; trilemma and multi-turn: continuous a, δ). | Yes. | Added to the theorem text and Table 1. |
@@ -29,7 +29,7 @@ An independent reviewer pass ran four personas (Novelty, Experimental validity, 
 
 ## Remaining open items (author action required)
 
-1. **Disclosure (#8).** The NeurReps 2026 Proceedings Track version must be disclosed in the TMLR submission form and cover letter if it is archival. Before submitting, strip the venue name and old title from `HallucinationProofs/README.md` in the anonymized supplement, and fix the README's claim that "every theorem … is formalized".
+1. **Supplement README (#8).** Done: venue name and old title removed, and the "every theorem … is formalized" claim fixed. The earlier draft was never submitted, so nothing needs disclosing.
 2. **Lean build log.** Run `lake build` and record the `#print axioms` output for every Table 1 identifier. Several of them, e.g. `model_truth_boundary_nonempty` and `discrete_sign_change`, currently have no `#print axioms` line.
 3. **New experiments (#1, #5).** To make the empirical section positive rather than negative, run:
    - decoupled paths (false-affirmative → true-negation, and same-polarity attribution swaps);
