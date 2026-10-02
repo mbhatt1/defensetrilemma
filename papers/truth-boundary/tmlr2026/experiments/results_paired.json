@@ -1,0 +1,107 @@
+{
+  "linear": {
+    "gpt2": {
+      "n_sep": 61,
+      "head_worse": 34,
+      "head_better": 24,
+      "ties": 3,
+      "sign_test_p": 0.23705
+    },
+    "pythia-410m": {
+      "n_sep": 77,
+      "head_worse": 45,
+      "head_better": 29,
+      "ties": 3,
+      "sign_test_p": 0.08051
+    },
+    "qwen2.5-0.5b": {
+      "n_sep": 131,
+      "head_worse": 71,
+      "head_better": 47,
+      "ties": 13,
+      "sign_test_p": 0.03379
+    },
+    "phi-1.5": {
+      "n_sep": 43,
+      "head_worse": 22,
+      "head_better": 18,
+      "ties": 3,
+      "sign_test_p": 0.63583
+    },
+    "qwen2.5-1.5b": {
+      "n_sep": 148,
+      "head_worse": 66,
+      "head_better": 57,
+      "ties": 25,
+      "sign_test_p": 0.47085
+    }
+  },
+  "mlp": {
+    "gpt2": {
+      "n_sep": 99,
+      "head_worse": 58,
+      "head_better": 29,
+      "ties": 12,
+      "sign_test_p": 0.00248
+    },
+    "pythia-410m": {
+      "n_sep": 85,
+      "head_worse": 49,
+      "head_better": 32,
+      "ties": 4,
+      "sign_test_p": 0.07479
+    },
+    "qwen2.5-0.5b": {
+      "n_sep": 130,
+      "head_worse": 75,
+      "head_better": 38,
+      "ties": 17,
+      "sign_test_p": 0.00064
+    },
+    "phi-1.5": {
+      "n_sep": 83,
+      "head_worse": 48,
+      "head_better": 27,
+      "ties": 8,
+      "sign_test_p": 0.0203
+    },
+    "qwen2.5-1.5b": {
+      "n_sep": 148,
+      "head_worse": 69,
+      "head_better": 55,
+      "ties": 24,
+      "sign_test_p": 0.24292
+    }
+  },
+  "endogenous": {
+    "gpt2": {
+      "n_sep": 23,
+      "head_worse": 12,
+      "head_better": 9,
+      "ties": 2,
+      "sign_test_p": 0.66362
+    },
+    "pythia-410m": null,
+    "qwen2.5-0.5b": {
+      "n_sep": 128,
+      "head_worse": 74,
+      "head_better": 45,
+      "ties": 9,
+      "sign_test_p": 0.00997
+    },
+    "phi-1.5": {
+      "n_sep": 53,
+      "head_worse": 40,
+      "head_better": 13,
+      "ties": 0,
+      "sign_test_p": 0.00027
+    },
+    "qwen2.5-1.5b": {
+      "n_sep": 146,
+      "head_worse": 73,
+      "head_better": 66,
+      "ties": 7,
+      "sign_test_p": 0.61097
+    }
+  }
+}

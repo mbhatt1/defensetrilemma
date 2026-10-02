@@ -1,0 +1,102 @@
+{
+  "gpt2": {
+    "n_cities": 83,
+    "n_cross_paths": 6806,
+    "matched_reconstruction_agreement": 1.0,
+    "matched": {
+      "frac_paths_exact": 0.0241,
+      "mean_viol_frac": 0.2892,
+      "median_eps_hat": 0.347
+    },
+    "cross": {
+      "frac_paths_exact": 0.0359,
+      "mean_viol_frac": 0.2448,
+      "median_eps_hat": 0.2552,
+      "median_eps_hat_ci95_cluster": [
+        0.2032,
+        0.3124
+      ],
+      "p90_eps_hat": 0.9288
+    }
+  },
+  "pythia-410m": {
+    "n_cities": 104,
+    "n_cross_paths": 10712,
+    "matched_reconstruction_agreement": 1.0,
+    "matched": {
+      "frac_paths_exact": 0.0,
+      "mean_viol_frac": 0.2723,
+      "median_eps_hat": 0.2888
+    },
+    "cross": {
+      "frac_paths_exact": 0.0329,
+      "mean_viol_frac": 0.2385,
+      "median_eps_hat": 0.2584,
+      "median_eps_hat_ci95_cluster": [
+        0.2198,
+        0.3104
+      ],
+      "p90_eps_hat": 0.89
+    }
+  },
+  "qwen2.5-0.5b": {
+    "n_cities": 137,
+    "n_cross_paths": 18632,
+    "matched_reconstruction_agreement": 1.0,
+    "matched": {
+      "frac_paths_exact": 0.0438,
+      "mean_viol_frac": 0.1444,
+      "median_eps_hat": 0.1595
+    },
+    "cross": {
+      "frac_paths_exact": 0.0596,
+      "mean_viol_frac": 0.1379,
+      "median_eps_hat": 0.1627,
+      "median_eps_hat_ci95_cluster": [
+        0.1431,
+        0.1847
+      ],
+      "p90_eps_hat": 0.4128
+    }
+  },
+  "phi-1.5": {
+    "n_cities": 66,
+    "n_cross_paths": 4290,
+    "matched_reconstruction_agreement": 1.0,
+    "matched": {
+      "frac_paths_exact": 0.0,
+      "mean_viol_frac": 0.3411,
+      "median_eps_hat": 0.4208
+    },
+    "cross": {
+      "frac_paths_exact": 0.0301,
+      "mean_viol_frac": 0.3009,
+      "median_eps_hat": 0.3458,
+      "median_eps_hat_ci95_cluster": [
+        0.2687,
+        0.4215
+      ],
+      "p90_eps_hat": 1.0
+    }
+  },
+  "qwen2.5-1.5b": {
+    "n_cities": 148,
+    "n_cross_paths": 21756,
+    "matched_reconstruction_agreement": 1.0,
+    "matched": {
+      "frac_paths_exact": 0.1284,
+      "mean_viol_frac": 0.0662,
+      "median_eps_hat": 0.0744
+    },
+    "cross": {
+      "frac_paths_exact": 0.1082,
+      "mean_viol_frac": 0.0736,
+      "median_eps_hat": 0.0858,
+      "median_eps_hat_ci95_cluster": [
+        0.0748,
+        0.0971
+      ],
+      "p90_eps_hat": 0.2378
+    }
+  }
+}
