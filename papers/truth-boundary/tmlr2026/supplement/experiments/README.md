@@ -13,7 +13,8 @@ experiment.
 - `run_adversarial.py`: exploratory run, appendix only; writes `results_adversarial.json`.
 
 ## Analyses from saved curves (CPU, NumPy only; reproduce every number in Section 9)
-- `compute_separation.py`: violation fraction, exact-separation rate, empirical truth slack (Tables 2 and 3).
+- `compute_separation_fine.py`: exact (4001-point) separation statistics for linear readouts, max slack, head-endpoint-error decomposition, cross-city paths (Table 2, Section 9.4).
+- `compute_separation.py`: 41-point separation statistics for MLP and endogenous readouts (Table 3, Section 9.4).
 - `compute_crosspairs.py`: separation statistics on unmatched (cross-city) paths, linear readouts.
 - `compute_paired.py`: per-path crossing gap vs midpoint baseline, exact sign tests (Section 9.5).
 - `compute_controls.py`: gaps on separating paths and midpoint baseline (Appendix Table 4).

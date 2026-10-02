@@ -1,11 +1,12 @@
-"""Boundary-coupling experiment on sub-1B language models.
+"""Separation-premise measurement on small language models (up to 1.5B).
 
 The theory models two continuous fields on representation space. A
 truth field delta_F (negative on true answers, positive on false) and
 a confidence field c that separates truth from falsehood at a
 threshold. The canonical instances in the probing literature are
 linear readouts of hidden states. We instantiate both fields as
-independently trained linear heads and test the theory's predictions.
+independently trained linear heads and measure how far they are from
+the theory's separation premise. (The theorems themselves need no test.)
 
 For each model:
   1. Embed raw true/false statements (cities + neg_cities) at several
@@ -15,17 +16,18 @@ For each model:
      (different data, different seed). tau = 1/2.
   4. Interpolate hidden states between matched (statement, negation)
      pairs. Record delta_F(alpha) and c(alpha).
-     Predictions. Every path has an adjacent sign change of delta_F
-     (discrete sign change). The threshold crossing of c and the zero
-     of delta_F occur at nearly the same alpha (boundary coupling).
-     c is near 1/2 where delta_F is near 0 (confidence pinning).
+     Under exact separation the threshold crossing of c and the zero of
+     delta_F would coincide. With a linear probe and correctly
+     classified endpoints, a sign change of delta_F is guaranteed by
+     affinity, so it is not evidence. See compute_separation.py and
+     compute_paired.py for the analyses reported in the paper.
   5. Estimate the boundary width. The range of |delta_F| over which
      c stays inside [0.4, 0.6].
   6. kNN connectivity check of the activation set (premise T).
 
 Also recorded: the model's own verbalized true/false accuracy under a
-question template, documenting that sub-1B base models cannot do the
-verbalized task even though their representations separate truth.
+question template (verbal accuracy ranges from chance to 0.96 across
+the five models; see results.json).
 
 Outputs: results.json and curves_<model>.npz.
 """

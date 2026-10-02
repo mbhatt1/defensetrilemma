@@ -1,10 +1,11 @@
-"""Adversarial falsification attempt: train the impossible object.
+"""Exploratory adversarial run (reported in the paper's appendix only).
 
 The theorem truth_slack_must_be_positive says no continuous confidence
 field can satisfy zero-slack separation and a threshold-inclusive
-guarantee over a connected domain with coverage. This experiment gives
-that impossibility its best shot. A confidence head is trained
-directly against the forbidden objective and we measure how it fails.
+guarantee over a connected domain with coverage. This exploratory run
+trains a confidence head toward that objective for 60 full-batch Adam
+steps. Every trained head violates the inclusive guarantee, so the run
+does not test that theorem. NumPy is seeded; PyTorch is not.
 
 Setup per model.
   1. Freeze the truth field delta_F, a one-hidden-layer MLP probe
@@ -21,7 +22,7 @@ Setup per model.
      confidence nevertheless fails to clear 1/2, taken over all path
      points, after any guarantee violations are counted separately.
 
-Predictions from the theory.
+Quantities recorded (not tests of the theory).
   - eps_hat stays strictly positive across training (the floor).
   - The points realizing near-worst slack localize at the boundary,
     so their |delta_F| is small relative to the endpoint scale.

@@ -26,7 +26,7 @@ Trilemma: a model's high-confidence answers must lie in the truth-set
    and openness of `{conf > c}`.
 4. `faithful_closure_in_truth` — under continuity, the closure of the
    high-confidence region still maps into `T` (parallel to the
-   closure lemma in a related prompt-injection development, arXiv:2604.06436).
+   a standard closure argument).
 5. `faithful_at_half_boundary` — boundary points with confidence
    exactly `1/2` that are limits of strictly-high-confidence points
    still satisfy `δ ≤ 0`.
@@ -139,7 +139,7 @@ theorem truth_preimage_closed
 /-! ## 5. Faithfulness is preserved on the closure of the high-confidence region
 
 This is the analogue of `closure_safe_subset_fixedPoints` from
-a related prompt-injection development (arXiv:2604.06436): a closed set containing a region must contain
+a standard topological fact: a closed set containing a region must contain
 its closure. -/
 
 /--

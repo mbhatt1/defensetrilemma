@@ -6,8 +6,7 @@ import Mathlib
 We develop the topology of the **truth set** `T = {δ ≤ 0}` for a continuous
 truth-distance function `δ : QA → ℝ` defined on a question-answer space `QA`.
 
-The picture mirrors a related prompt-injection development
-(arXiv:2604.06436) but is specialized to the threshold `τ = 0`:
+The picture is the standard threshold-crossing one, specialized to the threshold `τ = 0`:
 
 * `TruthSet δ = {p | δ p ≤ 0}` — closed truth set
 * `FalseSet δ = {p | δ p > 0}` — open false set
@@ -95,7 +94,7 @@ continuous truth-distance `δ` takes both a strictly-negative value (a true
 point) and a strictly-positive value (a false point), then the boundary
 `{δ = 0}` is nonempty.
 
-Parallel to the corresponding result of a related prompt-injection development (arXiv:2604.06436).
+Standard threshold-crossing argument.
 -/
 theorem truthBoundary_nonempty
     [TopologicalSpace QA] [ConnectedSpace QA]
@@ -118,7 +117,7 @@ theorem truthBoundary_nonempty
 set meet only on the boundary level set:
   `closure (StrictTruth δ) ∩ closure (FalseSet δ) ⊆ TruthBoundary δ`.
 
-Parallel to the corresponding result of a related prompt-injection development (arXiv:2604.06436).
+Standard threshold-crossing argument.
 -/
 theorem strictTruth_falseSet_separated
     [TopologicalSpace QA]

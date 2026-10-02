@@ -5,7 +5,7 @@ import Mathlib
 
 Discrete analogues of the Hallucination Trilemma. These results work directly
 on **finite** question sets without any topology, mirroring the structure of
-a related development for the prompt-injection trilemma (arXiv:2604.06436).
+the usual discrete intermediate value argument.
 
 ## Setup
 

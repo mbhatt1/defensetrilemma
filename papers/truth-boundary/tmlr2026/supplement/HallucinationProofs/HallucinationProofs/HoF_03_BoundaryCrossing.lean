@@ -18,7 +18,7 @@ import Mathlib
   This file develops the IVT-style boundary-crossing arguments which
   underlie the topological obstruction in the Hallucination Trilemma.
   Each result mirrors the corresponding lemma in
-  the corresponding result of a related prompt-injection development (arXiv:2604.06436), restated for the model composite.
+  a standard threshold-crossing lemma, restated for the model composite.
 
   Contents:
 
@@ -239,7 +239,7 @@ theorem model_truth_boundary_isClosed
 
 All results are sorry-free. Each proof reduces to a direct
 application of `IsPreconnected.intermediate_value₂` and continuity
-of compositions / products, mirroring the corresponding result of a related prompt-injection development (arXiv:2604.06436)
+of compositions / products, by the standard argument
 but specialized to the model truth-distance composite
 `q ↦ δ(q, (M q).1)`.
 -/

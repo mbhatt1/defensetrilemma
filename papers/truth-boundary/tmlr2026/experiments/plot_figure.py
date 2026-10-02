@@ -4,8 +4,9 @@ Two rows of small multiples, one column per model, one axis per panel.
 Row 1 shows the truth-probe field delta_F(alpha), normalized per path
 by its endpoint scale. Row 2 shows the independent confidence head
 c(alpha). Median across paths with an interquartile band. The vertical
-line marks the mean probe zero crossing. The predictions are visible
-directly. delta_F crosses zero, and c crosses 1/2 at the same place.
+line marks the mean probe zero crossing. Under exact separation c would
+cross 1/2 exactly there on every path; the spread shows how far the
+readouts are from that premise.
 """
 
 import json

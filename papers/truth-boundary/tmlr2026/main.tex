@@ -66,12 +66,14 @@ machine-check the core results in Lean~4 with Mathlib, marking the few
 steps proved only on paper. Because the theorems need no empirical test,
 our experiments measure their demanding premise instead. In five open
 language models of up to 1.5B parameters, along interpolation paths from
-true city statements to their negations, two independently trained linear
-readouts are exactly separated on at most 13\% of paths, and the smallest
-truth slack that restores separation has a median of 0.07 to 0.42 of the
-truth field's scale; across these five models, probe accuracy and slack
-have the same rank ordering. The model's own confidence is further from
-the premise (median slack 0.12 to 0.91). The coupled query itself is not
+true city statements to their negations, no path is exactly separated by
+two independently trained linear readouts, and the smallest truth slack
+that restores separation on a path has a median of 0.10 to 0.44 of the
+truth field's scale. Across the five models, probe accuracy and median
+slack have the same rank ordering, though nonlinear readouts and the
+paths on which both readouts classify the endpoints correctly only partly
+preserve it. The model's own confidence is at least as far from the
+premise (median slack 0.12 to 0.91). The coupled query itself is not
 observable with these paths, which confound truth with negation.
 \end{abstract}
 
@@ -115,12 +117,12 @@ and price the relaxation, and we mechanize the results in Lean~4.
 
 Empirically, the theorem needs no test, since it holds whenever its
 premises hold. What can be measured is how far real readouts are from
-its demanding premise, exact separation, in the theory's own unit, the
-truth slack of Theorem~\ref{thm:approx}. In five open models the premise
-is met exactly on few or no paths, and the measured slack has the same
-rank ordering as probe accuracy across the five linear readouts
-(Table~\ref{tab:main}); the model's own confidence is further from the
-premise (Table~\ref{tab:endo}). Whether the coupled query can be observed
+its demanding premise, exact separation, using the truth slack of
+Theorem~\ref{thm:approx} measured path by path. In five open models no
+path is exactly separated, and the per-path slack has the same rank
+ordering as probe accuracy across the five linear readouts
+(Table~\ref{tab:main}); the model's own confidence is at least as far from
+the premise (Table~\ref{tab:endo}). Whether the coupled query can be observed
 directly is a separate question, and with the available paths the answer
 is no (Section~\ref{sec:observe}).
 
@@ -570,27 +572,34 @@ exactly on the boundary. Connectedness is what turns this straddling pair
 into a boundary query (Theorem~\ref{thm:boundary}).
 
 \paragraph{Where a language model meets the premises.}
-From its input embeddings onward, a transformer is a composition of
-continuous maps (linear layers, attention softmax, normalization, smooth
-activations), so as a function of its embeddings or hidden states it is
-continuous on a connected space. Probes, steering vectors, soft prompts
-and embedding-space attacks all act at this level, and there (T) and (C)
-hold without idealization. For models whose inputs are themselves
-continuous, such as images or audio, the actual input domain is a
-connected set (for example $[0,1]^n$ for pixel intensities), so (T) holds
-for real inputs as well. Discreteness enters only at the text interface:
-the representations of actual prompts form a finite set for a bounded
-context length, so a coupled
-query need not be the representation of any prompt, and a guarantee
-stated only over prompts is not contradicted by
-Theorem~\ref{thm:coupling}. Theorem~\ref{thm:width} bounds how much this
-helps. If a prompt's representation lies within distance $r$ of a coupled
-query, its confidence is within $L_c r$ of $\tau$ and its truth margin is
-at most $L_\delta r$, so prompts near a coupled query inherit near-ambiguity
-in proportion to their distance. How close real prompts come to coupled
-queries is an empirical question we do not measure here. In every case
-coverage and exact separation remain premises; settling the domain
-premise does not settle them.
+For a dense transformer (without mixture-of-experts routing or activation
+quantization, both of which are discontinuous), the map from a
+fixed-length sequence of input embeddings, or from a hidden state at a
+fixed position, to the next-token distribution is a composition of
+continuous maps, so it is continuous on a connected space. Probes,
+steering vectors, soft prompts and embedding-space attacks act at this
+level, so there (T) and continuity of $\conf$ hold. Continuity of the
+decoded answer $a$ does not, since decoding is an argmax or a sample, so
+of the results above only those that need continuity of $\conf$ alone
+(Theorem~\ref{thm:coupling}, Corollary~\ref{cor:policy}) apply without
+further idealization. The realizable inputs are always finite: a text
+prompt of bounded length has finitely many token sequences, and image or
+audio inputs are quantized (for example 8-bit pixels), so the continuous
+input space $[0,1]^n$ of such models is an idealization of the same kind,
+on a finer grid. A coupled query therefore need not be the representation
+of any realizable input, and a guarantee stated only over realizable
+inputs is not contradicted by Theorem~\ref{thm:coupling}.
+Theorem~\ref{thm:width} does not restore the contradiction. It says only
+that if the realizable representations and a coupled query lie in a
+bounded convex set on which $\conf$ and $\dF$ are $L_c$- and
+$L_\delta$-Lipschitz (dot-product attention need not be globally
+Lipschitz, so a bounded set is required), then a realizable input within
+distance $r$ of the coupled query has $|\conf-\tau|\le L_c r$ and
+$|\dF|\le L_\delta r$; under the slack of Theorem~\ref{thm:approx}, where
+the coupled query only has $|\dF|\le\varepsilon$, the second bound becomes
+$\varepsilon+L_\delta r$. How close realizable inputs come to coupled
+queries is an empirical question we do not measure. In every case
+coverage and exact separation remain premises.
 
 \paragraph{Multiple turns.}
 If a model maps a length-$T$ history in $\X^T$ to one answer and
@@ -695,9 +704,16 @@ one demanding premise, exact pointwise separation. The theory supplies the
 unit: Theorem~\ref{thm:approx} relaxes separation by a truth slack
 $\varepsilon$, and a readout pair is $(\varepsilon,0)$-separating exactly
 when every point with $|\dF|>\varepsilon$ has its confidence on the
-correct side of $\tfrac12$. We therefore estimate, along interpolation
-paths in five language models, the smallest such $\varepsilon$, together
-with the fraction of points at which separation fails. These are
+correct side of $\tfrac12$. Over the whole representation space this $\varepsilon$ is uninformative
+for linear readouts: unless the two readouts' decision hyperplanes
+coincide, the head's hyperplane $\{\conf=\tfrac12\}$ contains points with
+arbitrarily large $|\dF|$, so no finite $\varepsilon$ works on $\R^d$. We
+therefore measure it on a specified domain, the interpolation segments
+between test statements: for each path we compute the smallest
+$\varepsilon$ for which separation holds on that path, and we report its
+median and its maximum over paths, together with the fraction of points
+at which separation fails. The maximum over paths is the theory's
+$\varepsilon$ restricted to the union of the measured segments. These are
 measurements of a hypothesis, not tests of a prediction, so they need no
 null model. Section~\ref{sec:observe} asks the separate question of
 whether the coupled query itself is observable with this design; the
@@ -721,21 +737,32 @@ head trained on split B (\emph{trained confidence}; the two readouts share
 no training statements but read the same representation), or the model's
 own probability of the token ``true'' (\emph{endogenous confidence},
 Section~\ref{sec:endo}). One training run of each readout was made.
+In the notation of Section~\ref{sec:setting}, a query $x$ is the hidden
+state of a statement, the ``answer'' $a(x)$ is the statement itself, and
+$\dF(x)$ is the probe's signed estimate of that statement's truth; the
+experiments therefore concern a readout of the input's truth, not the
+truth of a generated answer.
 \textbf{Paths:} for each of the 149 test cities whose affirmative
 statement is true, the hidden state is interpolated linearly from that
 statement to its negation at 41 points. Paths whose endpoints the probe
 misclassifies are dropped, since the premise is only defined relative to
 a probe that gets the endpoints right.
 \textbf{Statistics, per path:} the \emph{violation fraction}, the share of
-the 41 points where $\dF<0$ but $\conf\le\tfrac12$, or $\dF>0$ but
+points where $\dF<0$ but $\conf\le\tfrac12$, or $\dF>0$ but
 $\conf\ge\tfrac12$; whether the path is \emph{exactly separated} (no
 violating point); and the \emph{empirical truth slack} $\hat\varepsilon$,
 the largest $|\dF|$ among violating points divided by the endpoint scale
 $\max(|\dF(\text{start})|,|\dF(\text{end})|)$, which is the smallest
 $\varepsilon$ for which $(\varepsilon,0)$-separation holds on the path
-($\hat\varepsilon=0$ if none). We report means and medians over paths with
-percentile bootstrap 95\% intervals (10{,}000 path resamples), conditional
-on the trained readouts.
+($\hat\varepsilon=0$ if none). For linear readouts $\dF$ and the logit of
+$\conf$ are affine along a straight path, so each path is determined
+exactly by its endpoint values (reconstruction reproduces the saved
+curves to within $4\times10^{-5}$ in the logit), and we evaluate it on
+4{,}001 points; a coarse grid understates violations near the crossings.
+MLP and endogenous readouts are not affine, and only their 41-point
+curves were saved, so their statistics use 41 points. We report means
+and medians over paths with percentile bootstrap 95\% intervals (10{,}000
+path resamples), conditional on the trained readouts.
 
 \subsection{Trained confidence}
 \label{sec:main}
@@ -743,24 +770,28 @@ on the trained readouts.
 \begin{table}[t]
 \centering
 \caption{Separation premise between two independently trained linear
-readouts. \emph{Probe}, \emph{Head}: test accuracy of $\dF$ and $\conf$.
-\emph{Paths}: paths whose endpoints the probe classifies correctly, of
-149. \emph{Exact}: fraction of those paths with no violating point.
-\emph{Violation}: mean fraction of violating points per path.
-$\hat\varepsilon$: median empirical truth slack, in units of the endpoint
-scale; 95\% bootstrap intervals in brackets. Sources: \texttt{results.json},
-\texttt{results\_separation.json}.}
+readouts, evaluated exactly at 4{,}001 points per path. \emph{Probe},
+\emph{Head}: test accuracy of $\dF$ and $\conf$. \emph{Paths}: paths
+whose endpoints the probe classifies correctly, of 149; none is exactly
+separated. \emph{Head err.}: fraction of paths on which the head is on
+the wrong side of $\tfrac12$ at an endpoint. \emph{Violation}: mean
+fraction of violating points per path. $\hat\varepsilon$: median and
+maximum empirical truth slack, in units of the endpoint scale.
+$\hat\varepsilon\mid$ends: median slack on paths without a head endpoint
+error. 95\% bootstrap intervals in brackets. Sources:
+\texttt{results.json}, \texttt{results\_separation\_fine.json}.}
 \label{tab:main}
 \footnotesize
-\begin{tabular}{@{}lccccccc@{}}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcccccccc@{}}
 \toprule
-Model & Layer & Probe & Head & Paths & Exact & Violation & $\hat\varepsilon$ \\
+Model & Layer & Probe & Head & Paths & Head err. & Violation & $\hat\varepsilon$ median / max & $\hat\varepsilon\mid$ends \\
 \midrule
-Phi-1.5 (1.3B) & 18/24 & 0.72 & 0.72 & 66/149  & 0.00 & 0.34 [0.29, 0.40] & 0.42 [0.32, 0.57] \\
-GPT-2 (124M)   & 9/12  & 0.77 & 0.72 & 83/149  & 0.02 & 0.29 [0.24, 0.34] & 0.35 [0.21, 0.44] \\
-Pythia-410M    & 18/24 & 0.82 & 0.77 & 104/149 & 0.00 & 0.27 [0.23, 0.32] & 0.29 [0.21, 0.41] \\
-Qwen2.5-0.5B   & 12/24 & 0.96 & 0.96 & 137/149 & 0.04 & 0.14 [0.12, 0.17] & 0.16 [0.11, 0.18] \\
-Qwen2.5-1.5B   & 14/28 & 1.00 & 1.00 & 148/149 & 0.13 & 0.07 [0.06, 0.08] & 0.07 [0.05, 0.10] \\
+Phi-1.5 (1.3B) & 18/24 & 0.72 & 0.72 & 66/149  & 0.35 & 0.35 [0.29, 0.40] & 0.44 [0.33, 0.59] / 1.00 & 0.32 [0.21, 0.42] \\
+GPT-2 (124M)   & 9/12  & 0.77 & 0.72 & 83/149  & 0.27 & 0.29 [0.24, 0.34] & 0.38 [0.23, 0.47] / 1.00 & 0.24 [0.17, 0.38] \\
+Pythia-410M    & 18/24 & 0.82 & 0.77 & 104/149 & 0.26 & 0.28 [0.23, 0.32] & 0.30 [0.23, 0.43] / 1.00 & 0.25 [0.20, 0.37] \\
+Qwen2.5-0.5B   & 12/24 & 0.96 & 0.96 & 137/149 & 0.04 & 0.15 [0.12, 0.17] & 0.18 [0.14, 0.20] / 1.00 & 0.18 [0.13, 0.19] \\
+Qwen2.5-1.5B   & 14/28 & 1.00 & 1.00 & 148/149 & 0.00 & 0.07 [0.06, 0.08] & 0.10 [0.08, 0.12] / 0.78 & 0.10 [0.08, 0.12] \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -780,17 +811,26 @@ Table~\ref{tab:main}.}
 
 \textbf{RQ.} How far from exact separation are two independently trained
 truth readouts of the same representation?
-\textbf{Result} (Table~\ref{tab:main}). Exact separation almost never
-holds on the grid: on 0\% to 13\% of paths. The premise fails at 7\% to
-34\% of path points on average, and the median empirical truth slack is
-0.07 to 0.42 of the endpoint scale. Across the five models, probe
-accuracy, violation fraction and slack have the same rank ordering. This
-is a descriptive observation about five fits, not an estimated
-relationship, and the MLP readouts of Section~\ref{sec:robust} only
-partly preserve it. The slack distribution has a long tail: its
-90th percentile is 0.20 for Qwen2.5-1.5B and at least 0.47 for the other
-four models, reaching the full endpoint scale for GPT-2 and Phi-1.5
-(\texttt{results\_separation.json}).
+\textbf{Result} (Table~\ref{tab:main}). No path is exactly separated in
+any model. The premise fails at 7\% to 35\% of path points on average,
+and the median empirical truth slack is 0.10 to 0.44 of the endpoint
+scale; the maximum over paths, which is the theory's $\varepsilon$ on the
+measured segments, is the full endpoint scale in four models and 0.78 in
+Qwen2.5-1.5B. Across the five models, probe accuracy, violation fraction
+and median slack have the same rank ordering, though the bootstrap
+intervals of the three weaker models overlap. Part of this ordering is
+mechanical: where the head is on the wrong side of $\tfrac12$ at an
+endpoint, the slack is large by construction (median 0.66 to 1.00), and
+such paths are more common for less accurate heads (35\% for Phi-1.5,
+none for Qwen2.5-1.5B). On the remaining paths the median slack is 0.10
+to 0.32 and GPT-2 and Pythia-410M tie, so the ordering there separates the
+two Qwen models from the other three rather than ranking all five. Since
+the confidence head is itself a second truth probe on the same features,
+this residual slack measures how far two logistic fits of the same target
+disagree near their boundaries. These are descriptive observations about
+five fits, not an estimated relationship, and the MLP readouts of
+Section~\ref{sec:robust} only partly preserve them
+(\texttt{results\_separation\_fine.json}).
 \textbf{Relation to the theory.} The measured slack is strictly positive
 in every model, which is what Theorem~\ref{thm:approx} requires of any
 system that also carries an inclusive guarantee. That is consistency, not
@@ -800,7 +840,10 @@ would be expected of imperfect readouts in any case.
 statistical trend, from a single data split and a single fit per readout.
 Parameter count is not the ordering variable: Phi-1.5 is the
 second-largest model but has the weakest probe, and a sweep over all its
-layers reaches at most 0.73 test accuracy.
+layers on raw statements reaches at most 0.73 test accuracy (a probe on
+its final-block states under the question template of
+Section~\ref{sec:endo} reaches 0.78, so this is a property of the raw
+representation, not a ceiling for the model).
 
 \paragraph{Where separation fails.}
 At the probe's zero crossing, the trained confidence is usually far from
@@ -863,8 +906,13 @@ read $p(\text{``true''})$ against $p(\text{``false''})$ through the final
 normalization and unembedding; the probe is trained on split A of the same
 final-block states.
 \textbf{Result} (Table~\ref{tab:endo}, Figure~\ref{fig:endo}). Endogenous
-confidence is further from the premise than trained confidence in every
-model. It comes closest in the two Qwen models (median slack 0.12 and
+confidence (statistics on the saved 41-point curves) is at least as far
+from the premise as trained confidence in every model, and clearly
+further in GPT-2, Pythia-410M and Phi-1.5; for Qwen2.5-0.5B the two
+overlap (median slack 0.18 [0.14, 0.25] against 0.16 [0.11, 0.18] on the
+same grid). The comparison is indirect, since the endogenous experiment
+uses a different representation, probe and set of kept paths. Endogenous
+confidence comes closest in the two Qwen models (median slack 0.12 and
 0.18, violation at 10\% and 18\% of points), which are also the only
 models whose confidence is on the correct side at both endpoints on more
 than 90\% of paths. For Pythia-410M, whose confidence exceeds $\tfrac12$
@@ -887,29 +935,28 @@ splits, probe accuracies are 0.79, 0.87, 0.97, 0.80 and 0.995 (GPT-2,
 Pythia-410M, Qwen2.5-0.5B, Phi-1.5, Qwen2.5-1.5B), and 98\% or more of
 kept paths cross zero exactly once. The median slack is 0.35, 0.41, 0.21,
 0.34 and 0.09, and the violation fraction 0.22, 0.29, 0.13, 0.26 and 0.06
-(\texttt{results\_separation.json}). The two Qwen models are again
-closest to the premise. Among the other three the order differs from the
+(41-point curves; \texttt{results\_separation.json}). The two Qwen models
+are again closest to the premise. Among the other three the order differs from the
 linear case: Pythia-410M has the most accurate MLP probe of the three but
 the largest slack.
 
 \paragraph{Unmatched paths.}
-For the linear readouts, $\dF$ and the logit of $\conf$ are affine along
-a straight path, so every path is determined by the readout values at its
-endpoints; reconstructing the matched paths this way reproduces the saved
-curves exactly. This lets us build paths from the true affirmative of one
-test city to the negation of a different city, removing the matched
+The affine reconstruction also gives paths from the true affirmative of
+one test city to the negation of a different city, removing the matched
 pairing (4{,}290 to 21{,}756 paths per model;
-\texttt{compute\_crosspairs.py}). On these paths exact separation holds
-on 3\% to 11\%, and the median slack is 0.35, 0.26, 0.26, 0.16 and 0.09
-for Phi-1.5, GPT-2, Pythia-410M, Qwen2.5-0.5B and Qwen2.5-1.5B (95\%
-intervals from a bootstrap over cities: $[0.27,0.42]$, $[0.20,0.31]$,
-$[0.22,0.31]$, $[0.14,0.18]$, $[0.07,0.10]$). Slack stays clearly positive
-in every model and is somewhat lower than on matched paths for the three
-weaker models. The rank agreement with probe accuracy holds except that
-GPT-2 and Pythia-410M become indistinguishable. These paths still flip
-truth and polarity together, because every stored statement is a true
-affirmative or a false negation, so this check addresses the matched
-pairing, not the confound of Section~\ref{sec:observe}.
+\texttt{compute\_separation\_fine.py}). These paths recombine the same
+endpoint values rather than adding new measurements, and their dependence
+is handled by a bootstrap over cities. At 4{,}001 points, at most 0.1\% of
+them are exactly separated, and the median slack is 0.36, 0.27, 0.27, 0.18
+and 0.11 for Phi-1.5, GPT-2, Pythia-410M, Qwen2.5-0.5B and Qwen2.5-1.5B
+(95\% intervals $[0.29,0.44]$, $[0.22,0.32]$, $[0.24,0.32]$,
+$[0.16,0.20]$, $[0.10,0.12]$). Slack stays clearly positive in every model;
+it is lower than on matched paths for the three weaker models and slightly
+higher for Qwen2.5-1.5B (0.11 against 0.10). GPT-2 and Pythia-410M become
+indistinguishable. These paths still flip truth and polarity together,
+because every stored statement is a true affirmative or a false negation,
+so this check addresses the matched pairing, not the confound of
+Section~\ref{sec:observe}.
 
 \paragraph{Oddness defect.}
 Using each matched pair as $(x,\sigma x)$, the endpoint defect
@@ -952,12 +999,14 @@ between true and false city attributions, and a polarity-probe readout
 would be needed.
 
 \paragraph{Summary.}
-In five models up to 1.5B parameters, the separation premise is met
-exactly on few or no paths. Its empirical slack is smallest, near 0.07
-to 0.12 of the truth field's scale, in the model with the most accurate
-probe, and across the five linear readouts slack and probe accuracy have
-the same rank ordering. The model's own confidence is further from
-the premise than a trained head. The coupled query that the premise would
+In five models up to 1.5B parameters, no interpolation path is exactly
+separated. The median per-path slack is smallest, 0.10 of the truth
+field's scale for trained readouts and 0.12 for the model's own
+confidence, in the model with the most accurate probe; across the five
+linear readouts median slack and probe accuracy have the same rank
+ordering, partly for the mechanical reason given in
+Section~\ref{sec:main}. The model's own confidence is at least as far
+from the premise as a trained head. The coupled query that the premise would
 force is not observable with these paths.
 
 
@@ -976,8 +1025,9 @@ ambient activation no prompt produces; a guarantee quantified only over
 prompts is then not contradicted, Section~\ref{sec:discrete} shows that a
 finite domain needs an assumed boundary query, and
 Theorem~\ref{thm:width} only bounds the confidence and truth margin of
-prompts that lie near a coupled query. For continuous-input models this
-gap does not arise (Section~\ref{sec:discrete}). Abstaining on an open region removes it from
+prompts that lie near a coupled query; the same gap arises for image and
+audio models, whose realizable inputs are quantized
+(Section~\ref{sec:discrete}). Abstaining on an open region removes it from
 the domain and can disconnect the true region from the false one, so
 refusal is an escape that the theorems explicitly allow. None of these
 escape routes is mechanized.
@@ -988,8 +1038,12 @@ statement family (cities) with a translation replication for which only
 crossing gaps were saved, final-token states, three candidate layers, one
 data split, a single fit per readout, and linear true-to-negation
 interpolation paths that confound truth with polarity. Separation
-statistics are computed on a 41-point grid and are conditional on paths
-whose endpoints the probe classifies correctly. The bootstrap intervals
+statistics are computed exactly (4{,}001 points) for linear readouts and on
+the saved 41-point curves for MLP and endogenous readouts, and are
+conditional on paths whose endpoints the probe classifies correctly; the
+slack is measured on interpolation segments, not on the whole
+representation space, where it is unbounded for distinct linear
+readouts. The bootstrap intervals
 are conditional on the trained readouts. Hardware, software versions and
 runtimes were not recorded for the model runs; all statistics in
 Section~\ref{sec:experiments} are recomputed from the released curves by
@@ -1035,10 +1089,10 @@ boundary; connectedness, continuous confidence and coverage make that set
 nonempty, so the two must meet at a query. That one fact settles both guarantee conventions: an inclusive
 guarantee is inconsistent, and an exclusive one is silent at the meeting
 point. We mechanized the result and its relaxations in Lean~4 and marked
-what remains on paper. In five small models the separation premise is met exactly on few or no
-paths; across the five linear readouts its empirical slack has the same
-rank ordering as probe accuracy, and it is larger for the model's own
-confidence. Observing the coupled query directly needs paths
+what remains on paper. In five small models no interpolation path is exactly separated; across
+the five linear readouts the median per-path slack has the same rank
+ordering as probe accuracy, partly for mechanical reasons, and the model's
+own confidence is at least as far from the premise. Observing the coupled query directly needs paths
 that decouple truth from negation, which is the next experiment.
 
 \bibliography{refs}
@@ -1200,7 +1254,8 @@ Mathlib pinned at \texttt{v4.28.0}; build with \texttt{lake build}), the
 experiment scripts, the public datasets of \citet{marks2024geometry}, all
 result files, and the plotting scripts that regenerate
 Figures~\ref{fig:coupling} and~\ref{fig:endo} from them.
-\texttt{compute\_separation.py}, \texttt{compute\_crosspairs.py},
+\texttt{compute\_separation\_fine.py}, \texttt{compute\_separation.py},
+\texttt{compute\_crosspairs.py},
 \texttt{compute\_crossing\_conf.py}, \texttt{compute\_controls.py} and
 \texttt{compute\_paired.py} compute
 every statistic of Section~\ref{sec:experiments} from the saved curves,
