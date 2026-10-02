@@ -32,6 +32,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\conf}{c}
 \newcommand{\dF}{\delta_{\!F}}
+\newcommand{\dFhat}{\hat\delta_{\!F}}
 \newcommand{\leanid}[1]{{\def\_{\textunderscore\allowbreak}\texttt{#1}}}
 \newcommand{\mech}{\textsc{m}}   % mechanized in Lean
 \newcommand{\paper}{\textsc{p}}  % proved on paper only
@@ -57,7 +58,10 @@ Exact pointwise separation (confidence above a threshold $\tau$ wherever
 the answer is strictly true, and below $\tau$ wherever it is strictly
 false) forces the confidence level set $\{\conf=\tau\}$ into the truth
 boundary $\{\dF=0\}$, with no topology at all. Connectedness, continuity
-and coverage make $\{\conf=\tau\}$ nonempty. Together they yield a query
+and coverage make $\{\conf=\tau\}$ nonempty. The mathematical ingredient
+is elementary; the contribution is this decomposition of truth--confidence
+compatibility into a pointwise level-set constraint and a separate
+topological existence condition. Together they yield a query
 with confidence exactly $\tau$ and truth-distance exactly zero, so a
 threshold-inclusive truth guarantee is inconsistent with these premises,
 while a threshold-exclusive one is consistent but silent at that query.
@@ -73,8 +77,10 @@ truth field's scale. Across the five models, probe accuracy and median
 slack have the same rank ordering, though nonlinear readouts and the
 paths on which both readouts classify the endpoints correctly only partly
 preserve it. The model's own confidence is at least as far from the
-premise (median slack 0.12 to 0.91). The coupled query itself is not
-observable with these paths, which confound truth with negation.
+premise (median slack 0.12 to 0.91). A second, negative finding is that the coupled query itself is not
+observable with true-to-negation paths: the readouts' crossings agree no
+better than a baseline that crosses at the path midpoint, because these
+paths confound truth with negation.
 \end{abstract}
 
 % ===========================================================================
@@ -105,8 +111,11 @@ two fields' level sets is a pointwise consequence of separation: exact
 separation alone forces $\{\conf=\tau\}\subseteq\{\dF=0\}$
 (Proposition~\ref{prop:containment}). \emph{Existence} is where topology
 enters: connectedness, continuity of $\conf$ and coverage make
-$\{\conf=\tau\}$ nonempty. The mathematics is elementary, and we say so;
-its value is that each premise does one identifiable job, and that the
+$\{\conf=\tau\}$ nonempty. The mathematical ingredient is elementary,
+and we say so: the contribution is the decomposition of truth--confidence
+compatibility into a pointwise level-set constraint and a separate
+topological existence condition. Its value is that each premise does one
+identifiable job, and that the
 conclusion mentions no safety guarantee and no threshold convention, so
 the different guarantee conventions become corollaries of one statement.
 
@@ -126,6 +135,29 @@ the premise (Table~\ref{tab:endo}). Whether the coupled query can be observed
 directly is a separate question, and with the available paths the answer
 is no (Section~\ref{sec:observe}).
 
+\paragraph{Relation to the Defense Trilemma.}
+The closest prior work, \citet{bhatt2026defense}, uses the same
+continuity-on-a-connected-space argument for a different object.
+Table~\ref{tab:dt} summarizes the difference; Section~\ref{sec:related}
+names the lemmas that transfer.
+
+\begin{table}[h]
+\centering
+\caption{This paper versus the Defense Trilemma.}
+\label{tab:dt}
+\footnotesize
+\begin{tabular}{@{}p{3.1cm}p{5.4cm}p{5.4cm}@{}}
+\toprule
+& \citet{bhatt2026defense} & This paper \\
+\midrule
+Object & One continuous transformation $D:\X\to\X$ (a defense wrapper), scored by one function & Two scalar fields $(\dF,\conf):\X\to\R^2$, truth and confidence \\
+Core statement & A complete, utility-preserving wrapper must fix a threshold-level point & $\{\conf=\tau\}\subseteq\{\dF=0\}$ from separation alone; topology only makes it nonempty \\
+Shared ingredients & \multicolumn{2}{p{10.8cm}}{IVT on a connected space; discrete, $\varepsilon$-relaxed, Lipschitz, multi-turn and stochastic variants (transferred here)} \\
+New here & -- & Level-set containment; inclusive vs.\ exclusive guarantee taxonomy; symmetry and hyperplane results; measurement of the separation premise in language models \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Contributions.}
 \begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=2pt]
 \item \textbf{Boundary containment and coupling, with a guarantee
@@ -144,12 +176,13 @@ supplies the boundary query (Sections~\ref{sec:geometry}--\ref{sec:discrete}).
 Several of these transfer variants of the continuity argument of
 \citet{bhatt2026defense} to two fields. All main statements are checked in Lean~4 (Table~\ref{tab:lean}), and
 the few paper-only steps are marked.
-\item \textbf{A measurement of the separation premise.} In five open
-models we estimate the empirical truth slack and the fraction of points
-violating separation, for trained linear and MLP readouts and for the
-model's own confidence, with bootstrap intervals over paths. The results
-are descriptive (one data split, one fit per readout), and we show that
-the coupled query is not observable with true-to-negation paths
+\item \textbf{A measurement of the separation premise, and an
+observability result.} In five open models we estimate the empirical truth
+slack and the fraction of points violating separation for a probe-derived
+truth field, with trained linear and MLP readouts and the model's own
+confidence (descriptive: one data split, one fit per readout). We also
+show that the coupled query is not observable with true-to-negation paths
+and identify the path design that could observe it
 (Section~\ref{sec:experiments}).
 \end{enumerate}
 
@@ -706,8 +739,8 @@ $\varepsilon$, and a readout pair is $(\varepsilon,0)$-separating exactly
 when every point with $|\dF|>\varepsilon$ has its confidence on the
 correct side of $\tfrac12$. Over the whole representation space this $\varepsilon$ is uninformative
 for linear readouts: unless the two readouts' decision hyperplanes
-coincide, the head's hyperplane $\{\conf=\tfrac12\}$ contains points with
-arbitrarily large $|\dF|$, so no finite $\varepsilon$ works on $\R^d$. We
+coincide, the head's hyperplane $\{\conf=\tfrac12\}$ contains points where the
+truth readout is arbitrarily large, so no finite $\varepsilon$ works on $\R^d$. We
 therefore measure it on a specified domain, the interpolation segments
 between test statements: for each path we compute the smallest
 $\varepsilon$ for which separation holds on that path, and we report its
@@ -731,15 +764,20 @@ training split A (50\%), split B (20\%), validation (10\%) and test (20\%).
 \textbf{Representation:} the final-token hidden state at one layer, chosen
 by validation accuracy among $\{\lfloor n/4\rfloor,\lfloor n/2\rfloor,
 \lfloor 3n/4\rfloor\}$ for an $n$-layer model.
-\textbf{Fields:} $\dF$ is the negated logit of a standardized logistic
-probe trained on split A. Confidence $\conf$ is either a second logistic
+\textbf{Fields:} the \emph{probe-derived truth field} $\dFhat$ is the
+negated logit of a standardized logistic probe trained on split A. We
+write $\dFhat$ rather than $\dF$ throughout this section because it is a
+learned estimate, not the semantic truth-distance of
+Definition~\ref{def:model}; the measurements below evaluate the
+separation premise with $\dFhat$ in the role of $\dF$, and say nothing
+about how well $\dFhat$ tracks semantic truth. Confidence $\conf$ is either a second logistic
 head trained on split B (\emph{trained confidence}; the two readouts share
 no training statements but read the same representation), or the model's
 own probability of the token ``true'' (\emph{endogenous confidence},
 Section~\ref{sec:endo}). One training run of each readout was made.
 In the notation of Section~\ref{sec:setting}, a query $x$ is the hidden
 state of a statement, the ``answer'' $a(x)$ is the statement itself, and
-$\dF(x)$ is the probe's signed estimate of that statement's truth; the
+$\dFhat(x)$ is the probe's signed estimate of that statement's truth; the
 experiments therefore concern a readout of the input's truth, not the
 truth of a generated answer.
 \textbf{Paths:} for each of the 149 test cities whose affirmative
@@ -748,13 +786,13 @@ statement to its negation at 41 points. Paths whose endpoints the probe
 misclassifies are dropped, since the premise is only defined relative to
 a probe that gets the endpoints right.
 \textbf{Statistics, per path:} the \emph{violation fraction}, the share of
-points where $\dF<0$ but $\conf\le\tfrac12$, or $\dF>0$ but
+points where $\dFhat<0$ but $\conf\le\tfrac12$, or $\dFhat>0$ but
 $\conf\ge\tfrac12$; whether the path is \emph{exactly separated} (no
 violating point); and the \emph{empirical truth slack} $\hat\varepsilon$,
-the largest $|\dF|$ among violating points divided by the endpoint scale
-$\max(|\dF(\text{start})|,|\dF(\text{end})|)$, which is the smallest
+the largest $|\dFhat|$ among violating points divided by the endpoint scale
+$\max(|\dFhat(\text{start})|,|\dFhat(\text{end})|)$, which is the smallest
 $\varepsilon$ for which $(\varepsilon,0)$-separation holds on the path
-($\hat\varepsilon=0$ if none). For linear readouts $\dF$ and the logit of
+($\hat\varepsilon=0$ if none). For linear readouts $\dFhat$ and the logit of
 $\conf$ are affine along a straight path, so each path is determined
 exactly by its endpoint values (reconstruction reproduces the saved
 curves to within $4\times10^{-5}$ in the logit), and we evaluate it on
@@ -771,7 +809,7 @@ path resamples), conditional on the trained readouts.
 \centering
 \caption{Separation premise between two independently trained linear
 readouts, evaluated exactly at 4{,}001 points per path. \emph{Probe},
-\emph{Head}: test accuracy of $\dF$ and $\conf$. \emph{Paths}: paths
+\emph{Head}: test accuracy of $\dFhat$ and $\conf$. \emph{Paths}: paths
 whose endpoints the probe classifies correctly, of 149; none is exactly
 separated. \emph{Head err.}: fraction of paths on which the head is on
 the wrong side of $\tfrac12$ at an endpoint. \emph{Violation}: mean
@@ -800,7 +838,7 @@ Qwen2.5-1.5B   & 14/28 & 1.00 & 1.00 & 148/149 & 0.00 & 0.07 [0.06, 0.08] & 0.10
 \centering
 \includegraphics[width=\linewidth]{boundary_coupling.pdf}
 \caption{Trained linear readouts along true-to-negation paths (median and
-interquartile band over kept paths). Top: probe $\dF$ divided by the
+interquartile band over kept paths). Top: probe $\dFhat$ divided by the
 endpoint scale. Bottom: trained head $\conf$. Dotted line: mean position
 of the probe's zero crossing. Under exact separation the bottom curve
 would cross $\tfrac12$ exactly at the dotted line on every path; the
@@ -887,7 +925,7 @@ Qwen2.5-1.5B   & 1.00 & 147/149 & 146 (0.99) & 0.08 & 0.10 [0.09, 0.11] & 0.12 [
 \centering
 \includegraphics[width=\linewidth]{endogenous_coupling.pdf}
 \caption{Endogenous confidence on endpoint-separating paths (all kept
-paths for Pythia-410M, which has none). Top: probe $\dF$ on final-block
+paths for Pythia-410M, which has none). Top: probe $\dFhat$ on final-block
 states, normalized by endpoint scale. Bottom: the model's own
 $p(\text{true})$ on a common $[0,1]$ axis. Dotted line: mean probe zero
 crossing. Only the two Qwen models sweep through $\tfrac12$ near the
@@ -960,18 +998,22 @@ Section~\ref{sec:observe}.
 
 \paragraph{Oddness defect.}
 Using each matched pair as $(x,\sigma x)$, the endpoint defect
-$|\dF(x)+\dF(\sigma x)|/\max(|\dF(x)|,|\dF(\sigma x)|)$ has median 0.40,
+$|\dFhat(x)+\dFhat(\sigma x)|/\max(|\dFhat(x)|,|\dFhat(\sigma x)|)$ has median 0.40,
 0.43, 0.30, 0.53 and 0.17, and 90th percentile 0.82, 0.91, 0.62, 0.89 and
 0.41 (\texttt{results\_oddness.json}). Theorem~\ref{thm:approx-odd}(i)
 needs a uniform bound on the defect, so these data do not support applying
 the symmetry results to these probes.
 
-\subsection{Can the coupled query be observed?}
+\subsection{Result: the coupled query is not observable with true-to-negation paths}
 \label{sec:observe}
 \label{sec:confound}
 
-Under exact separation, the truth readout's zero crossing and the
-confidence readout's $\tfrac12$ crossing would coincide on every path.
+This subsection reports a negative result about observability. It is a
+finding of the paper, not only a limitation: it shows that the natural
+interpolation design used in probing work cannot reveal the coupled query,
+and it identifies the design that could. Under exact separation, the
+truth readout's zero crossing and the confidence readout's $\tfrac12$
+crossing would coincide on every path.
 With the measured slack they do not, and the distance between them, the
 \emph{crossing gap}, has median 0.05 to 0.31 of the path for trained
 confidence (Appendix Table~\ref{tab:gaps}). We asked whether this gap
@@ -994,9 +1036,13 @@ models a nearest-neighbour graph of the test states splits exactly by
 polarity, with true and false balanced inside each component
 (\texttt{results\_gaps.json}). With the saved data, which contain only
 these paths and no hidden states, the coupled query is not observable.
-Paths from false affirmatives to true negations, same-polarity paths
-between true and false city attributions, and a polarity-probe readout
-would be needed.
+What the experiment teaches, beyond the fact that two classifiers have
+different boundaries, is that on true-to-negation paths any truth readout
+and any polarity readout cross together, so the location of a crossing
+cannot certify truth--confidence coupling. Observing the coupled query
+requires paths on which truth and polarity come apart: false affirmatives
+to true negations, same-polarity paths between true and false city
+attributions, and a polarity-probe readout as a control.
 
 \paragraph{Summary.}
 In five models up to 1.5B parameters, no interpolation path is exactly
@@ -1179,7 +1225,7 @@ run uses layer 18 from the three-candidate rule.
 \paragraph{Readouts.} Logistic regression (lbfgs) on standardized
 features. The probe and head differ only in their training split.
 
-\paragraph{Relative boundary width.} The median of $|\dF|$ over path
+\paragraph{Relative boundary width.} The median of $|\dFhat|$ over path
 points with $\conf\in(0.4,0.6)$, divided by the endpoint scale: 0.33,
 0.36, 0.20, 0.37 and 0.11. This is a descriptive proxy, not the formal
 slack $\varepsilon$ of Definition~\ref{def:premises}, which is a
@@ -1188,7 +1234,7 @@ supremum-type quantity.
 \paragraph{Crossing gaps.}
 Table~\ref{tab:gaps} reports the crossing gap used in
 Section~\ref{sec:observe}: the distance in interpolation parameter between
-$\arg\min|\dF|$ and $\arg\min|\conf-\tfrac12|$ on the grid, for the
+$\arg\min|\dFhat|$ and $\arg\min|\conf-\tfrac12|$ on the grid, for the
 trained linear readouts. Under exact separation it would be zero. The
 permuted-label and random-direction nulls (20 seeds each) rarely cross
 $\tfrac12$ inside a path, so their gaps sit near an endpoint by
@@ -1240,7 +1286,7 @@ is not reproducible. The fraction of evaluation points
 violating the guarantee was 0.005, 0.016, 0.001, 0.018 and 0.002 at the
 end, so the inclusive-guarantee hypothesis of Theorem~\ref{thm:approx}
 does not hold for any trained head, and the run does not test that
-theorem. The empirical slack estimate (the largest $-\dF$ among true
+theorem. The empirical slack estimate (the largest $-\dFhat$ among true
 points with $\conf\le\tfrac12$, relative to endpoint scale) ended at
 0.91, 0.80, 0.38, 0.57 and 0.22 and had not converged for several models
 (\texttt{results\_adversarial.json}). We report this run for
