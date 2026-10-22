@@ -8,6 +8,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "What It Means for AI Safety" =>
 
+*Abstract.* A theorem saying that all three properties cannot hold together is a menu, not a counsel of despair. This chapter reads the trilemma as an engineering constraint. It works through the three relaxations (abstain, price a confident-error band, or weaken calibration), states what each costs, and says when each is the right choice. It marks the quantity the theory refuses to fix, which is where deployment risk lives. The chapter is explicit about which sentences are theorems and which are judgments about cost and traffic.
+
+*Keywords:* AI safety, Abstention, Deployment risk, Defense design, Cost asymmetry
+
 A theorem that says "you cannot have all three" is not a counsel of despair. It
 is a menu. The earlier chapters proved the impossibility and traced it to a single
 diagonal. This chapter spends the result. It reads the trilemma as an engineering
@@ -58,7 +62,7 @@ third leg, and in the diagonal reading it is the arbitrary-text premise that let
 a prompt describe and invert the defense. The forced witness is the injection "be
 unsafe exactly if you would be made safe."
 
-**Definition 7.1 (The design triangle).** Fix one of the two readings. The
+*Definition 7.1 (The design triangle).* Fix one of the two readings. The
 _design triangle_ has the three named conditions as its vertices. A _corner
 policy_ is a choice to give up exactly one vertex and keep the other two. The
 trilemma says the interior of the triangle, all three at once, is empty.
@@ -69,7 +73,7 @@ not say which to drop, and does not say the surviving two come for free. It says
 the point where all three hold does not exist. Everything an engineer does with
 the result is a choice of which vertex to release and how far.
 
-**Remark 7.2.** The two readings share a proof term, which Chapter 3 checks with
+*Remark 7.2.* The two readings share a proof term, which Chapter 3 checks with
 `rfl`. For an engineer this means the menu below is written once and applies to
 both problems. When I describe the cost of dropping coverage in the hallucination
 setting, the same paragraph describes the cost of dropping completeness or utility
@@ -203,12 +207,12 @@ is a cut: abstaining on an open region around the boundary deletes it from the
 domain and can disconnect the true region from the false one, which is why the
 paper calls refusal training connectedness surgery.
 
-**Definition 7.3 (Abstention policy).** An _abstention policy_ replaces the answer
+*Definition 7.3 (Abstention policy).* An _abstention policy_ replaces the answer
 map with a partial one that returns a designated `abstain` outcome on a region `R`
 of query space, and answers on the complement. The _abstention rate_ is the
 probability that a query drawn from deployment traffic lands in `R`.
 
-**Proposition 7.3a (Abstention preserves the surviving vertices).** _On the
+*Proposition 7.3a (Abstention preserves the surviving vertices).* _On the
 complement of `R`, an abstention policy leaves faithfulness and calibration exactly
 as they were. It changes only coverage, by removing `R` from the answered set._
 
@@ -218,6 +222,10 @@ and calibration statements, which are conditions on answered queries, hold on th
 complement exactly as they held before. Coverage, the condition that the model is
 sometimes strictly right and sometimes strictly wrong, is the only vertex the policy
 touches, since it can delete the strictly-wrong witnesses by placing `R` over them. ∎
+
+Not formalized. The argument is bookkeeping over which hypotheses the policy
+touches, and the companion libraries model total answer maps only, so there is no
+declaration of partial answering for it to cite.
 
 Proposition 7.3a is the formal content of "abstention is the clean corner." It does
 not trade a bit of one vertex for a bit of another. It surrenders coverage on a
@@ -247,7 +255,7 @@ In these settings a system that says "I do not know, escalate to a human" on the
 hard middle is behaving well, and the utility it gives up is utility it should not
 have been claiming.
 
-**Remark 7.4.** Abstention preserves both surviving vertices exactly, which is why
+*Remark 7.4.* Abstention preserves both surviving vertices exactly, which is why
 it is the safest corner to reason about. It does not blur the confidence signal
 and does not tolerate a class of errors. It removes queries from scope. The failure
 mode is not a wrong answer but a gap in coverage, and gaps are auditable in a way
@@ -298,7 +306,7 @@ slack, the boundary is excluded from the high-confidence band, which is the whol
 value of the trade. You are not tolerating errors everywhere. You are confining
 them to a band whose width you chose.
 
-**Definition 7.5 (Confident-error band).** A _confident-error band_ of half-width
+*Definition 7.5 (Confident-error band).* A _confident-error band_ of half-width
 `ε` is the set of queries with `|dF| ≤ ε`, where `dF` is the realized truth field.
 The policy answers confidently on the whole space and accepts that answers inside
 the band may be wrong. The _band mass_ is the probability that deployment traffic
@@ -327,14 +335,14 @@ surface directly rather than watching the whole input space. That is the
 "monitor, don't eliminate" prescription of the defense paper, read for
 hallucination.
 
-**Remark 7.6.** The band is not a bug you failed to fix. It is a resource you are
+*Remark 7.6.* The band is not a bug you failed to fix. It is a resource you are
 spending on purpose. The danger of this corner is not the band itself but the
 temptation to pretend `ε` is zero, to ship a model as if it were exactly faithful
 and discover the band the hard way when traffic shifts and `ρ` rises. A team that
 runs the band policy honestly writes down its `ε`, monitors its `ρ`, and treats
 the product `ρ · ε` as a service-level number, not an embarrassment.
 
-**Proposition 7.6a (The band has a positive floor).** _Under coverage and a
+*Proposition 7.6a (The band has a positive floor).* _Under coverage and a
 threshold-inclusive guarantee on a connected domain, the truth slack `ε` compatible
 with separation cannot be zero. There is a strictly positive infimum of feasible
 slack, and pushing the model toward exact faithfulness drives the required slack
@@ -363,7 +371,7 @@ service-level number the team can state and defend. The failure it must guard
 against is not the band but a silent rise in `ρ` when the language or codebase mix
 shifts, which widens the same `ε` into a larger band mass without any code change.
 
-**Remark 7.6b (The band is where monitoring is cheap).** The operational advantage
+*Remark 7.6b (The band is where monitoring is cheap).* The operational advantage
 of this corner deserves emphasis. Because the errors are confined to a
 neighborhood of a known surface, the truth boundary, you can spend your monitoring
 budget on that surface instead of on the whole input space. This is the
@@ -389,12 +397,12 @@ decorrelated from correctness can score exactly as well on an accuracy benchmark
 one whose confidence is perfectly calibrated, because accuracy never reads the
 confidence number. The cost is invisible to the metric most teams watch.
 
-**Definition 7.7 (Decoupling).** A model is _decoupled_ at level `κ` if the mutual
+*Definition 7.7 (Decoupling).* A model is _decoupled_ at level `κ` if the mutual
 information between its reported confidence and the correctness of its answer is at
 most `κ`. Perfect calibration is high mutual information; full decoupling is `κ = 0`,
 a confidence signal that carries no information about correctness.
 
-**Proposition 7.8 (Decoupling is invisible to accuracy).** _Top-1 accuracy is a
+*Proposition 7.8 (Decoupling is invisible to accuracy).* _Top-1 accuracy is a
 function of the answer map alone and does not depend on the confidence field.
 Hence two models with identical answer maps and any two confidence fields, one
 calibrated and one fully decoupled, have identical accuracy._
@@ -406,7 +414,8 @@ for every metric of that shape, not merely for top-1 accuracy.
 
 ```lean
 theorem c7_decoupling_invisible_to_accuracy
-    {Q A C S : Type _} (acc : (Q → A) → S) (M₁ M₂ : Q → A × C)
+    {Q A C S : Type _} (acc : (Q → A) → S)
+    (M₁ M₂ : Q → A × C)
     (h : ∀ q, (M₁ q).1 = (M₂ q).1) :
     acc (fun q => (M₁ q).1) = acc (fun q => (M₂ q).1) := by
   congr 1
@@ -445,7 +454,7 @@ moment any consumer appears downstream, this corner becomes the most dangerous o
 the three, because it fails silently and the failure surfaces in a different
 component than the one that caused it.
 
-**Remark 7.9.** The three corners differ in where the failure shows up. Abstention
+*Remark 7.9.* The three corners differ in where the failure shows up. Abstention
 fails in the coverage log, visibly, as refusals. The band fails at a known surface
 near the boundary, monitorably, as localized confident errors. Decoupling fails
 downstream, invisibly, as degraded decisions in systems that trusted the
@@ -472,7 +481,7 @@ improved the dashboard. This is the characteristic life cycle of the decoupling
 corner: chosen for free, safe until a consumer appears, dangerous the moment one
 does.
 
-**Remark 7.9a (Decoupling cannot be detected by the producer alone).** _Whether
+*Remark 7.9a (Decoupling cannot be detected by the producer alone).* _Whether
 weakening calibration is safe depends on the set of downstream consumers of the
 confidence signal, which is not a property of the model. Hence the model's own team,
 looking only at the model, cannot determine whether it has entered the dangerous
@@ -484,7 +493,7 @@ in a way that degrades under decoupling. The consumers live outside the model. A
 purely model-internal audit has no access to them, so it cannot decide the
 statement. ∎
 
-Proposition 7.9a is the reason decoupling is an organizational hazard as much as a
+Remark 7.9a is the reason decoupling is an organizational hazard as much as a
 technical one. The information needed to judge it is split between the team that
 produces the confidence and the teams that consume it, and neither half can decide
 the question alone. The mitigation is a contract: if a system publishes a
@@ -515,11 +524,11 @@ Second, the failure locations order the corners by how much organizational trust
 they demand. Abstention demands the least, because its failures are in your own
 logs. The band demands more, because you must actually run the boundary monitor.
 Decoupling demands the most, because its safety is a claim about systems you may not
-control, which Proposition 7.9a says you cannot verify from inside the model. When
+control, which Remark 7.9a says you cannot verify from inside the model. When
 in doubt, prefer the corner whose failures you can see without anyone else's
 cooperation.
 
-**Remark 7.10a (There is no dominant corner).** No corner dominates the others
+*Remark 7.10a (There is no dominant corner).* No corner dominates the others
 across all domains, which is why the trilemma is a menu and not a recommendation.
 If one corner were always best, the theorem would effectively be a wall pointing at
 that corner. The domain analysis of the next section exists precisely because the
@@ -537,7 +546,7 @@ conditions hold at once, and the blend never claims that point. It claims covera
 outside `R`, faithfulness outside `B`, and calibration in the interior, three
 weaker conditions on three different regions.
 
-**Proposition 7.10 (Blends satisfy the trilemma by partition).** _If the query
+*Proposition 7.10 (Blends satisfy the trilemma by partition).* _If the query
 space is partitioned into a region where coverage is dropped, a region where
 faithfulness is relaxed, and a region where calibration is enforced, then no single
 region carries all three conditions, and the impossibility of Definition 7.1 is not
@@ -594,7 +603,7 @@ Seeing this dissolves the apparent contradiction between the theorem and every
 working product, and it locates the real design work in the placement of the region
 boundaries rather than in an imagined escape from the theorem.
 
-**Remark 7.10b (Region boundaries are themselves boundaries).** Placing the reject
+*Remark 7.10b (Region boundaries are themselves boundaries).* Placing the reject
 region and the band introduces new decision surfaces, the edges of `R` and `B`, and
 those edges are decision boundaries with their own coupled points under the same
 theorem. This is not a regress that undoes the design. The edges of `R` and `B` are
@@ -654,7 +663,7 @@ This is where the analogy is at its sharpest rather than where it strains, becau
 agentic pipelines consume safety scores constantly, and a decoupled score in a
 tool-calling loop is a silent authorization of unsafe actions.
 
-**Remark 7.11 (Where the analogy strains).** The strain is in the premise, not the
+*Remark 7.11 (Where the analogy strains).* The strain is in the premise, not the
 menu. The hallucination trilemma in its diagonal form assumes reflectivity, that
 every verdict pattern is named by some query. For prompt injection this premise is
 realistic, because prompts are arbitrary self-describing text, so the diagonal
@@ -699,16 +708,16 @@ to three questions. What does a confident error cost relative to a refusal? Does
 refusal cost accumulate with volume? And does anything downstream consume the
 confidence number? These three questions name three archetypes.
 
-**Definition 7.12 (High-stakes domain).** A domain is _high-stakes_ if the cost of
+*Definition 7.12 (High-stakes domain).* A domain is _high-stakes_ if the cost of
 a confident error greatly exceeds the cost of a refusal, `Cerr ≫ Cref`, and errors
 are hard to reverse.
 
-**Definition 7.13 (High-throughput domain).** A domain is _high-throughput_ if
+*Definition 7.13 (High-throughput domain).* A domain is _high-throughput_ if
 refusal cost accumulates with volume, so that a policy refusing a fixed fraction of
 a large stream loses more than it saves, and the per-item error cost is bounded and
 recoverable.
 
-**Definition 7.14 (Confidence-consumed-downstream domain).** A domain is
+*Definition 7.14 (Confidence-consumed-downstream domain).* A domain is
 _confidence-consumed-downstream_ if some automated component reads the model's
 confidence or safety score and acts on it without a human in the loop.
 
@@ -732,7 +741,7 @@ canonical case where low nominal stakes hide high effective stakes, because the
 action commits before review. When you read a domain, read its detection and
 reversal latency, not only its headline error cost.
 
-**Remark 7.14a (Stakes are a function of the pipeline, not the model).** The same
+*Remark 7.14a (Stakes are a function of the pipeline, not the model).* The same
 model is high-stakes in one pipeline and low-stakes in another, because stakes are
 set by what the pipeline does with the answer, how fast it acts, and whether it can
 undo. This is the same lesson as Proposition 7.17 for boundary density, applied to
@@ -741,7 +750,7 @@ nor the cost of getting them wrong. Both are properties of the deployment. A tea
 that classifies its domain by the model's benchmark behavior rather than by its
 pipeline's consequences has classified the wrong object.
 
-**Proposition 7.15 (Default corner by archetype).** _Under the cost models of the
+*Proposition 7.15 (Default corner by archetype).* _Under the cost models of the
 previous sections, the utility-maximizing pure corner is abstention for a
 high-stakes domain, the confident-error band for a high-throughput domain, and,
 for a confidence-consumed-downstream domain, whichever of the first two preserves
@@ -752,8 +761,11 @@ smaller than the band cost `ρ · ε · Cerr` at any tolerable error rate. For
 high-throughput, accumulated refusal cost exceeds the bounded per-item error cost,
 reversing the inequality. For confidence-consumed, Proposition 7.8 shows decoupling
 destroys the downstream value `V` while leaving accuracy untouched, so it is
-dominated by either calibration-preserving corner. This is an engineering
-argument, not a theorem, and it assumes the cost models are the right accounting. ∎
+dominated by either calibration-preserving corner. ∎
+
+Not formalized. This is an engineering argument, not a theorem: it assumes the
+cost models of the preceding sections are the right accounting, and no companion
+declaration states it.
 
 ## Case study: clinical decision support
 
@@ -865,7 +877,7 @@ the measure concentrated near the decision surface. These are the same quantity
 under different names, and it is the single empirical unknown on which the felt
 severity of the trilemma depends.
 
-**Definition 7.16 (Boundary density).** The _boundary density_ of a deployment is
+*Definition 7.16 (Boundary density).* The _boundary density_ of a deployment is
 the probability, under the real traffic distribution, that a query lands within a
 fixed truth-field distance of the model's truth boundary. It is a property of the
 model and the traffic jointly, not of either alone.
@@ -878,7 +890,7 @@ follows from it, a limit stated in the discussion of the truth-boundary paper. T
 theory guarantees the boundary exists and is unavoidable. It says nothing about
 whether your users ever go near it.
 
-**Proposition 7.17 (Two deployments, same model, different fate).** _The felt cost
+*Proposition 7.17 (Two deployments, same model, different fate).* _The felt cost
 of the trilemma is not determined by the model. Two deployments of an identical
 model, differing only in their traffic distribution, can have boundary densities
 that differ by orders of magnitude, and hence confident-error rates that differ by
@@ -888,7 +900,11 @@ _Proof._ The confident-error rate is about `ρ · ε` with `ε` fixed by the mod
 `ρ` fixed by the traffic. Vary the traffic and hold the model fixed, and `ρ`, hence
 the rate, varies freely. ∎
 
-**Remark 7.16a (Benign and adversarial boundary density are different numbers).**
+Not formalized. The step is arithmetic on a product whose two factors this book
+fixes separately, one by the model and one by the deployment; the companion
+libraries state neither factor as a theorem.
+
+*Remark 7.16a (Benign and adversarial boundary density are different numbers).*
 For the hallucination reading, boundary density is a property of benign traffic, and
 it drifts slowly with the user population. For the defense reading it is set by an
 adversary who is actively steering queries toward the boundary, so the relevant
@@ -935,7 +951,7 @@ how the density will move as you change the interface dimension `d`. This gives 
 move under interface changes, which is more than a single measured error rate can
 give.
 
-**Remark 7.18.** Measuring boundary density well is the open empirical problem the
+*Remark 7.18.* Measuring boundary density well is the open empirical problem the
 whole development points at, and it is genuinely hard for two reasons. Real traffic
 is not stationary, so `ρ` drifts, and the truth field is only estimated, usually by
 a probe whose agreement with semantic truth away from its fitted samples is itself
@@ -981,7 +997,7 @@ instance by oversampling queries the probe places near the boundary and reweight
 A density estimate reported without its sample size and its in-band count is not yet
 a measurement you can build a safety case on.
 
-**Remark 7.18a (Drift is the operational reality).** The estimate above is a
+*Remark 7.18a (Drift is the operational reality).* The estimate above is a
 snapshot, and the quantity it estimates moves. Traffic distributions shift with the
 season, the product surface, and the user population, and each shift can move `ρ`
 without any change to the model. A boundary density measured once and trusted for a
@@ -991,7 +1007,7 @@ region when it does. This turns the one empirical unknown from a number you gues
 once into an instrument you read continuously, which is the only honest way to run
 any of the three corners at scale.
 
-**Remark 7.18b (The probe is a premise, not a truth).** Everything above rests on
+*Remark 7.18b (The probe is a premise, not a truth).* Everything above rests on
 the probe's boundary being the truth boundary, and that identification is an
 empirical premise the theorems never grant. A probe defines a boundary in
 representation space; whether that boundary tracks semantic truth away from the
@@ -1008,7 +1024,7 @@ An impossibility result is easy to overclaim and easy to dismiss, and both come
 from ignoring what it actually says. This section draws the line precisely, because
 the whole value of a machine-checked result is that the line is sharp.
 
-**What they claim.** A precisely stated ideal is unreachable. Faithful and
+*What they claim.* A precisely stated ideal is unreachable. Faithful and
 covering and calibrated at once, over a self-referential or connected domain, does
 not exist, and neither does utility-preserving and complete at once over a
 connected prompt space. The obstruction is structural, a consequence of
@@ -1020,7 +1036,7 @@ these claims is checked by the Lean kernel, and the check is the content, since 
 mathematics is elementary and the risk was always in a hidden premise, which
 formalization removes.
 
-**Remark 7.18c (Structural, not a training defect).** _The obstruction does
+*Remark 7.18c (Structural, not a training defect).* _The obstruction does
 not depend on how the model was trained, on its size, or on its architecture. It
 depends only on the stated premises: self-reference, or continuity on a connected
 domain, together with the three conditions. Hence no amount of training data, scale,
@@ -1039,7 +1055,7 @@ hopes to train its way to the ideal is refuted by the structural result; a team 
 wants to predict its error rate needs the statistical results and the boundary
 density of this chapter. ∎
 
-**What they do not claim.** They do not claim any particular deployed model
+*What they do not claim.* They do not claim any particular deployed model
 hallucinates often. Existence is not frequency. The coupled point exists; whether
 your traffic visits it is boundary density, which the theorems do not fix
 (Definition 7.16). They do not claim a specific defense is broken in practice. The
@@ -1050,7 +1066,7 @@ object, a total faithful calibrated verdict, or an exactly separating confidence
 field, or a continuous utility-preserving complete wrapper. A deployed model
 approximates that object and is not identical to it.
 
-**Remark 7.19 (Existence is not frequency).** _The impossibility theorems are
+*Remark 7.19 (Existence is not frequency).* _The impossibility theorems are
 existential. From "a coupled point exists" one cannot derive any statement of the
 form "coupled points are queried with probability at least `p`" for any `p > 0`
 without an additional premise about the traffic distribution._
@@ -1061,7 +1077,7 @@ not appear in the hypotheses of the theorems. A distribution supported away from
 the boundary assigns the coupled point probability zero while satisfying every
 hypothesis. Hence no positive frequency lower bound follows. ∎
 
-**Proposition 7.20 (Idealized target, not deployed model).** _The conditions
+*Proposition 7.20 (Idealized target, not deployed model).* _The conditions
 faithfulness, calibration, exact separation, and completeness are properties of an
 idealized limit. A deployed model that satisfies them only approximately is not the
 object the theorems refute, and its behavior is governed by the approximate results
@@ -1075,7 +1091,7 @@ exactly calibrated, so the theorem is vacuous" is answered by the approximate
 results, which apply to the inexact models and recover the exact statement as a
 limit. ∎
 
-**Proposition 7.20a (The impossibility tightens toward the ideal).** _As a model
+*Proposition 7.20a (The impossibility tightens toward the ideal).* _As a model
 is pushed toward exact faithfulness and exact calibration, the guarantee it can
 still satisfy tightens rather than loosens: the forced question's margin of
 correctness is bounded by the slack, and shrinking the slack shrinks that bound,
@@ -1095,7 +1111,7 @@ acutely. The trilemma is not a distant asymptotic curiosity that only matters in
 limit no one reaches. It matters most exactly for the best systems, which are the
 ones close enough to the ideal for the floor to bind. ∎
 
-**Remark 7.21 (The premises are where the argument belongs).** An honest
+*Remark 7.21 (The premises are where the argument belongs).* An honest
 impossibility result moves the disagreement to the premises, and that is a feature.
 For hallucination the premise to argue about is whether faithful-plus-calibrated
 -plus-covering is really the right idealization of what you want, and whether your
@@ -1112,26 +1128,26 @@ wants the argument to be, and it is what machine-checking the deductions buys yo
 The development leaves a clear set of open problems, some empirical, some
 mathematical, some a mix. I list them as an agenda for anyone building on this work.
 
-**Problem 7.22 (Boundary density at scale).** Measure boundary density on real
+*Problem 7.22 (Boundary density at scale).* Measure boundary density on real
 production traffic for deployed models, across domains, and characterize its drift
 over time. This is the number every cost model in this chapter depends on, and it
 is essentially unmeasured in the field. A good answer is a methodology and a set of
 measurements, not a single number, since Proposition 7.17 says the number is
 deployment-specific.
 
-**Problem 7.23 (Probe validity away from fitted samples).** The boundary is defined
+*Problem 7.23 (Probe validity away from fitted samples).* The boundary is defined
 by a truth field, usually a linear probe, and the premise that the probe agrees
 with semantic truth away from its training samples is empirical, not proven. Give a
 method to certify or bound that agreement, so that a measured boundary density can
 be trusted as a truth boundary density rather than a probe-artifact density.
 
-**Problem 7.24 (Optimal region placement).** Given a measured boundary density and
+*Problem 7.24 (Optimal region placement).* Given a measured boundary density and
 a cost model, compute the optimal three-region blend of Proposition 7.10, the
 placement of the reject region, the band, and the trusted interior, that minimizes
 total cost. This is an optimization problem with the geometry of Chapter 5 as its
 constraint set, and it is not yet solved in general.
 
-**Problem 7.25 (Dynamic boundary density under adversaries).** For the defense
+*Problem 7.25 (Dynamic boundary density under adversaries).* For the defense
 reading, boundary density is not fixed by benign traffic but driven by an adversary
 who steers queries toward the boundary. Combine the hitting-time geometry
 (`MoF_Cost_03_HittingTime`) with an adversary model to predict the boundary density
@@ -1139,28 +1155,28 @@ an attacker can induce, and price the defense against it. The stochastic and
 multi-turn results (`stochastic_dichotomy`, `multi_turn_history_dependent`) are the
 starting points.
 
-**Problem 7.26 (Calibration under decoupling pressure).** Training objectives that
+*Problem 7.26 (Calibration under decoupling pressure).* Training objectives that
 reward accuracy do not price the confidence report, so they drift toward the
 decoupling corner for free (Proposition 7.8). Design a training objective or a
 regularizer that penalizes decoupling directly, and quantify the accuracy cost of
 maintaining calibration. This is the constructive counterpart to the warning of
 Section 3.
 
-**Problem 7.27 (The full symmetry theorem).** The symmetry version of the boundary
+*Problem 7.27 (The full symmetry theorem).* The symmetry version of the boundary
 result replaces coverage with an antipodal condition and needs a vector Borsuk-Ulam
 statement for jointly odd axes, which is verified only in the scalar case and for
 nonlinear tangents so far. Completing the full theorem would remove the coverage
 premise entirely for symmetric representation spaces, which matters because it would
 apply to models that never answer strictly falsely.
 
-**Problem 7.28 (Cost asymmetry beyond the grid).** The exponential defense cost
+*Problem 7.28 (Cost asymmetry beyond the grid).* The exponential defense cost
 `N^d` assumes exhaustive grid enumeration, and learning-based defenses that
 generalize across the space may sidestep it. Determine whether a continuous
 learned defense can beat the grid bound, or prove a matching lower bound that holds
 for learned defenses, which would settle whether the cost asymmetry is fundamental
 or an artifact of the enumeration model.
 
-**Problem 7.29 (J-space and the two engines at once).** Chapter 8 asks what a
+*Problem 7.29 (J-space and the two engines at once).* Chapter 8 asks what a
 system satisfying both the diagonal hypothesis and the continuum hypothesis would
 look like, a self-referential space that is also connected with continuous fields.
 Characterize the boundary object such a system produces, and determine whether the
@@ -1225,86 +1241,86 @@ the empirical shadow of the theory's insistence that its premises do the work.
 
 # Exercises
 
-**Exercise 7.1.** Take {lean}`c7_flip` and the two-valued negation of Chapter 1.
+*Exercise 7.1.* Take {lean}`c7_flip` and the two-valued negation of Chapter 1.
 Explain, in terms of {lean}`lawvere` and {lean}`bool_not_fpf`, why adding the
 `abstain` outcome converts the diagonal from a contradiction into a consistent
 value, and identify that value. State in one sentence what this means for a model
 allowed to refuse.
 
-**Exercise 7.2.** For a high-stakes domain with `Cerr = 1000 · Cref`, and a
+*Exercise 7.2.* For a high-stakes domain with `Cerr = 1000 · Cref`, and a
 confident-error band policy with band mass `ρ · ε`, find the abstention rate `a`
 at which the abstention cost `a · Cref` equals the band cost `ρ · ε · Cerr`. For a
 boundary density `ρ = 0.01` and band half-width giving `ε` such that `ρ · ε = 0.005`,
 which corner is cheaper? Redo the comparison for `Cerr = 2 · Cref`.
 
-**Exercise 7.3.** Prove the analog of Proposition 7.8 for defense: a safety
+*Exercise 7.3.* Prove the analog of Proposition 7.8 for defense: a safety
 classifier's decoupling of its reported score from actual safety does not change
 its top-1 safe-or-unsafe accuracy. Then explain why this makes the decoupling
 corner attractive to a team optimizing classifier accuracy, and dangerous to the
 router that consumes the score.
 
-**Exercise 7.4.** A deployment measures boundary density `ρ = 0.002` on last
+*Exercise 7.4.* A deployment measures boundary density `ρ = 0.002` on last
 quarter's traffic and ships a band policy with fixed `ε`. This quarter a new class
 of borderline queries appears and `ρ` rises to `0.02`. By what factor does the
 confident-error rate change, with `ε` held fixed? Design a monitor that would have
 caught this before the error rate moved, and state what it measures.
 
-**Exercise 7.5.** (Design.) You are building clinical decision support that feeds
+*Exercise 7.5.* (Design.) You are building clinical decision support that feeds
 an automated specialist-routing queue. Specify a three-region blend per
 Proposition 7.10: define the reject region, the band, and the trusted interior in
 terms of truth-field distance, say which of the three trilemma conditions each
 region gives up, and state the one empirical quantity you must measure before you
 can place the region boundaries.
 
-**Exercise 7.6.** (Design.) Repeat Exercise 7.5 for platform-scale content
+*Exercise 7.6.* (Design.) Repeat Exercise 7.5 for platform-scale content
 moderation. Justify why the reject region is much smaller here than in the clinical
 case, in terms of the high-throughput archetype of Definition 7.13, and identify
 which downstream consumer forces you to keep calibration.
 
-**Exercise 7.7.** Explain why a discontinuous blocklist escapes the Defense
+*Exercise 7.7.* Explain why a discontinuous blocklist escapes the Defense
 Trilemma, referring to the continuity and utility-preservation premises. Then
 explain what the blocklist pays instead, and match that cost to one of the three
 corners of this chapter. Is a blocklist an abstention policy in disguise? Argue
 both sides.
 
-**Exercise 7.8.** (Short essay.) The chapter claims decoupling is the most
+*Exercise 7.8.* (Short essay.) The chapter claims decoupling is the most
 dangerous corner because it fails invisibly and downstream. Write half a page
 arguing the opposite: describe a realistic deployment in which the decoupling
 corner is the correct choice, and state precisely the condition on downstream
 consumers that makes it safe.
 
-**Exercise 7.9.** Using Proposition 7.17, construct two traffic distributions over
+*Exercise 7.9.* Using Proposition 7.17, construct two traffic distributions over
 a one-dimensional query line with a truth boundary at the origin, one with high
 boundary density and one with near-zero boundary density, such that the same model
 has a confident-error rate differing by a factor of a hundred. Explain why no
 benchmark can determine which distribution a deployment actually faces.
 
-**Exercise 7.10.** The measurement protocol of Section 6 histograms truth-field
+*Exercise 7.10.* The measurement protocol of Section 6 histograms truth-field
 distances on representative traffic. Suppose your truth field is a nonzero linear
 probe. Using the hyperplane boundary result of Chapter 4, write the distance from
 a query embedding to the boundary as an explicit formula, and explain why this
 makes the histogram cheap to compute at deployment scale.
 
-**Exercise 7.11.** (Harder.) The adversarial reading of boundary density
+*Exercise 7.11.* (Harder.) The adversarial reading of boundary density
 (Problem 7.25) treats an attacker as driving queries toward the boundary. Sketch
 how the hitting-time quantity `MoF_Cost_03_HittingTime` bounds the number of steps
 an attacker needs, and argue why reducing the Lipschitz constant of the alignment
 surface raises that cost. What does this say about the tradeoff between a smooth
 boundary and a monitorable one?
 
-**Exercise 7.12.** (Short essay.) Remark 7.21 says an honest impossibility result
+*Exercise 7.12.* (Short essay.) Remark 7.21 says an honest impossibility result
 moves the disagreement to the premises. Pick either the hallucination or the
 defense reading, name the single premise you find least defensible in your own
 application, and write half a page on what evidence would make you grant or reject
 it. Do not argue about the theorem; argue about the premise.
 
-**Exercise 7.13.** (Open-ended.) Proposition 7.15 gives a default corner per
+*Exercise 7.13.* (Open-ended.) Proposition 7.15 gives a default corner per
 archetype but assumes the cost models of Section 2 are the right accounting.
 Propose a domain where the cost models fail, meaning where the utility-maximizing
 corner is not the one the proposition predicts, and identify which assumption of
 the cost model your domain violates.
 
-**Exercise 7.14.** (Open-ended, connects to Chapter 8.) Suppose a future system
+*Exercise 7.14.* (Open-ended, connects to Chapter 8.) Suppose a future system
 satisfied both the reflectivity premise of the diagonal and the connectedness
 premise of the continuum at once (Problem 7.29). Speculate on whether such a system
 would have one boundary object or two, and on what a corner policy would even mean

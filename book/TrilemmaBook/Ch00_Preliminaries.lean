@@ -5,6 +5,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "Preliminaries" =>
 
+%%%
+number := false
+%%%
+
 This book proves that certain things are impossible. Not hard, not unsolved,
 impossible: a truthful and calibrated and covering language model, a prompt
 filter that stops every injection, a probe that reads the truth off the inside
@@ -60,7 +64,7 @@ to assert that the term `e` has type `T`. Some types you will see constantly:
 `Nat`, the natural numbers `0, 1, 2, …`; `Bool`, the two-element type with values
 `true` and `false`; `Prop`, the type of _propositions_, which we return to below.
 
-**Definition 0.1 (Type and term).** A _type_ is a classification of terms. A
+*Definition 0.1 (Type and term).* A _type_ is a classification of terms. A
 _term_ `e` _has type_ `T`, written `e : T`, when the rules of the language
 assign `T` to `e`. Type-checking is the mechanical process of verifying such
 assignments.
@@ -79,7 +83,7 @@ over `Sort u`. You will not need to manipulate `Sort` directly, but seeing it in
 a hover or an error message should not alarm you: it is the umbrella under which
 propositions and data types both live.
 
-**Example 0.2.** The literal `2` is a term of type `Nat`. The expression
+*Example 0.2.* The literal `2` is a term of type `Nat`. The expression
 `true` is a term of type `Bool`. The proposition `1 + 1 = 2` is a term of type
 `Prop`. Here is the first live block; it asserts that `1 + 1` and `2` are the
 same natural number, and its proof is `rfl`, which we explain shortly.
@@ -105,7 +109,7 @@ parentheses around arguments and no commas between them; application is just a
 space, and it binds tighter than almost everything else, so `f a + 1` means
 `(f a) + 1`.
 
-**Definition 0.3 (Function type).** For types `A` and `B`, the type `A → B` is
+*Definition 0.3 (Function type).* For types `A` and `B`, the type `A → B` is
 the type of functions taking an argument of type `A` and producing a result of
 type `B`. Application of `f : A → B` to `a : A` is written `f a` and has type
 `B`.
@@ -135,7 +139,8 @@ is a statement about how a certain composite behaves.
 
 ```lean
 def c0_id {A : Type} (a : A) : A := a
-def c0_comp {A B C : Type} (g : B → C) (f : A → B) : A → C := fun a => g (f a)
+def c0_comp {A B C : Type} (g : B → C)
+    (f : A → B) : A → C := fun a => g (f a)
 example : c0_comp c0_double c0_double 3 = 12 := rfl
 ```
 
@@ -152,7 +157,7 @@ Feeding it a second `A` then produces a `Y`. This is _currying_: a function of
 two arguments presented as a function returning a function. The book's central
 object has exactly this shape, so it pays to be fluent with it.
 
-**Definition 0.4 (Currying).** A function of two arguments, taking `a : A` and
+*Definition 0.4 (Currying).* A function of two arguments, taking `a : A` and
 `b : A` to a value in `Y`, is represented in curried form as a term
 `f : A → A → Y`. Then `f a : A → Y` is the result of supplying only the first
 argument, and `f a b : Y` supplies both.
@@ -169,7 +174,7 @@ def c0_add : Nat → Nat → Nat := fun a b => a + b
 example : c0_add 2 3 = 5 := rfl
 ```
 
-**Example 0.5.** Take `A = Nat` and `Y = Bool` and let `f n m` say whether `n`
+*Example 0.5.* Take `A = Nat` and `Y = Bool` and let `f n m` say whether `n`
 divides evenly into a fixed schedule at slot `m`. Then `f n` is the whole
 schedule of behavior `n`, a function `Nat → Bool`, and `f n n` is what behavior
 `n` does at its own index. That last value, the behavior applied to its own
@@ -197,12 +202,13 @@ The universal quantifier `∀ x : A, P x` is a _dependent function type_. A proo
 of it is a function that, given any `a : A`, returns a proof of `P a`. So you
 prove a `∀` the same way you write a function: with a lambda.
 
-**Definition 0.6 (Universal quantifier).** `∀ x : A, P x` is the type of proofs
+*Definition 0.6 (Universal quantifier).* `∀ x : A, P x` is the type of proofs
 that `P a` holds for every `a : A`. A term of this type is a function sending
 each `a : A` to a proof of `P a`.
 
 ```lean
-theorem c0_forall_le : ∀ n : Nat, n ≤ n := fun n => Nat.le_refl n
+theorem c0_forall_le : ∀ n : Nat, n ≤ n :=
+  fun n => Nat.le_refl n
 ```
 
 Given `h : ∀ x : A, P x` and a particular `a : A`, the application `h a` is a
@@ -214,7 +220,7 @@ The existential quantifier `∃ x : A, P x` is the dual. A proof is a _pair_: a
 witness `a : A` together with a proof of `P a`. You build the pair with angle
 brackets, `⟨a, h⟩`, the _anonymous constructor_.
 
-**Definition 0.7 (Existential quantifier).** `∃ x : A, P x` is the type of
+*Definition 0.7 (Existential quantifier).* `∃ x : A, P x` is the type of
 proofs that some `a : A` satisfies `P`. A term of this type is a pair `⟨a, h⟩`
 where `a : A` is the witness and `h : P a` is a proof for that witness.
 
@@ -253,14 +259,15 @@ the proposition with no proof at all. To prove `¬ P` you assume a proof of `P`
 and derive a proof of `False`, which is to say you show the assumption was
 impossible.
 
-**Definition 0.8 (Negation and the empty proposition).** `False` is the
+*Definition 0.8 (Negation and the empty proposition).* `False` is the
 proposition with no constructors, hence no proof. For a proposition `P`, the
 negation `¬ P` is defined as `P → False`. From a proof of `False` one may
 conclude anything, by the eliminator `False.elim`.
 
 ```lean
 theorem c0_not_false : ¬ False := fun h => h
-theorem c0_ex_falso {p : Prop} (h : False) : p := False.elim h
+theorem c0_ex_falso {p : Prop} (h : False) : p :=
+  False.elim h
 ```
 
 The first says `¬ False` holds, since `¬ False` is `False → False` and the
@@ -275,7 +282,7 @@ The second connective is disjunction. `P ∨ Q` has two constructors, `Or.inl` f
 a proof of the left side and `Or.inr` for a proof of the right, and you use a
 disjunction by matching on which side holds.
 
-**Definition 0.9 (Disjunction).** `P ∨ Q` is proved by `Or.inl` applied to a
+*Definition 0.9 (Disjunction).* `P ∨ Q` is proved by `Or.inl` applied to a
 proof of `P`, or by `Or.inr` applied to a proof of `Q`. It is used by case
 analysis: a proof of `P ∨ Q` splits into the case where `P` holds and the case
 where `Q` holds.
@@ -301,7 +308,7 @@ a mathematical object together with the data and hypotheses that define it. You
 declare the fields, and Lean gives you a constructor and one projection per
 field.
 
-**Definition 0.10 (Structure).** A structure is a type whose terms are tuples of
+*Definition 0.10 (Structure).* A structure is a type whose terms are tuples of
 named fields. Declaring it produces a constructor that takes the fields and
 returns a term, and projections that recover each field from a term.
 
@@ -344,7 +351,7 @@ recursor that says these are the _only_ ways, which is what lets `match` be
 exhaustive. Understanding this one mechanism demystifies all the notation above
 at once.
 
-**Definition 0.11 (Inductive type).** An inductive type is a type specified by a
+*Definition 0.11 (Inductive type).* An inductive type is a type specified by a
 finite list of constructors. Each constructor is a function into the type being
 defined. The type contains exactly the terms built by finitely many applications
 of its constructors, and pattern matching branches on which constructor produced
@@ -395,7 +402,7 @@ symbol is visible. Tactics appear only for small decidable facts, where a single
 tactic settles the goal and writing the term by hand would obscure rather than
 reveal.
 
-**Remark 0.12.** Term mode and tactic mode produce the same kind of object. A
+*Remark 0.12.* Term mode and tactic mode produce the same kind of object. A
 tactic block is elaborated into a proof term, and it is that term the kernel
 checks. There is no second, weaker standard of proof for tactic mode. When you
 see `by decide` you are seeing an instruction that _generates_ a proof term; the
@@ -434,8 +441,10 @@ an equality. It is a spelling convenience with no logical content, but it makes
 proofs read like method chains and it is everywhere in the book.
 
 ```lean
-theorem c0_symm {A : Type} {a b : A} (h : a = b) : b = a := h.symm
-theorem c0_trans {A : Type} {a b c : A} (h1 : a = b) (h2 : b = c) : a = c :=
+theorem c0_symm {A : Type} {a b : A} (h : a = b) : b = a :=
+  h.symm
+theorem c0_trans {A : Type} {a b c : A} (h1 : a = b)
+    (h2 : b = c) : a = c :=
   h1.trans h2
 ```
 
@@ -469,13 +478,14 @@ says that equal functions are equal at every point. Given a proof `h : f = g`
 that two functions are equal, and a point `a`, the term `congrFun h a` is a proof
 that `f a = g a`.
 
-**Definition 0.13 (`congrFun`).** For `f g : A → B` and `h : f = g` and `a : A`,
+*Definition 0.13 (`congrFun`).* For `f g : A → B` and `h : f = g` and `a : A`,
 the term `congrFun h a` has type `f a = g a`. It is the elimination principle for
 an equation between functions: from the functions being equal, conclude their
 values agree at any chosen argument.
 
 ```lean
-theorem c0_congr {A B : Type} (f g : A → B) (h : f = g) (a : A) : f a = g a :=
+theorem c0_congr {A B : Type} (f g : A → B) (h : f = g)
+    (a : A) : f a = g a :=
   congrFun h a
 ```
 
@@ -501,7 +511,7 @@ and reading off the answer. Lean formalizes this with the `Decidable` type class
 and the tactic `decide` proves a goal by running the procedure and checking that
 it returns the affirmative result.
 
-**Definition 0.14 (Decidability and `decide`).** A proposition `P` is
+*Definition 0.14 (Decidability and `decide`).* A proposition `P` is
 _decidable_ when there is an algorithm returning a proof of `P` or a proof of its
 negation. The tactic `decide` proves a decidable `P` by evaluating that algorithm
 and confirming the affirmative result.
@@ -518,7 +528,7 @@ Cantor's, and through Cantor's into every diagonal impossibility in the book.
 Because `decide` on booleans reduces to a finite check with no axioms, results
 proved this way carry the cleanest possible trust story.
 
-**Remark 0.15.** `decide` only applies when the proposition ranges over
+*Remark 0.15.* `decide` only applies when the proposition ranges over
 something finite or otherwise algorithmically checkable. You cannot `decide` a
 statement quantified over all natural numbers, because there is no finite check.
 The book uses `decide` exactly where the domain is `Bool` or a small finite type,
@@ -536,7 +546,7 @@ type it claims. The elaborator is convenient but not trusted; the kernel is
 trusted but simple. A proof is accepted only when the kernel, reading the final
 term, agrees that its type is the theorem statement.
 
-**Definition 0.16 (Kernel checking).** To say the kernel _checks_ a proof is to
+*Definition 0.16 (Kernel checking).* To say the kernel _checks_ a proof is to
 say the small trusted type-checker has verified that the elaborated proof term
 has exactly the stated type, using only the fixed rules of the logic and any
 axioms the term explicitly invokes.
@@ -560,7 +570,7 @@ theorem, but its trust rests on those axioms too, and you should know which. The
 command `#print axioms name` reports exactly the axioms a given theorem depends
 on, tracing through every lemma it used.
 
-**Definition 0.17 (Axiom audit).** For a proved theorem `name`, the command
+*Definition 0.17 (Axiom audit).* For a proved theorem `name`, the command
 `#print axioms name` prints the list of axioms on which the proof depends,
 computed by transitively collecting the axioms of every definition and lemma in
 the proof term. An empty or trivial list means the result holds in the base logic
@@ -577,7 +587,7 @@ the honest accounting. When Chapter 4 says the diagonal proof is "cleaner" than
 the analytic proof, the axiom audit is the precise sense in which that is true,
 and you can reproduce the audit yourself with one command.
 
-**Remark 0.18.** The axiom list is part of the theorem's meaning, not a footnote
+*Remark 0.18.* The axiom list is part of the theorem's meaning, not a footnote
 to it. Two proofs of the same statement, one axiom-free and one using choice,
 are genuinely different pieces of knowledge, and the book keeps track of which is
 which. This is a discipline that ordinary mathematical writing cannot easily
@@ -593,7 +603,8 @@ in this chapter. Read it as a test of the vocabulary just built.
 
 ```lean
 theorem c0_lawvere {A Y : Type} (f : A → A → Y)
-    (hf : ∀ g : A → Y, ∃ a, f a = g) (t : Y → Y) : ∃ y, t y = y :=
+    (hf : ∀ g : A → Y, ∃ a, f a = g)
+    (t : Y → Y) : ∃ y, t y = y :=
   match hf (fun a => t (f a a)) with
   | ⟨a₀, ha₀⟩ => ⟨f a₀ a₀, (congrFun ha₀ a₀).symm⟩
 ```
@@ -640,7 +651,8 @@ with the negation baked into the diagonal from the start.
 
 ```lean
 theorem c0_liar {A : Type} (f : A → A → Bool)
-    (hf : ∀ g : A → Bool, ∃ a, f a = g) : ∃ a, f a a = !(f a a) :=
+    (hf : ∀ g : A → Bool, ∃ a, f a = g) :
+    ∃ a, f a a = !(f a a) :=
   match hf (fun a => !(f a a)) with
   | ⟨a₀, ha₀⟩ => ⟨a₀, congrFun ha₀ a₀⟩
 ```
@@ -682,7 +694,7 @@ mean the same thing. The set of functions from `A` to `Y` is itself an object,
 which we write `A → Y`, matching the Lean type. When we speak of "all behaviors
 over `A` valued in `Y`," we mean all elements of `A → Y`.
 
-**Definition 0.19 (Function, evaluation).** A function `f : A → Y` is a rule
+*Definition 0.19 (Function, evaluation).* A function `f : A → Y` is a rule
 assigning to each `a : A` a value `f a : Y`, called the evaluation of `f` at `a`.
 Two functions `f, g : A → Y` are _equal_ when `f a = g a` for every `a : A`; the
 principle that this pointwise agreement suffices for equality is function
@@ -694,24 +706,26 @@ Two functions compose when the codomain of one is the domain of the next, and th
 identity map is neutral for composition. These give the language for the
 structural properties a map can have.
 
-**Definition 0.20 (Composition and identity).** For `f : A → B` and `g : B → C`,
+*Definition 0.20 (Composition and identity).* For `f : A → B` and `g : B → C`,
 the composite `g ∘ f : A → C` is `fun a => g (f a)`. The identity `id : A → A` is
 `fun a => a`. Composition is associative, and identity is a two-sided unit for it.
 
 A map can be one-to-one, or onto, or both, and each property has a place in the
 arguments ahead.
 
-**Definition 0.21 (Injective, surjective, bijective).** A function `f : A → B` is
+*Definition 0.21 (Injective, surjective, bijective).* A function `f : A → B` is
 _injective_ when `f a = f a'` forces `a = a'`; _surjective_ when every `b : B` is
 `f a` for some `a`; _bijective_ when it is both. In symbols, injective is
 `∀ a a', f a = f a' → a = a'` and surjective is `∀ b, ∃ a, f a = b`.
 
 ```lean
-def c0_Injective {A B : Type} (f : A → B) : Prop := ∀ a a', f a = f a' → a = a'
-def c0_Surjective {A B : Type} (f : A → B) : Prop := ∀ b, ∃ a, f a = b
+def c0_Injective {A B : Type} (f : A → B) : Prop :=
+  ∀ a a', f a = f a' → a = a'
+def c0_Surjective {A B : Type} (f : A → B) : Prop :=
+  ∀ b, ∃ a, f a = b
 ```
 
-**Example 0.22.** The successor `fun n => n + 1` on `Nat` is injective but not
+*Example 0.22.* The successor `fun n => n + 1` on `Nat` is injective but not
 surjective, since nothing maps to `0`. The predecessor `c0_pred` is surjective but
 not injective, since `0` and `1` both map to `0`. On a finite set the two
 properties coincide, which is the pigeonhole principle, and it is exactly this
@@ -728,7 +742,7 @@ and that coincidence is the whole source of self-reference. A name can be handed
 to a behavior, including the behavior it itself denotes, and the value `f a a` is
 the behavior at its own name.
 
-**Definition 0.23 (System and diagonal).** A _system_ is a function
+*Definition 0.23 (System and diagonal).* A _system_ is a function
 `f : A → A → Y`. Its _diagonal_ is the function `A → Y` given by `a ↦ f a a`,
 sending each index to the value of its own behavior at itself.
 
@@ -742,7 +756,7 @@ this one, and the name it assigns is where the contradiction lands.
 The diagonal arguments need surjectivity one level up, about the curried system
 rather than a plain map.
 
-**Definition 0.24 (Point-surjectivity, universality).** A system
+*Definition 0.24 (Point-surjectivity, universality).* A system
 `f : A → A → Y` is _point-surjective_, or _universal_, when every function
 `g : A → Y` is named: for all `g` there exists `a : A` with `f a = g`. In symbols,
 `∀ g : A → Y, ∃ a, f a = g`.
@@ -760,7 +774,7 @@ Point-surjectivity is genuinely weaker than the honest surjectivity of a map
 version lives. It asks only that each behavior be _hit_, not that the hitting be
 done by a single well-behaved map, and that is all the diagonal needs.
 
-**Example 0.25.** No finite system is universal once `Y` has at least two
+*Example 0.25.* No finite system is universal once `Y` has at least two
 elements. If `A` has `n` elements there are `n` names, hence at most `n`
 behaviors `f a`, but there are `|Y|ⁿ` functions `A → Y`, and `n < |Y|ⁿ` whenever
 `|Y| ≥ 2`. Counting already forbids universality in the finite case. The diagonal
@@ -775,7 +789,7 @@ subsets of `A`, the power set, is the function set `A → Bool`. This identifica
 is why Cantor's theorem, that no set surjects onto its power set, is the special
 case `Y = Bool` of the diagonal.
 
-**Definition 0.26 (Indicator).** The _indicator_ of a subset `S ⊆ A` is the
+*Definition 0.26 (Indicator).* The _indicator_ of a subset `S ⊆ A` is the
 function `A → Bool` returning `true` on `S` and `false` elsewhere. Subsets of `A`
 and functions `A → Bool` are in bijection under this correspondence.
 
@@ -796,16 +810,17 @@ Surjectivity says every `g` has a name. A stronger, constructive statement gives
 you the name explicitly, as a function, and its mirror image records when a map
 can be undone.
 
-**Definition 0.27 (Section).** A _section_ of a system `f : A → A → Y` is a
+*Definition 0.27 (Section).* A _section_ of a system `f : A → A → Y` is a
 function `s : (A → Y) → A` such that `f (s g) = g` for every `g : A → Y`. A
 section picks, for each behavior `g`, a name `s g` that denotes it.
 
-**Definition 0.28 (Retraction).** A _retraction_ of a map `s : A → B` is a map
+*Definition 0.28 (Retraction).* A _retraction_ of a map `s : A → B` is a map
 `r : B → A` with `r (s a) = a` for all `a`. If a retraction exists, `s` is
 injective, and `A` is a "retract" of `B`.
 
 ```lean
-def c0_Retraction {A B : Type} (r : B → A) (s : A → B) : Prop := ∀ a, r (s a) = a
+def c0_Retraction {A B : Type} (r : B → A)
+    (s : A → B) : Prop := ∀ a, r (s a) = a
 ```
 
 Every section yields point-surjectivity: given `g`, the element `s g` is a
@@ -821,7 +836,7 @@ notice that the proof gets one step shorter.
 
 The output side of the engine turns on a single property of a map `t : Y → Y`.
 
-**Definition 0.29 (Fixed point, fixed-point-free).** A _fixed point_ of
+*Definition 0.29 (Fixed point, fixed-point-free).* A _fixed point_ of
 `t : Y → Y` is a `y` with `t y = y`. The map `t` is _fixed-point-free_ when it
 has none: `t y ≠ y` for all `y`.
 
@@ -835,7 +850,7 @@ interval the complement `y ↦ 1 - y` has one fixed point, at `1/2`, and that lo
 fixed point is not a failure of the pattern but the whole content of the analytic
 theorem: the forbidden place is the threshold itself.
 
-**Remark 0.30.** The parallel is exact and worth holding onto before Chapter 4
+*Remark 0.30.* The parallel is exact and worth holding onto before Chapter 4
 makes it precise. The Boolean flip has no fixed point, so on a domain that can
 name its behaviors, something is forced to be its own negation, which is
 impossible, and universality dies. The real complement has exactly one fixed
@@ -876,7 +891,7 @@ read in the metric picture, where continuity is the familiar epsilon-delta
 statement, but the companion development states results topologically because
 that is how Mathlib is organized and because connectedness is cleanest there.
 
-**Definition 0.31 (Open set, topological space).** A _topology_ on a set `X` is a
+*Definition 0.31 (Open set, topological space).* A _topology_ on a set `X` is a
 collection of subsets, the _open sets_, containing the empty set and `X` and
 closed under arbitrary unions and finite intersections. A set is _closed_ when
 its complement is open. In a metric space the open sets are the unions of open
@@ -889,7 +904,7 @@ small changes in the output, with no jumps. The book uses continuity in its
 standard topological form, which agrees with the epsilon-delta form on metric
 spaces.
 
-**Definition 0.32 (Continuity).** A function `h : X → ℝ` from a topological space
+*Definition 0.32 (Continuity).* A function `h : X → ℝ` from a topological space
 `X` to the reals is _continuous_ when the preimage of every open set is open.
 Equivalently, for metric spaces, `h` is continuous at `x` when for every `ε > 0`
 there is a `δ > 0` such that `dist x x' < δ` implies `dist (h x) (h x') < ε`, and
@@ -908,13 +923,13 @@ Connectedness is the property that a space is not split into two separated piece
 It is what makes the intermediate value theorem true, and it is the exact
 hypothesis that replaces point-surjectivity in the analytic engine.
 
-**Definition 0.33 (Connected space).** A topological space `X` is _connected_
+*Definition 0.33 (Connected space).* A topological space `X` is _connected_
 when it cannot be written as the union of two disjoint nonempty open sets.
 Equivalently, the only subsets of `X` that are both open and closed are the empty
 set and `X` itself. A subset is connected when it is connected as a space with the
 subspace topology.
 
-**Example 0.34.** Any interval of `ℝ`, open, closed, or half-open, bounded or
+*Example 0.34.* Any interval of `ℝ`, open, closed, or half-open, bounded or
 not, is connected. A two-point set with the discrete topology is not connected:
 each point is open, and the space splits into two clopen halves. The distinction
 is precisely the one between the analytic and combinatorial engines. A connected
@@ -923,7 +938,7 @@ supports the diagonal instead, and the discrete core of the analytic result,
 mentioned in Chapter 4, is what happens when you try to run the analytic argument
 on a disconnected domain and it degrades to counting.
 
-**Remark 0.35.** For subsets of `ℝ`, connected and _path-connected_ coincide, and
+*Remark 0.35.* For subsets of `ℝ`, connected and _path-connected_ coincide, and
 both reduce to being an interval, so on the line there is nothing to distinguish.
 The reason the book states connectedness rather than "is an interval" is that the
 question spaces of the AI-safety readings are not literally intervals; they are
@@ -936,7 +951,7 @@ proof cover every reading.
 The one analytic theorem the book truly depends on is the intermediate value
 theorem, in the following form.
 
-**Theorem 0.36 (Intermediate value theorem).** _Let `X` be connected and
+*Theorem 0.36 (Intermediate value theorem).* _Let `X` be connected and
 `h : X → ℝ` continuous. If `h` takes a value below `c` at some point and a value
 above `c` at another, then `h` takes the value `c` at some point: there is an
 `x₀ ∈ X` with `h x₀ = c`._
@@ -948,7 +963,14 @@ through Mathlib's connectedness API, and it is the form that makes the AI-safety
 statements clean, because the question space is not literally an interval but is
 assumed connected.
 
-**Remark 0.37 (Why it is true).** The one-variable proof is worth recalling,
+Nothing here is ours. The theorem is Mathlib's, and every use of it in this book
+and in the companion libraries goes through the two-function form
+`IsPreconnected.intermediate_value₂`, with the interval case handled by
+`isPreconnected_Icc`. Chapter 4 derives the statement above from those two, as
+Theorem 4.7, and traces the derivation; this section states it early only because
+the diagonal chapters already gesture at it.
+
+*Remark 0.37 (Why it is true).* The one-variable proof is worth recalling,
 because it shows where completeness enters. Suppose `h(a) < 0 < h(b)`. Let `S` be
 the set of `x ∈ [a, b]` with `h(x) < 0`. It is nonempty and bounded, so by
 order-completeness it has a least upper bound `x₀`. Continuity rules out
@@ -961,7 +983,7 @@ same: a global completeness or connectedness property forces the crossing point
 to exist. This is the exact structural echo of the diagonal, where a global
 naming property forced the liar to exist.
 
-**Remark 0.38.** The intermediate value theorem is the mirror image of the
+*Remark 0.38.* The intermediate value theorem is the mirror image of the
 diagonal. There the naming hypothesis produced an index whose behavior
 contradicted itself; here connectedness produces a point where a continuous
 quantity is pinned to a value its other hypotheses forbid. In both, a global
@@ -981,7 +1003,7 @@ resolves. The bare theorem gives only existence of the crossing. To get numbers,
 how wide the ambiguous band is or how far apart the decisive regions must be, you
 add a _Lipschitz_ bound.
 
-**Definition 0.39 (Lipschitz map).** A function `h : X → ℝ` on a metric space is
+*Definition 0.39 (Lipschitz map).* A function `h : X → ℝ` on a metric space is
 _`L`-Lipschitz_ when `dist (h x) (h x') ≤ L · dist x x'` for all `x, x'`. The
 constant `L` bounds how fast the output can change, so it converts a gap in
 output values into a guaranteed gap in inputs.
@@ -1000,7 +1022,7 @@ technique. It is the same object seen two ways, and the recurring theme is that
 you cannot design it away, because it is forced by the very expressiveness or
 connectedness that made the system useful in the first place.
 
-**Definition 0.40 (Boundary object).** The _boundary object_ of an impossibility
+*Definition 0.40 (Boundary object).* The _boundary object_ of an impossibility
 result is the domain element the proof forces into existence: for the diagonal, an
 index `a₀` with `f a₀ a₀ = t (f a₀ a₀)`; for the intermediate value theorem, a
 point `x₀` with the continuous quantity equal to its threshold value. In the
@@ -1026,7 +1048,7 @@ form, and gives a witness with no quantitative content: it tells you a bad point
 exists, not how many there are, not how hard one is to find, not what it costs an
 adversary to reach one.
 
-**Remark 0.41.** The strength of the diagonal is also its limit. It says nothing
+*Remark 0.41.* The strength of the diagonal is also its limit. It says nothing
 metric. It cannot tell you the width of the region where a defense fails, or how
 the failure rate scales, because its only hypothesis is a naming property with no
 geometry attached. When you want numbers you must change engines. This is not a
@@ -1097,7 +1119,7 @@ deploying language models. Chapter 8 answers the objection that all of this
 concerns outputs only, by turning both engines on a probe that reads the middle
 of a computation rather than its output.
 
-**Remark 0.42.** The book is short by design, and the shortness is a claim: once
+*Remark 0.42.* The book is short by design, and the shortness is a claim: once
 the two engines are isolated, each result is a paragraph of reading plus a few
 lines of code, and the apparent variety of impossibility theorems collapses to
 two arguments and a catalogue of instances. If at any point a proof feels long,
@@ -1135,7 +1157,7 @@ is deliberately one page: the book is short enough to read straight through, and
 chapter-per-page split would turn every cross-reference into a navigation round
 trip.
 
-**Remark 0.43.** Because the live blocks are checked at build time, there is no
+*Remark 0.43.* Because the live blocks are checked at build time, there is no
 separate step to "verify the book." Building it is verifying it. A reader who
 distrusts a proof can clone the project, run `lake build`, and watch the kernel
 accept the very lines printed in the text. That is a stronger guarantee than a
@@ -1175,78 +1197,78 @@ strong sense, different theorems.
 
 # Exercises
 
-**Exercise 0.1.** Define in core Lean a function `c0_triple : Nat → Nat` that
+*Exercise 0.1.* Define in core Lean a function `c0_triple : Nat → Nat` that
 triples its argument, in both the named-argument style and the lambda style, and
 prove `c0_triple 4 = 12` by `rfl`. Explain in one sentence why `rfl` suffices
 here, referring to Definition 0.1 and the notion of definitional equality.
 
-**Exercise 0.2.** State and prove, in term mode, that for propositions `p` and
+*Exercise 0.2.* State and prove, in term mode, that for propositions `p` and
 `q`, `p ∧ q → p`. Then state and prove `p → q → p ∧ q`. Identify which of your
 proofs packs a structure and which projects one, using the vocabulary of
 Definition 0.10.
 
-**Exercise 0.3.** Using only `congrFun` (Definition 0.13), prove that for
+*Exercise 0.3.* Using only `congrFun` (Definition 0.13), prove that for
 `f g : Nat → Nat` with `h : f = g`, one has `f 0 = g 0` and `f 7 = g 7`. Explain
 why you cannot prove `f = g` from `f 0 = g 0` alone, and name the principle that
 would be needed to go the other direction from agreement at _every_ point.
 
-**Exercise 0.4.** Write the predecessor function `c0_pred` yourself, then prove
+*Exercise 0.4.* Write the predecessor function `c0_pred` yourself, then prove
 `c0_pred 0 = 0` and `c0_pred 5 = 4` by `rfl`. Now explain, without writing code,
 why `∀ n, c0_pred (n + 1) = n` is provable by `rfl` for each concrete `n` but
 requires a genuine proof, not `rfl`, when stated for all `n` at once.
 
-**Exercise 0.5.** Prove `∀ b : Bool, b && b = b` by `decide`, and then argue why
+*Exercise 0.5.* Prove `∀ b : Bool, b && b = b` by `decide`, and then argue why
 the analogous statement `∀ n : Nat, n * 1 = n` cannot be proved by `decide`.
 State precisely which hypothesis of Definition 0.14 fails for the second, and
 connect your answer to Remark 0.15.
 
-**Exercise 0.6.** Re-derive Example 0.25 in detail. For `|A| = n` and `|Y| = 2`,
+*Exercise 0.6.* Re-derive Example 0.25 in detail. For `|A| = n` and `|Y| = 2`,
 exhibit a function `A → Y` that is not of the form `f a`, by flipping the diagonal
 `f a a`. Then explain in one paragraph why this counting argument, though correct
 here, gives the wrong intuition for infinite `A`, and what the diagonal supplies
 that counting cannot. Relate the failure of counting to Example 0.22, the
 successor map.
 
-**Exercise 0.7.** Give an example of a fixed-point-free map `t : Bool → Bool` and
+*Exercise 0.7.* Give an example of a fixed-point-free map `t : Bool → Bool` and
 prove it fixed-point-free by `decide`. Then show that no map `Unit → Unit` is
 fixed-point-free, and say in one sentence what this means, via Definition 0.29
 and the engine, for a system whose only possible outcome is "accept."
 
-**Exercise 0.8.** For the real complement `t y = 1 - y`, find its unique fixed
+*Exercise 0.8.* For the real complement `t y = 1 - y`, find its unique fixed
 point by solving `t y = y`. Relate the answer to the threshold in the analytic
 trilemma, and explain why "the map has exactly one fixed point" is the analytic
 counterpart of "the Boolean flip has none," referring to Remark 0.30.
 
-**Exercise 0.9.** Prove the section form of the engine in core Lean: given
+*Exercise 0.9.* Prove the section form of the engine in core Lean: given
 `f : A → A → Y`, a section `s : (A → Y) → A` with `hs : ∀ g, f (s g) = g`
 (Definition 0.27), and any `t : Y → Y`, produce a fixed point of `t`. Compare
 your proof to `c0_lawvere` and identify the single step that becomes shorter when
 you have a section instead of a mere surjection.
 
-**Exercise 0.10.** Read Theorem 0.36 and construct a counterexample when the
+*Exercise 0.10.* Read Theorem 0.36 and construct a counterexample when the
 domain is _not_ connected: give a continuous `h` on the two-point discrete space
 of Example 0.34 that is negative at one point and positive at the other yet is
 never zero. Conclude in one sentence why connectedness is not an optional
 convenience in the analytic engine.
 
-**Exercise 0.11.** Run, or describe running, `#print axioms` (Definition 0.17) on
+*Exercise 0.11.* Run, or describe running, `#print axioms` (Definition 0.17) on
 two theorems from later chapters: a Boolean diagonal result and an analytic
 result routed through the reals. Predict the two axiom lists before checking, then
 explain what the difference tells you about the two theorems as pieces of
 knowledge, referring to Remark 0.18.
 
-**Exercise 0.12.** In `c0_lawvere`, the witness `a₀` depends on the choice of
+*Exercise 0.12.* In `c0_lawvere`, the witness `a₀` depends on the choice of
 preimage for the twisted diagonal. Argue that if two distinct indices both name
 the twisted diagonal, both are boundary objects (Definition 0.40), and that
 nothing in the proof selects a canonical one. Relate this non-uniqueness to the
 statement in later chapters that the boundary question is not unique.
 
-**Exercise 0.13.** Using Definition 0.21, prove in core Lean that the composite of
+*Exercise 0.13.* Using Definition 0.21, prove in core Lean that the composite of
 two injective functions is injective. Then explain in prose why injectivity is the
 retraction-side property (Definition 0.28) and surjectivity the section-side
 property, and where each appears in the diagonal argument.
 
-**Exercise 0.14.** (Synthesis.) In one page and without symbols, explain to a
+*Exercise 0.14.* (Synthesis.) In one page and without symbols, explain to a
 colleague who knows analysis but not logic why the intermediate value theorem and
 Cantor's diagonal are, for the purposes of this book, the same argument. Your
 explanation should name the domain hypothesis each engine uses, the outcome-map

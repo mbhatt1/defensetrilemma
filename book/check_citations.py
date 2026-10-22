@@ -33,6 +33,14 @@ LIBS = [
     "ManifoldProofs",
 ]
 
+PROOF_DECL = re.compile(
+    r"^\s*(?:@\[[^\]]*\]\s*)?"
+    r"(?:private\s+|protected\s+|noncomputable\s+|public\s+|partial\s+)*"
+    r"(?:theorem|lemma)\s+"
+    r"([A-Za-z_][A-Za-z0-9_'!?]*)",
+    re.M,
+)
+
 DECL = re.compile(
     r"^\s*(?:@\[[^\]]*\]\s*)?"
     r"(?:private\s+|protected\s+|noncomputable\s+|public\s+|partial\s+)*"
@@ -79,6 +87,28 @@ TO_BE_DEFINED_BY_READER = {
 VARIABLE = re.compile(r"^[A-Za-z]_(?:[A-Za-z0-9]{1,6}|\{[^}]*\})$")
 
 
+# Mathlib declarations the book cites as backing for a prose theorem. Each was
+# checked to exist against the same Mathlib revision the book pins, with
+#
+#     lake env lean -e '#check @<name>'
+#
+# from this directory. Adding a name here is a claim that it resolves in that
+# Mathlib; the claim is cheap to re-test and expensive to fake.
+MATHLIB_THEOREMS = {
+    "IsPreconnected.image",
+    "IsPreconnected.intermediate_value\u2082",
+    "IsPreconnected.ordConnected",
+    "isPreconnected_Icc",
+    "isPreconnected_univ",
+    "isConnected_sphere",
+    "intermediate_value_Icc",
+    "dist_comm",
+    "dist_triangle",
+    "not_not",
+    "congr_arg",
+}
+
+
 def library_names():
     """Every declaration name and module name in the companion libraries."""
     decls, mods = set(), set()
@@ -94,6 +124,21 @@ def library_names():
             with open(path, encoding="utf-8", errors="ignore") as fh:
                 decls.update(DECL.findall(fh.read()))
     return decls, mods
+
+
+def proof_names():
+    """Names of `theorem`/`lemma` declarations: libraries plus the book itself."""
+    names = set()
+    for lib in LIBS:
+        for path in glob.glob(os.path.join(CORPUS, lib) + "/**/*.lean", recursive=True):
+            if "/.lake/" in path:
+                continue
+            with open(path, encoding="utf-8", errors="ignore") as fh:
+                names.update(PROOF_DECL.findall(fh.read()))
+    for path in glob.glob(os.path.join(ROOT, "TrilemmaBook", "*.lean")):
+        with open(path, encoding="utf-8") as fh:
+            names.update(PROOF_DECL.findall(fh.read()))
+    return names
 
 
 def book_names():
@@ -147,7 +192,15 @@ CITE_NAME = re.compile(
 
 
 def backing_report():
-    """Classify every prose theorem by how it is backed."""
+    """Classify every prose theorem by how it is backed.
+
+    A citation counts as backing only if it names something that was actually
+    proved: a `theorem` or `lemma` in a companion library, one the book proves
+    itself, or a Mathlib result from the checked list above. A module name, a
+    `def`, or a `structure` is not a proof of anything, so a prose theorem whose
+    only backing is one of those now fails the gate rather than passing it.
+    """
+    provable = proof_names()
     proved, cited, marked, unbacked = 0, 0, 0, []
     for path in sorted(glob.glob(os.path.join(ROOT, "TrilemmaBook", "Ch*.lean"))):
         chapter = os.path.basename(path)
@@ -156,14 +209,17 @@ def backing_report():
         for j, i in enumerate(heads):
             end = heads[j + 1] if j + 1 < len(heads) else len(lines)
             block = "\n".join(lines[i:min(end, i + 40)])
+            spans = [s.strip() for s in re.findall(r"`([^`]+)`", block)]
+            backing = [
+                s for s in spans
+                if CITE_NAME.match(s)
+                and (s in MATHLIB_THEOREMS or s.split(".")[-1] in provable)
+            ]
             if "```lean" in block:
                 proved += 1
             elif NOT_FORMALIZED in block:
                 marked += 1
-            elif any(
-                CITE_NAME.match(s) and ("_" in s or "." in s)
-                for s in re.findall(r"`([^`]+)`", block)
-            ):
+            elif backing:
                 cited += 1
             else:
                 unbacked.append(f"{chapter}:{i + 1}  {lines[i].strip()[:70]}")

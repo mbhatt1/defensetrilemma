@@ -26,3 +26,28 @@ name = "TrilemmaBook"
 [[lean_exe]]
 name = "trilemmabook"
 root = "TrilemmaBookMain"
+
+# The thesis content library: the thesis root plus the chapters written for it.
+# The theoretical chapters are shared with `TrilemmaBook` rather than copied.
+[[lean_lib]]
+name = "Thesis"
+
+# The thesis generator: same two outputs, emitted into `_out_thesis`.
+[[lean_exe]]
+name = "thesis"
+root = "ThesisMain"
+
+# The CTVG thesis content library: a separate, self-contained thesis proposing
+# the Critical-Threshold Viability Game framework for agentic AI safety. It
+# does not share chapters with `TrilemmaBook` or `Thesis` and depends only on
+# core Lean, not Mathlib: its formal content is a set of structures and
+# definitions, not machine-checked theorems in the sense of the companion
+# corpus.
+[[lean_lib]]
+name = "CTVGThesis"
+
+# The CTVG thesis generator: same HTML/PDF pipeline, emitted into
+# `_out_ctvg_thesis`.
+[[lean_exe]]
+name = "ctvg-thesis"
+root = "CTVGThesisMain"

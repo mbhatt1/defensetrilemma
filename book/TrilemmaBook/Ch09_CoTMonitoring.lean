@@ -7,11 +7,15 @@ set_option pp.rawOnError true
 
 #doc (Manual) "The Trace Is Not a Window" =>
 
+*Abstract.* Chain-of-thought monitoring reads what a model says while it reasons, on the premise that harmful reasoning written in plain text can be caught. This chapter does not rebut the case for monitoring. It asks what the two engines say about it. The trace is text the model itself chose to emit, so the monitor reads a verdict about a self-describing system. The chapter states what faithfulness of the trace would require and what a monitor can and cannot guarantee.
+
+*Keywords:* Chain of thought, Monitoring, Faithfulness, Oversight, Reasoning models
+
 Chapter 8 answered the objection that the trilemmata concern only outputs by
 following a probe into the middle of the network. There is a second, more
 practical version of the same objection, and it is currently the most widely
 deployed safety measure in the field. Do not read the activations at all. Read
-what the model *says* while it is thinking. A reasoning model emits a
+what the model _says_ while it is thinking. A reasoning model emits a
 chain of thought before it answers, and that chain is plain text: legible,
 loggable, and cheap to check with a second model. If the reasoning that produced
 a harmful action is written out in English on the way to the action, a monitor
@@ -30,7 +34,7 @@ What this chapter derives is where that guarantee stops. Three results, each
 from a different mechanism, and none of them a restatement of Chapter 8. The
 first is a pigeonhole argument, not a diagonal one: it shows that the two
 properties the monitorability literature measures separately, faithfulness and
-verbosity, are not independent, because faithfulness *forces* verbosity.
+verbosity, are not independent, because faithfulness _forces_ verbosity.
 The second is the diagonal, applied to a monitor whose input the model
 controls, which is a materially different situation from a probe reading
 activations the model does not choose. The third concerns what happens when a
@@ -52,12 +56,12 @@ monitor is a second system reading traces and returning a verdict.
 There are two versions of the monitor worth separating, and the difference
 matters for which theorem applies.
 
-*Definition 9.1 (Trace-only monitor).* A *trace-only monitor* is a
+*Definition 9.1 (Trace-only monitor).* A _trace-only monitor_ is a
 map `mon : T → Bool`, returning `true` when it judges the trace to reveal
 misbehavior. It sees the reasoning and nothing else. This is the cheap
 deployment: log the chain of thought, run a classifier over the log.
 
-*Definition 9.2 (Contextual monitor).* A *contextual monitor* is a map
+*Definition 9.2 (Contextual monitor).* A _contextual monitor_ is a map
 `mon : T → Q → Bool`, which reads the trace and also has access to the query
 being reasoned about. This is the more capable deployment, and it is what a
 monitor with access to the full transcript actually is.
@@ -68,7 +72,7 @@ want flagged. This is not something the monitor computes. It is the thing the
 monitor is trying to track, and its existence as a total Boolean function is an
 idealization we make in order to have something exact to compare against.
 
-*Definition 9.4 (Faithfulness).* A trace-only monitor is *faithful*
+*Definition 9.4 (Faithfulness).* A trace-only monitor is _faithful_
 when its verdict matches the fact of the matter on every query, that is, when
 `mon (trace q) = harm q` for all `q`. In the empirical literature faithfulness
 is a property of the trace rather than of the monitor, and it is measured as the
@@ -80,11 +84,12 @@ faithfulness would buy you.
 
 ```lean
 def c9_Faithful {Q T : Type _}
-    (trace : Q → T) (mon : T → Bool) (harm : Q → Bool) : Prop :=
+    (trace : Q → T) (mon : T → Bool)
+    (harm : Q → Bool) : Prop :=
   ∀ q, mon (trace q) = harm q
 ```
 
-*Definition 9.5 (Verbosity).* The trace is *verbose* on a pair of
+*Definition 9.5 (Verbosity).* The trace is _verbose_ on a pair of
 queries when it distinguishes them, `trace q₁ ≠ trace q₂`. The monitorability
 literature defines verbosity as whether the chain of thought lists every factor
 needed to solve the task, and measures it separately from faithfulness precisely
@@ -110,46 +115,49 @@ the trace. If two queries produce the same trace, the monitor cannot tell them
 apart, because there is nothing else it reads. Whatever it says about one, it
 says about the other.
 
-*Lemma 9.6 (Collisions force error).* *If two queries collide in the
+*Lemma 9.6 (Collisions force error).* _If two queries collide in the
 trace but differ in the fact of the matter, then a trace-only monitor is wrong
-on at least one of them.*
+on at least one of them._
 
 ```lean
 theorem c9_collision_forces_error {Q T : Type _}
     (trace : Q → T) (mon : T → Bool) (harm : Q → Bool)
-    (q₁ q₂ : Q) (hcol : trace q₁ = trace q₂) (hdiff : harm q₁ ≠ harm q₂) :
-    mon (trace q₁) ≠ harm q₁ ∨ mon (trace q₂) ≠ harm q₂ := by
+    (q₁ q₂ : Q) (hcol : trace q₁ = trace q₂)
+    (hdiff : harm q₁ ≠ harm q₂) :
+    mon (trace q₁) ≠ harm q₁ ∨ mon (trace q₂) ≠ harm q₂ :=
+      by
   by_cases h : mon (trace q₁) = harm q₁
   · exact Or.inr (by rw [← hcol, h]; exact hdiff)
   · exact Or.inl h
 ```
 
-*Proof.* Suppose the monitor is right on `q₁`, so `mon (trace q₁) = harm q₁`.
+_Proof._ Suppose the monitor is right on `q₁`, so `mon (trace q₁) = harm q₁`.
 Since the traces are equal, its verdict on `q₂` is the same value, which is
 `harm q₁`, and `harm q₁ ≠ harm q₂`. So it is wrong on `q₂`. If instead it is
 already wrong on `q₁` there is nothing to prove. ∎
 
 The contrapositive is the result we want, and it is the one worth remembering.
 
-*Theorem 9.7 (Faithfulness forces verbosity).* *A faithful trace-only
+*Theorem 9.7 (Faithfulness forces verbosity).* _A faithful trace-only
 monitor forces the trace to separate every pair of queries that differ in the
-fact of the matter.*
+fact of the matter._
 
 ```lean
 theorem c9_faithful_forces_separation {Q T : Type _}
     (trace : Q → T) (mon : T → Bool) (harm : Q → Bool)
     (hf : c9_Faithful trace mon harm)
-    (q₁ q₂ : Q) (hcol : trace q₁ = trace q₂) : harm q₁ = harm q₂ := by
+    (q₁ q₂ : Q) (hcol : trace q₁ = trace q₂) :
+    harm q₁ = harm q₂ := by
   rw [← hf q₁, ← hf q₂, hcol]
 ```
 
-*Proof.* Rewrite each side of the goal using faithfulness, turning
+_Proof._ Rewrite each side of the goal using faithfulness, turning
 `harm q₁ = harm q₂` into `mon (trace q₁) = mon (trace q₂)`, and then rewrite
 with the collision to close it by reflexivity. ∎
 
 Read Theorem 9.7 as a statement about measurement. It says that faithfulness and
 verbosity are not two dials you can set independently once you are at the top of
-the scale: a perfectly faithful trace-only monitor *entails* a trace
+the scale: a perfectly faithful trace-only monitor _entails_ a trace
 verbose enough to separate every harm-relevant distinction. So the two-factor
 monitorability score is measuring one thing near the exact corner and two things
 away from it, and the gap between the factors is a measure of distance from the
@@ -177,9 +185,9 @@ representation, and Chapter 8 already established that routing a verdict through
 a representation does not help. The trace-monitoring case is the same theorem
 with `T` in place of J-space.
 
-*Theorem 9.9 (Monitoring factors, and factoring does not help).* *Let
+*Theorem 9.9 (Monitoring factors, and factoring does not help).* _Let
 `trace : Q → T` and `mon : T → Q → Bool`. If every pattern of verdicts over
-queries is realized by some query's trace, the situation is contradictory.*
+queries is realized by some query's trace, the situation is contradictory._
 
 ```lean
 theorem c9_trace_factoring {Q T : Type _}
@@ -188,11 +196,11 @@ theorem c9_trace_factoring {Q T : Type _}
   no_reflective_verdict (fun p => mon (trace p)) hs
 ```
 
-*Proof.* `fun p => mon (trace p)` is a reflective verdict on `Q`, and
+_Proof._ `fun p => mon (trace p)` is a reflective verdict on `Q`, and
 {lean}`no_reflective_verdict` rules those out. ∎
 
-*Theorem 9.10 (The obfuscated trace).* *Under the same hypothesis there is
-a query whose monitored verdict is its own negation.*
+*Theorem 9.10 (The obfuscated trace).* _Under the same hypothesis there is
+a query whose monitored verdict is its own negation._
 
 ```lean
 theorem c9_obfuscation_liar {Q T : Type _}
@@ -202,7 +210,7 @@ theorem c9_obfuscation_liar {Q T : Type _}
   liar_query (fun p => mon (trace p)) hs
 ```
 
-*Proof.* Apply {lean}`liar_query` to the composite verdict. ∎
+_Proof._ Apply {lean}`liar_query` to the composite verdict. ∎
 
 So far this is Chapter 8 with different letters. What is different, and it is
 the reason this chapter exists rather than a remark in the last one, is the
@@ -213,7 +221,7 @@ were careful to say that point-surjectivity there is an idealization: a fixed
 network has finitely many activations and does not literally name every verdict
 pattern. The honest reading was the approximate one of Chapter 6.
 
-Here the encoder is `trace`, and the model *chooses* it. The trace is
+Here the encoder is `trace`, and the model _chooses_ it. The trace is
 the model's output, generated token by token under the same policy that produces
 the answer, and it is unconstrained text. This is the prompt-injection situation
 of Chapter 3, not the activation situation of Chapter 8, and Chapter 3 already
@@ -222,7 +230,7 @@ monitor can shape the trace it emits, and shaping the trace is exactly
 constructing a preimage. The diagonal argument's expensive hypothesis is, in
 this application, close to free.
 
-That is the formal content of the word *obfuscation* in the position
+That is the formal content of the word _obfuscation_ in the position
 paper's own list of risks. The concern there is that a model under pressure
 learns to route its real reasoning around the trace while emitting a clean one.
 Theorem 9.10 says the fixed point of that process exists as soon as the model
@@ -241,12 +249,12 @@ flags some fraction of traces, and the flagged behavior is trained away. Iterate
 until the flag rate is acceptable. The question is what the monitor's verdict
 means at the end of that process.
 
-*Definition 9.11 (Selection to passing).* A model has been *selected to
-passing* against a trace-only monitor when every query it is run on produces a
+*Definition 9.11 (Selection to passing).* A model has been _selected to
+passing_ against a trace-only monitor when every query it is run on produces a
 trace the monitor accepts, that is, `mon (trace q) = true` for all `q`.
 
-*Theorem 9.12 (A selected monitor is constant).* *After selection to
-passing, the monitor returns the same verdict on every pair of queries.*
+*Theorem 9.12 (A selected monitor is constant).* _After selection to
+passing, the monitor returns the same verdict on every pair of queries._
 
 ```lean
 theorem c9_selected_monitor_constant {Q T : Type _}
@@ -256,7 +264,7 @@ theorem c9_selected_monitor_constant {Q T : Type _}
   rw [hpass q₁, hpass q₂]
 ```
 
-*Proof.* Both sides rewrite to `true`. ∎
+_Proof._ Both sides rewrite to `true`. ∎
 
 The theorem is one line and its content is entirely in the reading, so it is
 worth being precise about what has and has not been shown. It has not been shown
@@ -265,15 +273,15 @@ its output is a constant function, and a constant function distinguishes
 nothing. Whatever information the monitor was carrying about the model has been
 optimized out of it, and the flag rate reaching zero is not evidence that the
 behavior is gone, because the flag rate reaching zero is what the training
-procedure was *for*.
+procedure was _for_.
 
 The blunt version is worth stating as its own result, because it is what the
 theorem is actually saying, and the proof makes the point by what it does not
 use.
 
-*Theorem 9.13 (The verdict no longer tracks harm).* *After selection to
+*Theorem 9.13 (The verdict no longer tracks harm).* _After selection to
 passing, the monitor gives the same verdict on two queries even when they differ
-in the fact of the matter.*
+in the fact of the matter._
 
 ```lean
 theorem c9_selection_blinds {Q T : Type _}
@@ -284,7 +292,7 @@ theorem c9_selection_blinds {Q T : Type _}
   rw [hpass q₁, hpass q₂]
 ```
 
-*Proof.* Both sides rewrite to `true`. ∎
+_Proof._ Both sides rewrite to `true`. ∎
 
 Look at the hypothesis `_hdiff`. It is named with a leading underscore because
 the proof never touches it, and that is the entire point of stating the theorem
@@ -294,18 +302,20 @@ role in the argument, because after selection there is no route from `harm` to
 the verdict at all. A monitor selected against is not a degraded detector. It is
 disconnected from what it was detecting.
 
-*Corollary 9.14 (Faithfulness is lost, unless nothing is harmful).* *A
-selected monitor that is still faithful forces every query to be harmful.*
+*Corollary 9.14 (Faithfulness is lost, unless nothing is harmful).* _A
+selected monitor that is still faithful forces every query to be harmful._
 
 ```lean
-theorem c9_selected_faithful_forces_all_harmful {Q T : Type _}
+theorem c9_selected_faithful_forces_all_harmful
+    {Q T : Type _}
     (trace : Q → T) (mon : T → Bool) (harm : Q → Bool)
     (hpass : ∀ q : Q, mon (trace q) = true)
-    (hf : c9_Faithful trace mon harm) (q : Q) : harm q = true := by
+    (hf : c9_Faithful trace mon harm)
+    (q : Q) : harm q = true := by
   rw [← hf q, hpass q]
 ```
 
-*Proof.* Faithfulness rewrites `harm q` to the monitor's verdict, and selection
+_Proof._ Faithfulness rewrites `harm q` to the monitor's verdict, and selection
 rewrites that to `true`. ∎
 
 Read the corollary contrapositively, which is how it is used. If a single query
@@ -328,7 +338,7 @@ say monitoring is useless. It says a monitor's evidential value is spent when it
 is used as a training signal, so the two uses are exclusive: a monitor can be an
 observer or an objective, and it cannot be both and remain informative. This is
 a real and actionable distinction, and it is the reason the position paper's
-recommendation to *preserve* monitorability is not the same as, and is
+recommendation to _preserve_ monitorability is not the same as, and is
 partly in tension with, using the monitor to enforce it. Holding out a monitor
 that is never trained against is the design this theorem argues for.
 

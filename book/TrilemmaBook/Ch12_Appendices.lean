@@ -12,7 +12,7 @@ quantitative half the diagonal cannot. Here we make that claim auditable. Append
 A is a guided index of the machine-checked development, library by library, so that
 any assertion in the text can be traced to a named theorem the Lean kernel accepts.
 Appendix B collects every symbol the book uses. Appendix C sets the two engines
-side by side one last time. Appendix D is an annotated bibliography. Appendix E
+side by side one last time. Appendix D
 explains how to build the book and the libraries and how to run the axiom audit
 yourself.
 
@@ -47,7 +47,7 @@ standard axioms through Mathlib, because real analysis in Lean is built classica
 The corpus is sorry-free throughout; each `sorry`-shaped string in the sources is
 inside a comment asserting that the file is complete. Where a file wants to make the
 axiom status explicit it ends with `#print axioms` on its headline theorems, and
-Appendix E shows how to reproduce those checks.
+Appendix D shows how to reproduce those checks.
 
 The split between axiom-free and classically clean is not a defect and not an
 accident. It is the formal shadow of the book's two-engine thesis. The diagonal
@@ -86,7 +86,7 @@ paradoxes and the AI-safety readings. The later files import the earlier ones, s
 the Gödel-style trilemma statements at the end are literally the three-line engine
 wearing different names.
 
-**`F_01`** (`F_01_LawvereCore`). The heart of everything. This file states and proves
+*`F_01`* (`F_01_LawvereCore`). The heart of everything. This file states and proves
 the fixed-point theorem in both its surjective and its section form, then packages
 the contrapositive. The boolean-diagonal results here are axiom-free.
 
@@ -109,7 +109,7 @@ the contrapositive. The boolean-diagonal results here are axiom-free.
  * `lawvere_universal_fixed_point` : universality and a chosen `t` together produce
    the fixed point, the form reused downstream.
 
-**`F_02`** (`F_02_RiceTheorem`). Rice's theorem as a diagonal. Any external decision
+*`F_02`* (`F_02_RiceTheorem`). Rice's theorem as a diagonal. Any external decision
 procedure that claims to read a nontrivial semantic property of behaviors
 mismatches some behavior. Axiom-free at the boolean core.
 
@@ -122,7 +122,7 @@ mismatches some behavior. Axiom-free at the boolean core.
  * `no_automated_self_test` : no system can run a complete correct self-test of its
    own behavior. The safety-facing reading of Rice.
 
-**`F_03`** (`F_03_VerificationLimit`). The verifier version. A universal system cannot
+*`F_03`* (`F_03_VerificationLimit`). The verifier version. A universal system cannot
 have a fixed-point-free output map, so no complete self-verifier exists over its own
 outputs.
 
@@ -134,7 +134,7 @@ outputs.
  * `no_universal_nat_LLM` : specialized to natural-number outputs via the successor
    map, which has no fixed point.
 
-**`F_04`** (`F_04_CalibrationUnified`). The confidence reading, still discrete. Here
+*`F_04`* (`F_04_CalibrationUnified`). The confidence reading, still discrete. Here
 the output is a probability and the flip is "reflect across one half," whose only
 fixed point is the value one half. This is where calibration first meets the
 diagonal, and it is the bridge to the analytic hallucination results.
@@ -149,7 +149,7 @@ diagonal, and it is the bridge to the analytic hallucination results.
  * `hallucination_via_lawvere` : the hallucination phenomenon derived directly from
    `lawvere`.
 
-**`F_05`** (`F_05_DeceptionTheorem`). Alignment as a fixed-point obstruction. If an
+*`F_05`* (`F_05_DeceptionTheorem`). Alignment as a fixed-point obstruction. If an
 "aligned" transformation of behavior has no fixed point, no universal system can be
 uniformly aligned.
 
@@ -160,7 +160,7 @@ uniformly aligned.
  * `two_diagonals` : two distinct diagonal constructions coincide as witnesses, a
    lemma the corner results reuse.
 
-**`F_06`** (`F_06_OversightHierarchy`). Oversight does not escape the diagonal.
+*`F_06`* (`F_06_OversightHierarchy`). Oversight does not escape the diagonal.
 Stacking a watcher on a watcher inherits universality and inherits the diagonal, at
 every finite level.
 
@@ -170,7 +170,7 @@ every finite level.
  * `reflective_tower` : an iterated tower of reflection stays universal.
  * `no_level_escapes` : no level of the tower escapes the impossibility.
 
-**`F_07`** (`F_07_CompositionFailure`). Post-processing does not help. Composing any
+*`F_07`* (`F_07_CompositionFailure`). Post-processing does not help. Composing any
 map after a universal system leaves a universal system, so wrappers and filters
 cannot break self-reference.
 
@@ -183,7 +183,7 @@ cannot break self-reference.
  * `iterCompose_inherits_diagonal` : iterated composition inherits the diagonal.
  * `iterCompose_no_escape` : no number of iterations escapes.
 
-**`F_08`** (`F_08_SpecificationBound`). The counting-with-teeth file. Cantor's
+*`F_08`* (`F_08_SpecificationBound`). The counting-with-teeth file. Cantor's
 power-set gap in its Lean form: the behaviors of a system are strictly more numerous
 than its indices, so some behavior is unspecifiable.
 
@@ -193,7 +193,7 @@ than its indices, so some behavior is unspecifiable.
  * `powerset_strictly_larger` : the power set is strictly larger, stated directly.
  * `bool_specification_bound` : the boolean-indicator form of the same bound.
 
-**`F_09`** (`F_09_QuantitativeDegradation`). The first genuinely metric file, and the
+*`F_09`* (`F_09_QuantitativeDegradation`). The first genuinely metric file, and the
 hinge between the two engines inside `Foundation`. An approximate Lawvere theorem: if
 outputs live in a pseudometric space and the flip moves every point by at least some
 gap, universality is impossible by a margin, and the margin degrades gracefully.
@@ -209,7 +209,7 @@ These results carry the three standard axioms through `PseudoMetricSpace`.
  * `strict_limit_recovers_trilemma` : as the slack goes to zero the exact trilemma
    returns, so the discrete result is the limit of the quantitative one.
 
-**`F_10`** (`F_10_MasterFoundation`, `F_10_FinalVerification`). The consolidation
+*`F_10`* (`F_10_MasterFoundation`, `F_10_FinalVerification`). The consolidation
 layer. A single structure bundles the foundational hypotheses and a master theorem
 derives every corner from it; the verification file runs the axiom audit.
 
@@ -221,7 +221,7 @@ derives every corner from it; the verification file runs the axiom audit.
  * `nat_succ_instance` : the natural-number successor instance.
  * `unification_statement` : the statement that the instances are one theorem.
 
-**`F_11`** (`F_11_HallucinationGodel`). The Gödel-style naming of the hallucination
+*`F_11`* (`F_11_HallucinationGodel`). The Gödel-style naming of the hallucination
 result. The liar query is named explicitly, and the trilemma is stated as an
 impossibility. This file ends with `#print axioms` on its headline results; the
 boolean core is axiom-free.
@@ -234,7 +234,7 @@ boolean core is axiom-free.
    impossibility.
  * `controllers_agree` : the boolean and propositional flips agree as controllers.
 
-**`F_12`** (`F_12_DefenseGodel`). The same move for defenses. A defense that judges
+*`F_12`* (`F_12_DefenseGodel`). The same move for defenses. A defense that judges
 prompts, including prompts about its own judgments, is a reflective verdict, so it is
 impossible, and the file shows the defense engine is the hallucination engine.
 
@@ -244,7 +244,7 @@ impossible, and the file shows the defense engine is the hallucination engine.
  * `reflective_verdict_impossible` : no reflective verdict exists.
  * `defense_is_hallucination_engine` : the two impossibilities share one proof.
 
-**`F_13`** (`F_13_UnifiedTrilemmata`). The unification. All three trilemmas, the
+*`F_13`* (`F_13_UnifiedTrilemmata`). The unification. All three trilemmas, the
 hallucination, the defense, and the truth-boundary coupling, are folded into one
 statement about reflective verdicts. Axiom audit printed at the end.
 
@@ -253,7 +253,7 @@ statement about reflective verdicts. Axiom audit printed at the end.
  * `coupling_trilemma_godel` : the truth-boundary coupling in Gödel form.
  * `trilemmata_unified` : the three trilemmas as a single theorem.
 
-**`F_14`** (`F_14_JSpace`). The interpretability reading. A probe that reads a
+*`F_14`* (`F_14_JSpace`). The interpretability reading. A probe that reads a
 judgment off a model's own activations, over a space rich enough to encode any
 readout, is again a reflective verdict, so a complete self-reading probe is
 impossible. This is the formal core behind the J-space chapter.
@@ -263,7 +263,7 @@ impossible. This is the formal core behind the J-space chapter.
  * `jspace_coupled_activation` : the activation on which the readout must fail.
  * `jspace_is_the_same_engine` : the interpretability obstruction is `lawvere` again.
 
-## CCHProofs: the Control-Corner-Hallucination trilemma (CCH\_01–CCH\_Master)
+## CCHProofs: the master trilemma (CCH\_01–CCH\_Master)
 
 `CCHProofs` develops the trilemma as a geometry of three properties: Universality,
 Control, and Transparency, of which any system can enjoy at most two. It restates
@@ -272,7 +272,7 @@ walks the three corners one at a time before assembling the master statement. It
 includes a direct LLM instantiation. The diagonal core is axiom-free; the corners
 inherit only what their outputs require.
 
-**`CCH_01`** (`CCH_01_Foundations`). Definitions and the dictionary between the
+*`CCH_01`* (`CCH_01_Foundations`). Definitions and the dictionary between the
 property language and the fixed-point language.
 
  * `nonTrivial_iff_no_fixed_point` : a controller is nontrivial exactly when it has
@@ -285,7 +285,7 @@ property language and the fixed-point language.
    restatements.
  * `isTransparent_eq_diag` : transparency as diagonal equality at the structure level.
 
-**`CCH_02`** (`CCH_02_Lawvere`). Lawvere inside the CCH vocabulary.
+*`CCH_02`* (`CCH_02_Lawvere`). Lawvere inside the CCH vocabulary.
 
  * `lawvere_fixed_point` : the fixed-point theorem, CCH form.
  * `no_surjection_of_no_fixed_point` : Cantor's contrapositive.
@@ -295,14 +295,14 @@ property language and the fixed-point language.
  * `lawvere_via_section`, `surjective_of_section` : the section form and its bridge.
  * `lawvere_universal_fixed_point` : the packaged form reused by the corners.
 
-**`CCH_03`** (`CCH_03_Cantor`). Cantor, in surjection and power-set forms. Axiom-free.
+*`CCH_03`* (`CCH_03_Cantor`). Cantor, in surjection and power-set forms. Axiom-free.
 
  * `bool_not_no_fixed_point` : boolean negation has no fixed point.
  * `cantor_no_surjection` : no surjection onto the boolean behaviors.
  * `cantor_no_surjection_set` : no surjection onto the power set.
  * `no_universal_bool_system` : no universal boolean system.
 
-**`CCH_04`** (`CCH_04_FixedPointFree`). A small library of fixed-point-free maps, the
+*`CCH_04`* (`CCH_04_FixedPointFree`). A small library of fixed-point-free maps, the
 raw material for corners. Axiom-free.
 
  * `bool_not_fixedPointFree` : boolean negation is fixed-point-free.
@@ -317,7 +317,7 @@ raw material for corners. Axiom-free.
    the empty type is fixed-point-free and nothing on `Unit` is.
  * `lawvere_section`, `no_section_of_fixedPointFree` : the section-form counterparts.
 
-**`CCH_05`** (`CCH_05_Controllers`). The theory of controllers, the maps that play the
+*`CCH_05`* (`CCH_05_Controllers`). The theory of controllers, the maps that play the
 role of `t`. A controller is nontrivial when it has no fixed point.
 
  * `bool_not_nonTrivial`, `nat_succ_nonTrivial` : examples of nontrivial controllers.
@@ -335,7 +335,7 @@ role of `t`. A controller is nontrivial when it has no fixed point.
  * `bivalent_nonTrivial`, `nonTrivial_bivalent_of_inhabited` : the bivalent-output
    cases.
 
-**`CCH_06`** (`CCH_06_Transparency`). Transparency, the property that the diagonal is
+*`CCH_06`* (`CCH_06_Transparency`). Transparency, the property that the diagonal is
 itself a named behavior.
 
  * `transparent_iff_eq_diag` : transparency is diagonal equality.
@@ -348,7 +348,7 @@ itself a named behavior.
  * `trivial_transparent_construction` : a trivial witness showing the corner is
    inhabited when universality is dropped.
 
-**`CCH_07`** (`CCH_07_CornerUC`). The Universal-plus-Controlled corner, which cannot
+*`CCH_07`* (`CCH_07_CornerUC`). The Universal-plus-Controlled corner, which cannot
 also be Transparent.
 
  * `corner_UC_not_T` : Universal and Controlled excludes Transparent.
@@ -359,7 +359,7 @@ also be Transparent.
  * `corner_UC_exists_failure`, `corner_UC_prediction_fixed_point` : the explicit
    failure witness and the prediction fixed point.
 
-**`CCH_08`** (`CCH_08_CornerUT`). The Universal-plus-Transparent corner, which cannot
+*`CCH_08`* (`CCH_08_CornerUT`). The Universal-plus-Transparent corner, which cannot
 be Controlled.
 
  * `corner_UT_not_C` : Universal and Transparent excludes Controlled.
@@ -368,7 +368,7 @@ be Controlled.
  * `corner_UT_witness_identity`, `corner_UT_needs_universality` : the witness and the
    necessity of the universality hypothesis.
 
-**`CCH_09`** (`CCH_09_CornerCT`). The Controlled-plus-Transparent corner, which cannot
+*`CCH_09`* (`CCH_09_CornerCT`). The Controlled-plus-Transparent corner, which cannot
 be Universal. This is the Rice face.
 
  * `corner_CT_not_U` : Controlled and Transparent excludes Universal.
@@ -378,7 +378,7 @@ be Universal. This is the Rice face.
  * `corner_CT_witness`, `corner_CT_not_U_of_fpf`, `corner_CT_bool_via_fpf` : the
    witness and the fixed-point-free routes.
 
-**CCH\_LLM (`CCH_LLM_Direct`).** The trilemma spelled out for an in-context learner
+*CCH\_LLM (`CCH_LLM_Direct`).* The trilemma spelled out for an in-context learner
 `M : LLM Prompt Token`, so the abstract corners become claims about a model.
 
  * `iclUniversal_iff` : in-context universality is surjectivity of the learner.
@@ -392,7 +392,7 @@ be Universal. This is the Rice face.
  * `LLM_approx_fixed_point`, `LLM_approx_trilemma` : the approximate versions with a
    confidence output.
 
-**CCH\_Master (`CCH_MasterTrilemma`, `CCH_FinalVerification`).** The consolidated
+*CCH\_Master (`CCH_MasterTrilemma`, `CCH_FinalVerification`).* The consolidated
 trilemma over a `CCHStructure`, and the axiom audit.
 
  * `cch_master_trilemma` : at most two of Universal, Controlled, Transparent.
@@ -412,7 +412,7 @@ discrete, probabilistic, and approximate forms; the late files add the coupling
 theorem and the metric geometry. Most results here carry the three standard axioms
 through Mathlib's real analysis; the purely discrete files are the exceptions.
 
-**`HoF_01`** (`HoF_01_Foundations`). The truth set and its neighbors, defined from the
+*`HoF_01`* (`HoF_01_Foundations`). The truth set and its neighbors, defined from the
 signed distance `δ` and the model's confidence.
 
  * `mem_truthSet`, `mem_falseSet`, `mem_truthBoundary`, `mem_strictTruth`,
@@ -428,7 +428,7 @@ signed distance `δ` and the model's confidence.
  * `strictTruth_falseSet_disjoint`, `truthBoundary_falseSet_disjoint` : the
    separations used later.
 
-**`HoF_02`** (`HoF_02_TruthSet`). The truth set as a topological object in its own
+*`HoF_02`* (`HoF_02_TruthSet`). The truth set as a topological object in its own
 right, with the non-closedness that forces a boundary.
 
  * `truthSet_isClosed`, `falseSet_isOpen`, `strictTruth_isOpen`,
@@ -439,7 +439,7 @@ right, with the non-closedness that forces a boundary.
  * `strictTruth_not_closed`, `boundary_point_in_closure_of_strictTruth` : the strict
    truth region is not closed, and its closure reaches the boundary.
 
-**`HoF_03`** (`HoF_03_BoundaryCrossing`). The intermediate value theorem doing its
+*`HoF_03`* (`HoF_03_BoundaryCrossing`). The intermediate value theorem doing its
 work: a path from a confident-true point to a confident-false point must cross.
 
  * `confidence_path_crosses_half` : a confidence path from above to below one half
@@ -451,7 +451,7 @@ work: a path from a confident-true point to a confident-false point must cross.
    half-confidence level set is nonempty.
  * `model_truth_boundary_isClosed` : and closed.
 
-**`HoF_04`** (`HoF_04_Faithfulness`). Faithfulness, the property that high confidence
+*`HoF_04`* (`HoF_04_Faithfulness`). Faithfulness, the property that high confidence
 implies truth, and what it forces at the boundary.
 
  * `StrongFaithful.toFaithful` : strong faithfulness implies faithfulness.
@@ -464,7 +464,7 @@ implies truth, and what it forces at the boundary.
    pinned to the truth boundary.
  * `low_conf_unconstrained` : where confidence is low the model is free.
 
-**`HoF_05`** (`HoF_05_Coverage`). Coverage, the hypothesis that the model's answers
+*`HoF_05`* (`HoF_05_Coverage`). Coverage, the hypothesis that the model's answers
 straddle both sides, which is what makes the boundary unavoidable.
 
  * `covering_image_straddles_zero` : a covering model's signed distances take both
@@ -476,7 +476,7 @@ straddle both sides, which is what makes the boundary unavoidable.
  * `covering_abs_zero`, `denseCoverage_approximable` : the distance hits zero, and
    dense coverage is approximable.
 
-**`HoF_06`** (`HoF_06_Calibration`). Calibration, the link between confidence and truth
+*`HoF_06`* (`HoF_06_Calibration`). Calibration, the link between confidence and truth
 probability, and the half-boundary it induces.
 
  * `calibrated_levelSet_eq` : the calibrated level set matches the truth level set.
@@ -487,7 +487,7 @@ probability, and the half-boundary it induces.
  * `confHalf_implies_truthBoundary` : half confidence implies boundary membership.
  * `off_boundary_conf_not_half` : off the boundary, confidence is never exactly half.
 
-**`HoF_07`** (`HoF_07_TrilemmaCore`). The continuous hallucination trilemma. A model
+*`HoF_07`* (`HoF_07_TrilemmaCore`). The continuous hallucination trilemma. A model
 cannot be faithful, calibrated, and covering all at once; some question sits on the
 boundary with confidence exactly one half.
 
@@ -496,7 +496,7 @@ boundary with confidence exactly one half.
  * `hallucination_trilemma_unfolded`, `hallucination_trilemma_strict_unfolded` : the
    same with definitions unfolded, for downstream use.
 
-**`HoF_08`** (`HoF_08_BorsukUlam`). The topological upgrade. When the question space is
+*`HoF_08`* (`HoF_08_BorsukUlam`). The topological upgrade. When the question space is
 a sphere and the model is antipodally symmetric, the Borsuk-Ulam theorem forces a
 boundary point without needing a chosen path. These results use the three standard
 axioms.
@@ -507,7 +507,7 @@ axioms.
  * `approx_odd_near_zero` : an approximately odd function is near zero somewhere.
  * `sphere_odd_has_zero` : the higher-dimensional sphere statement.
 
-**`HoF_09`** (`HoF_09_Discrete`). The trilemma with no topology at all, over a finite
+*`HoF_09`* (`HoF_09_Discrete`). The trilemma with no topology at all, over a finite
 or discrete question space using a strict trichotomy and a sign change. Axiom-light,
 the discrete core needs no analysis.
 
@@ -517,7 +517,7 @@ the discrete core needs no analysis.
  * `discrete_sign_change` : a sign change is forced between covered points.
  * `discrete_hallucination` : the discrete hallucination result.
 
-**`HoF_10`** (`HoF_10_PureDiscrete`). The fully combinatorial version, connecting the
+*`HoF_10`* (`HoF_10_PureDiscrete`). The fully combinatorial version, connecting the
 boundary story back to the diagonal engine of `Foundation`.
 
  * `boundary_conf_half` : the boundary question has confidence one half.
@@ -528,7 +528,7 @@ boundary story back to the diagonal engine of `Foundation`.
    question.
  * `hallucination_trilemma_via_pure_discrete` : the trilemma proved with no analysis.
 
-**`HoF_11`** (`HoF_11_MultiTurnProbabilistic`). The multi-turn and stochastic
+*`HoF_11`* (`HoF_11_MultiTurnProbabilistic`). The multi-turn and stochastic
 extension. An adversary steering a conversation can reach the boundary, and the
 expected behavior over turns still couples.
 
@@ -540,7 +540,7 @@ expected behavior over turns still couples.
  * `stochastic_dichotomy`, `boundary_dichotomy` : the stochastic and boundary
    dichotomies.
 
-**`HoF_12`** (`HoF_12_Approximate`). The approximate trilemma with explicit slack
+*`HoF_12`* (`HoF_12_Approximate`). The approximate trilemma with explicit slack
 parameters `ε`, and the bridges back to the exact statements. Axiom audit printed.
 
  * `approx_trilemma` : the trilemma with a slack `ε`.
@@ -553,7 +553,7 @@ parameters `ε`, and the bridges back to the exact statements. Axiom audit print
    `truth_slack_must_be_positive`, `two_slack_band_bridge` : the two-slack
    reformulation and its coupling.
 
-**`HoF_13`** (`HoF_13_BoundaryCoupling`). The coupling theorem, the truth-boundary
+*`HoF_13`* (`HoF_13_BoundaryCoupling`). The coupling theorem, the truth-boundary
 analogue of the reflective-verdict impossibility, with the closed-versus-open
 guarantee dichotomy that Chapter 3 turns on. Axiom audit printed.
 
@@ -563,7 +563,7 @@ guarantee dichotomy that Chapter 3 turns on. Axiom audit printed.
  * `open_guarantee_silent` : an open guarantee is silent exactly on the boundary.
  * `slack_must_be_positive` : any honest guarantee needs strictly positive slack.
 
-**`HoF_14`** (`HoF_14_QuantitativeGeometry`). The metric geometry of the boundary, the
+*`HoF_14`* (`HoF_14_QuantitativeGeometry`). The metric geometry of the boundary, the
 tubes and the linear-probe cosets that feed the interpretability chapter. Axiom audit
 printed.
 
@@ -573,7 +573,7 @@ printed.
  * `linear_probe_boundary_coset` : a linear probe's boundary is an affine coset.
  * `linear_probe_boundary_dim` : its dimension.
 
-**`HoF_15`** (`HoF_15_NonlinearBoundary`). The nonlinear boundary, its regular points
+*`HoF_15`* (`HoF_15_NonlinearBoundary`). The nonlinear boundary, its regular points
 and tangent structure.
 
  * `regular_point_is_crossing` : a regular point of the boundary is a genuine
@@ -581,7 +581,7 @@ and tangent structure.
  * `nonlinear_boundary_tangent` : the tangent to a nonlinear boundary.
  * `tangent_hyperplane_dim` : the dimension of the tangent hyperplane.
 
-**HoF\_Instantiation (`HoF_Instantiation_PromptSpace`).** The trilemma over a concrete
+*HoF\_Instantiation (`HoF_Instantiation_PromptSpace`).* The trilemma over a concrete
 prompt space of dimension `d` with `k` classes, so the abstract theorem becomes a
 statement about prompts.
 
@@ -590,7 +590,7 @@ statement about prompts.
  * `prompt_hallucination_trilemma` : the trilemma over prompt space.
  * `prompt_near_boundary` : prompts arbitrarily near the boundary exist.
 
-**HoF\_Master (`HoF_MasterTheorem`, `HoF_FinalVerification`).** The consolidated
+*HoF\_Master (`HoF_MasterTheorem`, `HoF_FinalVerification`).* The consolidated
 hallucination theorem over a `HallucinationStructure`, and the axiom audit.
 
  * `hallucination_master_theorem` : the master statement bundling the hypotheses.
@@ -713,7 +713,7 @@ and one containing `diagonal` or `liar` names the witness rather than the imposs
 The names are chosen to be greppable, so a search for `boundary` or `corner` or `cost`
 across a package returns the relevant thread.
 
-**Sets and spaces.**
+*Sets and spaces.*
 
  * `A` : the domain of \_indices\_. An element of `A` is a name for a behavior: a
    program, a prompt, an activation, a Gödel number. In the analytic chapters `A`
@@ -728,7 +728,7 @@ across a package returns the relevant thread.
    prompt space, token space, output space, and activation space.
  * `Set A` : the power set of `A`, identified with indicator functions `A → Bool`.
 
-**The system and its parts.**
+*The system and its parts.*
 
  * `f` : a \_system\_, `f : A → A → Y`. `f a` is the behavior named by `a`; `f a b`
    is what that behavior outputs on input `b`.
@@ -739,21 +739,21 @@ across a package returns the relevant thread.
    `f (s g) = g`.
  * `M` : a \_model\_, usually `M : Q → A × ℝ`, returning an answer and a confidence.
 
-**The engine's moving parts.**
+*The engine's moving parts.*
 
  * `t` : the \_controller\_ or output flip, `t : Y → Y`. The engine turns on whether
    `t` has a fixed point. Boolean negation, the successor, and reflection across one
    half are the recurring choices.
  * `v` : a \_reflective verdict\_, `v : Q → Q → Bool`, a boolean self-application in
-   which every pattern of verdicts is itself named. Theorem 1.12 says none exists.
+   which every pattern of verdicts is itself named. Theorem 1.16 says none exists.
  * `a₀`, `q₀`, `q_0` : the \_liar\_, the diagonal witness. The index or question on
    which the system must contradict itself: `f a₀ a₀ = ! (f a₀ a₀)` in the boolean
    case, confidence exactly one half in the analytic case. The same object under
    three readings across Chapter 3.
 
-**The analytic alphabet.**
+*The analytic alphabet.*
 
- * `δ` : the \_signed truth distance\_, `δ (q, a) `, negative on true answers, positive
+ * `δ` : the \_signed truth distance\_, `δ (q, a)`, negative on true answers, positive
    on false ones, zero on the truth boundary. Continuity of `δ` is what lets the
    intermediate value theorem run.
  * `conf`, `confOf` : the model's \_confidence\_, the second projection of `M`. Values
@@ -767,7 +767,7 @@ across a package returns the relevant thread.
    change per unit of movement in `X`.
  * `fp` : the safety score at a point, written `fp` in `robustnessRadius = (fp - τ) / L`.
 
-**Regions and objects.**
+*Regions and objects.*
 
  * \_truth set\_, \_false set\_ : where `δ` is nonpositive and where it is positive.
  * \_strict truth\_ : the open interior of the truth set, where `δ` is strictly
@@ -783,7 +783,7 @@ across a package returns the relevant thread.
  * \_robustness radius\_ : `(fp - τ) / L`, how far a safe point can be pushed before it
    crosses.
 
-**Properties named in the trilemmas.**
+*Properties named in the trilemmas.*
 
  * \_universal\_, \_point-surjective\_ : every behavior is named, `∀ g, ∃ a, f a = g`.
    The one hypothesis that drives the diagonal.
@@ -796,7 +796,7 @@ across a package returns the relevant thread.
    fixed point.
  * \_transparent\_ : the diagonal is itself a named behavior.
 
-**Logical and Lean symbols.**
+*Logical and Lean symbols.*
 
  * `∀`, `∃`, `¬`, `→`, `≠`, `=` : the usual quantifiers and connectives. `¬` is the
    controller in the Russell instance.
@@ -821,7 +821,7 @@ theorem read as a contradiction. The second is the intermediate value theorem, a
 its topological strengthening the Borsuk-Ulam theorem, read as a boundary. This
 section sets them opposite each other on every axis that matters.
 
-**What each one assumes.** The diagonal needs \_self-reference\_ and nothing else. Its
+*What each one assumes.* The diagonal needs \_self-reference\_ and nothing else. Its
 single hypothesis is universality: the system can name every one of its own
 behaviors, `∀ g, ∃ a, f a = g`. It does not care whether the domain is finite or
 infinite, discrete or continuous, metric or bare. The intermediate value engine needs
@@ -830,7 +830,7 @@ map, plus a reason the map takes values on both sides of a threshold. Coverage
 supplies the two-sidedness; continuity supplies the crossing. Where the diagonal is
 indifferent to geometry, the second engine is made of geometry.
 
-**How each one works.** The diagonal builds a behavior that disagrees with whatever
+*How each one works.* The diagonal builds a behavior that disagrees with whatever
 the system would do on itself, `d a = t (f a a)`, names it by universality, and
 evaluates the naming equation at that name. The disagreement becomes an equation
 `f a₀ a₀ = t (f a₀ a₀)`, a fixed point of `t`. If `t` was chosen to have no fixed
@@ -840,7 +840,7 @@ symmetry from one side of the boundary to the other and invokes continuity: a
 continuous real function that is negative somewhere and positive somewhere is zero in
 between. The zero is the boundary point.
 
-**What each one outputs.** The diagonal outputs a \_yes-or-no\_ verdict: either the
+*What each one outputs.* The diagonal outputs a \_yes-or-no\_ verdict: either the
 system is not universal, or a specific liar `a₀` exists on which it contradicts
 itself. The output is exact and qualitative. There is a boundary question, full stop.
 The value engine outputs a \_located\_ object: a point where `δ` is exactly zero, a
@@ -850,7 +850,7 @@ quantitative company: how wide the ambiguity tube is, how far a safe point can b
 pushed, how the boundary's measure scales. The diagonal says \_that\_ the boundary
 exists; the value engine says \_where\_ it is and \_how big\_.
 
-**What each one cannot give.** This is the crux, and it is why the book needs both.
+*What each one cannot give.* This is the crux, and it is why the book needs both.
 The diagonal is silent on everything quantitative. It cannot tell you how many liars
 there are, how hard `a₀` is to find, or what an attack to reach one costs. It only
 needs, and only delivers, the bare existence of the contradiction. It also demands
@@ -861,7 +861,7 @@ system with no metric. And it does not, by itself, explain \_why\_ the two sides
 differ; coverage is an assumption it consumes, not a conclusion it produces. The
 diagonal explains the necessity; the value engine measures the consequence.
 
-**Where they meet.** The remarkable fact the book is built around is that the two
+*Where they meet.* The remarkable fact the book is built around is that the two
 engines land on the \_same object\_. The liar `a₀` of the diagonal and the
 zero-of-`δ` boundary point of the value engine are the same question wearing
 different clothes. In the discrete files of `HallucinationProofs`, this is made
@@ -912,87 +912,6 @@ safe input be perturbed, what does an attack cost, and how do these scale. Those
 `ManifoldProofs` questions, and they are downstream of a boundary the diagonal
 guaranteed and the value engine placed.
 
-# Annotated Bibliography
-
-The book stands on a short list of sources. The foundational papers are the ones that
-isolate the diagonal and the boundary; the companion papers are the AI-safety
-readings this development formalizes; the interpretability work is where the two
-engines are seen firing together.
-
-**Foundational.**
-
- * F. William Lawvere, \_Diagonal arguments and cartesian closed categories\_ (1969).
-   The origin of the whole book. Lawvere shows that Cantor, Russell, Gödel, Tarski,
-   and Turing are one theorem about a point-surjective map in a cartesian closed
-   category, and that the theorem is a fixed-point statement. Every impossibility in
-   these notes is an instance of his lemma, and `lawvere` in `F_01` is his proof in
-   Lean.
- * Noson Yanofsky, \_A universal approach to self-referential paradoxes,
-   incompleteness and fixed points\_ (2003). The most readable modern account of
-   Lawvere's unification, working the classical instances out by hand. It is the
-   template Chapter 2 follows, and the reason the book can present five paradoxes as
-   one schema without categorical machinery.
- * Kurt Gödel, on the incompleteness theorems (1931). The archetype of a
-   self-referential impossibility: a sentence that asserts its own unprovability is a
-   fixed point of the provability flip. In the corpus this is the shape of
-   `tarski_liar` and the Gödel-form trilemma statements in `F_11`–`F_13`.
- * Alfred Tarski, on the undefinability of truth (1936). Truth cannot be defined
-   inside the language it is about, because the liar is a fixed point of negation.
-   This is the direct ancestor of the reflective-verdict impossibility
-   `no_reflective_verdict`, and `tarski_liar` carries his name for that reason.
- * Henry Gordon Rice, on properties of recursively enumerable sets (1953). Every
-   nontrivial semantic property of programs is undecidable. The book reads this as
-   "no complete automated self-test," formalized in `F_02` and appearing as the
-   Controlled-Transparent corner `rice_face` of the CCH trilemma.
- * Georg Cantor, on the non-denumerability of the reals and the power-set theorem
-   (1874, 1891). The first diagonal, and the counting-with-teeth that no set surjects
-   onto its power set. It is `cantor_set` and `specification_bound` in `F_08`, and
-   the boolean flip `bool_not_fpf` is Cantor's flipped diagonal digit.
-
-**Companion papers.**
-
- * \_The Hallucination Trilemma\_. The claim that a language model cannot be
-   simultaneously faithful, calibrated, and covering; some question forces confidence
-   to the fence. This is the subject of `HallucinationProofs`, with the continuous
-   proof in `HoF_07` and the Gödel-form proof in `F_11`. The book's Chapter 3 is the
-   argument that these three properties really do make a model's verdict reflective.
- * \_The Defense Trilemma\_. The claim that a prompt-injection defense that judges
-   prompts, including prompts about its own judgments, cannot be universal,
-   controlled, and transparent at once. Formalized in `F_12` and as the CCH corners,
-   with `defense_is_hallucination_engine` showing it is the same theorem as the
-   hallucination result.
- * \_Truth Has a Boundary\_. The coupling result: truth and confidence are pinned
-   together on a boundary, and no honest guarantee can be two-sided there without
-   positive slack. This is `HoF_13`'s `boundary_coupling`, `closed_guarantee_impossible`,
-   and `slack_must_be_positive`, and it is what ties the diagonal's liar to the value
-   engine's zero of `δ`.
-
-**Interpretability.**
-
- * The \_J-space\_ interpretability work. The program of reading a model's judgments off
-   its own activations. The book's contribution is negative and sharp: a complete
-   self-reading probe is a reflective verdict, so it is impossible, and the boundary
-   it fails on has the metric geometry of `HoF_14`. This is `F_14`'s
-   `jspace_readout_impossible` and `jspace_is_the_same_engine`, the clearest place
-   where the interpretability question and the diagonal turn out to be one question.
-
-**How the sources fit together.** The foundational six are a single arc that the book
-compresses into one theorem. Cantor supplies the diagonal move and the flipped digit.
-Russell turns the flip on set membership. Gödel turns it on provability and Tarski on
-truth, and Rice turns it on program semantics. Lawvere sees that the five are the same
-map and states the fixed-point theorem that generates them, and Yanofsky writes the
-account that makes this teachable. Read in that order, the foundational sources are a
-narrowing: from a specific paradox to the general schema. The book then widens again,
-running the schema back out across AI-safety readings, which is what the companion
-papers are. The Hallucination Trilemma, the Defense Trilemma, and Truth Has a Boundary
-are Cantor, Rice, and Tarski respectively, retold for models, defenses, and truth
-probes, and the formal corpus is the proof that the retellings are exact rather than
-merely suggestive. The J-space work is the newest layer and the one that closes the
-loop, because it takes the interpretability program's own goal, reading a model from
-inside, and shows it lands back on Lawvere's map. The bibliography, in short, is a
-circle: the classical diagonal, out to the safety readings, and back to the diagonal
-through interpretability.
-
 # Building and Checking This Book
 
 The point of a machine-checked book is that you do not have to trust it. This section
@@ -1000,14 +919,14 @@ explains how to build the Verso book and the four Lean libraries, and how to run
 axiom audit yourself so that every claim in Appendix A is one command away from
 verification.
 
-**What you need.** A recent Lean 4 toolchain managed by `elan`, and the `lake` build
+*What you need.* A recent Lean 4 toolchain managed by `elan`, and the `lake` build
 tool that ships with it. The exact toolchain version is pinned in each package's
 `lean-toolchain` file, and `elan` will fetch it automatically the first time you
 build. The proof libraries depend on Mathlib, which `lake` will resolve from the
 manifest; the first build downloads a cached Mathlib and takes a while, and later
 builds are fast.
 
-**Repository layout.** Each package lives in its own directory with the package name
+*Repository layout.* Each package lives in its own directory with the package name
 repeated one level down, so the sources are under `Foundation/Foundation`,
 `CCHProofs/CCHProofs`, `HallucinationProofs/HallucinationProofs`, and
 `ManifoldProofs/ManifoldProofs`. Files are numbered in dependency order, `F_01`
@@ -1018,7 +937,7 @@ a build order: lower numbers are the engine and the setup, higher numbers are th
 readings and the refinements. The book itself is a fifth project, `TrilemmaBook`,
 whose chapters are the `Ch0` files.
 
-**Building the proof libraries.** Each of the four packages, `Foundation`,
+*Building the proof libraries.* Each of the four packages, `Foundation`,
 `CCHProofs`, `HallucinationProofs`, and `ManifoldProofs`, is a standalone Lake
 project. From a package's root directory, `lake exe cache get` fetches the prebuilt
 Mathlib, and `lake build` compiles the package. A successful `lake build` is the
@@ -1031,7 +950,7 @@ resolves it. Compilation is memory-hungry because Mathlib is large, so a machine
 several gigabytes free per parallel worker is worth having, and a single-threaded
 build is the safe fallback on a constrained machine.
 
-**Building the book.** The book is a Verso document. Its own project builds with
+*Building the book.* The book is a Verso document. Its own project builds with
 `lake build` from the book root, which elaborates every code block in the chapters,
 including the live proofs in Chapter 1, and renders the manual. Because the code
 blocks are elaborated at build time, the proofs you read in the text are exactly the
@@ -1039,7 +958,23 @@ proofs the kernel accepted; there is no separate step that could drift from the
 source. This appendix chapter contains no live code blocks, only backticked names, so
 it renders as plain reference text.
 
-**Running the axiom audit.** This is the check that backs Appendix A's axiom claims.
+*Checking the prose against the corpus.* Elaboration checks the code blocks, but
+a theorem stated in prose and attributed to a companion library is checked by
+nothing: rename the declaration and the book keeps asserting it. The book's build
+script closes that gap before it calls Lean. It harvests every declaration in the
+four packages, collects every backticked name in the chapters, and fails if any
+cited name resolves to nothing. It then classifies every numbered theorem, lemma,
+proposition, and corollary in the prose by how it is backed, and demands that each
+one either carry a live `lean` block, or cite a name that resolves to a `theorem`
+or a `lemma` somewhere in the corpus, in this book, or in the short list of Mathlib
+results the book leans on. A module name is not a proof and does not count; neither
+is a `def`. A claim that has no verified counterpart must say so in the words "Not
+formalized.", which is the only accepted form, so that an unbacked claim cannot
+enter the text without someone writing the sentence. Three claims in Chapter 7 say
+it, all three about deployment cost rather than mathematics. Everything else in the
+book is proved or cited, and the build enforces it.
+
+*Running the axiom audit.* This is the check that backs Appendix A's axiom claims.
 Lean's `#print axioms name` command reports the complete list of axioms a declaration
 depends on, transitively, through every lemma it uses. Several files already end with
 these commands: `F_11`, `F_13`, and `F_14` in `Foundation`, `CCH_FinalVerification`
@@ -1048,7 +983,7 @@ in `HallucinationProofs`, with `MoF_FinalVerification` in `ManifoldProofs`. To a
 any other theorem, add a line like `#print axioms lawvere` after its file's imports
 and rebuild; the output appears in the build log or in your editor.
 
-**Reading the output.** There are three outcomes worth knowing. If Lean prints
+*Reading the output.* There are three outcomes worth knowing. If Lean prints
 that the declaration "does not depend on any axioms," the proof is axiom-free in the
 strict sense; this is what you get for the boolean-diagonal core, `bool_not_fpf`,
 `cantor`, `lawvere` as stated over a bare type. If it lists exactly `propext`,
@@ -1061,7 +996,7 @@ confirms. The distinction the book draws, combinatorial core versus analytic
 refinement, is therefore not a stylistic one. It is visible in the axiom list, and
 you can print it.
 
-**A suggested check.** To convince yourself of the book's central claim in one
+*A suggested check.* To convince yourself of the book's central claim in one
 sitting, build `Foundation`, then print the axioms of `no_reflective_verdict` in
 `F_13` and of `hallucination_trilemma_godel` in `F_11`, and see that the engine is
 clean. Then build `HallucinationProofs` and print the axioms of `hallucination_trilemma`

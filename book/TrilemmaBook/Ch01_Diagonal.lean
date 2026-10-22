@@ -6,6 +6,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "The Diagonal" =>
 
+*Abstract.* Every impossibility theorem in this book descends from one move: assume a system can describe its own behavior, build a description that disagrees with the system on itself, and read the disagreement as the theorem. Cantor, Russell, Gödel, Tarski, and Turing each used it. In 1969 Lawvere showed that these are one statement about maps in a cartesian closed category. This chapter states that statement, proves it in core Lean 4, and extracts the schema that later chapters instantiate. The proofs are elaborated when the book is built, so the proofs in the text are the proofs the kernel accepts.
+
+*Keywords:* Diagonal argument, Fixed-point theorem, Lawvere, Self-reference, Lean 4
+
 Every impossibility theorem in these notes descends from one move. You assume a
 system is expressive enough to describe its own behavior, you build a description
 that disagrees with whatever the system would do on itself, and the disagreement
@@ -22,7 +26,7 @@ built, so the proofs you read are the proofs the kernel accepts. Read them as
 part of the text, not as an appendix to it.
 
 A word on how to use the chapter. The technical core is short. A reader in a
-hurry can take Theorem 1.4 and its contrapositive, Corollary 1.6, and skip to
+hurry can take Theorem 1.4 and its contrapositive, Corollary 1.10, and skip to
 Chapter 3, where they do their work. Everything else here earns that shortness.
 The long middle sections argue that the one hypothesis of Theorem 1.4 is exactly
 the informal idea "the system can describe itself," and the long historical
@@ -208,7 +212,7 @@ without contradiction. The transformation `t` is again negation; the output set
 `Y` is truth values; universality is the assumed definability of truth. The moral
 Tarski drew, the separation of object language from metalanguage, is the same
 gatekeeping move that set theory used against Russell. You may speak of truth for
-a language, but only from outside it. Our Corollary 1.6 states the abstract
+a language, but only from outside it. Our Corollary 1.10 states the abstract
 reason: negation has no fixed point, so nothing over which negation acts can be
 universal about itself.
 
@@ -284,8 +288,8 @@ Tarski. In a category of computable maps, `Y` a type of outcomes and `t` an
 outcome flip gives Turing and Rice. The categorical wrapper is what makes "the
 same theorem" a literal statement rather than an analogy. We will not need the
 full category theory; the set-level version in Theorem 1.4 carries all the weight
-in these notes, and Remark 1.16 records the one categorical upgrade, the section
-form, that we prove in Lean.
+in these notes; Remark 1.9 records the one categorical upgrade, and Theorem 1.8
+is the section form that we prove in Lean.
 
 ## Yanofsky: the schema written out
 
@@ -350,7 +354,7 @@ Fix two sets, a domain `A` of _indices_ and a set `Y` of _outcomes_.
 Think of an element of `A` as a name, a program, a prompt, an activation, or
 a Gödel number; think of `Y` as the possible answers the system can give.
 
-**Definition 1.1 (System).** A _system_ is a function `f : A → A → Y`. We read
+*Definition 1.1 (System).* A _system_ is a function `f : A → A → Y`. We read
 `f a` as the _behavior_ named by the index `a`, a function `A → Y`; and `f a b`
 as the outcome that behavior `a` produces on input `b`. The _diagonal_ of the
 system is the function `a ↦ f a a`: what each behavior does when applied to its
@@ -365,7 +369,7 @@ different sets there would be no diagonal and no theorem. The move we are studyi
 is available exactly when the things a system talks about and the things a system
 is are drawn from one pool.
 
-**Definition 1.2 (Universality).** A system `f : A → A → Y` is _universal_, or
+*Definition 1.2 (Universality).* A system `f : A → A → Y` is _universal_, or
 _point-surjective_, if every function `g : A → Y` is named by some index: for all
 `g` there is an `a` with `f a = g`. Formally, `∀ g : A → Y, ∃ a, f a = g`.
 
@@ -422,7 +426,7 @@ naming only a restricted class of behaviors.
 
 ## The finite case, by counting
 
-**Example 1.3.** No _finite_ system is universal when `Y` has at least two
+*Example 1.3.* No _finite_ system is universal when `Y` has at least two
 elements. If `A` has `n` elements then there are exactly `n` behaviors of the
 form `f a`, one for each index. But the set of _all_ functions `A → Y` has
 `|Y|` choices at each of the `n` inputs, hence `|Y|ⁿ` functions in total. For
@@ -457,7 +461,7 @@ They are one proof with the arithmetic removed.
 
 ## The infinite case, by diagonal
 
-**A worked infinite instance.** No system `f : ℕ → ℕ → Bool` is universal. There is no counting
+*A worked infinite instance.* No system `f : ℕ → ℕ → Bool` is universal. There is no counting
 here to save us: there are infinitely many names `f 0, f 1, f 2, …` and infinitely
 many behaviors `ℕ → Bool`, and the two infinities cannot be compared without
 already knowing the answer. The diagonal settles it directly. Define
@@ -482,12 +486,13 @@ downstream consequence.
 
 # Lawvere's fixed-point theorem
 
-**Theorem 1.4 (Lawvere, 1969).** _Let `f : A → A → Y` be universal. Then every
+*Theorem 1.4 (Lawvere, 1969).* _Let `f : A → A → Y` be universal. Then every
 map `t : Y → Y` has a fixed point: some `y` with `t y = y`._
 
 ```lean
 theorem lawvere {A Y : Type _} (f : A → A → Y)
-    (hf : ∀ g : A → Y, ∃ a, f a = g) (t : Y → Y) : ∃ y, t y = y :=
+    (hf : ∀ g : A → Y, ∃ a, f a = g)
+    (t : Y → Y) : ∃ y, t y = y :=
   match hf (fun a => t (f a a)) with
   | ⟨a₀, ha₀⟩ => ⟨f a₀ a₀, (congrFun ha₀ a₀).symm⟩
 ```
@@ -531,7 +536,7 @@ fixed point of `t`. The Lean term names this quantity `f a₀ a₀`, produces th
 equation with `congrFun ha₀ a₀`, and flips its direction with `.symm` to match the
 `t y = y` we promised.
 
-**Remark 1.5 (Where the self-application happens).** The subtlety, such as it is,
+*Remark 1.5 (Where the self-application happens).* The subtlety, such as it is,
 is that `a₀` appears in three roles at once in the line `f a₀ a₀ = t (f a₀ a₀)`.
 It is the name of the behavior `f a₀`; it is the input that behavior is run on;
 and it is the point at which we evaluate the naming equation. All three coincide
@@ -541,7 +546,7 @@ collapse of three roles into one index is the diagonal, in one symbol. Every pro
 in the book has an `a₀` like this. In Chapter 3 it is a specific query; in Chapter
 4 it is a specific point of a connected space.
 
-**Remark 1.6 (Constructive content).** The proof is constructive in a precise
+*Remark 1.6 (Constructive content).* The proof is constructive in a precise
 sense. Given the witness `a₀` that universality provides for the one function `d`,
 the fixed point is computed with no further choices: it is literally `f a₀ a₀`,
 and the equation `t (f a₀ a₀) = f a₀ a₀` is verified by evaluating a known
@@ -554,7 +559,7 @@ constructive and which import a classical principle, the audit starts here: the
 engine adds nothing, so any nonconstructive step is charged to the reading of `t`,
 not to Lawvere.
 
-**Three common misreadings.** The proof is short enough that its meaning is easy
+*Three common misreadings.* The proof is short enough that its meaning is easy
 to over- or under-state, and three misreadings recur often enough to name.
 
 The first is to think the theorem says self-reference is paradoxical. It does not.
@@ -589,7 +594,7 @@ hypothesis, a section. A section is a chosen inverse to naming, a single functio
 `s : (A → Y) → A` that hands you, for each behavior `g`, a specific name `s g`
 that works.
 
-**Definition 1.7 (Section).** A _section_ of a system `f : A → A → Y` is a
+*Definition 1.7 (Section).* A _section_ of a system `f : A → A → Y` is a
 function `s : (A → Y) → A` such that `f (s g) = g` for every `g : A → Y`.
 
 The two hypotheses are close but not identical. A section is a uniform, chosen
@@ -604,14 +609,18 @@ downstream needs only the point-surjective form, but the section form is worth
 proving once, because it is the version that transports to categories and it makes
 the constructive content of Remark 1.6 fully explicit.
 
-**Theorem 1.8 (Lawvere, section form).** _If `f : A → A → Y` has a section
+*Theorem 1.8 (Lawvere, section form).* _If `f : A → A → Y` has a section
 `s : (A → Y) → A`, then every `t : Y → Y` has a fixed point._
 
 ```lean
-theorem c1_lawvere_section {A Y : Type _} (f : A → A → Y) (s : (A → Y) → A)
-    (hs : ∀ g : A → Y, f (s g) = g) (t : Y → Y) : ∃ y, t y = y := by
-  refine ⟨f (s (fun a => t (f a a))) (s (fun a => t (f a a))), ?_⟩
-  have h := congrFun (hs (fun a => t (f a a))) (s (fun a => t (f a a)))
+theorem c1_lawvere_section {A Y : Type _} (f : A → A → Y)
+    (s : (A → Y) → A)
+    (hs : ∀ g : A → Y, f (s g) = g)
+    (t : Y → Y) : ∃ y, t y = y := by
+  refine ⟨f (s (fun a => t (f a a)))
+    (s (fun a => t (f a a))), ?_⟩
+  have h := congrFun (hs (fun a => t (f a a)))
+      (s (fun a => t (f a a)))
   exact h.symm
 ```
 
@@ -629,15 +638,17 @@ easy direction of the relationship, that a section is at least as strong as
 universality, which is what lets Theorem 1.8 subsume Theorem 1.4 in practice.
 
 ```lean
-theorem c1_section_universal {A Y : Type _} (f : A → A → Y) (s : (A → Y) → A)
-    (hs : ∀ g : A → Y, f (s g) = g) : ∀ g : A → Y, ∃ a, f a = g :=
+theorem c1_section_universal {A Y : Type _} (f : A → A → Y)
+    (s : (A → Y) → A)
+    (hs : ∀ g : A → Y, f (s g) = g) :
+    ∀ g : A → Y, ∃ a, f a = g :=
   fun g => ⟨s g, hs g⟩
 ```
 
 _Proof._ Given any `g`, the name `s g` works: `f (s g) = g` is exactly `hs g`. So
 `s g` witnesses the existential. ∎
 
-**Sections, retracts, and why the name.** The word _section_ comes from the
+*Sections, retracts, and why the name.* The word _section_ comes from the
 picture of `f` as a projection: `s` is a one-sided inverse, a way of sectioning
 back up through `f`. The dual word is _retract_. The condition `f ∘ s = id` on
 behaviors says the function space `A → Y` is a _retract_ of the index set `A`
@@ -654,7 +665,7 @@ an index realizing it. A retract is a construction; a surjection is only an
 existence claim. Whenever a proof can afford the retract, it should prefer it,
 because it is constructive and it is the form the categorical statement wants.
 
-**Remark 1.9 (The cartesian closed statement).** A category is _cartesian closed_
+*Remark 1.9 (The cartesian closed statement).* A category is _cartesian closed_
 when it has three things: a terminal object `1`, whose global points `1 → X` play
 the role of "elements" of `X`; binary products `X × Z`, packaging a pair of maps
 into one; and, for each pair of objects, an exponential object `Y^A` together with
@@ -699,11 +710,12 @@ Read Theorem 1.4 backwards. If some transformation of outcomes has _no_ fixed
 point, then no system can be universal. This is the shape every later result
 takes: name a behavior-flip that nothing is fixed by, and universality collapses.
 
-**Corollary 1.10.** _If `t : Y → Y` satisfies `t y ≠ y` for all `y`, then no
+*Corollary 1.10.* _If `t : Y → Y` satisfies `t y ≠ y` for all `y`, then no
 `f : A → A → Y` is universal._
 
 ```lean
-theorem no_universal {A Y : Type _} (t : Y → Y) (ht : ∀ y, t y ≠ y)
+theorem no_universal {A Y : Type _} (t : Y → Y)
+    (ht : ∀ y, t y ≠ y)
     (f : A → A → Y) : ¬ (∀ g : A → Y, ∃ a, f a = g) :=
   fun hf => match lawvere f hf t with
     | ⟨y, hy⟩ => ht y hy
@@ -712,7 +724,7 @@ theorem no_universal {A Y : Type _} (t : Y → Y) (ht : ∀ y, t y ≠ y)
 _Proof._ If `f` were universal, Theorem 1.4 would produce a fixed point `y` of
 `t`, contradicting `t y ≠ y`. ∎
 
-**Remark 1.11.** Corollary 1.10 is the engine. To obtain a specific impossibility
+*Remark 1.11.* Corollary 1.10 is the engine. To obtain a specific impossibility
 one supplies (i) a reading of `Y`, and (ii) a fixed-point-free `t`. The rest of
 this book is a catalogue of such pairs. The classical ones are in Chapter 2; the
 AI-safety ones in Chapter 3.
@@ -723,7 +735,8 @@ first packages the impossibility as the nonexistence of any universal system for
 type with a fixed-point-free flip, rather than as a property of a given `f`.
 
 ```lean
-theorem c1_no_universal_exists {A Y : Type _} (t : Y → Y) (ht : ∀ y, t y ≠ y) :
+theorem c1_no_universal_exists {A Y : Type _} (t : Y → Y)
+    (ht : ∀ y, t y ≠ y) :
     ¬ ∃ f : A → A → Y, ∀ g : A → Y, ∃ a, f a = g :=
   fun ⟨f, hf⟩ => match lawvere f hf t with
     | ⟨y, hy⟩ => ht y hy
@@ -744,7 +757,8 @@ want to point at the offending behavior, not merely to know one exists.
 
 ```lean
 theorem c1_lawvere_diagonal {A Y : Type _} (f : A → A → Y)
-    (hf : ∀ g : A → Y, ∃ a, f a = g) (t : Y → Y) : ∃ a, f a a = t (f a a) :=
+    (hf : ∀ g : A → Y, ∃ a, f a = g)
+    (t : Y → Y) : ∃ a, f a a = t (f a a) :=
   match hf (fun a => t (f a a)) with
   | ⟨a₀, ha₀⟩ => ⟨a₀, congrFun ha₀ a₀⟩
 ```
@@ -783,7 +797,7 @@ We now instantiate Corollary 1.10 three times. Each instance is a choice of `Y`
 and a proof that some `t : Y → Y` is fixed-point-free. The instances are Cantor,
 Russell, and, in a sharpened form that names the offending index, the liar.
 
-**Example 1.12 (Cantor).** Take `Y = Bool` and `t` the negation `(!·)`. No boolean
+*Example 1.12 (Cantor).* Take `Y = Bool` and `t` the negation `(!·)`. No boolean
 equals its own negation, which Lean settles by checking both cases:
 
 ```lean
@@ -822,7 +836,7 @@ at once. So `cantor` above is not an analogue of Cantor's theorem. Up to the
 indicator-function dictionary, it is Cantor's theorem, and the dictionary is a
 definitional identity, not an approximation.
 
-**Example 1.13 (Russell).** Take `Y` to be propositions and `t` logical negation.
+*Example 1.13 (Russell).* Take `Y` to be propositions and `t` logical negation.
 The behavior "the set of indices that do not contain themselves" is the diagonal;
 its own membership status is fixed by negation, and negation has no fixed point,
 so the behavior is unnamed. This is Russell's paradox, and it is Corollary 1.10
@@ -843,14 +857,15 @@ assumption. The engine is the same in both examples. What differs is the cost of
 proving the transformation fixed-point-free, and that cost is charged to the
 reading, exactly as Remark 1.6 predicted.
 
-**Proposition 1.14 (The liar, named).** Corollary 1.10 refutes universality, but
+*Proposition 1.14 (The liar, named).* Corollary 1.10 refutes universality, but
 the diagonal does more: it points at the exact behavior on which the system
 breaks. For the boolean flip this witness is the _liar_, an index whose
 self-application equals its own negation.
 
 ```lean
 theorem liar_query {A : Type _} (f : A → A → Bool)
-    (hf : ∀ g : A → Bool, ∃ a, f a = g) : ∃ a, f a a = !(f a a) :=
+    (hf : ∀ g : A → Bool, ∃ a, f a = g) :
+    ∃ a, f a a = !(f a a) :=
   match hf (fun a => !(f a a)) with
   | ⟨a₀, ha₀⟩ => ⟨a₀, congrFun ha₀ a₀⟩
 ```
@@ -892,11 +907,13 @@ The output type `Unit`, by contrast, admits no fixed-point-free endomap, because
 it has only one element and any endomap fixes it.
 
 ```lean
-theorem c1_unit_has_fixed_point (t : Unit → Unit) : ∃ u : Unit, t u = u :=
+theorem c1_unit_has_fixed_point
+    (t : Unit → Unit) : ∃ u : Unit, t u = u :=
   ⟨(), rfl⟩
 
-theorem c1_no_fpf_unit : ¬ ∃ t : Unit → Unit, ∀ u, t u ≠ u :=
-  fun ⟨t, ht⟩ => ht () rfl
+theorem c1_no_fpf_unit :
+    ¬ ∃ t : Unit → Unit, ∀ u, t u ≠ u :=
+  fun ⟨_t, ht⟩ => ht () rfl
 ```
 
 _Proof._ There is only one element `()`, and `t ()` must equal it, so `t` fixes
@@ -980,7 +997,8 @@ def c1_optFlip : Option Bool → Option Bool
   | some true => some false
   | some false => none
 
-theorem c1_optFlip_fpf : ∀ o : Option Bool, c1_optFlip o ≠ o := by
+theorem c1_optFlip_fpf :
+    ∀ o : Option Bool, c1_optFlip o ≠ o := by
   intro o
   cases o with
   | none => decide
@@ -1032,7 +1050,7 @@ argument accidentally deciding halting for free.
 
 We give the schema the name the rest of the notes use.
 
-**Definition 1.15 (Reflective verdict).** A _reflective verdict_ on a domain `Q`
+*Definition 1.15 (Reflective verdict).* A _reflective verdict_ on a domain `Q`
 is a universal system `v : Q → Q → Bool`: a boolean self-application in which
 every pattern of verdicts over `Q` is itself named by some element of `Q`.
 
@@ -1050,17 +1068,18 @@ over the relevant domain, or that an adversary supplying part of a prompt can fo
 a defense to evaluate any policy it likes. When such a closure holds, the system is
 a reflective verdict, and the next theorem applies with no further work.
 
-**Theorem 1.16.** _No reflective verdict exists._
+*Theorem 1.16.* _No reflective verdict exists._
 
 ```lean
-theorem no_reflective_verdict {Q : Type _} (v : Q → Q → Bool)
+theorem no_reflective_verdict {Q : Type _}
+    (v : Q → Q → Bool)
     (hv : ∀ g : Q → Bool, ∃ p, v p = g) : False :=
   cantor v hv
 ```
 
 _Proof._ Immediate from Example 1.12. ∎
 
-**Remark 1.17.** Theorem 1.16 is one line, and it is, verbatim, the Hallucination
+*Remark 1.17.* Theorem 1.16 is one line, and it is, verbatim, the Hallucination
 Trilemma, the Defense Trilemma, and the truth-boundary coupling theorem of
 Chapter 3. Nothing about those results adds to the engine; what changes is only
 the intended meaning of `v p q`. The work in Chapter 3 is entirely in the
@@ -1120,7 +1139,7 @@ generality meets a transformation of its own verdicts that nothing can satisfy.
 It is as important to know the limits of an engine as its reach, and half of
 this book lives outside this one.
 
-**Remark 1.18.** The diagonal produces a fixed point, or a contradiction, from
+*Remark 1.18.* The diagonal produces a fixed point, or a contradiction, from
 self-reference. It is silent on everything quantitative: not how many liars there
 are, not how hard `a₀` is to find, not what it costs an adversary to reach one.
 And it requires genuine self-application, the hypothesis `∀ g, ∃ a, f a = g`. When
@@ -1226,8 +1245,8 @@ numbers, and Kleene's recursion theorem, the constructive companion, is in his
 _Introduction to Metamathematics_ (1952).
 
 The reading of these theorems as constraints on learning systems is recent, and
-the specific trilemmata of Chapter 3 are, as far as we know, first stated and
-machine-checked in the companion Lean library that these notes track. The
+the specific trilemmata of Chapter 3 are stated and machine-checked in the
+companion Lean library that these notes track. The
 categorical fixed-point tradition after Lawvere, including the fixed-point results
 of Lambek and the modal fixed-point theorems descended from Löb, is surveyed in
 several places; we do not use it beyond the section form of Theorem 1.8, but a
@@ -1241,110 +1260,128 @@ theorems above, whose names are `lawvere`, `no_universal`, `bool_not_fpf`,
 `cantor`, `liar_query`, `no_reflective_verdict`, and the `c1_`-prefixed helpers
 proved in this chapter.
 
-**Exercise 1.1.** Verify Example 1.3 in detail. For `|A| = n` and `|Y| = 2`,
+*Exercise 1.1.* Verify Example 1.3 in detail. For `|A| = n` and `|Y| = 2`,
 exhibit a function `A → Y` not of the form `f a`, using a diagonal that flips
 `f a a`. Conclude that your construction is exactly `liar_query` specialized to a
 finite `A`, and explain in one sentence why the finiteness of `A` played no role
 in the diagonal step even though it was essential to the counting step.
 
-**Exercise 1.2 (Lean).** Prove the section form of Theorem 1.8 yourself, from
+*Exercise 1.2 (Lean).* Prove the section form of Theorem 1.8 yourself, from
 scratch, without reading `c1_lawvere_section`: given `f : A → A → Y`,
 `s : (A → Y) → A`, and `hs : ∀ g, f (s g) = g`, show every `t : Y → Y` has a fixed
 point. Then compare your term to `c1_lawvere_section` and to `lawvere`, and say in
 one sentence which hypothesis each uses and why the section form needs no `match`.
 
-**Exercise 1.3.** Show the converse of Corollary 1.10 fails: exhibit a `Y` and a
+*Exercise 1.3.* Show the converse of Corollary 1.10 fails: exhibit a `Y` and a
 fixed-point-free `t` for which some non-universal `f : A → A → Y` exists. This is
 easy; the point is that the theorem is about universality, not about `t` alone.
 State precisely what the corollary does and does not claim about `f`.
 
-**Exercise 1.4 (Lean).** A map `t : Y → Y` is _fixed-point-free_ iff it has no
+*Exercise 1.4 (Lean).* A map `t : Y → Y` is _fixed-point-free_ iff it has no
 fixed point. Using `c1_bool_has_fpf` and `c1_no_fpf_unit`, explain what the
 contrast says about systems whose only outcome is "accept." Then give a
 fixed-point-free endomap of a three-element type and prove it fixed-point-free by
 `decide`, modeling your proof on `c1_optFlip_fpf`.
 
-**Exercise 1.5.** Restate and prove Cantor's theorem in its usual form, that
+*Exercise 1.5.* Restate and prove Cantor's theorem in its usual form, that
 there is no surjection `A → Set A`, by taking `Y = Bool` and identifying `Set A`
 with `A → Bool`. Point to the exact line of your argument that corresponds to
 `bool_not_fpf`, and to the exact subset that corresponds to the diagonal behavior
 `a ↦ not (f a a)`.
 
-**Exercise 1.6.** (Gödel, informally.) Suppose a theory `T` proves or refutes
+*Exercise 1.6.* (Gödel, informally.) Suppose a theory `T` proves or refutes
 every sentence, and can represent its own provability as a map on sentences. Show
 that a self-referential sentence asserting its own unprovability is a
 fixed-point-free instance, and identify `Y` and `t`. Which hypothesis of
 Corollary 1.10 corresponds to `T` being able to talk about its own proofs, and
 which corresponds to `T` deciding every sentence?
 
-**Exercise 1.7.** (Tarski.) Repeat Exercise 1.6 for truth in place of
+*Exercise 1.7.* (Tarski.) Repeat Exercise 1.6 for truth in place of
 provability. State the liar sentence as a fixed point of negation, identify `Y`
 and `t`, and explain in two sentences why Tarski's conclusion is about
 definability while Gödel's is about provability, even though the diagonal step is
 identical.
 
-**Exercise 1.8.** (Turing.) Cast the halting argument as an instance of Corollary
+*Exercise 1.8.* (Turing.) Cast the halting argument as an instance of Corollary
 1.10. Take the outcomes to record "halts" versus "loops," describe the diagonal
 program in words, and name the fixed-point-free `t`. Then explain why the assumed
 decider `H`, not the diagonal program, is the object the argument actually
 refutes.
 
-**Exercise 1.9.** In `liar_query`, the witness `a₀` depends on the choice of
+*Exercise 1.9.* In `liar_query`, the witness `a₀` depends on the choice of
 pre-image. Show that if `f` has two distinct indices naming the diagonal behavior,
 both are liars, and that nothing in the argument selects a canonical one. Relate
 this to the non-uniqueness of the boundary question in Chapter 4.
 
-**Exercise 1.10 (Lean).** Prove a "one-sided" refinement: if `t : Y → Y` and
+*Exercise 1.10 (Lean).* Prove a "one-sided" refinement: if `t : Y → Y` and
 `f : A → A → Y` is universal, then there is an index `a₀` with `f a₀ a₀ = t (f a₀ a₀)`,
 by calling `c1_lawvere_diagonal`. Then specialize to `Y = Bool`, `t = not`, and
 check that you recover `liar_query` up to the shape of the returned equation.
 
-**Exercise 1.11.** Explain, in one paragraph and without symbols, why counting
+*Exercise 1.11.* Explain, in one paragraph and without symbols, why counting
 (Example 1.3) is the wrong intuition for the infinite case, and what the diagonal
 provides that counting cannot. Your paragraph should mention that the diagonal
 names a specific unnamed behavior, whereas counting only asserts one exists.
 
-**Exercise 1.12.** Give an example of a `Y` and a `t : Y → Y` with _exactly one_
+*Exercise 1.12.* Give an example of a `Y` and a `t : Y → Y` with _exactly one_
 fixed point, and describe what the diagonal produces for a universal
 `f : A → A → Y` in that case. Contrast this with the fixed-point-free case, and
 connect it to the remark that Kleene's recursion theorem is the same construction
 read forwards.
 
-**Exercise 1.13.** (Harder.) Formulate a _partial_ version precisely, building on
+*Exercise 1.13.* (Harder.) Formulate a _partial_ version precisely, building on
 the preview above: with outcomes in `Option Y`, define universality as
 surjectivity onto partial behaviors `A → Option Y`, state the analogue of Theorem
 1.4, and identify which classical instance it becomes when `t` only toggles `none`
 against "returns." Explain where the requirement that `t` move `none` enters, and
 why a flip fixing `none` would make the argument fail.
 
-**Exercise 1.14 (Lean).** Model a definedness-flip `t : Option Bool → Option Bool`
+*Exercise 1.14 (Lean).* Model a definedness-flip `t : Option Bool → Option Bool`
 that swaps `none` with `some false` and fixes `some true`, and decide whether it
 is fixed-point-free. If it is not, exhibit its fixed point; if it is, prove it so
 by `decide`. Use the answer to explain why Rice's theorem insists the classified
 property be _nontrivial_.
 
-**Exercise 1.15.** (Section versus surjection.) Prove on paper that every section
+*Exercise 1.15.* (Section versus surjection.) Prove on paper that every section
 gives point-surjectivity, which is `c1_section_universal`, and explain why the
 converse needs a choice principle. Identify the exact step at which choosing one
 name per behavior is required, and relate it to the constructive content described
 in Remark 1.6.
 
-**Exercise 1.16.** (Reading `Y`.) For each of the following outcome types, decide
+*Exercise 1.16.* (Reading `Y`.) For each of the following outcome types, decide
 whether it admits a fixed-point-free endomap, and hence whether it can host an
 impossibility: `Bool`; `Unit`; the two-point type of verdicts "accept/reject";
 the type `Option Bool`; a one-point "always accept" verdict space. State the
 general principle your answers illustrate.
 
-**Exercise 1.17.** (Starred.) The engine needs `Y` to carry a fixed-point-free endomap.
+*Exercise 1.17.* (Starred.) The engine needs `Y` to carry a fixed-point-free endomap.
 Chapter 4 replaces this with a continuous map on a connected space whose only
 fixed point is a threshold. Speculate on what a system would need to satisfy
 _both_ hypotheses at once, a universal self-application and a connected topology,
 and what its boundary object would look like. Chapter 8 returns to this for
 J-space.
 
-**Exercise 1.18.** (Starred.) Reflect on Remark 1.17's claim that the mathematics of the
+*Exercise 1.18.* (Starred.) Reflect on Remark 1.17's claim that the mathematics of the
 AI-safety impossibilities is finished and only the modeling remains. Pick one
 informal safety desideratum you care about, phrase it as a universality claim
 `hv` for some domain `Q`, and identify the single sentence someone would have to
 refute to escape the resulting impossibility. This exercise has no unique answer;
 its purpose is to locate where the burden of proof really sits.
+
+# References
+
+Cantor, G. (1891). Über eine elementare Frage der Mannigfaltigkeitslehre. _Jahresbericht der Deutschen Mathematiker-Vereinigung_ 1, 75–78.
+
+Gödel, K. (1931). Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I. _Monatshefte für Mathematik und Physik_ 38, 173–198.
+
+Kleene, S. C. (1952). _Introduction to Metamathematics_. North-Holland, Amsterdam.
+
+Lawvere, F. W. (1969). Diagonal arguments and cartesian closed categories. In _Category Theory, Homology Theory and their Applications II_, Lecture Notes in Mathematics 92, 134–145. Springer, Berlin. Reprinted in _Reprints in Theory and Applications of Categories_ 15 (2006), 1–13.
+
+Tarski, A. (1936). Der Wahrheitsbegriff in den formalisierten Sprachen. _Studia Philosophica_ 1, 261–405.
+
+Turing, A. M. (1936). On computable numbers, with an application to the Entscheidungsproblem. _Proceedings of the London Mathematical Society_ (2) 42, 230–265.
+
+van Heijenoort, J. (ed.) (1967). _From Frege to Gödel: A Source Book in Mathematical Logic, 1879–1931_. Harvard University Press, Cambridge, MA.
+
+Yanofsky, N. S. (2003). A universal approach to self-referential paradoxes, incompleteness and fixed points. _Bulletin of Symbolic Logic_ 9(3), 362–386.

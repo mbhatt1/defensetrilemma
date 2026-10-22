@@ -36,13 +36,20 @@ move, the diagonal argument behind Cantor, Gödel, and Lawvere, generates most o
 them, and that a second, analytic move, the intermediate value theorem and its
 quantitative refinements, generates the rest.
 
-What makes these notes unusual is that every theorem is machine-checked. The
+What makes these notes unusual is that the mathematics is machine-checked. The
 core arguments are elaborated live by Lean 4 as the book is built, so the proofs
 in the text are the proofs the kernel accepts. Where a result depends on the
 `Mathlib` library, we cite the verified statement in the companion development
-and reproduce the argument in prose.
+and reproduce the argument in prose. A handful of claims in Chapter 7 are
+deployment arguments about cost, not mathematics; each of those says "Not
+formalized." in its own text, and the build fails if any other numbered result
+lacks either a proof or a citation that resolves to a real declaration.
 
 # How to read this book
+
+%%%
+number := false
+%%%
 
 The book has two halves that meet in the middle. Chapters 1 through 4 develop
 the diagonal engine and its consequences, and are almost entirely self-contained

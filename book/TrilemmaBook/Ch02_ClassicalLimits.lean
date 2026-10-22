@@ -6,6 +6,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "The Classical Limits" =>
 
+*Abstract.* Chapter 1 proved one theorem and one corollary: a universal system has a fixed point for every transformation of its outcomes, so a transformation with no fixed point rules out universality. This chapter applies the corollary to Cantor's theorem, Russell's paradox, Gödel's two incompleteness theorems, Tarski's undefinability of truth, Turing's halting problem, and Rice's theorem. Each classical proof factors into a self-referential heart and a local wrapper that shows the system is universal in the required sense. The chapter makes the factoring explicit and machine-checks it.
+
+*Keywords:* Incompleteness, Undefinability, Halting problem, Rice's theorem, Representability
+
 Chapter 1 built one theorem and one corollary. The theorem, {lean}`lawvere`, says
 that a universal system has a fixed point for every transformation of its
 outcomes. The corollary, {lean}`no_universal`, reads that backwards: if some
@@ -59,7 +63,7 @@ write fragile code.
 Before the instances, it helps to name the procedure they share, because after
 the first two everything is variation.
 
-**The recipe.** To obtain a limitative theorem from {lean}`no_universal`:
+*The recipe.* To obtain a limitative theorem from {lean}`no_universal`:
 
 1. Choose the _index type_ `A`: what the system's names range over. Sets,
    sentences, programs, subsets, and prompts have all played this role.
@@ -81,7 +85,8 @@ For `Y = Bool` the whole recipe collapses to a single reusable statement. Since
 negation is fixed-point free, no boolean system is universal, full stop.
 
 ```lean
-theorem c2_no_universal_bool {A : Type _} (f : A → A → Bool) :
+theorem c2_no_universal_bool {A : Type _}
+    (f : A → A → Bool) :
     ¬ (∀ g : A → Bool, ∃ a, f a = g) :=
   no_universal (fun b => !b) bool_not_fpf f
 ```
@@ -99,7 +104,7 @@ mean membership or provability or halting. Cantor, Russell, Gödel, Tarski,
 Turing, and the boolean core of Rice are all this statement wearing different
 clothes. The rest of the chapter is a fashion show.
 
-**Remark 2.1 (Why `Bool` and not `Prop`).** We insist on `Y = Bool` in the code,
+*Remark 2.1 (Why `Bool` and not `Prop`).* We insist on `Y = Bool` in the code,
 not `Y = Prop`, and the choice is deliberate. On `Bool` the fixed-point-free
 witness `bool_not_fpf` is settled by `decide`, checking the two cases, and it
 needs no axioms at all. On `Prop` the corresponding statement, that `¬ P ≠ P` for
@@ -157,7 +162,7 @@ function `f : A → (A → Bool)` is the same data as a family of subsets indexe
 `A`, and `f` being surjective onto `A → Bool` is the same as saying every subset
 occurs in the family.
 
-**Definition 2.2 (Power-set surjection).** A _power-set surjection_ on `A` is a
+*Definition 2.2 (Power-set surjection).* A _power-set surjection_ on `A` is a
 function `f : A → (A → Bool)` such that every indicator `g : A → Bool` equals `f a`
 for some `a`, that is, `∀ g : A → Bool, ∃ a, f a = g`.
 
@@ -165,7 +170,7 @@ Since `A → (A → Bool)` and `A → A → Bool` are the same type by currying,
 power-set surjection is exactly a universal boolean system. There is no gap to
 close. Cantor's theorem is therefore an immediate corollary of the recipe.
 
-**Theorem 2.3 (Cantor, 1891).** _No power-set surjection exists._
+*Theorem 2.3 (Cantor, 1891).* _No power-set surjection exists._
 
 ```lean
 theorem c2_cantor_powerset {A : Type _} (f : A → (A → Bool))
@@ -186,13 +191,13 @@ appear at position `a₀` it would have to agree with itself about `a₀` and di
 with itself about `a₀` at the same time. This is the same `a₀` that Chapter 1's
 {lean}`liar_query` produces, read now as membership rather than as a truth value.
 
-**Identifying `Y` and `t`.** Here `Y = Bool`, the two answers to "is `a` in this
+*Identifying `Y` and `t`.* Here `Y = Bool`, the two answers to "is `a` in this
 subset," and `t` is negation, "put `a` in exactly when the diagonal leaves it
 out." The fixed-point-free character of negation is the whole obstruction. If some
 outcome were fixed by `t`, the diagonal set could sit quietly at that outcome and
 the surjection would survive.
 
-**Discussion of the hypothesis.** The single hypothesis is surjectivity, and it is
+*Discussion of the hypothesis.* The single hypothesis is surjectivity, and it is
 worth seeing that nothing weaker will do and nothing stronger is needed. Injective
 maps `A → (A → Bool)` exist in abundance; the theorem forbids only the covering
 property. The map need not be computable, definable, or continuous. It is a raw
@@ -202,7 +207,7 @@ diagonal is the wrong tool for quantitative questions, a point Chapter 1 flagged
 and Chapters 5 and 6 develop: the argument works so generally precisely because it
 ignores metric structure.
 
-**The classical set form.** In the language of pure set theory the theorem reads:
+*The classical set form.* In the language of pure set theory the theorem reads:
 there is no surjection `A → Set A`. The companion library proves this directly, as
 `CCH.cantor_no_surjection_set` in `CCHProofs/CCH_03_Cantor.lean`, by the Russell
 diagonal `{x | x ∉ f x}` rather than through `Bool`, and it proves the
@@ -211,7 +216,7 @@ the `Set`-level proof needs the classical fact that membership in a set is
 decidable enough to case-split, while the `Bool` form we compile here needs
 nothing. We return to why in the discussion of Russell.
 
-**The diagonal set is not a paradox.** Beginners often read the diagonal set `d`
+*The diagonal set is not a paradox.* Beginners often read the diagonal set `d`
 as paradoxical, on the model of Russell's set, and it is worth being clear that it
 is not. There is nothing self-contradictory about the set of `a` such that
 `a ∉ f a`. It is a perfectly ordinary subset of `A`; you can list its members
@@ -224,7 +229,7 @@ subset, so that the diagonal set must be both listed and, by construction, unlis
 The difference between a theorem and a paradox is exactly the difference between a
 family that may omit a subset and a family that may not.
 
-**Fixed points and retractions.** Lawvere stated his theorem in the contrapositive
+*Fixed points and retractions.* Lawvere stated his theorem in the contrapositive
 form that Cantor's theorem exemplifies most cleanly, and it is illuminating to
 read Cantor that way. Say a type `Y` has the _fixed-point property_ if every
 `t : Y → Y` has a fixed point. Lawvere's theorem says that if `A` admits a
@@ -236,7 +241,7 @@ how the lambda calculus uses it, a point Exercise 2.16 develops. Read backward, 
 is an impossibility. The engine does not know which way you are reading it; the
 sign of the conclusion is entirely in whether your `Y` has a fixed-point-free map.
 
-**Counting was never the point.** The finite rehearsal above already made this
+*Counting was never the point.* The finite rehearsal above already made this
 concrete, and Cantor's own history confirms it. The 1874 proof that the reals are
 uncountable did not diagonalize; it used nested intervals and the completeness of
 the reals, an analytic argument. The 1891 diagonal was the second proof, and its
@@ -247,7 +252,7 @@ diagonal comes first, in Chapters 1 and 2, and the analytic argument, the
 intermediate value theorem, comes second, in Chapters 4 through 6, recovering with
 metric content what the diagonal gets for free but without measure.
 
-**The tower of infinities.** Cantor's theorem does not fire once; it iterates. The
+*The tower of infinities.* Cantor's theorem does not fire once; it iterates. The
 power set of `A` is strictly larger than `A`, and the power set of that is larger
 still, and the process never closes, so there is no largest set and no set of all
 sets, on pain of the paradox Russell found. This is the cumulative hierarchy that
@@ -261,7 +266,7 @@ opens the tower; it does not tell you how the rungs are spaced. The recurring
 distinction between what the diagonal establishes and what it leaves open is
 already present in the oldest instance.
 
-**Cantor and Schröder–Bernstein.** One more contrast sharpens what the theorem
+*Cantor and Schröder–Bernstein.* One more contrast sharpens what the theorem
 does. The Schröder–Bernstein theorem says that if there are injections both ways
 between two sets, they have the same cardinality, and its proof is a back-and-forth
 that builds a bijection. Cantor's theorem builds nothing. It exhibits an
@@ -273,7 +278,7 @@ diagonal is the universal source of obstructions. When a safety result says "no
 system can do this," it is Cantor-shaped, and its proof exhibits the behavior no
 system names rather than construct the system that fails.
 
-**Remark 2.4 (Cantor and reflective verdicts).** Chapter 1 packaged the boolean
+*Remark 2.4 (Cantor and reflective verdicts).* Chapter 1 packaged the boolean
 diagonal as {lean}`no_reflective_verdict`, the statement that no verdict system can
 name every pattern of its own verdicts. Cantor's theorem is that statement's
 oldest instance: the "verdicts" are membership decisions, and the "patterns" are
@@ -309,18 +314,19 @@ comprehension says every property of elements is the membership condition of som
 set: for every `g : A → Bool` there is a set `a` with `mem a = g`. That is
 point-surjectivity of `mem`.
 
-**Definition 2.5 (Naive membership).** A _naive membership relation_ on `A` is a
+*Definition 2.5 (Naive membership).* A _naive membership relation_ on `A` is a
 map `mem : A → A → Bool` satisfying comprehension, `∀ g : A → Bool, ∃ a, mem a = g`:
 every boolean condition on `A` is realized as the membership condition of some
 element.
 
-**Theorem 2.6 (Russell, 1902).** _If `mem` is a naive membership relation, then
+*Theorem 2.6 (Russell, 1902).* _If `mem` is a naive membership relation, then
 there is a set `r` that is a member of itself exactly when it is not, that is,
 `mem r r = !(mem r r)`. No such relation exists._
 
 ```lean
 theorem c2_russell {A : Type _} (mem : A → A → Bool)
-    (hmem : ∀ g : A → Bool, ∃ a, mem a = g) : ∃ r, mem r r = !(mem r r) :=
+    (hmem : ∀ g : A → Bool, ∃ a, mem a = g) :
+    ∃ r, mem r r = !(mem r r) :=
   liar_query mem hmem
 ```
 
@@ -332,12 +338,12 @@ that it names itself into contradiction. To turn the existence of `r` into an
 outright `False`, feed it to {lean}`bool_not_fpf`, or use {lean}`cantor` on `mem`
 directly. ∎
 
-**Identifying `Y` and `t`.** Again `Y = Bool` and `t` is negation. The Russell set
+*Identifying `Y` and `t`.* Again `Y = Bool` and `t` is negation. The Russell set
 `R = {x | x ∉ x}` is nothing but the diagonal behavior `a ↦ t (mem a a)`, the same
 object that in Cantor was the diagonal subset and that in Chapter 1 was the liar.
 Three names, one construction.
 
-**Discussion of the hypothesis.** The hypothesis is comprehension, and the paradox
+*Discussion of the hypothesis.* The hypothesis is comprehension, and the paradox
 is what forced set theory to give it up. The modern repairs restrict which
 predicates form sets. Zermelo's separation only lets a predicate carve a subset
 out of a set you already have, so `{x ∈ A | x ∉ x}` is legal but is merely a subset
@@ -350,7 +356,7 @@ compiles, but its hypothesis `hmem` is never satisfiable for a nontrivial `A`, a
 that unsatisfiability is the content. The theorem is a proof that the hypothesis is
 empty.
 
-**Remark 2.7 (`Bool` versus `Prop`, again).** The propositional Russell paradox,
+*Remark 2.7 (`Bool` versus `Prop`, again).* The propositional Russell paradox,
 `R ∈ R ↔ R ∉ R`, lives naturally in `Prop`, where the flip is logical negation.
 There the fixed-point-free step is `¬ (P ↔ ¬ P)`, which holds without any axioms.
 We nonetheless compile the `Bool` version, because the `Bool` flip composes with
@@ -361,7 +367,7 @@ safety chapters: whenever a "safe or unsafe" judgment is genuinely two-valued, t
 impossibility is constructive and needs no appeal to excluded middle, and that
 matters when the judgment is supposed to be something a machine actually computes.
 
-**The paradox that reshaped a subject.** Russell's two lines did more damage than
+*The paradox that reshaped a subject.* Russell's two lines did more damage than
 any theorem in this chapter, because they arrived while the foundations were being
 poured. Frege's "Grundgesetze der Arithmetik" derived arithmetic from logic using
 Basic Law V, which is comprehension in the guise of an axiom about the extensions
@@ -371,7 +377,7 @@ begins by admitting the foundation of his life's work had been shaken. The parad
 is not a technicality at the margin of set theory; it is the reason set theory has
 axioms at all rather than a single comprehension schema.
 
-**The repairs, and what each gives up.** Three responses survived. Zermelo's
+*The repairs, and what each gives up.* Three responses survived. Zermelo's
 separation, kept in `ZFC`, allows a predicate to carve a subset only out of a set
 already given, so `{x ∈ A | x ∉ x}` exists but is merely a subset of `A`; running
 the diagonal on it reproves Cantor, that `A` does not contain all its subsets,
@@ -387,7 +393,7 @@ and it pays exactly enough to make the diagonal behavior `fun a => !(mem a a)`
 fail to be a set. The paradox is a lower bound on what any consistent set theory
 must forbid.
 
-**A family of paradoxes.** Russell's is one of a cluster that all run the same
+*A family of paradoxes.* Russell's is one of a cluster that all run the same
 diagonal against a would-be universal object. Cantor's paradox is the diagonal
 against the set of all sets: if it existed, the identity would surject it onto its
 power set, which Theorem 2.3 forbids. The Burali-Forti paradox is the diagonal
@@ -424,7 +430,7 @@ with one free variable. Each such formula `φ(x)` defines, by substitution, a ma
 from numbers to sentences and hence, once we fix an interpretation of truth or
 provability, a boolean-valued behavior on `A`.
 
-**Definition 2.8 (Representability).** A predicate `g` on codes is _representable_
+*Definition 2.8 (Representability).* A predicate `g` on codes is _representable_
 in `T` when there is a formula `φ` such that, for every code `n`, `T` proves
 `φ(n)` when `g n` holds and `T` proves `¬ φ(n)` when `g n` fails. The central
 arithmetical fact, due to Gödel, is that every _recursive_ predicate on codes is
@@ -482,7 +488,7 @@ asserting that it itself has that property. This is Lawvere's theorem in the
 syntactic category, and it is the one piece we can state cleanly in core Lean as an
 abstract fact about universal systems.
 
-**Lemma 2.9 (Diagonal lemma, abstract form).** _Let `f : A → A → Y` be a universal
+*Lemma 2.9 (Diagonal lemma, abstract form).* _Let `f : A → A → Y` be a universal
 system and `t : Y → Y` any transformation of outcomes. Then some index `a`
 satisfies `f a a = t (f a a)`: the diagonal behavior at `a` is a fixed point of
 `t` applied through the system._
@@ -524,7 +530,7 @@ sentence `G` such that
 
 a sentence that says, correctly, "I am not provable in `T`."
 
-**Theorem 2.10 (Gödel's first incompleteness theorem, 1931).** _Let `T` be a
+*Theorem 2.10 (Gödel's first incompleteness theorem, 1931).* _Let `T` be a
 consistent, recursively axiomatized theory that represents the recursive
 predicates. Then there is a sentence `G` such that `T` proves neither `G` nor
 `¬ G`. If `T` is also sound, `G` is true._
@@ -557,7 +563,7 @@ theorem c2_godel_semantic {A : Type _} (f : A → A → Bool)
 _Proof._ Lemma 2.9 with `t` the flip gives `a₀` with `f a₀ a₀ = !(f a₀ a₀)`, and
 {lean}`bool_not_fpf` refutes it. ∎
 
-**What {lean}`c2_godel_semantic` does and does not say.** It says that a boolean
+*What {lean}`c2_godel_semantic` does and does not say.* It says that a boolean
 system that is _universal_ over its own indices is contradictory. In the
 arithmetical reading, universality is the conjunction of representability with
 completeness: representability gives the surjection onto recursive behaviors, and
@@ -571,7 +577,7 @@ can write down, and the care about omega-consistency versus the Rosser
 construction. That bookkeeping is real and is why the full theorem is not a
 one-liner. The one-liner is the reason the bookkeeping was worth doing.
 
-**Discussion of the hypotheses.** Three hypotheses carry the theorem, and each
+*Discussion of the hypotheses.* Three hypotheses carry the theorem, and each
 maps onto the recipe. Consistency is what makes the fixed-point collision fatal
 rather than merely odd; an inconsistent theory proves everything and has no trouble
 proving `G`, so the flip has, in effect, a fixed point because every value is
@@ -583,7 +589,7 @@ point-surjectivity itself. Weaken any one and the wrapper fails, and with it the
 theorem. This is the same sensitivity we saw in Cantor, where surjectivity was
 load-bearing, made arithmetical.
 
-**Omega-consistency and the Rosser refinement.** Gödel's original argument needed
+*Omega-consistency and the Rosser refinement.* Gödel's original argument needed
 slightly more than plain consistency to rule out `T ⊢ ¬ G`. He assumed
 omega-consistency, which forbids the theory from proving `∃ x, φ(x)` while also
 proving `¬ φ(0)`, `¬ φ(1)`, and so on for every numeral, a pathology a consistent
@@ -599,7 +605,7 @@ same impossibility admits a sharper wrapper is a pattern the safety chapters
 repeat, where a first trilemma under strong assumptions is later reproved under
 weaker, more realistic ones.
 
-**The epistemic sting.** Part of what makes Gödel's theorem feel paradoxical, when
+*The epistemic sting.* Part of what makes Gödel's theorem feel paradoxical, when
 it is not, is a confusion of levels that the recipe dissolves. The sentence `G` is
 unprovable in `T`, and, if `T` is sound, true. So we, reasoning in the metatheory,
 know `G` is true, while `T` cannot prove it. There is no contradiction: our
@@ -611,7 +617,7 @@ locates that sentence precisely. Every "the AI knows it is lying but says it any
 intuition in the safety literature is a version of this level confusion, and
 untangling it always comes down to naming which system is doing the knowing.
 
-**Concrete unprovable truths.** The Gödel sentence is often dismissed as
+*Concrete unprovable truths.* The Gödel sentence is often dismissed as
 artificial, a sentence built only to be unprovable, and for decades that dismissal
 had some force. It no longer does. There are now natural mathematical statements,
 about ordinary combinatorial objects, that are true but unprovable in `PA`.
@@ -626,7 +632,7 @@ It cuts through the natural questions too, which means a system's inability to
 certify a property of itself is not a corner case one can engineer around by
 avoiding self-reference. The unprovable can look completely ordinary.
 
-**Remark 2.11 (The safety reading).** Gödel's theorem is the template for every
+*Remark 2.11 (The safety reading).* Gödel's theorem is the template for every
 result in the second half of these notes that has the shape "a system powerful
 enough to model itself cannot also certify itself." A model asked to output a
 calibrated confidence in its own future outputs, a verifier asked to verify
@@ -648,7 +654,7 @@ Formalize consistency as the sentence `Con(T) := ¬ Prov(⌜0 = 1⌝)`, which sa
 `T` does not prove an outright falsehood. The second theorem says a consistent `T`
 that can talk about its own proofs cannot prove `Con(T)`.
 
-**Theorem 2.12 (Gödel's second incompleteness theorem, 1931).** _Let `T` be a
+*Theorem 2.12 (Gödel's second incompleteness theorem, 1931).* _Let `T` be a
 consistent, recursively axiomatized theory extending a modest base of arithmetic,
 whose provability predicate satisfies the Hilbert–Bernays–Löb derivability
 conditions. Then `T` does not prove `Con(T)`._
@@ -698,7 +704,8 @@ structure c2_PC where
   ax_S : ∀ a b c,
     Thm (imp (imp a (imp b c)) (imp (imp a b) (imp a c)))
   D1 : ∀ {a}, Thm a → Thm (box a)
-  D2 : ∀ a b, Thm (imp (box (imp a b)) (imp (box a) (box b)))
+  D2 : ∀ a b, Thm
+      (imp (box (imp a b)) (imp (box a) (box b)))
   D3 : ∀ a, Thm (imp (box a) (box (box a)))
 ```
 
@@ -707,7 +714,8 @@ modus ponens alone. They are the only propositional reasoning the argument needs
 
 ```lean
 theorem c2_s_comb (P : c2_PC) {a b c : P.S}
-    (h₁ : P.Thm (P.imp a (P.imp b c))) (h₂ : P.Thm (P.imp a b)) :
+    (h₁ : P.Thm (P.imp a (P.imp b c)))
+    (h₂ : P.Thm (P.imp a b)) :
     P.Thm (P.imp a c) :=
   P.mp (P.mp (P.ax_S a b c) h₁) h₂
 
@@ -721,7 +729,7 @@ Now Löb's theorem. The hypotheses `fix₁` and `fix₂` are the two directions 
 diagonal lemma's fixed point `g ↔ (Prov(g) → A)`, supplied rather than
 constructed, since constructing it is the arithmetization we are not doing.
 
-**Theorem 2.12a (Löb, 1955).** _If `T ⊢ Prov(A) → A`, then `T ⊢ A`._
+*Theorem 2.12a (Löb, 1955).* _If `T ⊢ Prov(A) → A`, then `T ⊢ A`._
 
 ```lean
 theorem c2_loeb (P : c2_PC) {A g : P.S}
@@ -801,7 +809,7 @@ algebra, `GL` for Gödel–Löb, has Löb's theorem as its defining axiom, and i
 arithmetical completeness (Solovay, 1976) is the precise statement that provability
 reasoning _is_ this fixed-point logic and nothing more.
 
-**Why this one stays in prose.** Every step above is a theorem, and the whole is
+*Why this one stays in prose.* Every step above is a theorem, and the whole is
 formalized in the literature, but the derivability conditions are statements about
 a specific arithmetized `Prov`, and verifying them is the arithmetization we
 deferred in the first theorem, now with the added burden of the third condition,
@@ -813,7 +821,7 @@ whose fixed point Löb takes is a `t : Y → Y` in disguise, and the existence o
 fixed point is {lean}`c2_diagonal_lemma`. The arithmetical soundness of that fixed
 point is the cited part.
 
-**Remark 2.13 (Self-certification is the second theorem).** The second theorem is
+*Remark 2.13 (Self-certification is the second theorem).* The second theorem is
 the sharpest classical statement of a limit that recurs throughout AI safety: a
 system cannot vouch for its own soundness from within. "This model will not deceive
 you" is a `Con`-like sentence about the model, and a model strong enough to state
@@ -823,7 +831,7 @@ argues that a deployed system's own assurances about its alignment carry no
 evidential weight beyond what an external, more powerful check provides, and that
 the external check then faces its own second theorem one level up.
 
-**Provability as a modal logic.** The cleanest modern packaging of both
+*Provability as a modal logic.* The cleanest modern packaging of both
 incompleteness theorems is the modal logic `GL`, where a box operator reads as "is
 provable in `T`." The derivability conditions become the modal axioms: condition 1
 is the necessitation rule, condition 2 is the distribution axiom `K`, and condition
@@ -842,7 +850,7 @@ logic of a system reasoning about its own proofs is completely understood, it is
 finite and decidable, and it has Löb's fixed point built in as an axiom. Self-
 reference at this level is not mysterious; it is a small modal logic.
 
-**Consistency strength.** The second theorem also organizes the landscape of
+*Consistency strength.* The second theorem also organizes the landscape of
 theories into a linear hierarchy by consistency strength. Because `T` cannot prove
 its own consistency, a theory that does prove `Con(T)` is strictly stronger, and
 this relation, "proves the consistency of," well-orders the natural theories from
@@ -873,7 +881,7 @@ which is Tarski's material adequacy condition, his schema T. It says the predica
 gets every sentence right. Tarski's theorem is that no formula of `L` itself can do
 this for all sentences of `L`.
 
-**Definition 2.14 (Definable truth predicate).** A language interpreting arithmetic
+*Definition 2.14 (Definable truth predicate).* A language interpreting arithmetic
 has a _definable truth predicate_ when some formula `True(x)` satisfies schema T for
 every sentence of the language.
 
@@ -886,7 +894,7 @@ of the predicate composed with the diagonal, is itself the verdict pattern of so
 sentence. That is point-surjectivity, and it is exactly the hypothesis of Chapter
 1's {lean}`no_reflective_verdict`.
 
-**Theorem 2.15 (Tarski, 1936).** _No language that can represent its own syntax and
+*Theorem 2.15 (Tarski, 1936).* _No language that can represent its own syntax and
 interpret arithmetic has a definable truth predicate._
 
 ```lean
@@ -901,13 +909,13 @@ reflective verdict, universal over the boolean patterns on sentences. Chapter 1'
 liar sentence `L` with `True?(⌜L⌝) ↔ ¬ True?(⌜L⌝)`, and material adequacy turns
 that into `L ↔ ¬ L`. ∎
 
-**Identifying `Y` and `t`.** `Y = Bool`, the truth value, and `t` is negation. The
+*Identifying `Y` and `t`.* `Y = Bool`, the truth value, and `t` is negation. The
 witness is the liar, "this sentence is false," which is {lean}`liar_query` read as
 a sentence rather than as a set or a program. The liar is not a curiosity at the
 edge of the theory. It is the exact obstruction, the diagonal behavior that a truth
 predicate would have to name and cannot.
 
-**Tarski versus Gödel.** The two theorems are close and the difference is precise.
+*Tarski versus Gödel.* The two theorems are close and the difference is precise.
 Gödel's `Prov` _is_ definable, because provability is recursively enumerable, and
 the price of that definability is incompleteness: the predicate exists but the
 theory cannot decide the sentence it produces. Tarski's `True` would have to be
@@ -948,7 +956,7 @@ that revision. Both are honest responses to Tarski, and both trade totality or
 bivalence for definability. A truth predicate cannot be total, exact, bivalent, and
 self-applicable at once, and you may keep any three.
 
-**Remark 2.16 (Truth probes and Chapter 8).** Tarski's theorem is the reason the
+*Remark 2.16 (Truth probes and Chapter 8).* Tarski's theorem is the reason the
 AI-safety literature on "truthfulness" has to be careful about what it can promise.
 A truth predicate that is total, exact, and expressible in the same system whose
 outputs it judges is exactly the object Tarski forbids. Chapter 8 studies probes
@@ -976,12 +984,12 @@ itself computed by some program, which is the closure of the language under the
 constructions the argument needs. A halting decider is any `D : A → Bool`, total by
 assumption, claiming to report whether the diagonal computation `f a a` halts.
 
-**Definition 2.17 (Halting decider).** A _halting decider_ for a universal system
+*Definition 2.17 (Halting decider).* A _halting decider_ for a universal system
 `f : A → A → Bool` is a total map `D : A → Bool` intended to satisfy `D a = f a a`
 for all `a`, where `f a a` records the halting behavior of program `a` on its own
 code.
 
-**Theorem 2.18 (Turing, 1936).** _For every universal system `f : A → A → Bool` and
+*Theorem 2.18 (Turing, 1936).* _For every universal system `f : A → A → Bool` and
 every candidate decider `D : A → Bool`, there is a program `a` on which the decider
 is wrong: `f a a ≠ D a`. No total halting decider is correct._
 
@@ -990,7 +998,9 @@ theorem c2_turing_halting {A : Type _} (f : A → A → Bool)
     (hf : ∀ g : A → Bool, ∃ a, f a = g) (D : A → Bool) :
     ∃ a, f a a ≠ D a :=
   match hf (fun a => !(D a)) with
-  | ⟨a₀, ha₀⟩ => ⟨a₀, fun h => bool_not_fpf (D a₀) ((congrFun ha₀ a₀).symm.trans h)⟩
+  | ⟨a₀, ha₀⟩ =>
+    ⟨a₀, fun h =>
+      bool_not_fpf (D a₀) ((congrFun ha₀ a₀).symm.trans h)⟩
 ```
 
 _Proof._ Universality names the contrarian behavior `fun a => !(D a)`, "do the
@@ -1005,7 +1015,7 @@ It cannot behave consistently with `D`'s prediction, so `D` is wrong about it. T
 is the same `a₀` as everywhere else in the chapter, now reading `Y = Bool` as
 "halts or runs forever" and `t` as the flip "do the opposite."
 
-**The partiality subtlety.** The clean statement above hides the one place halting
+*The partiality subtlety.* The clean statement above hides the one place halting
 differs from Cantor. A real halting decider must be _total_, returning an answer on
 every program, while the programs it judges are _partial_, sometimes running
 forever. The contrarian program is built to be partial in exactly the way that
@@ -1016,7 +1026,7 @@ correct statement becomes Rice's, about the impossibility of _total_ decision of
 nontrivial _semantic_ property. We take that step next. Chapter 1's Exercise 1.8
 flagged this as the shape of Rice's theorem, and it is.
 
-**The universal machine is the wrapper.** The hypothesis that the language is
+*The universal machine is the wrapper.* The hypothesis that the language is
 universal, `∀ g, ∃ a, f a = g`, is not free; it is the existence of a universal
 Turing machine, a single program that simulates any program given its code. Turing
 built one, and that construction is the wrapper for this theorem exactly as
@@ -1030,7 +1040,7 @@ reading writes itself: a model general enough to simulate arbitrary reasoning,
 including reasoning about itself, has bought the very universality that makes its
 behavior undecidable.
 
-**Where halting sits.** The halting problem is not merely undecidable; it is the
+*Where halting sits.* The halting problem is not merely undecidable; it is the
 canonical undecidable problem, complete for the recursively enumerable sets under
 many-one reduction. Every other undecidability in this chapter reduces to it or
 sits above it in the arithmetical hierarchy, the classification of problems by the
@@ -1046,7 +1056,7 @@ uncomputability is not a thin boundary phenomenon but a dominant one. The diagon
 tells you the boundary exists; it does not tell you it is this violent. That gap
 between qualitative and quantitative is the book's recurring theme.
 
-**Remark 2.19 (Runtime verification).** Turing's theorem is the ancestor of every
+*Remark 2.19 (Runtime verification).* Turing's theorem is the ancestor of every
 impossibility in program analysis, and its safety reading is direct: no static
 analyzer decides, for all programs, a behavioral question as simple as termination.
 For AI systems the behavioral questions are far harder than halting, whether a
@@ -1075,12 +1085,12 @@ the companion library; we compile the core and cite the rest.
 
 ## The boolean core
 
-**Definition 2.20 (Semantic decider).** For a universal system `f : A → A → Bool`, a
+*Definition 2.20 (Semantic decider).* For a universal system `f : A → A → Bool`, a
 _semantic decider_ is a total map `D : A → Bool` claiming to compute the diagonal
 behavior `f a a` from the index `a` alone. Rice's theorem denies that any such `D`
 is correct everywhere.
 
-**Theorem 2.21 (Rice, diagonal core).** _For every universal `f : A → A → Bool` and
+*Theorem 2.21 (Rice, diagonal core).* _For every universal `f : A → A → Bool` and
 every `D : A → Bool`, some index `a` has `f a a ≠ D a`._
 
 ```lean
@@ -1108,7 +1118,7 @@ program computes. Let `P` be a set of partial recursive functions that is neithe
 empty nor everything, a nontrivial property. Rice's theorem says the set of
 programs whose function lies in `P` is undecidable.
 
-**Theorem 2.22 (Rice, full form).** _Let `P` be a nontrivial semantic property of
+*Theorem 2.22 (Rice, full form).* _Let `P` be a nontrivial semantic property of
 partial recursive functions. Then the set `{e | φ_e ∈ P}` of program indices with
 that property is not recursive._
 
@@ -1134,13 +1144,13 @@ description. We reproduce the core here and cite those for the full statement, i
 keeping with the discipline of the book: the self-reference compiles, the
 recursion theory is cited.
 
-**Identifying `Y` and `t`.** As always for the computability instances, `Y = Bool`
+*Identifying `Y` and `t`.* As always for the computability instances, `Y = Bool`
 and `t` is negation. What is new in Rice is the universal quantifier over
 properties, and the recipe absorbs it: each nontrivial property yields, through the
 reduction, a boolean `D`, and the single fixed-point-free `t` defeats them all at
 once. One `t`, every property.
 
-**Discussion of the hypothesis.** Nontriviality is the load-bearing word, and it is
+*Discussion of the hypothesis.* Nontriviality is the load-bearing word, and it is
 the analogue of surjectivity being nondegenerate. A trivial property, one that all
 programs have or none do, is decided by a constant function, and there is no
 contradiction because the constant decider is never wrong. The diagonal needs two
@@ -1177,7 +1187,7 @@ Rice–Shapiro is the classical statement that monitoring is possible and
 certification is not, and Chapter 7 gives it teeth by adding the cost of the finite
 observation and the rate at which confidence can accrue.
 
-**Remark 2.23 (No automated semantic testing).** Rice's theorem is the direct
+*Remark 2.23 (No automated semantic testing).* Rice's theorem is the direct
 ancestor of the book's core negative results about evaluating models. A "semantic
 property of a model" is a property of the function the model computes, whether it is
 honest, whether it is aligned, whether it is safe, and Rice says no general
@@ -1374,119 +1384,145 @@ or to fill in a step. Ones marked (harder) ask you to prove something new in Lea
 to handle a subtlety in a hypothesis. Ones marked (open-ended) have no single
 answer and point toward later chapters.
 
-**Exercise 2.1.** Prove {lean}`c2_no_universal_bool` by hand without invoking
+*Exercise 2.1.* Prove {lean}`c2_no_universal_bool` by hand without invoking
 {lean}`no_universal`, unfolding it to a direct `match` on the universality
 hypothesis applied to `fun a => !(f a a)`. Check that your proof and the one in the
 text produce the same diagonal witness.
 
-**Exercise 2.2.** State and prove in core Lean that `Unit`, the one-element type,
+*Exercise 2.2.* State and prove in core Lean that `Unit`, the one-element type,
 admits no universal system with fixed-point-free flip: show there is no
 `t : Unit → Unit` with `t u ≠ u`. Explain why this is the degenerate case at the
 bottom of every row of the summary table.
 
-**Exercise 2.3.** Cantor's theorem is usually stated for `Set A`, not `A → Bool`.
+*Exercise 2.3.* Cantor's theorem is usually stated for `Set A`, not `A → Bool`.
 Using the identification of a subset with its indicator, write the statement "no
 surjection `A → Set A`" and explain, in one paragraph, why it is the same as
 {lean}`c2_cantor_powerset`. Where does the classical `Set`-form proof, cited as
 `CCH.cantor_no_surjection_set`, use decidability that the `Bool` form avoids?
 
-**Exercise 2.4.** In {lean}`c2_russell`, the hypothesis `hmem` is never satisfiable
+*Exercise 2.4.* In {lean}`c2_russell`, the hypothesis `hmem` is never satisfiable
 for a type `A` with at least two elements. Prove this: derive `False` from `hmem`
 using {lean}`cantor`, and conclude that {lean}`c2_russell` is a theorem whose
 hypothesis is empty. Relate this to the modern repairs of comprehension.
 
-**Exercise 2.5.** Write out the propositional Russell paradox `¬ (P ↔ ¬ P)` in Lean
+*Exercise 2.5.* Write out the propositional Russell paradox `¬ (P ↔ ¬ P)` in Lean
 for `P : Prop` and prove it without classical axioms. Then explain, referring to
 Remark 2.7, why the chapter compiles the `Bool` version instead in the diagonal
 engine.
 
-**Exercise 2.6.** (Gödel, by hand.) Using {lean}`c2_diagonal_lemma` with
+*Exercise 2.6.* (Gödel, by hand.) Using {lean}`c2_diagonal_lemma` with
 `t := fun b => !b`, reprove {lean}`c2_godel_semantic` without the `match`, by
 `obtain`-ing the witness in tactic mode. Confirm with `#print axioms` that your
 proof depends on no axioms.
 
-**Exercise 2.7.** Identify, for each derivability condition in Theorem 2.12, which
+*Exercise 2.7.* Identify, for each derivability condition in Theorem 2.12, which
 property of an ordinary notion of proof it internalizes. Then explain in one
 paragraph why the third condition, and not the first two, is what makes the second
 incompleteness theorem harder than the first.
 
-**Exercise 2.8.** State Löb's theorem as a fixed-point statement and identify the
+*Exercise 2.8.* State Löb's theorem as a fixed-point statement and identify the
 map `t` whose fixed point it takes. Verify that the second incompleteness theorem is
 the special case `φ = 0 = 1`, and explain why `Con(T)` is the antecedent that Löb
 refuses.
 
-**Exercise 2.9.** Give the liar sentence explicitly as the diagonal behavior in
+*Exercise 2.9.* Give the liar sentence explicitly as the diagonal behavior in
 Tarski's theorem, and trace how {lean}`liar_query` produces it. Then show that if a
 definable truth predicate existed, {lean}`c2_godel_semantic` would apply to it, so
 that Tarski's theorem also follows from the completeness-plus-soundness collapse.
 
-**Exercise 2.10.** Explain the precise difference between Gödel's `Prov` and
+*Exercise 2.10.* Explain the precise difference between Gödel's `Prov` and
 Tarski's `True`: one is definable and the theory is incomplete, the other is not
 definable at all. Which property of provability, absent for truth, is responsible?
 Frame your answer in terms of recursive enumerability.
 
-**Exercise 2.11.** (Harder.) Prove in core Lean a two-input version of Turing's
+*Exercise 2.11.* (Harder.) Prove in core Lean a two-input version of Turing's
 theorem: for `f : A → A → Bool` universal and a candidate decider `D : A → A → Bool`
 meant to satisfy `D a b = f a b`, there exist `a, b` with `f a b ≠ D a b`. Show that
 the diagonal case `a = b` recovers {lean}`c2_turing_halting`.
 
-**Exercise 2.12.** Explain the totality subtlety in Turing's theorem in your own
+*Exercise 2.12.* Explain the totality subtlety in Turing's theorem in your own
 words: why the contrarian program must be partial, and why the argument would fail
 if deciders were allowed to return no answer. Connect this to the transition from
 Turing to Rice.
 
-**Exercise 2.13.** For a nontrivial `P : Bool → Bool` with `P false ≠ P true`, show
+*Exercise 2.13.* For a nontrivial `P : Bool → Bool` with `P false ≠ P true`, show
 that `P` is a bijection on `Bool`, hence either the identity or negation. Use this to
 sketch how `Foundation.rice_general` reduces to {lean}`c2_rice_diagonal`, and
 identify where nontriviality is used.
 
-**Exercise 2.14.** (Harder.) The full Rice's theorem, Theorem 2.22, splits on which
+*Exercise 2.14.* (Harder.) The full Rice's theorem, Theorem 2.22, splits on which
 side of `P` the everywhere-undefined program falls. Write out both cases of the
 reduction from halting, and explain why the split is necessary and where classical
 logic enters.
 
-**Exercise 2.15.** Fill in the summary table for two theorems not treated in the
+*Exercise 2.15.* Fill in the summary table for two theorems not treated in the
 text: the Grelling–Nelson paradox of heterological adjectives, and the fixed-point
 combinator `Y` of the untyped lambda calculus. For each, name `A`, `Y`, `t`, and the
 wrapper, and say whether the fixed point is a contradiction or a construction.
 
-**Exercise 2.16.** (Open-ended.) Every row of the summary table has `t` fixed-point
+*Exercise 2.16.* (Open-ended.) Every row of the summary table has `t` fixed-point
 free, so the fixed point Lawvere produces is a contradiction. The lambda-calculus
 `Y` combinator uses the same diagonal but wants the fixed point. Speculate on what
 distinguishes the destructive uses from the constructive one, and relate it to the
 difference between `Bool` with negation and a domain where every map has a fixed
 point.
 
-**Exercise 2.17.** (Open-ended.) Pick one AI-safety property, honesty, calibration,
+*Exercise 2.17.* (Open-ended.) Pick one AI-safety property, honesty, calibration,
 or corrigibility, and attempt to force it into the recipe. Name a candidate `A`,
 `Y`, and `t`, and identify precisely which universality hypothesis the property would
 have to satisfy for {lean}`no_universal` to apply. Then say what a working system
 gives up to avoid satisfying it. Chapter 3 does this for hallucination; compare your
 attempt to its treatment.
 
-**Exercise 2.18.** (Open-ended.) The chapter argues that the diagonal is silent on
+*Exercise 2.18.* (Open-ended.) The chapter argues that the diagonal is silent on
 quantities. For Rice's theorem, formulate a quantitative question the theorem does
 not answer, for instance the density of programs on which a fixed heuristic decider
 is correct, and speculate on what additional structure, a metric, a measure, a
 topology on programs, would be needed to make it precise. This is the question
 Chapters 5 and 6 take up for attack basins.
 
-**Exercise 2.19.** State the section form of Lawvere's theorem in a cartesian
+*Exercise 2.19.* State the section form of Lawvere's theorem in a cartesian
 closed category, as in the categorical-unification section, and identify, for
 Cantor and for Turing, what object plays the role of the outcome `Y`, what map
 plays `t`, and what construction provides the section `s`. For Turing, explain why
 the universal machine is exactly the section.
 
-**Exercise 2.20.** (Harder.) The summary table lists Löb's map as the flip for
+*Exercise 2.20.* (Harder.) The summary table lists Löb's map as the flip for
 Gödel II, calling it "negation in modal disguise." Make this precise: write the map
 `ψ ↦ (Prov(⌜ψ⌝) → φ)` whose fixed point Löb's theorem takes, and show that with
 `φ = 0 = 1` its fixed point is the sentence whose unprovability is the second
 incompleteness theorem. Explain in what sense this map fails to have a fixed point
 in the way negation does, and why the conclusion is nonetheless an impossibility.
 
-**Exercise 2.21.** (Open-ended.) Rice–Shapiro sorts semantic properties into
+*Exercise 2.21.* (Open-ended.) Rice–Shapiro sorts semantic properties into
 decidable, r.e., and worse. Place three properties of a language model on this
 spectrum, phrased as properties of the function it computes, and say for each
 whether the classical theorem predicts you can decide it, recognize it, or neither.
 Then say what changes when the property is weakened from exact to approximate, which
 is the move Chapter 3 makes.
+
+# References
+
+Boolos, G. (1993). _The Logic of Provability_. Cambridge University Press, Cambridge.
+
+Boolos, G. S., Burgess, J. P., Jeffrey, R. C. (2007). _Computability and Logic_, 5th edn. Cambridge University Press, Cambridge.
+
+Cantor, G. (1891). Über eine elementare Frage der Mannigfaltigkeitslehre. _Jahresbericht der Deutschen Mathematiker-Vereinigung_ 1, 75–78.
+
+Gödel, K. (1931). Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I. _Monatshefte für Mathematik und Physik_ 38, 173–198.
+
+Lawvere, F. W. (1969). Diagonal arguments and cartesian closed categories. In _Category Theory, Homology Theory and their Applications II_, Lecture Notes in Mathematics 92, 134–145. Springer, Berlin.
+
+Löb, M. H. (1955). Solution of a problem of Leon Henkin. _Journal of Symbolic Logic_ 20(2), 115–118.
+
+Rice, H. G. (1953). Classes of recursively enumerable sets and their decision problems. _Transactions of the American Mathematical Society_ 74(2), 358–366.
+
+Rogers, H. (1967). _Theory of Recursive Functions and Effective Computability_. McGraw-Hill, New York.
+
+Solovay, R. M. (1976). Provability interpretations of modal logic. _Israel Journal of Mathematics_ 25, 287–304.
+
+Tarski, A. (1936). Der Wahrheitsbegriff in den formalisierten Sprachen. _Studia Philosophica_ 1, 261–405.
+
+Turing, A. M. (1936). On computable numbers, with an application to the Entscheidungsproblem. _Proceedings of the London Mathematical Society_ (2) 42, 230–265.
+
+Yanofsky, N. S. (2003). A universal approach to self-referential paradoxes, incompleteness and fixed points. _Bulletin of Symbolic Logic_ 9(3), 362–386.

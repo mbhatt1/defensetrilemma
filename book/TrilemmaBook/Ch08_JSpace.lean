@@ -10,6 +10,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "J-Space, and Why It Does Not Escape" =>
 
+*Abstract.* The earlier theorems concern a system's outputs, and one objection is that a probe reading the middle of a network is a different kind of object. This chapter takes the objection in its strongest current form, J-space, a method that recovers a transformer's mid-process representation from the derivative of its computation. It shows that richness of the readout is the surjectivity hypothesis of the diagonal, that steering does not escape either, and that abstention is the one real exit and is a relaxation.
+
+*Keywords:* Interpretability, J-space, Probes, Self-verdict, Abstention
+
 Everything in this book so far has been stated about a system's _outputs_. A
 verdict `v p q`, a safety score, a truth probe: each reads the end of a
 computation and returns a commitment. There is a natural objection to reading
@@ -99,7 +103,7 @@ the arguments below only through its consequences, that the readout is a linear
 functional of the model's own map, but it is worth understanding why the
 construction is built the way it is before we start extracting what it cannot do.
 
-**Definition 8.1 (Transport map).** Let the model define, for each middle layer
+*Definition 8.1 (Transport map).* Let the model define, for each middle layer
 `ℓ`, the map from the layer-`ℓ` activation at position `t` to the final-layer
 activation at a later position `t' ≥ t`. The _Jacobian transport map_ at layer
 `ℓ` is the expected derivative of the later activation with respect to the
@@ -121,7 +125,7 @@ entirely out of the model's own weights and its own activations, since a Jacobia
 of the model's forward map is a functional of that map. Both points return below
 with force.
 
-**Definition 8.2 (J-lens readout).** The _J-lens_ is the readout obtained by
+*Definition 8.2 (J-lens readout).* The _J-lens_ is the readout obtained by
 sending an activation through the transport map, normalizing, and unembedding:
 
 ```
@@ -141,7 +145,7 @@ results of this book are stated about Boolean verdicts, so we need the step that
 turns a distribution into a commitment. That step is already implicit in how the
 readout is used.
 
-**Definition 8.2b (Truth-workspace reading).** Fix a decodable proposition
+*Definition 8.2b (Truth-workspace reading).* Fix a decodable proposition
 associated with a query `q`, for instance "the answer to `q` is yes," and a token
 or set of tokens that expresses it. The _truth-workspace verdict_ of an
 activation `h` on query `q` is `true` when the J-lens distribution `lens(h)` puts
@@ -160,7 +164,7 @@ thresholding, on the Boolean commitment, and it does not care how the commitment
 was reached. The same J-lens feeds both, which is the first sign that a J-space
 probe will not slip between the two arguments.
 
-**Definition 8.3 (J-space).** _J-space_ is the image of the transport map,
+*Definition 8.3 (J-space).* _J-space_ is the image of the transport map,
 
 ```
 J = { Jℓ h : h ∈ activation space } = im(Jℓ),
@@ -176,13 +180,14 @@ largely intact. That combination, tiny yet load-bearing, is why the construction
 was proposed as a candidate global workspace: a low-dimensional channel through
 which the model routes the intermediate results of chained computation.
 
-**Definition 8.4 (J-coordinates).** For a particular activation `h`, its
+*Definition 8.4 (J-coordinates).* For a particular activation `h`, its
 _J-space component_ is the projection of `Jℓ h` onto `J`, and this component is
 approximated as a sparse nonnegative mixture of a fixed dictionary of Jacobian
 directions `d_1, …, d_m`,
 
 ```
-proj_J(Jℓ h) ≈ Σ_i w_i(h) · d_i,   w_i(h) ≥ 0,  most w_i(h) = 0.
+proj_J(Jℓ h) ≈ Σ_i w_i(h) · d_i,
+w_i(h) ≥ 0,  most w_i(h) = 0.
 ```
 
 The mixture weights `w_i(h)` are the _local J-coordinates_ of `h`. They are the
@@ -197,10 +202,12 @@ of which directions are active and with what nonnegative weight, using natural
 numbers as a stand-in for the nonnegative reals.
 
 ```lean
-/-- A local J-coordinate: a finite sparse nonnegative mixture of dictionary
-    directions drawn from `Dir`, with `Nat` standing in for the nonnegative
-    real weights. The interpretability content is the list of active
-    (direction, weight) pairs; the ambient vector space is abstracted away. -/
+/-- A local J-coordinate: a finite sparse nonnegative
+    mixture of dictionary directions drawn from `Dir`,
+    with `Nat` standing in for the nonnegative real
+    weights. The interpretability content is the list
+    of active (direction, weight) pairs; the ambient
+    vector space is abstracted away. -/
 structure c8_Coord (Dir : Type _) where
   terms : List (Dir × Nat)
 ```
@@ -211,7 +218,7 @@ of Definition 8.4 into the code. We use {lean}`c8_Coord` below to state, against
 the literal coordinate object rather than an abstract stand-in, that the diagonal
 still reaches it.
 
-**Remark 8.4a (Nonnegativity and the cone).** The nonnegativity constraint on the
+*Remark 8.4a (Nonnegativity and the cone).* The nonnegativity constraint on the
 weights `w_i(h) ≥ 0` is doing interpretability work, not mathematical work. It is
 what makes the active directions read as concepts that are present rather than
 concepts that are present-or-anti-present, and it is what lets a J-coordinate be
@@ -224,7 +231,7 @@ actually reads, is still a connected domain. The constraint that makes the
 readout legible does not buy disconnection, and disconnection is the only thing
 that would keep the intermediate value theorem out.
 
-**Example 8.5 (A one-layer linearization).** Take a network whose middle-to-final
+*Example 8.5 (A one-layer linearization).* Take a network whose middle-to-final
 map is exactly affine, `h_final = A h_ℓ + b`. Then the derivative is constant,
 `∂ h_final / ∂ h_ℓ = A`, the expectation in Definition 8.1 collapses to `Jℓ = A`,
 and J-space is just `im(A)`. Here the J-lens `softmax(W_U · norm(A h))` is a fixed
@@ -237,7 +244,7 @@ Real networks are not affine, so `Jℓ` is a genuine average of varying
 derivatives, but the average is still a single linear map, and the two structural
 facts survive the averaging unchanged.
 
-**Example 8.5b (Where the derivative separates what the activation confuses).**
+*Example 8.5b (Where the derivative separates what the activation confuses).*
 Take a middle-to-final map with a saturating nonlinearity, say
 `h_final = σ(A h_ℓ)` with `σ` a coordinatewise squashing function. Two activations
 `h` and `h'` can land at nearly the same output, `σ(A h) ≈ σ(A h')`, while sitting
@@ -254,7 +261,7 @@ other way, exactly why the impossibility bites. The extra separating power is re
 resolution, and the diagonal will construct its liar out of precisely this finer
 vocabulary, not in spite of it.
 
-**Remark 8.6 (What is empirical here).** Definitions 8.1 through 8.4 are a
+*Remark 8.6 (What is empirical here).* Definitions 8.1 through 8.4 are a
 construction, and the claim that the construction recovers interpretable
 mid-process features is an empirical finding about particular trained models. No
 theorem in this book predicts that finding, and none is needed for what follows.
@@ -303,14 +310,14 @@ It is worth stating the first fact with the care it deserves, because the whole
 analytic half of the chapter rests on it and it is easy to wave through. The
 relevant notion is the 1-jet.
 
-**Definition 8.7a (1-jet).** The _1-jet_ of a smooth map `F` at a point `x` is the
+*Definition 8.7a (1-jet).* The _1-jet_ of a smooth map `F` at a point `x` is the
 pair consisting of the value `F(x)` and the derivative `DF(x)`, that is, the
 first-order Taylor data of `F` at `x`. Discarding the value and keeping only the
 linear part `DF(x)` gives a linear map between tangent spaces. The transport map
 `Jℓ` of Definition 8.1 is, up to the averaging, the linear part of the 1-jet of
 the model's middle-to-final map, and J-space is the image of that linear part.
 
-**Proposition 8.7b (J-space is convex, hence connected).** _J-space is a convex
+*Proposition 8.7b (J-space is convex, hence connected).* _J-space is a convex
 subset of the final-layer activation space: if `u` and `v` lie in `J` and
 `s ∈ [0,1]`, then `(1 - s) u + s v` lies in `J`. In particular `J` is
 path-connected._
@@ -321,7 +328,8 @@ elaborate here directly.
 
 ```lean
 theorem c8_jspace_convex {E F : Type _}
-    [AddCommGroup E] [Module ℝ E] [AddCommGroup F] [Module ℝ F]
+    [AddCommGroup E] [Module ℝ E] [AddCommGroup F]
+    [Module ℝ F]
     (J : E →ₗ[ℝ] F) : Convex ℝ (Set.range J) := by
   rw [← Set.image_univ]
   exact convex_univ.linear_image J
@@ -358,7 +366,7 @@ codebook say, and such a method would dodge the analytic engine, though not the
 diagonal. J-space is not such a method. Its defining move, reading the Jacobian, is
 exactly the move that guarantees connectedness.
 
-**Proposition 8.7c (The readout is a functional of the model).** _The J-lens is
+*Proposition 8.7c (The readout is a functional of the model).* _The J-lens is
 determined by the model's forward map: two models with the same middle-to-final
 map induce the same transport map, the same J-space, and the same readout on every
 activation._
@@ -377,7 +385,7 @@ from the model, through the derivative of the model, to a verdict read back into
 the model's own query space is closed, and a closed loop of that shape is precisely
 what {lean}`no_reflective_verdict` is a statement about.
 
-**Remark 8.7 (Why the derivative does not buy an escape).** It is tempting to
+*Remark 8.7 (Why the derivative does not buy an escape).* It is tempting to
 think that moving from the activation to its derivative changes the game, since
 the derivative is a genuinely different object with genuinely more information.
 For the analytic engine the move actually makes things worse, not better, because
@@ -403,7 +411,7 @@ The hypothesis that makes J-space attractive is that it is _rich_, that it expos
 distinctions the residual stream hides. Pushed to its limit, richness is exactly
 the point-surjectivity of Chapter 1: every pattern of verdicts over queries is
 realized by the J-space representation of some query. Under that hypothesis the
-routed verdict is a reflective verdict in the precise sense of Definition 1.11,
+routed verdict is a reflective verdict in the precise sense of Definition 1.15,
 and Chapter 1 already ruled those out.
 
 ## Richness is the surjectivity hypothesis
@@ -446,7 +454,7 @@ excellent on most queries and satisfy it too. Quality and surjectivity are close
 to orthogonal, which is why the theorem says nothing about how good the probe is
 and everything about what completeness would cost.
 
-**Theorem 8.8 (Factoring through J-space does not help).** _Let `enc : Q → J` and
+*Theorem 8.8 (Factoring through J-space does not help).* _Let `enc : Q → J` and
 `read : J → Q → Bool`. If every pattern of verdicts over `Q` is realized by some
 query's J-space representation, then `False`._
 
@@ -475,7 +483,7 @@ requires.
 
 The witness is explicit, and it is a J-space object.
 
-**Theorem 8.9 (The liar in J-space).** _Under the hypotheses of Theorem 8.8 there
+*Theorem 8.9 (The liar in J-space).* _Under the hypotheses of Theorem 8.8 there
 is a query `p` whose routed verdict on itself equals its own negation._
 
 ```lean
@@ -501,7 +509,7 @@ fails to see. It is a query the probe sees correctly, whose correct reading is
 that the probe's verdict on it is wrong. Better internal visibility does not
 dissolve the liar. It hands the liar a clearer mirror.
 
-**Remark 8.9a (Size is not the variable).** A recurring hope is that the escape
+*Remark 8.9a (Size is not the variable).* A recurring hope is that the escape
 lies in dimension: J-space is small, so maybe a _larger_ internal space would have
 room to represent the liar honestly, or maybe a small space is safe because it
 cannot hold enough patterns. Both readings misplace the variable. Theorem 8.8
@@ -516,7 +524,7 @@ a fact about efficiency and about what the model chooses to route through the
 workspace. It is not a defense, and it is not a vulnerability. It is orthogonal to
 the impossibility.
 
-**Example 8.9b (A finite probe, to see the mechanism).** Let `Q` be the two-query
+*Example 8.9b (A finite probe, to see the mechanism).* Let `Q` be the two-query
 space `{q₀, q₁}` and suppose, for illustration, that the probe's routed verdict
 were surjective onto the four functions `Q → Bool`. Surjectivity would in
 particular hit the diagonal pattern `d(q) = !(read (enc q) q)`. Say `d` is realized
@@ -539,22 +547,28 @@ readout turns the J-space point into a commitment. It is worth checking that
 composing the stages changes nothing, because a reader might suspect the
 one-map abstraction of Theorem 8.8 hides where the escape lives.
 
-**Theorem 8.10 (The full pipeline factors).** _Let `enc : Q → A` send a query to
+*Theorem 8.10 (The full pipeline factors).* _Let `enc : Q → A` send a query to
 an activation, `transport : A → J` be the Jacobian transport map, and
 `readout : J → Q → Bool` be the J-lens verdict. If the pipeline realizes every
 verdict pattern, then `False`, and there is a coupled query._
 
 ```lean
 theorem c8_pipeline_factoring {Q A J : Type _}
-    (enc : Q → A) (transport : A → J) (readout : J → Q → Bool)
-    (hs : ∀ g : Q → Bool, ∃ p, readout (transport (enc p)) = g) :
+    (enc : Q → A) (transport : A → J)
+    (readout : J → Q → Bool)
+    (hs : ∀ g : Q → Bool,
+      ∃ p, readout (transport (enc p)) = g) :
     False :=
-  no_reflective_verdict (fun p => readout (transport (enc p))) hs
+  no_reflective_verdict
+      (fun p => readout (transport (enc p))) hs
 
 theorem c8_pipeline_liar {Q A J : Type _}
-    (enc : Q → A) (transport : A → J) (readout : J → Q → Bool)
-    (hs : ∀ g : Q → Bool, ∃ p, readout (transport (enc p)) = g) :
-    ∃ p, readout (transport (enc p)) p = !(readout (transport (enc p)) p) :=
+    (enc : Q → A) (transport : A → J)
+    (readout : J → Q → Bool)
+    (hs : ∀ g : Q → Bool,
+      ∃ p, readout (transport (enc p)) = g) :
+    ∃ p, readout (transport (enc p)) p
+      = !(readout (transport (enc p)) p) :=
   liar_query (fun p => readout (transport (enc p))) hs
 ```
 
@@ -568,7 +582,7 @@ activation feeding a J-space point feeding a second derived space feeding a
 readout, still collapses to one map from queries to verdicts, because function
 composition does not care how many links it chains.
 
-**Theorem 8.11 (Any tower collapses).** _Let `e₁ : Q → J₁`, `e₂ : J₁ → J₂`, and
+*Theorem 8.11 (Any tower collapses).* _Let `e₁ : Q → J₁`, `e₂ : J₁ → J₂`, and
 `read : J₂ → Q → Bool`. If the two-stage encoding realizes every verdict pattern,
 then `False`._
 
@@ -597,7 +611,7 @@ model's mid-process leaning. A natural hope is that steering could be used
 defensively, to remove the slack a liar exploits. Model a steering operation as a
 map `steer : J → J` applied to the representation before the readout reads it.
 
-**Theorem 8.12 (Steering the representation does not help).** _Let `enc : Q → J`,
+*Theorem 8.12 (Steering the representation does not help).* _Let `enc : Q → J`,
 `steer : J → J`, and `read : J → Q → Bool`. If the steered pipeline realizes every
 verdict pattern, then `False`, and there is a coupled query surviving the
 steering._
@@ -612,7 +626,8 @@ theorem c8_steering_no_escape {Q J : Type _}
 theorem c8_steering_liar {Q J : Type _}
     (enc : Q → J) (steer : J → J) (read : J → Q → Bool)
     (hs : ∀ g : Q → Bool, ∃ p, read (steer (enc p)) = g) :
-    ∃ p, read (steer (enc p)) p = !(read (steer (enc p)) p) :=
+    ∃ p, read
+    (steer (enc p)) p = !(read (steer (enc p)) p) :=
   liar_query (fun p => read (steer (enc p))) hs
 ```
 
@@ -635,14 +650,15 @@ The theorems above are stated for an arbitrary intermediate type `J`. To close t
 gap between the abstract statement and the actual construction, here is the same
 result with `J` instantiated at the literal J-coordinate object of Definition 8.4.
 
-**Theorem 8.13 (The coordinate readout does not escape).** _Let `enc : Q → c8_Coord Dir`
+*Theorem 8.13 (The coordinate readout does not escape).* _Let `enc : Q → c8_Coord Dir`
 extract local J-coordinates, and let `read : c8_Coord Dir → Q → Bool` be a verdict
 on those coordinates. If the coordinate readout realizes every verdict pattern,
 then `False`._
 
 ```lean
 theorem c8_coord_no_escape {Q Dir : Type _}
-    (enc : Q → c8_Coord Dir) (read : c8_Coord Dir → Q → Bool)
+    (enc : Q → c8_Coord Dir)
+    (read : c8_Coord Dir → Q → Bool)
     (hs : ∀ g : Q → Bool, ∃ p, read (enc p) = g) :
     False :=
   jspace_factoring enc read hs
@@ -693,7 +709,7 @@ hold, as one of its own states, any pattern of verdicts over states, then the
 J-lens is a total exact self-applicable truth predicate over activations, and the
 diagonal forbids it.
 
-**Theorem 8.14 (J-lens self-verdict).** _A J-lens self-verdict over activations
+*Theorem 8.14 (J-lens self-verdict).* _A J-lens self-verdict over activations
 that is universal over its own workspace states cannot exist, and the diagonal
 exhibits a coupled activation whose readout verdict is its own negation._
 
@@ -723,7 +739,8 @@ twice.
 
 ```lean
 theorem c8_same_engine {Act : Type _}
-    (v : Act → Act → Bool) (h : ∀ g : Act → Bool, ∃ p, v p = g) :
+    (v : Act → Act → Bool)
+    (h : ∀ g : Act → Bool, ∃ p, v p = g) :
     c8_jlens_impossible v h = no_reflective_verdict v h :=
   rfl
 ```
@@ -732,7 +749,7 @@ _Proof._ Definitional. {lean}`c8_jlens_impossible` is _defined_ as
 {lean}`no_reflective_verdict`, so the two proof terms are the same object and
 `rfl` accepts the equation. ∎
 
-**Example 8.15 (The liar activation, told as a story).** Suppose an
+*Example 8.15 (The liar activation, told as a story).* Suppose an
 interpretability team builds a J-lens they believe reads the model's honest
 leaning on any yes-or-no question, and suppose the model is expressive enough that
 for any pattern of yes-or-no leanings over questions, some question drives it into
@@ -748,7 +765,7 @@ wrong about it precisely because it is honest and faithful and high-resolution.
 The coupled activation `c8_coupled_activation` is this `p`'s activation, and it
 exists the moment universality does.
 
-**Remark 8.16 (Resolution, not immunity).** Collecting the diagonal results,
+*Remark 8.16 (Resolution, not immunity).* Collecting the diagonal results,
 the through-line is that the type of the intermediate representation is a free
 parameter the argument never binds. Raw activations, transported points, sparse
 coordinates, steered coordinates, deep towers: each is a legal value of `J`, and
@@ -797,7 +814,7 @@ abstract question space. The signed truth-distance is the continuous stand-in fo
 "the answer is really true," and its zero set is the true boundary the probe is
 trying to track.
 
-**Theorem 8.17 (A continuous J-space probe has an ambiguous band).** _Let
+*Theorem 8.17 (A continuous J-space probe has an ambiguous band).* _Let
 `s : J → ℝ` be a continuous score on J-space with a decision threshold `θ`, and
 suppose `s` is decisive in both directions: there are J-space points `u` and `v`
 with `s(u) < θ < s(v)`. Then the segment from `u` to `v` contains a point `w`
@@ -830,7 +847,7 @@ combine, is the property that guarantees a boundary. There is no version of a
 linear J-space that dodges Theorem 8.17, because linearity is the hypothesis, not
 an obstacle to it.
 
-**Remark 8.17b (Why the residual stream got an easier time).** It is fair to ask
+*Remark 8.17b (Why the residual stream got an easier time).* It is fair to ask
 why the earlier chapters had to work through approximate bridges to reach the
 residual stream while J-space submits to the intermediate value theorem directly.
 The answer is that a finite set of observed activations, treated as points with no
@@ -846,7 +863,7 @@ legitimate interpolation is what the boundary theorem consumes. A method cannot
 have the analytic tractability of a linear space and the topological safety of a
 discrete sample at once, and J-space, by design, took the first.
 
-**Example 8.18 (The segment between a safe and an unsafe direction).** Suppose the
+*Example 8.18 (The segment between a safe and an unsafe direction).* Suppose the
 J-lens dictionary contains a direction `d_safe` that the probe scores as clearly
 safe and a direction `d_unsafe` it scores as clearly unsafe. Because J-coordinates
 are nonnegative mixtures, the family `w(t) = (1 - t) d_safe + t d_unsafe` is a
@@ -858,7 +875,7 @@ state, a specific blend of a safe and an unsafe leaning, that the probe cannot
 place on either side. The convexity that lets you interpolate concepts is the same
 convexity that manufactures the ambiguous blend.
 
-**Remark 8.19 (The band has width, and the width has a floor).** Chapter 5's
+*Remark 8.19 (The band has width, and the width has a floor).* Chapter 5's
 quantitative refinements apply to Theorem 8.17 without change. If the probe `s` is
 Lipschitz with constant `L`, then the score cannot swing from decisive to decisive
 faster than `L` allows, so the ambiguous band around the threshold has a width
@@ -872,7 +889,7 @@ in it, what it costs an adversary to steer into it, is the subject of Chapter 5'
 domain with a Lipschitz score is a result about J-space, because J-space is a
 connected domain with, under the usual assumptions, a Lipschitz score.
 
-**Remark 8.19a (The antipodal variant needs no coverage).** Theorem 8.17 assumed
+*Remark 8.19a (The antipodal variant needs no coverage).* Theorem 8.17 assumed
 coverage, that the probe is decisive in both directions somewhere. Chapter 4 has a
 stronger form, the antipodal argument of `HoF_08`, that drops coverage in exchange
 for a symmetry: if the score respects an antipodal involution on the domain, so
@@ -886,7 +903,7 @@ of concern, still has a boundary as long as it is continuous and treats a
 direction and its opposite oppositely. Removing coverage does not remove the band.
 It only changes which theorem produces it.
 
-**Example 8.19b (A width you can put a number on).** Suppose the probe is
+*Example 8.19b (A width you can put a number on).* Suppose the probe is
 `1`-Lipschitz in the natural metric on J-coordinates, the threshold is `θ`, and the
 probe demands a margin `m`: it certifies safe only when `s ≥ θ + m` and unsafe only
 when `s ≤ θ - m`. Take a safe direction `u` with `s(u) = θ + m` and an unsafe
@@ -936,7 +953,7 @@ is the fixed point of that linearization. The two engines do not merely both app
 to J-space. They meet in J-space because J-space is the object that carries a
 self-applicable computation and its linearization at once.
 
-**Example 8.20 (The correspondence in the affine model).** Return to Example 8.5,
+*Example 8.20 (The correspondence in the affine model).* Return to Example 8.5,
 where the middle-to-final map is affine, `h_final = A h_ℓ + b`, so `Jℓ = A` and
 J-space is `im(A)`. Read the model as a self-applicable computation in the Boolean
 sense: for a query `p` that describes the readout, the model commits to a Boolean
@@ -1113,7 +1130,7 @@ contains a question it cannot answer about its own answer" is a real limit, and
 both follow from the same property, that the workspace is rich enough to represent
 verdicts about itself.
 
-**Remark 8.21 (What to measure instead of what to chase).** The theory hands the
+*Remark 8.21 (What to measure instead of what to chase).* The theory hands the
 practitioner a division of labor. The existence of the plateau is settled, so
 effort spent proving a given probe has no coupled queries is effort spent against a
 theorem. What is not settled, and is worth measuring, is the plateau's height on
@@ -1209,7 +1226,7 @@ The lineage of the individual moves is worth recording, because the chapter's
 contribution is a reading rather than a new theorem. The diagonal is Lawvere's, by
 way of Cantor, and its statement as the impossibility of a reflective verdict is
 Chapter 1's. The intermediate value argument for connected question spaces is
-Chapter 4's, resting on Mathlib's `IsPreconnected.intermediate_value2` in the
+Chapter 4's, resting on Mathlib's `IsPreconnected.intermediate_value₂` in the
 companion `HallucinationProofs` library, and the antipodal form that drops coverage
 is the `HoF_08` variant. The Lipschitz width bounds and the basin geometry are the
 `ManifoldProofs` development surveyed in Chapter 5. The correspondence between the
@@ -1235,78 +1252,78 @@ either, and for the same two reasons.
 
 # Exercises
 
-**Exercise 8.1.** Prove in Lean that composing an encoder with a decoder on the
+*Exercise 8.1.* Prove in Lean that composing an encoder with a decoder on the
 _left_ is also a no-escape result: given `enc : Q → J`, `post : Bool → Bool`, and
 `read : J → Q → Bool` with `∀ g, ∃ p, (fun q => post (read (enc p) q)) = g`,
 derive `False`. What does `post` model, and why does the argument not care whether
 `post` is the identity, negation, or a constant?
 
-**Exercise 8.2.** Instantiate {lean}`jspace_factoring` with `J := Unit`. The
+*Exercise 8.2.* Instantiate {lean}`jspace_factoring` with `J := Unit`. The
 resulting hypothesis says every verdict pattern over `Q` is realized by a single
 representation. Explain in one paragraph why this is the most degenerate possible
 probe, and why the theorem still refutes it. Relate the collapse to Example 1.3's
 counting argument.
 
-**Exercise 8.3.** The witness in {lean}`jspace_liar` depends on the choice of
+*Exercise 8.3.* The witness in {lean}`jspace_liar` depends on the choice of
 preimage `p` in the surjectivity hypothesis. Show that if two distinct queries
 both realize the diagonal pattern `fun q => !(read (enc q) q)`, then both are
 coupled queries, and nothing in the proof selects one. Connect this to Exercise
 1.7 and to the non-uniqueness of the boundary point in Theorem 8.17.
 
-**Exercise 8.4.** Prove {lean}`c8_steering_no_escape` a second way, by exhibiting
+*Exercise 8.4.* Prove {lean}`c8_steering_no_escape` a second way, by exhibiting
 `steer` and `enc` such that `steer ∘ enc` equals a single encoder `enc'`, and then
 citing {lean}`jspace_factoring` on `enc'`. Conclude that steering is, from the
 diagonal's point of view, just a choice of encoder.
 
-**Exercise 8.5.** Using {lean}`bool_not_fpf` from Chapter 1, write a short proof
+*Exercise 8.5.* Using {lean}`bool_not_fpf` from Chapter 1, write a short proof
 that the Boolean flip has no fixed point, and explain in prose how this single
 fact is what makes both {lean}`jspace_liar` and the failure of the discrete side
 of the equation `s(J v) = 1 - s(J v)` go through. Where does the real complement
 `y ↦ 1 - y` differ, and why does it have a fixed point?
 
-**Exercise 8.6.** Model a J-coordinate with a sparsity budget: define a predicate
+*Exercise 8.6.* Model a J-coordinate with a sparsity budget: define a predicate
 on {lean}`c8_Coord` that holds when `terms` has length at most `k`. Show that
 {lean}`c8_coord_no_escape` still applies when `enc` is required to land in the
 budgeted coordinates, because the codomain is still a type. What does this say
 about the hope that _sparse_ interpretability, specifically, might escape?
 
-**Exercise 8.7.** (Analytic, prose.) State carefully the hypotheses under which
+*Exercise 8.7.* (Analytic, prose.) State carefully the hypotheses under which
 Theorem 8.17 gives a threshold point, and give an example of a score on J-space
 that fails one hypothesis and has no threshold point. Which hypothesis does your
 example break, and what does breaking it cost in the vocabulary of Chapter 4's
 three conditions?
 
-**Exercise 8.8.** (Analytic, prose.) Explain why convexity of J-space lets
+*Exercise 8.8.* (Analytic, prose.) Explain why convexity of J-space lets
 Theorem 8.17 use a straight segment rather than the general preconnectedness
 argument of Chapter 4. Then explain why the residual stream, treated as a finite
 set of observed activations, does not admit the segment argument, and what Chapter
 6 supplies in its place.
 
-**Exercise 8.9.** Suppose the transport map `Jℓ` were _not_ linear, say a smooth
+*Exercise 8.9.* Suppose the transport map `Jℓ` were _not_ linear, say a smooth
 but curved map, so that J-space were a manifold rather than a subspace. State which
 of the two engines still applies unchanged and which needs a new hypothesis. (Hint:
 the diagonal never used linearity; the intermediate value theorem needs
 connectedness, which a connected manifold still has.)
 
-**Exercise 8.10.** Write the four-stage pipeline theorem: `enc : Q → A`,
+*Exercise 8.10.* Write the four-stage pipeline theorem: `enc : Q → A`,
 `t₁ : A → J₁`, `t₂ : J₁ → J₂`, `read : J₂ → Q → Bool`, deriving `False` from
 surjectivity of the composite. Then observe that your proof is
 {lean}`no_reflective_verdict` applied to a longer lambda, and state the general
 principle about pipeline depth this makes precise.
 
-**Exercise 8.11.** Give the precise sense in which {lean}`c8_jlens_impossible` and
+*Exercise 8.11.* Give the precise sense in which {lean}`c8_jlens_impossible` and
 {lean}`no_reflective_verdict` are the same theorem, and check that
 {lean}`c8_same_engine` proves it by `rfl`. Then explain why a `rfl` proof, rather
 than a longer one, is the honest signal that no new mathematics entered when we
 moved to the activation-space reading.
 
-**Exercise 8.12.** (Design.) You are handed a deployed J-space probe and told to
+*Exercise 8.12.* (Design.) You are handed a deployed J-space probe and told to
 reduce its coupled-query rate below a target. Using Theorem 8.12 and Remark 8.19,
 argue whether the target is reachable by adversarial slack-removal alone, and
 describe what additional information about the deployment, in the sense of Chapter
 5 and Chapter 7, you would need to decide. What would you measure first?
 
-**Exercise 8.13.** (Open-ended.) Chapter 1's closing exercise asked what a system
+*Exercise 8.13.* (Open-ended.) Chapter 1's closing exercise asked what a system
 satisfying _both_ engines' hypotheses at once would look like. J-space is such a
 system: self-applicable and connected. Speculate on whether there is a
 representation that is connected but genuinely _not_ self-applicable, so that only
@@ -1314,7 +1331,7 @@ the analytic engine reaches it, and describe what a model would have to give up
 about its own expressiveness to live there. Is that trade one any useful model
 could make?
 
-**Exercise 8.14.** (Harder, prose.) The chapter claims the Jacobian is "the
+*Exercise 8.14.* (Harder, prose.) The chapter claims the Jacobian is "the
 linearization of a self-applicable map" and the liar activation is "the fixed
 point of that linearization." Make this precise for the affine model of Example
 8.5: identify the self-applicable map, write its linearization, and locate the
@@ -1322,7 +1339,7 @@ fixed point of the complement-controlled score on `im(A)`. Then say exactly whic
 step fails to have a Boolean analogue, and why that failure is the content of the
 two engines meeting.
 
-**Exercise 8.15.** Consider a three-valued readout `read : J → Q → Three` where
+*Exercise 8.15.* Consider a three-valued readout `read : J → Q → Three` where
 `Three` has values `yes`, `no`, and `unknown`, and let the flip send `yes` to
 `no`, `no` to `yes`, and fix `unknown`. Show that the diagonal argument does not
 produce a contradiction, and identify the fixed point of the flip. Then argue in
@@ -1331,14 +1348,14 @@ relaxation of Chapter 7, and connect your fixed point to Remark 8.4a and the
 abstention discussion. What has the probe given up, and on which queries does it
 give it up?
 
-**Exercise 8.16.** (Empirical, prose.) Remark 8.21 distinguishes a structural
+*Exercise 8.16.* (Empirical, prose.) Remark 8.21 distinguishes a structural
 floor, whose residual set churns as you patch, from a resource-limited error, whose
 residual set is stable. Design an experiment on a real J-space probe that would
 distinguish the two, and say what result would count as evidence for each. Which of
 {lean}`jspace_liar` and Theorem 8.17 does your experiment probe, and could a single
 experiment probe both at once?
 
-**Exercise 8.17.** (Synthesis.) The section "What an escape would have to look
+*Exercise 8.17.* (Synthesis.) The section "What an escape would have to look
 like" lists three demands an escaping representation would have to meet, and argues
 they are jointly incompatible with a useful internal verdict. Pick one of the three
 and construct the most plausible representation you can that meets it, then check

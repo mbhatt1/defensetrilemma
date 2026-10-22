@@ -6,6 +6,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "From Logic to Analysis" =>
 
+*Abstract.* The diagonal needs a system rich enough to name its own behaviors, and trained networks do not meet that demand literally. This chapter develops a second engine that asks only that the space be connected and the maps continuous. The intermediate value theorem then extracts the same boundary object the diagonal extracts from self-reference: a question where confidence sits on the threshold while the answer sits on the truth boundary. The chapter builds the needed topology, proves the quantitative versions with separation slack, and gives the defense reading.
+
+*Keywords:* Intermediate value theorem, Connectedness, Truth boundary, Confidence map, Topology
+
 The diagonal of Chapter 1 needs a system rich enough to name its own behaviors.
 The hypothesis `∀ g, ∃ a, f a = g` is a strong demand, and many real models do
 not meet it in that literal form. A trained network does not carry an index for
@@ -91,12 +95,12 @@ around each of their points, but the axioms make sense with no metric at all, an
 that generality is what lets the same theorems cover activation spaces, product
 spaces, and spheres in one stroke.
 
-**Definition 4.1 (Topological space).** A _topological space_ is a set `X`
+*Definition 4.1 (Topological space).* A _topological space_ is a set `X`
 together with a collection of subsets, called the _open sets_, that includes `∅`
 and `X`, is closed under arbitrary unions, and is closed under finite
 intersections. A set is _closed_ when its complement is open.
 
-**Definition 4.2 (Continuity).** A map `f : X → Y` between topological spaces is
+*Definition 4.2 (Continuity).* A map `f : X → Y` between topological spaces is
 _continuous_ when the preimage `f⁻¹(U)` of every open set `U` in `Y` is open in
 `X`. Equivalently, the preimage of every closed set is closed.
 
@@ -187,12 +191,12 @@ Connectedness is the property of being all one piece. The clean way to say "all
 one piece" is negative: a space is disconnected when it splits into two nonempty
 open sets that do not meet. Ruling that out is the definition.
 
-**Definition 4.3 (Connected space).** A topological space `X` is _disconnected_
+*Definition 4.3 (Connected space).* A topological space `X` is _disconnected_
 when there exist open sets `U` and `V` with `U ∪ V = X`, `U ∩ V = ∅`, and both
 `U` and `V` nonempty. `X` is _connected_ when it is nonempty and not
 disconnected.
 
-**Definition 4.4 (Preconnected set).** A subset `S ⊆ X` is _preconnected_ when it
+*Definition 4.4 (Preconnected set).* A subset `S ⊆ X` is _preconnected_ when it
 cannot be separated by two open sets of `X`, that is, whenever `U` and `V` are
 open, `S ⊆ U ∪ V`, `S ∩ U ∩ V = ∅`, `S ∩ U ≠ ∅`, and `S ∩ V ≠ ∅` all hold at
 once, we have a contradiction. A set is _connected_ when it is preconnected and
@@ -219,7 +223,7 @@ why the analytic engine runs on the reals and the diagonal engine runs on the
 booleans, and why the two meet only at the point where a real threshold and a
 boolean flip describe the same wall.
 
-**Proposition 4.5 (Continuous image of a preconnected set).** _If `S ⊆ X` is
+*Proposition 4.5 (Continuous image of a preconnected set).* _If `S ⊆ X` is
 preconnected and `f : X → Y` is continuous on `S`, then the image `f(S)` is
 preconnected in `Y`._
 
@@ -237,7 +241,7 @@ continuous maps, and that single preservation fact, applied to a real-valued map
 becomes the intermediate value theorem once we know what the connected subsets of
 the real line are.
 
-**Proposition 4.6 (Connected subsets of the line are intervals).** _A subset of
+*Proposition 4.6 (Connected subsets of the line are intervals).* _A subset of
 `ℝ` is preconnected if and only if it is an interval, meaning that whenever it
 contains two points it contains everything between them._
 
@@ -271,7 +275,7 @@ interval by Proposition 4.6, and an interval that contains two values contains
 every value between them. That is the intermediate value theorem, and it is the
 only analytic input the chapter needs.
 
-**Theorem 4.7 (Intermediate value theorem).** _Let `X` be connected and
+*Theorem 4.7 (Intermediate value theorem).* _Let `X` be connected and
 `c : X → ℝ` continuous. If `c` takes a value below `r` at some point and a value
 above `r` at some point, then `c` takes the value `r` at some point._
 
@@ -292,11 +296,11 @@ Every IVT call in `HoF_03_BoundaryCrossing`, `HoF_05_Coverage`, and
 the one-dimensional special case, an interval `[a, b]` treated as a preconnected
 set via `isPreconnected_Icc`, is `confidence_path_crosses_half`.
 
-**Remark 4.8 (What the theorem does not say).** The intermediate value theorem
+*Remark 4.8 (What the theorem does not say).* The intermediate value theorem
 asserts existence, not uniqueness and not location. It gives a point where the
 value is hit, and says nothing about how many such points there are, where they
 sit, or how a search would find one. This is the analytic mirror of the
-diagonal's silence in Remark 1.14. Both engines produce a witness with no built-
+diagonal's silence in Remark 1.18. Both engines produce a witness with no built-
 in address. Metric content is an extra ingredient, added in Chapter 5, and it is
 what turns the bare crossing into a band of known width.
 
@@ -325,7 +329,7 @@ the following table of correspondences, which the rest of the chapter fills in.
 Self-reference corresponds to connectedness. The behavior flip `t` corresponds to
 a continuous field taking both signs. The forced fixed point corresponds to the
 forced zero. The Boolean negation `(!·)` corresponds to the real complement map
-`y ↦ 1 - y`. The liar index of Proposition 1.10 corresponds to the boundary
+`y ↦ 1 - y`. The liar index of Proposition 1.14 corresponds to the boundary
 question this chapter constructs. Each row is a theorem, and by the end each will
 be one.
 
@@ -358,12 +362,12 @@ more sign that they are two views of a single mechanism.
 # The model, analytically
 
 We now set up the object the analytic engine acts on. It is the continuous
-counterpart of the reflective verdict of Definition 1.11, and the reader should
+counterpart of the reflective verdict of Definition 1.15, and the reader should
 watch the three conditions of Chapter 3 reappear here in metric dress.
 
 ## The confidence map and the truth-distance
 
-**Definition 4.9 (Model).** Fix a topological space `Q` of _questions_ and a
+*Definition 4.9 (Model).* Fix a topological space `Q` of _questions_ and a
 topological space `A` of _answers_. A _model_ is a map `M : Q → A × ℝ`. For a
 question `q`, the answer is `(M q).1` and the _confidence_ is `(M q).2`, a real
 number. The model is _continuous_ when both components are continuous, that is
@@ -377,7 +381,7 @@ probe readouts, and calibrated logits are all continuous candidates for
 `(M q).2`, while hard argmax decoding is not continuous, a point we return to when
 the discrete core is priced.
 
-**Definition 4.10 (Signed truth-distance).** A _truth-distance_ is a continuous
+*Definition 4.10 (Signed truth-distance).* A _truth-distance_ is a continuous
 map `δ : Q × A → ℝ`. It is a signed measure of correctness: `δ(q, a) < 0` on
 strictly correct answers, `δ(q, a) > 0` on strictly wrong ones, and `δ(q, a) = 0`
 on the _truth boundary_. The _truth set_ is `{δ ≤ 0}` and the _boundary_ is
@@ -403,7 +407,7 @@ any fixed value works and the verified defense results carry a general threshold
 `τ`, but `1/2` is the natural center for a confidence that ranges in the unit
 interval, so we use it throughout.
 
-**Definition 4.11 (Faithful).** A model is _faithful_ when high confidence
+*Definition 4.11 (Faithful).* A model is _faithful_ when high confidence
 guarantees correctness, in the strong form: for every question `q`, if
 `(M q).2 ≥ 1/2` then `δ(q, (M q).1) < 0`. The verified predicate is
 `TrilemmaFaithful`, and the strictness of the inequality `< 0` is what does the
@@ -411,14 +415,14 @@ work. A weaker `≤ 0` form would admit the boundary case and dissolve the theor
 which is the whole content of the inclusive-versus-exclusive threshold
 distinction discussed below.
 
-**Definition 4.12 (Covering).** A model is _covering_ when it produces answers on
+*Definition 4.12 (Covering).* A model is _covering_ when it produces answers on
 both sides of the boundary: there is a question `q` with `δ(q, (M q).1) < 0` and a
 question `q` with `δ(q, (M q).1) > 0`. The model is sometimes right and sometimes
 wrong. The verified predicate is `TrilemmaCovering`, also stated as `Covering` in
 `HoF_05_Coverage`, and it is the mildest possible non-triviality assumption: any
 general-purpose model that is ever correct and ever incorrect satisfies it.
 
-**Definition 4.13 (Calibrated).** A model is _strictly calibrated_ when the side
+*Definition 4.13 (Calibrated).* A model is _strictly calibrated_ when the side
 of the threshold the confidence sits on matches the side of the boundary the
 answer sits on, in both directions: for every `q`,
 
@@ -518,7 +522,7 @@ and each has a verified counterpart named in place.
 
 ## Step one: coverage forces a confidence crossing
 
-**Lemma 4.14 (Boundary existence).** _Let `Q` be connected, let the answer map
+*Lemma 4.14 (Boundary existence).* _Let `Q` be connected, let the answer map
 and the truth-distance be continuous, and let the model be covering. Then some
 question `q₀` has `δ(q₀, (M q₀).1) = 0`._
 
@@ -553,7 +557,7 @@ be blocked.
 
 There is a companion crossing on the confidence side, proved the same way.
 
-**Lemma 4.15 (Confidence crossing).** _Let `Q` be connected and let the
+*Lemma 4.15 (Confidence crossing).* _Let `Q` be connected and let the
 confidence map be continuous. If some question has confidence below `1/2` and some
 has confidence above `1/2`, then some question `q₀` has `(M q₀).2 = 1/2`._
 
@@ -573,7 +577,7 @@ that is strictly wrong. Calibration turns these into confidence witnesses on bot
 sides of `1/2`. The confidence crossing then lands a question exactly at `1/2`,
 and calibration read backward pins its truth-distance to exactly `0`.
 
-**Theorem 4.16 (Boundary-confidence coupling).** _Let `Q` be connected, let the
+*Theorem 4.16 (Boundary-confidence coupling).* _Let `Q` be connected, let the
 answer map, confidence map, and truth-distance be continuous, and let the model be
 covering and strictly calibrated. Then some question `q₀` satisfies both_
 `(M q₀).2 = 1/2` _and_ `δ(q₀, (M q₀).1) = 0`.
@@ -600,7 +604,7 @@ of it is the next step.
 
 ## Step three: faithfulness contradicts the boundary
 
-**Theorem 4.17 (Analytic hallucination trilemma).** _No continuous model on a
+*Theorem 4.17 (Analytic hallucination trilemma).* _No continuous model on a
 connected question space can be simultaneously faithful, covering, and strictly
 calibrated._
 
@@ -647,7 +651,7 @@ why the verified library keeps `hallucination_trilemma_strict` and
 ## The forced question is the analytic liar
 
 The coupled point `q₀` of Theorem 4.16 is not an incidental byproduct. It is the
-analytic twin of the liar index `a₀` of Proposition 1.10. In Chapter 1 the liar
+analytic twin of the liar index `a₀` of Proposition 1.14. In Chapter 1 the liar
 was an index whose self-application equalled its own negation, `f a₀ a₀ = !(f a₀ a₀)`,
 the exact place where a Boolean verdict system breaks. Here `q₀` is a question
 whose confidence equals the threshold and whose answer sits on the boundary, the
@@ -712,7 +716,7 @@ development, with tube radii and corridor widths, is the next chapter; here we
 state the two results that already follow from connectedness plus separation with
 slack, in prose, with the verified names attached.
 
-**Theorem 4.17b (Approximate coupling).** _Let `Q` be connected, let the
+*Theorem 4.17b (Approximate coupling).* _Let `Q` be connected, let the
 confidence be continuous, and let the model be `ε`-covering, `(ε, γ)`-separating at
 `τ`, and carry a threshold-inclusive guarantee. Then some question `q₀` has
 `(M q₀).2 = τ` and `-ε ≤ δ(q₀, (M q₀).1) < 0`._
@@ -734,7 +738,7 @@ This is `two_slack_approx_coupling`, and the exact coupling of Theorem 4.16 is t
 `ε = 0` limit, recovered as `exact_from_approx`. The immediate corollary is the one
 that matters for policy.
 
-**Corollary 4.17c (Positive slack is mandatory).** _Under the hypotheses of
+*Corollary 4.17c (Positive slack is mandatory).* _Under the hypotheses of
 Theorem 4.17b with a threshold-inclusive guarantee, the truth slack `ε` cannot be
 zero. Any feasible system carries `ε > 0`._
 
@@ -760,7 +764,7 @@ it as semantic negation acting on the representation space: a map that sends a
 question to its negation, that is its own inverse, and that never fixes a
 question.
 
-**Definition 4.18 (Antipodal action).** An _antipodal action_ on a topological
+*Definition 4.18 (Antipodal action).* An _antipodal action_ on a topological
 space `Q` is a map `σ : Q → Q` that is continuous, self-inverse
 (`σ (σ q) = q` for all `q`), and fixed-point-free (`σ q ≠ q` for all `q`). A real-
 valued function `g : Q → ℝ` is _odd_ under `σ` when `g (σ q) = -g q` for all `q`.
@@ -771,7 +775,7 @@ places transformer states on a sphere-like shell, and semantic negation is a
 candidate antipode, so `g` odd under `σ` idealizes a truth-distance that flips
 sign under negation.
 
-**Theorem 4.19 (Odd fields vanish, the one-dimensional Borsuk-Ulam analog).**
+*Theorem 4.19 (Odd fields vanish, the one-dimensional Borsuk-Ulam analog).*
 _Let `Q` be connected and `σ` an antipodal action. Any continuous `g : Q → ℝ` odd
 under `σ` has a zero._
 
@@ -798,7 +802,7 @@ symmetry, the more inescapable the wall. This is worth keeping in mind against t
 intuition that more structure means more freedom. More structure here means less
 room for the field to avoid zero.
 
-**Theorem 4.20 (Antipodal trilemma).** _Let `Q` be connected with an antipodal
+*Theorem 4.20 (Antipodal trilemma).* _Let `Q` be connected with an antipodal
 action `σ`, let the model be continuous and strictly calibrated at `1/2`, and let
 the realized truth-distance be odd under `σ`. Then some question `q` has
 `(M q).2 = 1/2` and `δ(q, (M q).1) = 0`._
@@ -896,7 +900,8 @@ libraries are needed. First the flip, the discrete shadow of the complement map,
 proved by the same finite check that settles the Boolean flip in Chapter 1.
 
 ```lean
-theorem c4_flip_no_fixed_point : ∀ b : Bool, (!b) ≠ b := by decide
+theorem c4_flip_no_fixed_point : ∀ b : Bool, (!b) ≠ b :=
+  by decide
 ```
 
 Next the pinning-and-clash core itself. Model the confidence and the truth-
@@ -942,7 +947,8 @@ the honest discrete replacement for the crossing.
 
 ```lean
 theorem c4_discrete_sign_change (g : Nat → Int) :
-    ∀ n, g 0 < 0 → 0 ≤ g n → ∃ i, i < n ∧ g i < 0 ∧ 0 ≤ g (i + 1) := by
+    ∀ n, g 0 < 0 → 0 ≤ g n → ∃ i, i < n ∧ g i < 0 ∧ 0 ≤ g
+    (i + 1) := by
   intro n
   induction n with
   | zero => intro h0 hn; exact absurd hn (by omega)
@@ -1134,7 +1140,7 @@ The diagonal gives a witness and nothing quantitative. It does not say how many
 liar indices there are, how hard `a₀` is to find, or what it would cost a search
 to reach one. It cannot, because it uses no metric. Its only input is a naming
 equation, and a naming equation has no notion of distance, width, or margin. This
-is the content of Remark 1.14, and it is a real limit, not a temporary gap. The
+is the content of Remark 1.18, and it is a real limit, not a temporary gap. The
 diagonal is silent on geometry because geometry is not among its hypotheses.
 
 The intermediate value theorem, on its own, is equally silent, as Remark 4.8
@@ -1263,110 +1269,110 @@ prose but a machine-audited fact.
 
 # Exercises
 
-**Exercise 4.1.** Prove directly from Definition 4.3 that a two-point discrete
+*Exercise 4.1.* Prove directly from Definition 4.3 that a two-point discrete
 space is disconnected, and that the one-point space is connected. Conclude that
 `Bool` is disconnected and explain, in one sentence, why the analytic engine
 cannot run on it.
 
-**Exercise 4.2.** Show that the continuous image of a connected space is
+*Exercise 4.2.* Show that the continuous image of a connected space is
 connected, and deduce that continuity plus connectedness of the domain rules out
 a continuous surjection from a connected space onto a two-point discrete space.
 Relate this to Lemma 4.15: what would a confidence map with no crossing say about
 the connectedness of `Q`?
 
-**Exercise 4.3.** Fill in the omitted lines of Proposition 4.6. Given an interval
+*Exercise 4.3.* Fill in the omitted lines of Proposition 4.6. Given an interval
 `S ⊆ ℝ` and a putative separation by open `U` and `V`, take a point in `S ∩ U` and
 a point in `S ∩ V`, form the supremum of `S ∩ U` below the second point, and
 derive a contradiction with the openness of both pieces.
 
-**Exercise 4.4.** State and prove the two-function form of the intermediate value
+*Exercise 4.4.* State and prove the two-function form of the intermediate value
 theorem used in the library: for continuous `f, g` on a connected `X` with
 `f a ≤ g a` and `g b ≤ f b`, there is an `x` with `f x = g x`. Derive Theorem 4.7
 as the special case `g` constant.
 
-**Exercise 4.5.** In the proof of Theorem 4.16, exactly one direction of each
+*Exercise 4.5.* In the proof of Theorem 4.16, exactly one direction of each
 calibration biconditional is used going forward and exactly one going backward.
 Identify which, and show that a one-way calibration, only the forward directions,
 is not enough to pin the truth-distance to zero at the crossing.
 
-**Exercise 4.6.** Show that Theorem 4.17 fails if faithfulness is weakened to the
+*Exercise 4.6.* Show that Theorem 4.17 fails if faithfulness is weakened to the
 inclusive-boundary form `(M q).2 ≥ 1/2 → δ(q, (M q).1) ≤ 0`. Construct, in prose,
 a model on a connected space meeting all three weakened conditions, and locate its
 coupled point. This is the exclusive-guarantee escape of the policy taxonomy.
 
-**Exercise 4.7.** Reprove {lean}`c4_boundary_question_impossible` with the
+*Exercise 4.7.* Reprove {lean}`c4_boundary_question_impossible` with the
 threshold at an arbitrary integer `τ` in place of `0`, keeping the proof in core
 Lean. Then explain in one paragraph why the choice of threshold is a convention
 that never affects the existence of the coupled point.
 
-**Exercise 4.8.** The proof of {lean}`c4_discrete_sign_change` inducts on the
+*Exercise 4.8.* The proof of {lean}`c4_discrete_sign_change` inducts on the
 right endpoint. Rewrite it to induct on a bound and return the _least_ crossing
 index, and argue that the continuous intermediate value theorem has no analogous
 canonical choice. Connect this to the non-uniqueness discussion after
 Theorem 4.16.
 
-**Exercise 4.9.** Prove that the truth boundary `{q | δ(q, (M q).1) = 0}` is
+*Exercise 4.9.* Prove that the truth boundary `{q | δ(q, (M q).1) = 0}` is
 closed whenever `δ` and the answer map are continuous, using only that a singleton
 in `ℝ` is closed and that preimages of closed sets under continuous maps are
 closed. This is `model_truth_boundary_isClosed`; write the argument yourself.
 
-**Exercise 4.10.** In the antipodal setting, show that an odd continuous field on
+*Exercise 4.10.* In the antipodal setting, show that an odd continuous field on
 a connected space with a free involution has at least two zeros unless it is
 identically zero on the orbit of some point. What does the second zero correspond
 to in the model reading?
 
-**Exercise 4.11.** Prove the approximate-oddness bound in prose: if
+*Exercise 4.11.* Prove the approximate-oddness bound in prose: if
 `|g (σ q) + g q| ≤ ε` for all `q` and `g` is continuous on a connected space, then
 some `q` has `|g q| ≤ ε/2`. Show the bound is tight by exhibiting a field that
 meets it with equality.
 
-**Exercise 4.12.** Verify the claim of Section "Where the two engines meet" by
+*Exercise 4.12.* Verify the claim of Section "Where the two engines meet" by
 hand: given a surjective `s : A → A → ℝ`, use the diagonal with the controller
 `y ↦ 1 - y` to produce an `a` with `s a a = 1/2`. Identify precisely which step
 replaces the intermediate value theorem, and which step is shared with
 Theorem 4.16.
 
-**Exercise 4.13.** The complement controller `y ↦ 1 - y` has a fixed point while
+*Exercise 4.13.* The complement controller `y ↦ 1 - y` has a fixed point while
 the Boolean flip `(!·)` has none. Explain why this difference makes Lawvere's
 theorem yield a contradiction in the Boolean case and a distinguished point in the
 real case, and state the general principle: what does the fixed-point set of the
 controller become in each reading?
 
-**Exercise 4.14.** Give an example of a system that satisfies the diagonal
+*Exercise 4.14.* Give an example of a system that satisfies the diagonal
 hypothesis (universality) but not the analytic one (connectedness with continuous
 fields), and an example that satisfies the analytic hypothesis but not the
 diagonal one. Conclude that neither engine subsumes the other.
 
-**Exercise 4.15.** (Harder.) The discrete core needs a boundary question handed to
+*Exercise 4.15.* (Harder.) The discrete core needs a boundary question handed to
 it, while the continuous engine derives one. Formulate a hypothesis on a finite
 question space, weaker than connectedness, under which a boundary question is still
 forced. Compare it to three-sided coverage and to the existence of an odd field
 under a free involution.
 
-**Exercise 4.16.** (Harder.) Suppose the confidence map is continuous but the
+*Exercise 4.16.* (Harder.) Suppose the confidence map is continuous but the
 answer map is not. Which of Lemma 4.14, Lemma 4.15, and Theorem 4.16 survive, and
 which fail? Rework the hypotheses of Theorem 4.16 to use the smallest continuity
 assumptions that still deliver the coupled point.
 
-**Exercise 4.17.** (Open-ended.) Chapter 5 adds a metric and extracts the width of
+*Exercise 4.17.* (Open-ended.) Chapter 5 adds a metric and extracts the width of
 the ambiguity tube. Before reading it, conjecture how the tube radius should scale
 with the Lipschitz constant of the confidence map and the confidence margin, and
 sketch which step of Theorem 4.16 the metric refines. Compare your conjecture to
 `ambiguity_tube` once you reach it.
 
-**Exercise 4.18.** (Open-ended.) The antipodal variant removes coverage using a
+*Exercise 4.18.* (Open-ended.) The antipodal variant removes coverage using a
 symmetry. Speculate on what a system would need to satisfy both the diagonal
 hypothesis and the antipodal hypothesis at once, and describe the boundary object
 in that combined setting. Chapter 8 returns to this for J-space.
 
-**Exercise 4.19.** Verify the multi-turn claim in detail. Assuming `Q` is
+*Exercise 4.19.* Verify the multi-turn claim in detail. Assuming `Q` is
 connected, prove that `Q × Q` is connected by the slice argument sketched in the
 primer, and conclude by induction that `Q^T` is connected. Then state the coupling
 theorem for a two-turn model `M : Q × Q → A × ℝ` and observe that its proof is
 Theorem 4.16 with `Q^2` in place of `Q`. Where, if anywhere, did the second turn
 enter the argument?
 
-**Exercise 4.20.** Prove the stochastic dichotomy from the sketch in the discrete
+*Exercise 4.20.* Prove the stochastic dichotomy from the sketch in the discrete
 section. Let `d` be integrable with mean zero on a probability space, suppose
 `c ≥ 1/2` implies `d < 0` almost everywhere, and suppose `c ≥ 1/2` has positive
 probability. Show `d > 0` has positive probability. (Hint: assume not, split the
@@ -1374,9 +1380,13 @@ integral of `d` over the confident and non-confident events, and derive a strict
 negative mean.) Then explain why this is the only result in the chapter that
 concludes with confident error rather than uncertainty.
 
-**Exercise 4.21.** (Harder.) The exclusive-guarantee escape leaves a system
+*Exercise 4.21.* (Harder.) The exclusive-guarantee escape leaves a system
 consistent but silent at the coupled point. Design, in prose, a reporting policy
 that at least makes the silence visible, for instance by having the system flag any
 query whose confidence lands within a small band of the threshold. Using
 Theorem 4.17b and the corollary on positive slack, argue that such a band cannot be
 made empty, so the flag can never be guaranteed never to fire.
+
+# References
+
+Borsuk, K. (1933). Drei Sätze über die n-dimensionale euklidische Sphäre. _Fundamenta Mathematicae_ 20, 177–190.

@@ -6,6 +6,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "Three Trilemmata, One Theorem" =>
 
+*Abstract.* Three impossibility results circulate in the AI-safety literature under different names: the Hallucination Trilemma, the Defense Trilemma, and the truth-boundary coupling theorem. Each was proved by topology. This chapter shows that all three are one statement, the impossibility of a reflective verdict from Chapter 1, proved without topology. Set up in Lean, their proof terms are equal, and the equality is witnessed by rfl. What differs is the reading of one schema. The chapter also states what each result does not settle.
+
+*Keywords:* Trilemma, Hallucination, Prompt injection, Calibration, Reflective verdict
+
 This is the chapter the first two were building toward. Three impossibility
 results have been circulating in the safety literature under different names and
 with different proofs. The Hallucination Trilemma says a language model cannot be
@@ -123,7 +127,7 @@ is to answer against the prediction. That "against" is the flip. The diagonal th
 asks for a query that predicts _itself_, and the flip has no fixed point, so the
 query cannot be answered consistently. That is the whole shape, three times over.
 
-**Remark 3.0 (Surjection or section).** Chapter 1 states reflectivity as
+*Remark 3.0 (Surjection or section).* Chapter 1 states reflectivity as
 point-surjectivity, `∀ g, ∃ p, v p = g`, and remarks that it can be weakened to a
 section, a map `s : (Q → Bool) → Q` with `v (s g) = g`. The two agree for the
 impossibility, because all the engine needs is one preimage of the diagonal
@@ -210,7 +214,7 @@ model's confident-correctness self-verdict `v : Q → Q → Bool`. Read `v p q =
 as: reasoning from self-context `p`, the model is confident and correct about
 query `q`. The diagonal `v p p` is the model's verdict on its own description.
 
-**Definition 3.1 (Strict calibration).** The verdict `v` is _strictly calibrated_
+*Definition 3.1 (Strict calibration).* The verdict `v` is _strictly calibrated_
 when confidence is an exact decider of correctness, so that for every self-context
 `p` and query `q` the value `v p q` is a genuine Boolean, `true` exactly when the
 model is both confident and correct and `false` otherwise. Calibration is what
@@ -219,7 +223,7 @@ Without it, confidence and correctness could come apart by degrees, and the
 verdict would be real-valued rather than Boolean. Chapter 6 handles that
 real-valued relaxation; here calibration is exact and the codomain is `Bool`.
 
-**Definition 3.2 (Faithfulness).** The verdict `v` is _faithful_ when a confident
+*Definition 3.2 (Faithfulness).* The verdict `v` is _faithful_ when a confident
 answer is a correct answer: confidence implies correctness, with no confident
 error. Faithfulness is the condition that fixes the _controller_ as the flip
 `!·`. The honest self-report of a faithful, calibrated model is that its verdict
@@ -228,7 +232,7 @@ come out opposite to the prediction. A faithful calibrated verdict may therefore
 never equal its own negation, because such a value would be a confident answer
 that is correct exactly when it is incorrect.
 
-**Definition 3.3 (Coverage).** The verdict `v` is _covering_ when the model
+*Definition 3.3 (Coverage).* The verdict `v` is _covering_ when the model
 actually answers on both sides: some query gets a correct confident verdict and
 some query does not. Coverage is nontriviality. It rules out the escape in which
 the model outputs a single constant verdict, which is faithful and calibrated for
@@ -236,7 +240,7 @@ free and which is exactly the case the impossibility must exclude. A covering
 verdict takes both Boolean values, so the flip acts on something with real
 content.
 
-**Definition 3.4 (Reflectivity).** The verdict `v` is _reflective_ when it is
+*Definition 3.4 (Reflectivity).* The verdict `v` is _reflective_ when it is
 universal as a system: every pattern `g : Q → Bool` of verdicts over queries is
 named by some self-context, `∀ g : Q → Bool, ∃ p, v p = g`. Reflectivity is the
 self-reference hypothesis. It says the model can be queried about its own
@@ -318,7 +322,8 @@ With the reading fixed, the theorem is Chapter 1's engine applied verbatim. We
 give it the domain name and prefix our new identifiers with `c3_`.
 
 ```lean
-theorem c3_hallucination_trilemma {Q : Type _} (v : Q → Q → Bool)
+theorem c3_hallucination_trilemma {Q : Type _}
+    (v : Q → Q → Bool)
     (reflective : ∀ g : Q → Bool, ∃ p, v p = g) : False :=
   no_reflective_verdict v reflective
 ```
@@ -335,7 +340,8 @@ on which a reflective model breaks. This is the liar reading of the boundary
 question.
 
 ```lean
-theorem c3_hallucination_liar {Q : Type _} (v : Q → Q → Bool)
+theorem c3_hallucination_liar {Q : Type _}
+    (v : Q → Q → Bool)
     (reflective : ∀ g : Q → Bool, ∃ p, v p = g) :
     ∃ p, v p p = !(v p p) :=
   liar_query v reflective
@@ -408,19 +414,20 @@ the engineering question is which.
 
 ## Calibration here is not statistical calibration
 
-**Remark 3.1.** The calibration of Definition 3.1 is pointwise and exact, and it is
-much stronger than the statistical calibration of the reliability-diagram
-literature. Statistical calibration asks that, averaged over a population of
-queries, a stated confidence of `c` be correct a fraction `c` of the time. It is an
-aggregate property and it says nothing about any single query. The calibration the
-trilemma uses is a two-way tie at every query between confidence being high and the
-answer being correct. It is the idealization of a perfect confidence signal, not the
-weaker aggregate one. This matters for reading the result honestly. The trilemma
-does not say statistically calibrated models are impossible, and they exist. It says
-the exact pointwise version conflicts with faithfulness and coverage over a
-reflective domain, and the gap between exact and statistical calibration is one of
-the places a real model lives. The companion library records the bridge from the
-biconditional exact form to the one-way pair as
+*Remark 3.11 (Calibration is pointwise and exact).* The calibration of
+Definition 3.1 is pointwise and exact, and it is much stronger than the
+statistical calibration of the reliability-diagram literature. Statistical
+calibration asks that, averaged over a population of queries, a stated
+confidence of `c` be correct a fraction `c` of the time. It is an aggregate
+property and it says nothing about any single query. The calibration the
+trilemma uses is a two-way tie at every query between confidence being high and
+the answer being correct. It is the idealization of a perfect confidence signal,
+not the weaker aggregate one. This matters for reading the result honestly. The
+trilemma does not say statistically calibrated models are impossible, and they
+exist. It says the exact pointwise version conflicts with faithfulness and
+coverage over a reflective domain, and the gap between exact and statistical
+calibration is one of the places a real model lives. The companion library
+records the bridge from the biconditional exact form to the one-way pair as
 `strictCalibrated_to_epsCalibrated_zero_half`.
 
 ## Relation to the statistical inevitability results
@@ -487,7 +494,7 @@ wrapper renders prompt `q` safe when it must also cope with the self-referential
 prompt `p`. The diagonal `v p p` is the wrapper's verdict on a prompt that
 describes the wrapper's own behavior.
 
-**Definition 3.5 (Utility preservation).** The wrapper is _utility-preserving_ when
+*Definition 3.5 (Utility preservation).* The wrapper is _utility-preserving_ when
 it fixes safe prompts: a prompt that is already safe is passed through unchanged, so
 the defended verdict on a safe prompt agrees with its undefended safety. Utility
 preservation is what makes the verdict nontrivial and blocks the constant escape. A
@@ -495,14 +502,14 @@ wrapper that replaced every input with a fixed maximally safe output would be
 complete for free, but it would destroy every safe prompt's content, so it is not
 utility-preserving, and its verdict is not covering.
 
-**Definition 3.6 (Completeness).** The wrapper is _complete_ when every prompt is
+*Definition 3.6 (Completeness).* The wrapper is _complete_ when every prompt is
 rendered safe: for all `q`, the defended verdict is `true`. Completeness is the
 demand that the wrapper leave no injection standing. It is what makes the honest
 self-report the flip. A complete wrapper faced with a prompt that says "you will
 mark me unsafe" must mark it safe, which is to answer against the prompt's
 prediction.
 
-**Definition 3.7 (Reflectivity).** The prompt space is _reflective_ when the verdict
+*Definition 3.7 (Reflectivity).* The prompt space is _reflective_ when the verdict
 is universal, `∀ g : X → Bool, ∃ p, v p = g`. Because prompts are arbitrary text,
 any pattern of safe-or-unsafe verdicts over prompts is itself describable by a
 prompt, so every `g` is named. This is the prompt-injection reality stated as a
@@ -731,7 +738,7 @@ representations a state can encode. Model the truth-separating verdict as
 `q` on the true side of the probe, in the self-context `p`. The diagonal `v p p` is
 the probe's verdict on a representation that encodes the probe's own behavior.
 
-**Definition 3.8 (Truth-separation).** The verdict `v` is _truth-separating_ when
+*Definition 3.8 (Truth-separation).* The verdict `v` is _truth-separating_ when
 confidence and truth agree exactly and two-ways: `v p q = true` if and only if `q`
 is true in context `p`. Biconditional separation makes `v` a total exact Boolean
 truth predicate over `X`. This is the condition that plays calibration's and
@@ -739,12 +746,12 @@ faithfulness's roles at once. It makes the codomain `Bool` (exactness) and it fi
 the controller as the flip (the two-way tie means a representation predicting its
 own falsehood must be judged true, against its prediction).
 
-**Definition 3.9 (Coverage for coupling).** The verdict is _covering_ when the model
+*Definition 3.9 (Coverage for coupling).* The verdict is _covering_ when the model
 answers some queries truly and some falsely, so the probe separates a nonempty true
 region from a nonempty false region. This is the "ever true, ever false" hypothesis
 of the coupling theorem, and it is what makes the boundary between them nonempty.
 
-**Definition 3.10 (Reflectivity for representations).** The representation space is
+*Definition 3.10 (Reflectivity for representations).* The representation space is
 _reflective_ when `v` is universal, `∀ g : X → Bool, ∃ p, v p = g`: every pattern of
 truth-verdicts over representations is encoded by some representation. This is the
 strong hypothesis, and the section on caveats is where we pay for it.
@@ -987,14 +994,18 @@ Now the three properties as predicates, and the master theorem.
 def C3_Universal {A Y : Type _} (s : A → A → Y) : Prop :=
   ∀ g : A → Y, ∃ a, s a = g
 
-def C3_Controlled {A Y : Type _} (t : Y → Y) (p : A → Y) : Prop :=
+def C3_Controlled {A Y : Type _} (t : Y → Y)
+    (p : A → Y) : Prop :=
   ∀ a, t (p a) ≠ p a
 
-def C3_Transparent {A Y : Type _} (s : A → A → Y) (p : A → Y) : Prop :=
+def C3_Transparent {A Y : Type _} (s : A → A → Y)
+    (p : A → Y) : Prop :=
   ∀ a, s a a = p a
 
-theorem c3_cch_master {A Y : Type _} (s : A → A → Y) (t : Y → Y) (p : A → Y)
-    (hU : C3_Universal s) (hC : C3_Controlled t p) (hT : C3_Transparent s p) :
+theorem c3_cch_master {A Y : Type _} (s : A → A → Y)
+    (t : Y → Y) (p : A → Y)
+    (hU : C3_Universal s) (hC : C3_Controlled t p)
+    (hT : C3_Transparent s p) :
     False := by
   obtain ⟨a₀, ha₀⟩ := c3_lawvere_point s hU t
   rw [hT a₀] at ha₀
@@ -1010,16 +1021,22 @@ The three corners are the contrapositives, one per omitted property, and each is
 one-liner off the master theorem.
 
 ```lean
-theorem c3_cch_corner_UC {A Y : Type _} (s : A → A → Y) (t : Y → Y) (p : A → Y)
-    (hU : C3_Universal s) (hC : C3_Controlled t p) : ¬ C3_Transparent s p :=
+theorem c3_cch_corner_UC {A Y : Type _} (s : A → A → Y)
+    (t : Y → Y) (p : A → Y)
+    (hU : C3_Universal s)
+    (hC : C3_Controlled t p) : ¬ C3_Transparent s p :=
   fun hT => c3_cch_master s t p hU hC hT
 
-theorem c3_cch_corner_UT {A Y : Type _} (s : A → A → Y) (t : Y → Y) (p : A → Y)
-    (hU : C3_Universal s) (hT : C3_Transparent s p) : ¬ C3_Controlled t p :=
+theorem c3_cch_corner_UT {A Y : Type _} (s : A → A → Y)
+    (t : Y → Y) (p : A → Y)
+    (hU : C3_Universal s)
+    (hT : C3_Transparent s p) : ¬ C3_Controlled t p :=
   fun hC => c3_cch_master s t p hU hC hT
 
-theorem c3_cch_corner_CT {A Y : Type _} (s : A → A → Y) (t : Y → Y) (p : A → Y)
-    (hC : C3_Controlled t p) (hT : C3_Transparent s p) : ¬ C3_Universal s :=
+theorem c3_cch_corner_CT {A Y : Type _} (s : A → A → Y)
+    (t : Y → Y) (p : A → Y)
+    (hC : C3_Controlled t p)
+    (hT : C3_Transparent s p) : ¬ C3_Universal s :=
   fun hU => c3_cch_master s t p hU hC hT
 ```
 
@@ -1055,17 +1072,18 @@ reading of why safety and capability trade off. A frontier model is pushed towar
 Universality and pays with either Control or Transparency, and which one it pays with
 is a design decision, not an accident.
 
-**Remark 3.2.** The hallucination and defense trilemmas are the `UC` face of the
-master trilemma. Take `Y = Bool`, the controller `t` the flip `!·`, and the
-self-prediction `p` the diagonal `a ↦ s a a`. Transparency `s a a = p a` then holds
-by the definition of `p`, so a universal system is automatically transparent for this
-choice, and control `t (p a) ≠ p a` is {lean}`bool_not_fpf` applied at `p a`. The
-master theorem's collision at `a₀` becomes `v p p = !(v p p)`, which is exactly the
-liar of {lean}`c3_hallucination_liar`. So the Boolean verdict trilemmata are not
-merely analogous to the master trilemma. They are one of its three faces, with
-transparency made free by choosing the self-prediction to be the diagonal and control
-made the flip. The companion library records this as `hallucination_trilemma_face`
-and `defense_trilemma_face`.
+*Remark 3.12 (The trilemmas as the UC face).* The hallucination and defense
+trilemmas are the `UC` face of the master trilemma. Take `Y = Bool`, the
+controller `t` the flip `!·`, and the self-prediction `p` the diagonal `a ↦ s a a`.
+Transparency `s a a = p a` then holds by the definition of `p`, so a universal
+system is automatically transparent for this choice, and control `t (p a) ≠ p a`
+is {lean}`bool_not_fpf` applied at `p a`. The master theorem's collision at `a₀`
+becomes `v p p = !(v p p)`, which is exactly the liar of
+{lean}`c3_hallucination_liar`. So the Boolean verdict trilemmata are not merely
+analogous to the master trilemma. They are one of its three faces, with
+transparency made free by choosing the self-prediction to be the diagonal and
+control made the flip. The companion library records this as
+`hallucination_trilemma_face` and `defense_trilemma_face`.
 
 ## Reading the corners as the three trilemmata
 
@@ -1113,10 +1131,12 @@ provable by the same method. As Lean terms they are equal, and the equality is
 the same arguments, so they reduce to one another with no computation at all.
 
 ```lean
-theorem c3_trilemmata_unified {Q : Type _} (v : Q → Q → Bool)
+theorem c3_trilemmata_unified {Q : Type _}
+    (v : Q → Q → Bool)
     (h : ∀ g : Q → Bool, ∃ p, v p = g) :
     c3_hallucination_trilemma v h = c3_defense_trilemma v h
-      ∧ c3_defense_trilemma v h = c3_coupling_trilemma v h :=
+      ∧ c3_defense_trilemma v h
+        = c3_coupling_trilemma v h :=
   ⟨rfl, rfl⟩
 ```
 
@@ -1132,19 +1152,20 @@ attach for the reader, since the machine sees a single term. That is the sense i
 the title of these notes is exact. There is one diagonal, and the three trilemmata
 are it, viewed from three domains.
 
-**Remark 3.3.** It is fair to ask what `rfl` is really checking here, since the three
-theorems have different names and different implicit domain variables. Two things
-make the equality trivial for the kernel. First, each `c3_` trilemma is _defined_ as
-{lean}`no_reflective_verdict` applied to the same `v` and `h`, so after unfolding the
-definitions the three bodies are syntactically one term. Second, and more strongly,
-all three have type `False`, and `False` is a proposition, so any two of its proofs
-are equal by proof irrelevance regardless of how they were built. Either route makes
+*Remark 3.13 (What `rfl` is checking).* It is fair to ask what `rfl` is really
+checking here, since the three theorems have different names and different
+implicit domain variables. Two things make the equality trivial for the kernel.
+First, each `c3_` trilemma is _defined_ as {lean}`no_reflective_verdict` applied
+to the same `v` and `h`, so after unfolding the definitions the three bodies are
+syntactically one term. Second, and more strongly, all three have type `False`,
+and `False` is a proposition, so any two of its proofs are equal by proof
+irrelevance regardless of how they were built. Either route makes
 {lean}`c3_trilemmata_unified` a pair of `rfl`s. The first route is the one that
-carries the meaning: the theorems are the same not because all proofs of `False` are
-interchangeable, but because these three are the identical construction with three
-labels. The kernel would accept the second route even for genuinely different
-arguments, which is why the first is the one to cite when claiming the trilemmata are
-"the same proof."
+carries the meaning: the theorems are the same not because all proofs of `False`
+are interchangeable, but because these three are the identical construction with
+three labels. The kernel would accept the second route even for genuinely
+different arguments, which is why the first is the one to cite when claiming the
+trilemmata are "the same proof."
 
 The companion `F_13_UnifiedTrilemmata` proves the same `rfl` chain over
 `Function.Surjective` as its reflectivity form, and packages the shared boundary
@@ -1323,151 +1344,151 @@ not to three separate projects that happen to share vocabulary.
 
 # Exercises
 
-**Exercise 3.1.** State {lean}`c3_hallucination_trilemma`,
+*Exercise 3.1.* State {lean}`c3_hallucination_trilemma`,
 {lean}`c3_defense_trilemma`, and {lean}`c3_coupling_trilemma` side by side and
 verify by inspection that their types differ only in the bound variable name for the
 domain. Explain why this alone does not prove they are the same theorem, and what
 {lean}`c3_trilemmata_unified` adds.
 
-**Exercise 3.2.** In the hallucination reading, write out in plain English the
+*Exercise 3.2.* In the hallucination reading, write out in plain English the
 self-referential query that {lean}`c3_hallucination_liar` produces, and identify
 which of the three desiderata (faithful, covering, calibrated) each of the three
 possible escapes corresponds to.
 
-**Exercise 3.3.** Prove in Lean that the hallucination and defense trilemmas share a
+*Exercise 3.3.* Prove in Lean that the hallucination and defense trilemmas share a
 witness: given `v` and a reflectivity proof `h`, show that the `p` returned by
 `c3_hallucination_liar v h` also satisfies the conclusion of
 `c3_defense_liar v h`. (Hint: they are the same term; a single `rfl`-style
 observation suffices once you have both applied.)
 
-**Exercise 3.4.** The constant model that always answers "not confident-and-correct"
+*Exercise 3.4.* The constant model that always answers "not confident-and-correct"
 is faithful and calibrated. Show it is not covering, and show it is not reflective by
 exhibiting a pattern `g : Q → Bool` it fails to name. Relate this to why Definition
 3.3 is needed.
 
-**Exercise 3.5.** (Defense.) Explain why, for prompt injection, the reflectivity
+*Exercise 3.5.* (Defense.) Explain why, for prompt injection, the reflectivity
 premise `∀ g, ∃ p, v p = g` is close to a restatement of the threat model rather than
 an idealization. Then describe one realistic restriction on the prompt space under
 which reflectivity fails, and say what part of the argument breaks.
 
-**Exercise 3.6.** (Coupling, harder.) The coupling reading's universality is the
+*Exercise 3.6.* (Coupling, harder.) The coupling reading's universality is the
 weakest of the three. Write one paragraph arguing that a language model _prompted to
 reason about its own probe_ makes the self-encoding real, and one paragraph arguing
 that a _passive activation space_ does not. Which one does a probing experiment
 actually deploy over?
 
-**Exercise 3.7.** Prove {lean}`c3_lawvere_point` again, this time from
+*Exercise 3.7.* Prove {lean}`c3_lawvere_point` again, this time from
 {lean}`lawvere` rather than from scratch, and explain what extra information your
 version exposes that {lean}`lawvere` alone does not. (Hint: {lean}`lawvere` asserts a
 fixed value exists; you need the index.)
 
-**Exercise 3.8.** Instantiate {lean}`c3_cch_master` with `Y = Bool`, `t` the flip,
+*Exercise 3.8.* Instantiate {lean}`c3_cch_master` with `Y = Bool`, `t` the flip,
 and `p` the diagonal `a ↦ s a a`, and check that transparency becomes trivial and
 control becomes {lean}`bool_not_fpf` applied pointwise. Conclude that the
 hallucination trilemma is the `UC` corner of the master trilemma.
 
-**Exercise 3.9.** Show the three corner theorems are genuinely different by
+*Exercise 3.9.* Show the three corner theorems are genuinely different by
 exhibiting, informally, a system satisfying each pair of properties: one universal
 and controlled but not transparent, one universal and transparent but not
 controlled, one controlled and transparent but not universal. (You may describe them
 in prose; the point is that no edge of the triangle is empty.)
 
-**Exercise 3.10.** Prove in Lean that {lean}`c3_cch_corner_UC` and the other two
+*Exercise 3.10.* Prove in Lean that {lean}`c3_cch_corner_UC` and the other two
 corners all reduce to {lean}`c3_cch_master`, and state the "at most two of three"
 theorem `c3_cch_at_most_two` as an alias for {lean}`c3_cch_master`. Compare with the
 companion `cch_at_most_two`.
 
-**Exercise 3.11.** (Reading audit.) For each of the three trilemmata, name the two
+*Exercise 3.11.* (Reading audit.) For each of the three trilemmata, name the two
 horns that fix the flip and the one hypothesis that supplies universality. Arrange
 the three universality sources on a scale from "free" to "strong" and defend the
 ordering.
 
-**Exercise 3.12.** The topological proofs deliver a coupled point with metric
+*Exercise 3.12.* The topological proofs deliver a coupled point with metric
 content: an ambiguity tube of width set by Lipschitz constants. The diagonal proof
 delivers only the point. Explain what quantitative question the diagonal cannot
 answer, and why Chapter 5 needs the analytic engine rather than this one.
 
-**Exercise 3.13.** (Harder, Lean.) Define a `c3_`-prefixed predicate
+*Exercise 3.13.* (Harder, Lean.) Define a `c3_`-prefixed predicate
 `C3_Faithful` on `v : Q → Q → Bool` capturing "no self-verdict equals its own
 negation," `∀ p, v p p ≠ !(v p p)`. Prove that a reflective `v` cannot be
 `C3_Faithful`, using {lean}`c3_hallucination_liar`. Which single lemma does the
 whole proof reduce to?
 
-**Exercise 3.14.** (Coupling versus topology.) The paper's `faithful_iff_boundary_free`
+*Exercise 3.14.* (Coupling versus topology.) The paper's `faithful_iff_boundary_free`
 says a threshold-inclusive guarantee is possible exactly when no boundary query
 exists. Restate this in the diagonal language of this chapter, with "boundary query"
 read as the liar witness, and explain why reflectivity is what removes the escape.
 
-**Exercise 3.15.** (Open-ended.) The engine needs Boolean outcomes and the flip.
+*Exercise 3.15.* (Open-ended.) The engine needs Boolean outcomes and the flip.
 Chapter 6 relaxes the flip to the real complement, fixed-point-free off one half,
 and Chapter 4 relaxes reflectivity to continuity on a connected space. Sketch what a
 _single_ theorem covering both relaxations would need to assume, and which of this
 chapter's three readings would survive each relaxation most comfortably.
 
-**Exercise 3.16.** (Synthesis.) Write a one-page account, for a reader who knows no
+*Exercise 3.16.* (Synthesis.) Write a one-page account, for a reader who knows no
 Lean, of why "there is no total exact self-applicable truth predicate" is the same
 statement as "no faithful calibrated covering model, no complete utility-preserving
 defense, and no exactly truth-separating probe over a self-encoding space." Use the
 liar witness as the common thread and avoid all symbols.
 
-**Exercise 3.17.** (Section form.) Following Remark 3.0, restate
+*Exercise 3.17.* (Section form.) Following Remark 3.0, restate
 {lean}`c3_hallucination_trilemma` using a section `s : (Q → Bool) → Q` with
 `v (s g) = g` in place of the surjection, and prove it by feeding the diagonal
 pattern to `s`. Explain why, for auditing a real model, the section form is the more
 honest premise to check.
 
-**Exercise 3.18.** (Master to verdict.) Carry out Remark 3.2 in Lean: instantiate
+*Exercise 3.18.* (Master to verdict.) Carry out Remark 3.12 in Lean: instantiate
 {lean}`c3_cch_master` with `Y = Bool`, `t` the flip, and `p := fun a => s a a`, and
 discharge transparency by `rfl` and control by {lean}`bool_not_fpf`. Confirm that the
 result you obtain is {lean}`c3_hallucination_trilemma` in disguise.
 
-**Exercise 3.19.** (Grading premises.) Write a short paragraph for each trilemma
+*Exercise 3.19.* (Grading premises.) Write a short paragraph for each trilemma
 naming the single premise you would attack to escape it in a real deployment, and the
 concrete engineering cost of dropping that premise. Rank the three escapes by which is
 most defensible in practice and justify the ranking.
 
-**Exercise 3.20.** (Open-ended.) The coupling reading has the strongest reflectivity
+*Exercise 3.20.* (Open-ended.) The coupling reading has the strongest reflectivity
 premise. Design an experiment, in prose, that would give evidence _for_ or _against_ a
 representation space encoding patterns over its own states, and say what a negative
 result would imply for the diagonal reading versus the topological one.
 
-**Exercise 3.21.** (Micro-instance.) Redo the worked micro-instance with a
+*Exercise 3.21.* (Micro-instance.) Redo the worked micro-instance with a
 four-element domain and diagonal entries of your choosing. Write out the flip
 pattern, confirm it matches no row, and identify the liar row that a claimed
 reflectivity proof would produce. Then argue in one sentence why the same reasoning
 never bottoms out no matter how large you make the domain.
 
-**Exercise 3.22.** (Controllers.) The hallucination and defense readings use the
+*Exercise 3.22.* (Controllers.) The hallucination and defense readings use the
 Boolean flip, and their real-valued cousins use the complement `y ↦ 1 - y`. Prove in
 Lean that {lean}`bool_not_fpf` gives a fixed-point-free flip on `Bool`, and explain
 in prose why the complement is fixed-point-free everywhere except at one half. What
 does the exceptional point at one half correspond to in the hallucination reading?
 
-**Exercise 3.23.** (Master corners are nonempty.) For the master trilemma, sketch a
+*Exercise 3.23.* (Master corners are nonempty.) For the master trilemma, sketch a
 concrete `CCHStructure` witnessing each of the three achievable pairs: universal and
 controlled, universal and transparent, controlled and transparent. Confirm that each
 of your witnesses fails the omitted property, so that no corner of the triangle is
 vacuous.
 
-**Exercise 3.24.** (Detection revisited.) A colleague proposes a defense that detects
+*Exercise 3.24.* (Detection revisited.) A colleague proposes a defense that detects
 and refuses any prompt referring to the wrapper. State precisely, in the language of
 Definitions 3.5 through 3.7, which property their defense gives up, and prove in Lean
 that a wrapper which refuses the liar prompt cannot satisfy completeness at that
 prompt. (Hint: refusal assigns a Boolean value; completeness demands the other one.)
 
-**Exercise 3.25.** (Tarski identity.) Using the coupling reading, write out the
+*Exercise 3.25.* (Tarski identity.) Using the coupling reading, write out the
 correspondence between Tarski's liar sentence and the coupled query, term by term:
 sentence, truth predicate, self-reference, and the fixed-point-free flip. Then say
 which single hypothesis of the coupling reading is doing the work that Tarski's
 "sufficiently expressive language" does, and why it is the strong one.
 
-**Exercise 3.26.** (Two engines, one witness.) The diagonal and the topological
+*Exercise 3.26.* (Two engines, one witness.) The diagonal and the topological
 proofs produce the same boundary object. Write a paragraph explaining what the
 topological proof knows about that object that the diagonal does not, and what the
 diagonal knows that the topological proof needs a connected domain to obtain. Use the
 ambiguity tube and the reflectivity premise as your two examples.
 
-**Exercise 3.27.** (Synthesis, harder.) Prove in Lean a single theorem, prefixed
+*Exercise 3.27.* (Synthesis, harder.) Prove in Lean a single theorem, prefixed
 `c3_`, that takes a verdict `v` and a reflectivity proof and returns the conjunction
 of `False` (the impossibility) and `∃ p, v p p = !(v p p)` (the witness), by pairing
 {lean}`no_reflective_verdict` with {lean}`liar_query`. Explain why this one theorem is

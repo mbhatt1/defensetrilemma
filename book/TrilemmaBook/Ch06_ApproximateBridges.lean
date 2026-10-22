@@ -11,6 +11,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "Approximate Bridges to Real Models" =>
 
+*Abstract.* The impossibility theorems of Chapter 3 are exact, while deployed systems are not. This chapter argues that the strict theorem is the zero-slack corner of a family of quantitative statements. Given an error budget, the exact contradiction becomes a margin: a forced question on which the model is correct by no more than its calibration error. The chapter develops approximate versions of the diagonal and the threshold crossing, keeps truth units and confidence units distinct, and shows how the strict results are recovered at zero slack.
+
+*Keywords:* Approximate bridges, Calibration error, Slack, Quantitative degradation, Robustness
+
 The impossibility theorems of Chapter 3 are exact. They assume a model whose
 confidence is a perfect biconditional function of its correctness, a probe that
 never misfires, a truth boundary that the confidence field crosses cleanly. No
@@ -126,7 +130,7 @@ forth across the threshold without any reliable relation to correctness. The
 honest weakening is to stop demanding anything in that neighborhood and to keep
 the demand only where the model has real signal.
 
-**Definition 6.1 (Two-sided ε-calibration).** _Fix a slack `ε ≥ 0`. A model `M`
+*Definition 6.1 (Two-sided ε-calibration).* _Fix a slack `ε ≥ 0`. A model `M`
 is_ ε-calibrated _at threshold `c` if_
 
 - `δ(q) < -ε → conf(q) > c + ε` _for all `q`, and_
@@ -206,7 +210,7 @@ margin interval `[-ε, 0)` you have to live with.
 The two clauses are most useful in their contrapositive form, and the verified
 file records them as such.
 
-**Proposition 6.2 (Contrapositives).** _ε-calibration is equivalent to the pair_
+*Proposition 6.2 (Contrapositives).* _ε-calibration is equivalent to the pair_
 
 - `conf(q) ≤ c + ε → δ(q) ≥ -ε`, _and_
 - `conf(q) ≥ c - ε → δ(q) ≤ ε`.
@@ -222,7 +226,7 @@ correct, its truth-distance is at least `-ε`. That is a lower bound on `δ`
 extracted purely from a confidence observation, and it is the entire content of
 the lower half of the approximate trilemma.
 
-**Remark 6.3.** At `ε = 0` the two clauses become `δ(q) < 0 → conf(q) > c` and
+*Remark 6.3.* At `ε = 0` the two clauses become `δ(q) < 0 → conf(q) > c` and
 `δ(q) > 0 → conf(q) < c`. These are precisely the two forward implications of
 strict calibration, the half the intermediate value argument actually uses. The
 verified `strictCalibrated_to_epsCalibrated_zero_half` shows that
@@ -230,7 +234,7 @@ verified `strictCalibrated_to_epsCalibrated_zero_half` shows that
 the zero-slack instance of the approximate notion and nothing is lost by working
 in the weaker vocabulary from the start.
 
-**Example 6.4 (Reading an ε off a calibration table).** Suppose you bin a model's
+*Example 6.4 (Reading an ε off a calibration table).* Suppose you bin a model's
 answers by measured accuracy and reported confidence, with confidence normalized
 so `c = 0.5`. You find that every answer whose accuracy places it at
 truth-distance below `-0.1` reports confidence above `0.6`, and every answer at
@@ -251,7 +255,7 @@ carries essentially no confidence signal under ε-calibration. The approximate
 argument needs witnesses that sit _outside_ the exempt band, where the
 calibration clauses have teeth.
 
-**Definition 6.5 (ε-coverage).** _A model `M` is_ ε-covering _if there is a
+*Definition 6.5 (ε-coverage).* _A model `M` is_ ε-covering _if there is a
 question `q_t` with `δ(q_t) < -ε` and a question `q_f` with `δ(q_f) > ε`. The
 verified predicate is `EpsCovering M δ ε`._
 
@@ -267,7 +271,7 @@ separates them from the boundary. The failure mode is a model that only ever
 operates in its own confused band, and such a model has no claim to being useful
 in the first place.
 
-**Example 6.5b (Coverage sets an upper bound on usable ε).** There is a hidden
+*Example 6.5b (Coverage sets an upper bound on usable ε).* There is a hidden
 interaction between the two witnesses that constrains how large an `ε` you may
 claim. If the easiest true question you can find sits at truth-distance `-0.3` and
 the easiest false one at `0.3`, then ε-coverage holds for any `ε < 0.3`, and you
@@ -289,7 +293,7 @@ Now the central theorem. It takes the three ingredients above, adds continuity
 and connectedness from Chapter 4, and returns not a contradiction but a located
 question with a two-sided bound on its truth-distance.
 
-**Theorem 6.6 (Approximate Hallucination Trilemma).** _Let `Q` be a connected
+*Theorem 6.6 (Approximate Hallucination Trilemma).* _Let `Q` be a connected
 space, let the confidence map `q ↦ conf(q)` be continuous, and let `ε ≥ 0`.
 If `M` is ε-covering, ε-calibrated at `c`, and faithful in the threshold-inclusive
 sense that `conf(q) ≥ c → δ(q) < 0`, then there is a question `q₀` with_
@@ -310,7 +314,7 @@ The question space is connected and confidence is continuous, so the image of
 confidence is an interval containing both `conf(q_f) < c` and `conf(q_t) > c`.
 That interval contains `c`. The intermediate value theorem, the connected-domain
 engine of Chapter 4, produces a question `q₀` with `conf(q₀) = c`. In the verified
-proof this is the `intermediate_value₂` step applied on the universal set, using
+proof this is the `IsPreconnected.intermediate_value₂` step applied on the universal set, using
 the continuity of the confidence map against the constant map at `c`.
 
 It remains to bound `δ(q₀)` on both sides.
@@ -341,7 +345,7 @@ The approximate theorem says `q₀` does exist once you grant a slack, and the p
 of the slack is visible in the width of the interval `[-ε, 0)` that traps its
 truth-distance.
 
-**Remark 6.7 (Why the interval is half-open).** The lower end `-ε` is attained in
+*Remark 6.7 (Why the interval is half-open).* The lower end `-ε` is attained in
 principle; the upper end `0` is not. The strict inequality `δ(q₀) < 0` comes from
 faithfulness, which forbids confident correctness from touching the boundary. The
 weak inequality `δ(q₀) ≥ -ε` comes from calibration, which only bounds how far
@@ -349,7 +353,7 @@ below the boundary a low-confidence question can sit. The asymmetry is not
 cosmetic. It is what lets `ε → 0` recover a genuine contradiction rather than a
 degenerate point, as the next section shows.
 
-**Example 6.8 (A concrete margin).** Take `c = 0.5` and the `ε = 0.1` model of
+*Example 6.8 (A concrete margin).* Take `c = 0.5` and the `ε = 0.1` model of
 Example 6.4, deployed on a domain with both solidly-true and solidly-false
 questions, so ε-coverage holds. Theorem 6.6 guarantees a question `q₀` where the
 model reports confidence exactly `0.5` and whose answer is correct with
@@ -361,7 +365,7 @@ theorem still fires, and now the forced question's truth-distance lies in
 most `0.1` to at most `0.03`. You did not remove the fence-sitting question. You
 sharpened how precariously it sits on the fence.
 
-**Example 6.8b (Tracing the intermediate value step).** It is instructive to watch
+*Example 6.8b (Tracing the intermediate value step).* It is instructive to watch
 the proof run on a toy model where the arithmetic is visible. Let the question
 space be the interval `[0, 1]`, connected, and let confidence be the continuous
 map `conf(q) = 1 - q`, so confidence slides from `1` at `q = 0` down to `0` at
@@ -386,7 +390,7 @@ calibration improves, and only reaches it in the impossible limit.
 The claim that the approximate theorem contains the exact one is not a slogan. It
 is a corollary obtained by substituting `ε = 0`.
 
-**Theorem 6.9 (Exact contradiction from the approximate bridge).** _Under the
+*Theorem 6.9 (Exact contradiction from the approximate bridge).* _Under the
 hypotheses of Theorem 6.6 with `ε = 0`, that is `0`-coverage, `0`-calibration, and
 threshold-inclusive faithfulness on a connected space with continuous confidence,
 one derives `False`. This is the verified `exact_from_approx`._
@@ -420,7 +424,7 @@ There is a second route to the same place that starts from the biconditional
 rather than from `0`-calibration, and the verified library records it because it
 shows the strict paper hypotheses feeding the approximate machinery unchanged.
 
-**Theorem 6.10 (Strict calibration through the bridge).** _If `M` satisfies strict
+*Theorem 6.10 (Strict calibration through the bridge).* _If `M` satisfies strict
 biconditional calibration, ordinary coverage, and threshold-inclusive
 faithfulness on a connected space with continuous confidence, then `False`. This
 is the verified `exact_from_strictCalibrated_via_approx`._
@@ -432,13 +436,13 @@ biconditional is one clause of `0`-calibration. Ordinary coverage implies
 `EpsCovering M δ 0` by `trilemmaCovering_to_epsCovering_zero`. Feed both to
 Theorem 6.9. ∎
 
-**Remark 6.11.** Theorem 6.10 needs continuity only of the confidence map, not of
+*Remark 6.11.* Theorem 6.10 needs continuity only of the confidence map, not of
 the answer or the truth field, because the intermediate value step is applied to
 confidence alone. This is a small economy over some presentations of the strict
 trilemma, and it is a direct benefit of having factored the argument through the
 approximate bridge: the bridge exposes exactly which map has to be continuous.
 
-**Remark 6.11b (The diagonal is still underneath).** It can look as though the
+*Remark 6.11b (The diagonal is still underneath).* It can look as though the
 approximate bridge has traded the diagonal of Chapter 1 for the intermediate value
 theorem of Chapter 4, and that the self-reference has quietly left the room. It has
 not. The forced question `q₀` is the same object as the `liar_query` witness `a₀`
@@ -463,7 +467,7 @@ if you push `ε` down far enough the obstruction becomes negligible. Theorem 6.6
 says the opposite. Pushing `ε` down does not weaken the obstruction. It
 concentrates it.
 
-**Theorem 6.12 (Tightening principle).** _Let `M` be faithful and ε-covering, and
+*Theorem 6.12 (Tightening principle).* _Let `M` be faithful and ε-covering, and
 suppose it is both `ε₁`-calibrated and `ε₂`-calibrated at `c` with `0 ≤ ε₂ ≤ ε₁`.
 Then the forced question `q₀₂` obtained from the `ε₂` bridge satisfies_
 `δ(q₀₂) ∈ [-ε₂, 0)`, _an interval contained in the `ε₁` interval `[-ε₁, 0)`. The
@@ -480,7 +484,8 @@ theorem c6_tightening (ε₁ ε₂ : ℝ) (h : ε₂ ≤ ε₁) :
   intro x hx
   exact ⟨by linarith [hx.1], hx.2⟩
 
-theorem c6_margin_bound (ε₂ x : ℝ) (hx : x ∈ Set.Ico (-ε₂) 0) :
+theorem c6_margin_bound (ε₂ x : ℝ)
+    (hx : x ∈ Set.Ico (-ε₂) 0) :
     |x| ≤ ε₂ := by
   rw [abs_of_neg hx.2]
   linarith [hx.1]
@@ -516,7 +521,7 @@ be pure progress is instead a movement along a trade-off. You bought a smaller
 band of confusion at the cost of a more precisely located point of failure. The
 failure did not go away. It sharpened.
 
-**Remark 6.13 (Calibration and faithfulness are not independent dials).** A
+*Remark 6.13 (Calibration and faithfulness are not independent dials).* A
 tempting mental model treats calibration and faithfulness as separate knobs, each
 tunable toward perfection on its own. Theorem 6.12 refutes the independence.
 Faithfulness fixes the sign of `δ(q₀)` and calibration fixes its magnitude, and
@@ -528,7 +533,7 @@ zero. One of the two hypotheses, or coverage, or continuity, has to give. The
 theorem does not say which. It says the four cannot coexist in the limit, and that
 in the pre-limit they coexist only inside a budget you are actively spending.
 
-**Example 6.14 (Spending the budget).** Return to the `ε = 0.1` model and imagine
+*Example 6.14 (Spending the budget).* Return to the `ε = 0.1` model and imagine
 a research program that halves `ε` each quarter: `0.1`, then `0.05`, then `0.025`,
 then `0.0125`. Theorem 6.12 tracks the guaranteed forced-question margin down the
 same sequence. After a year the model is superbly calibrated, its confusion band a
@@ -556,7 +561,7 @@ tell you the product is constant. It tells you the two factors are coupled and t
 you cannot drive either to zero without the other, or one of the standing
 hypotheses, giving way.
 
-**Remark 6.14b (Where the naive optimization goes).** Suppose a team ignores the
+*Remark 6.14b (Where the naive optimization goes).* Suppose a team ignores the
 coupling and optimizes calibration alone, driving `ε` down as far as compute
 allows. The bridge predicts the failure they will eventually hit. As `ε` shrinks,
 the forced question's truth-distance is pinned into `[-ε, 0)`, so the model is
@@ -588,7 +593,7 @@ of distribution, where confidence is below `c - ε < c`. It has to sit in the
 transition band between the two, the region where confidence descends through the
 threshold as the input drifts from familiar to unfamiliar.
 
-**Proposition 6.15 (Localization).** _Under the hypotheses of Theorem 6.6, every
+*Proposition 6.15 (Localization).* _Under the hypotheses of Theorem 6.6, every
 forced question `q₀` with `conf(q₀) = c` lies outside both the high-confidence
 region `{q : conf(q) > c + ε}` and the low-confidence region
 `{q : conf(q) < c - ε}`. It lies in the transition band
@@ -596,7 +601,8 @@ region `{q : conf(q) > c + ε}` and the low-confidence region
 
 ```lean
 theorem c6_localization (c ε : ℝ) (hε : 0 ≤ ε) :
-    c ∈ Set.Icc (c - ε) (c + ε) ∧ ¬ (c > c + ε) ∧ ¬ (c < c - ε) :=
+    c ∈ Set.Icc (c - ε) (c + ε) ∧ ¬ (c > c + ε) ∧ ¬
+    (c < c - ε) :=
   ⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩
 ```
 
@@ -661,7 +667,7 @@ frequently available after the right embedding, but it is worth having a bridge
 that assumes no topology at all. The discrete version drops the existence half of
 the argument and keeps the arithmetic half.
 
-**Theorem 6.16 (Discrete band constraint).** _On any sets `Q` and `A`, with no
+*Theorem 6.16 (Discrete band constraint).* _On any sets `Q` and `A`, with no
 topology and no finiteness assumption, suppose `M` is ε-calibrated at `c` and
 threshold-inclusive faithful. Let `q` be any question whose confidence lands in
 the upper confidence band,_ `c ≤ conf(q) ≤ c + ε`. _Then_
@@ -704,10 +710,14 @@ confidences are whole numbers, elaborated when the book is built:
 
 ```lean
 theorem c6_band (dq confq c eps : Int)
-    (hcal : dq < -eps → confq > c + eps)   -- ε-calibration, lower clause
-    (hfaith : confq ≥ c → dq < 0)          -- c-faithfulness
-    (hge : confq ≥ c)                      -- upper half of the band
-    (hle : confq ≤ c + eps) :              -- not above the band
+    -- ε-calibration, lower clause
+    (hcal : dq < -eps → confq > c + eps)
+    -- c-faithfulness
+    (hfaith : confq ≥ c → dq < 0)
+    -- upper half of the band
+    (hge : confq ≥ c)
+    -- not above the band
+    (hle : confq ≤ c + eps) :
     -eps ≤ dq ∧ dq < 0 := by
   refine ⟨?_, hfaith hge⟩
   rcases Int.lt_or_le dq (-eps) with h | h
@@ -723,7 +733,7 @@ does the same work with `linarith` over `ℝ`; the logical skeleton is identical
 An immediate consequence is that no question in the upper band sits exactly on the
 truth boundary.
 
-**Corollary 6.17 (No boundary point in the upper band).** _Under ε-calibration and
+*Corollary 6.17 (No boundary point in the upper band).* _Under ε-calibration and
 threshold-inclusive faithfulness, no question `q` with `c ≤ conf(q) ≤ c + ε` has
 `δ(q) = 0`. This is the verified `no_boundary_in_upper_band`._
 
@@ -761,7 +771,7 @@ confidence is reported on a `0` to `100` scale rather than `0` to `1` has its
 confidence slack multiplied by a hundred without anything about its truthfulness
 changing. A clean formulation separates the two.
 
-**Definition 6.18 (Two-slack separation).** _Fix a truth slack `ε` and a
+*Definition 6.18 (Two-slack separation).* _Fix a truth slack `ε` and a
 confidence margin `γ`. A model is_ two-slack separating _at `c` if_
 
 - `δ(q) < -ε → conf(q) > c + γ`, _and_
@@ -776,7 +786,7 @@ visible. Rescale confidence and only `γ` changes. Rescale the truth field and o
 `ε` changes. The conclusions of the theorems should, and do, land their bounds in
 the correct units.
 
-**Theorem 6.19 (Two-slack coupling).** _On a connected space with continuous
+*Theorem 6.19 (Two-slack coupling).* _On a connected space with continuous
 confidence, if `M` is ε-covering, two-slack separating with margin `γ ≥ 0`, and
 threshold-inclusive faithful, then there is `q₀` with `conf(q₀) = c` and
 `δ(q₀) ∈ [-ε, 0)`. This is the verified `two_slack_approx_coupling`._
@@ -796,7 +806,7 @@ confidence margin the model happens to exhibit, however you scale the confidence
 axis, the located truth-distance interval is `[-ε, 0)`, purely in truth units. The
 confidence margin powers the crossing but does not survive into the conclusion.
 
-**Example 6.19b (Two slacks with numbers).** Report confidence on a `0` to `100`
+*Example 6.19b (Two slacks with numbers).* Report confidence on a `0` to `100`
 scale with threshold `c = 50`, and measure truth-distance on a `0` to `1` semantic
 scale. Suppose clearly-true questions, truth-distance below `-0.1`, always score
 above `70`, and clearly-false ones, above `0.1`, always score below `30`. Then the
@@ -815,7 +825,7 @@ two, it is the truth slack `0.1` that provably cannot be pushed to zero.
 The separation also isolates which slack must be positive for a real model to
 exist at all.
 
-**Theorem 6.20 (The truth slack must be positive).** _On a connected space with
+*Theorem 6.20 (The truth slack must be positive).* _On a connected space with
 continuous confidence, if `M` is two-slack separating with any margin `γ ≥ 0`,
 ε-covering with `ε ≥ 0`, and threshold-inclusive faithful, then `ε > 0`. This is
 the verified `truth_slack_must_be_positive`._
@@ -835,7 +845,7 @@ parameter.
 The discrete two-slack version mirrors Theorem 6.16 with the band measured in
 confidence units.
 
-**Theorem 6.21 (Two-slack band bridge).** _On any sets, under two-slack separation
+*Theorem 6.21 (Two-slack band bridge).* _On any sets, under two-slack separation
 and threshold-inclusive faithfulness, any question with `c ≤ conf(q) ≤ c + γ` has
 `δ(q) ∈ [-ε, 0)`. The confidence band is in confidence units, the conclusion band
 in truth units. This is the verified `two_slack_band_bridge`, and its boundary-free
@@ -845,7 +855,7 @@ _Proof._ As in Theorem 6.16, replacing `c + ε` by `c + γ` in the calibration
 step. Faithfulness gives `δ(q) < 0` from `conf(q) ≥ c`; if `δ(q) < -ε` then
 separation gives `conf(q) > c + γ`, contradicting `conf(q) ≤ c + γ`. ∎
 
-**Remark 6.22 (Axioms).** The verified two-slack results carry an explicit axiom
+*Remark 6.22 (Axioms).* The verified two-slack results carry an explicit axiom
 audit: `two_slack_approx_coupling`, `truth_slack_must_be_positive`,
 `two_slack_band_bridge`, and `no_boundary_in_upper_band_two_slack` are each printed
 with `#print axioms`. They rest on the classical and quotient axioms Mathlib's
@@ -880,7 +890,7 @@ truth-distance field of the calibration sections; the two developments reuse the
 letter for different objects, and the context disambiguates. In this section `δ`
 always means the transparency slack `dist (M a a) (introspect a) ≤ δ`.
 
-**Definition 6.23 (ε-approximate universality).** _`M` is ε-approximately
+*Definition 6.23 (ε-approximate universality).* _`M` is ε-approximately
 universal if for every target behavior `g : A → Y` there is a prompt `a` with
 `dist (M a b) (g b) ≤ ε` for all queries `b`. The verified predicate is
 `ApproxUniversal M ε`._
@@ -892,7 +902,7 @@ imitate any behavior to within `ε`, not reproduce it.
 The Lawvere diagonal survives the relaxation. Instead of an exact self-fixed-point
 it yields an approximate one.
 
-**Theorem 6.24 (Approximate Lawvere).** _If `M` is ε-approximately universal then
+*Theorem 6.24 (Approximate Lawvere).* _If `M` is ε-approximately universal then
 every endomap `t : Y → Y` has an ε-approximate self-fixed-point: some `a` with
 `dist (M a a) (t (M a a)) ≤ ε`. This is the verified `approx_lawvere`._
 
@@ -909,7 +919,7 @@ Now add two more slacks. A system rarely exposes its raw diagonal `M a a`; it
 reports a declared self-image `introspect a`. Transparency is the claim that the
 declaration matches the diagonal, and it too is approximate.
 
-**Theorem 6.25 (Quantitative degradation).** _Let `M` be ε-approximately
+*Theorem 6.25 (Quantitative degradation).* _Let `M` be ε-approximately
 universal, let `introspect : A → Y` satisfy `dist (M a a) (introspect a) ≤ δ` for
 all `a`, and let `t : Y → Y` be `1`-Lipschitz. Then there is a prompt `a` with_
 
@@ -948,7 +958,7 @@ system's self-image be robustly moved by `t`, that `introspect a` and
 `t (introspect a)` differ by more than some margin `γ` for every `a`. Theorem 6.25
 says such a demand cannot be met beyond the budget `ε + 2 δ`.
 
-**Theorem 6.26 (Achievable region).** _If additionally
+*Theorem 6.26 (Achievable region).* _If additionally
 `dist (introspect a) (t (introspect a)) > γ` for all `a`, then `γ < ε + 2 δ`. The
 achievable triples `(ε, δ, γ)` lie in the half-space `{γ ≤ ε + 2 δ}`. This is the
 verified `achievable_region_bound`, with the contradiction form
@@ -964,7 +974,7 @@ The half-space `γ ≤ ε + 2 δ` is the exact analogue of the interval `[-ε, 0
 the calibration bridge. Both are the region a real system is allowed to occupy.
 Both collapse at the origin of their slacks.
 
-**Theorem 6.27 (Strict limit).** _At `ε = 0` and `δ = 0`, any nontrivial
+*Theorem 6.27 (Strict limit).* _At `ε = 0` and `δ = 0`, any nontrivial
 controller `γ > 0` gives `False`; equivalently `γ ≤ 0`. This is the verified
 `strict_limit_recovers_trilemma`._
 
@@ -986,7 +996,7 @@ margin below zero, so any positive demand is impossible. That is the strict Mirr
 Trilemma, recovered as the corner of a quantitative law, exactly as the strict
 Hallucination Trilemma was recovered as the corner of the calibration bridge.
 
-**Remark 6.27b (What a K-Lipschitz controller costs).** The `1`-Lipschitz
+*Remark 6.27b (What a K-Lipschitz controller costs).* The `1`-Lipschitz
 hypothesis on `t` is the boundary case, and it is worth knowing which way the bound
 moves when it is relaxed. If `t` is `K`-Lipschitz instead, the middle leg of the
 triangle, `dist (t (M a a)) (t (introspect a))`, is bounded by `K δ` rather than
@@ -1000,7 +1010,7 @@ separation. The `1`-Lipschitz case is the natural reference because it is exactl
 the class of transforms that neither create nor destroy distance, the metric
 analogue of the fixed-point-free flips that drove the exact theorems of Chapter 1.
 
-**Remark 6.28 (Two shapes of the same fact).** The calibration bridge and the
+*Remark 6.28 (Two shapes of the same fact).* The calibration bridge and the
 degradation law relax different idealizations and produce differently-shaped
 budgets, an interval on one side and a half-space on the other, but the mechanism
 is one. Both take the exact diagonal, insert a slack at each idealized equality,
@@ -1054,7 +1064,7 @@ the transition band; concentration says how much of your actual traffic lands
 there.
 
 The reason these three cannot be read off the bridge alone is that the bridge is
-blind to geometry by construction. It is a diagonal argument, and Remark 1.14 of
+blind to geometry by construction. It is a diagonal argument, and Remark 1.18 of
 Chapter 1 already warned that the diagonal is silent on everything quantitative:
 not how many forced questions there are, not how hard one is to find, not what it
 costs to reach. The bridge adds a margin to that silence, the `ε` that bounds the
@@ -1089,7 +1099,7 @@ geometry. A deployment that reports `ε` alone, or `P_band` alone, is reporting 
 factor of a product and calling it a risk. The composite is the product, and it is
 the smallest object that deserves the name.
 
-**Example 6.29 (A risk estimate with numbers).** Take the `ε = 0.05` model, so any
+*Example 6.29 (A risk estimate with numbers).* Take the `ε = 0.05` model, so any
 forced question is correct by at most `0.05` of truth-distance and sits in the
 transition band `conf ∈ [0.45, 0.55]`. Suppose Chapter 5's geometry, applied to
 the model's confidence field, reports that the transition band has basin volume
@@ -1106,7 +1116,7 @@ divided by `L`, which Chapter 5 makes precise. The composite is a number: a
 per-query probability of landing in the forced band, a bounded severity per event,
 and an adversarial cost to force one deliberately.
 
-**Remark 6.30 (What the composite can and cannot claim).** The composite risk
+*Remark 6.30 (What the composite can and cannot claim).* The composite risk
 estimate is an upper bound on a very specific quantity, the incidence and severity
 of forced threshold-confidence questions. It is not a claim about all model
 errors. Errors far from the transition band are outside its scope; those are
@@ -1119,7 +1129,7 @@ The estimate is honest precisely because it separates the part forced by the
 diagonal, which no training removes, from the part that is contingent geometry,
 which engineering can move.
 
-**Example 6.29b (The adversarial reading).** The frequency factor has a benign
+*Example 6.29b (The adversarial reading).* The frequency factor has a benign
 reading and an adversarial one, and the bridge supports both. Benignly, a random
 deployment query lands in the transition band with probability given by the
 concentration figure, and the composite estimates ordinary incidence. Adversarially,
@@ -1136,7 +1146,7 @@ tightening principle and the attack geometry point the same way: sharper
 calibration produces a forced question that is cheaper to weaponize, unless the
 geometry around it is correspondingly hardened.
 
-**Remark 6.31 (The whole bridge in one sentence).** Strip away the parameters and
+*Remark 6.31 (The whole bridge in one sentence).* Strip away the parameters and
 the chapter says this: the exact impossibility is the zero-slack corner of a
 quantitative law, the law's conclusion is a nonempty margin rather than a
 contradiction, the margin tightens as the model improves rather than vanishing,
@@ -1153,7 +1163,7 @@ structure. The theorems of this chapter are short. Whether they apply to a given
 system is a modeling question, and the same three readings that Chapter 3 gave the
 exact trilemma give the approximate one, now with a margin attached.
 
-**Reading 6.32 (Hallucination, approximate).** The model is a question-answerer, `δ`
+*Reading 6.32 (Hallucination, approximate).* The model is a question-answerer, `δ`
 is distance from factual truth, and confidence is the model's own reported
 certainty. ε-calibration is the reliability-diagram fact that clearly-true answers
 draw high confidence and clearly-false ones draw low confidence, with a confused
@@ -1164,7 +1174,7 @@ that are almost-but-not-quite supported. That region is where confident
 hallucination is most dangerous, and the bridge says a sharply calibrated model
 cannot vacate it.
 
-**Reading 6.33 (Prompt injection defense, approximate).** Now the "question" is an
+*Reading 6.33 (Prompt injection defense, approximate).* Now the "question" is an
 input to a defended system, `δ` measures how far the input is from being an attack,
 and "confidence" is the defense's score for treating the input as safe. Faithfulness
 is the defense's guarantee that it does not wave through clear attacks. Coverage is
@@ -1178,7 +1188,7 @@ wants to find. The exact version of this is the defense trilemma of Chapter 3; t
 approximate version is why no threshold-tuning of a scalar defense score removes the
 ambiguous band, it only narrows and sharpens it.
 
-**Reading 6.34 (Truth probes, approximate).** Let the "question" index internal
+*Reading 6.34 (Truth probes, approximate).* Let the "question" index internal
 states of a model and let `δ` measure whether a probed proposition is true, with
 "confidence" the probe's reported readout. ε-calibration is the probe's accuracy on
 clear cases. The bridge forces a state at the probe's threshold whose proposition
@@ -1244,92 +1254,92 @@ qualitative and the quantitative halves of the book are bolted together.
 
 # Exercises
 
-**Exercise 6.1.** Write out the contrapositive of each clause of Definition 6.1
+*Exercise 6.1.* Write out the contrapositive of each clause of Definition 6.1
 and check by hand that Proposition 6.2 is exactly the pair you obtain. Identify the
 single order-theoretic fact about `ℝ` that each contraposition uses.
 
-**Exercise 6.2.** Verify the `ε = 0` reading in Remark 6.3: show that the two
+*Exercise 6.2.* Verify the `ε = 0` reading in Remark 6.3: show that the two
 clauses of `0`-calibration are the two forward implications of the strict
 biconditional, and that the backward implications are the ones ε-calibration
 discards. Explain in a sentence why the intermediate value argument never needs
 the backward implications.
 
-**Exercise 6.3.** In Theorem 6.6, exactly one endpoint of the interval `[-ε, 0)`
+*Exercise 6.3.* In Theorem 6.6, exactly one endpoint of the interval `[-ε, 0)`
 is closed and one is open. Trace each endpoint to the hypothesis that produces it.
 Then explain why swapping which endpoint is open would break the recovery of the
 exact contradiction at `ε = 0`.
 
-**Exercise 6.4.** Take `c = 0.5` and `ε = 0.2`. A model is ε-covering, ε-calibrated,
+*Exercise 6.4.* Take `c = 0.5` and `ε = 0.2`. A model is ε-covering, ε-calibrated,
 and faithful on a connected space. What is the widest possible interval the forced
 question's truth-distance can occupy, and what is the largest confidence the forced
 question can report? Now repeat for `ε = 0.02` and comment on the change.
 
-**Exercise 6.5.** Prove the tightening principle's monotonicity claim directly: if
+*Exercise 6.5.* Prove the tightening principle's monotonicity claim directly: if
 `0 ≤ ε₂ ≤ ε₁` then `[-ε₂, 0) ⊆ [-ε₁, 0)`. Then give a one-line reason why the
 upper endpoint `0` does not participate in the tightening.
 
-**Exercise 6.6.** (Independence, refuted.) Construct an informal scenario, no Lean
+*Exercise 6.6.* (Independence, refuted.) Construct an informal scenario, no Lean
 required, in which a model designer drives `ε` from `0.1` to `0.001` over several
 iterations. Describe what happens to the forced question at each step and state, in
 one sentence, why the designer cannot reach `ε = 0` while keeping faithfulness,
 coverage, and continuity. Which of Theorems 6.9, 6.12, and 6.20 is the cleanest
 statement of the obstruction?
 
-**Exercise 6.7.** Prove Proposition 6.15 from scratch and then strengthen it: show
+*Exercise 6.7.* Prove Proposition 6.15 from scratch and then strengthen it: show
 that if the confidence map is strictly monotone along some path from an
 in-distribution point to an out-of-distribution point, the forced question on that
 path is unique. Relate the non-uniqueness in general to Exercise 1.7 of Chapter 1.
 
-**Exercise 6.8.** In the discrete bridge (Theorem 6.16), the conclusion is
+*Exercise 6.8.* In the discrete bridge (Theorem 6.16), the conclusion is
 conditional on a question existing in the upper band. Give an example of a discrete
 model, faithful and ε-calibrated, for which _no_ question has confidence in
 `[c, c + ε]`, and explain why the theorem is then vacuously satisfied and yet says
 nothing useful. What extra hypothesis on the discrete model would force the band to
 be nonempty?
 
-**Exercise 6.9.** Re-elaborate `c6_band` from the text with `eps` replaced by a
+*Exercise 6.9.* Re-elaborate `c6_band` from the text with `eps` replaced by a
 _negative_ integer and observe how the proof behaves. What does a negative slack
 mean, and why does Definition 6.1's hypothesis `ε ≥ 0` matter for the intended
 reading even though the arithmetic still typechecks?
 
-**Exercise 6.10.** Rescale confidence in Definition 6.18 by a factor of `100`,
+*Exercise 6.10.* Rescale confidence in Definition 6.18 by a factor of `100`,
 mapping `c` and `γ` accordingly, and check that Theorem 6.19's conclusion interval
 `[-ε, 0)` is unchanged while the confidence band `[c - γ, c + γ]` scales. Use this
 to explain in one paragraph why the single-parameter Definition 6.1 is a
 convenience rather than a canonical choice.
 
-**Exercise 6.11.** Prove Theorem 6.24 (approximate Lawvere) as a direct
+*Exercise 6.11.* Prove Theorem 6.24 (approximate Lawvere) as a direct
 modification of the `lawvere` proof from Chapter 1: identify the single line where
 the exact equality `f a₀ = d` becomes a distance bound, and confirm that
 instantiating at the diagonal input is the only step that changes. Then state what
 `approx_lawvere` becomes at `ε = 0` in a genuine metric space.
 
-**Exercise 6.12.** In Theorem 6.25 the transparency slack `δ` appears with
+*Exercise 6.12.* In Theorem 6.25 the transparency slack `δ` appears with
 coefficient `2` and the universality slack `ε` with coefficient `1`. Walk the path
 `introspect a → M a a → t (M a a) → t (introspect a)` and attribute each unit of
 the budget to a specific leg. Where exactly is the `1`-Lipschitz hypothesis used,
 and what happens to the coefficient of `δ` if `t` is instead `K`-Lipschitz?
 
-**Exercise 6.13.** (Composition.) Using Example 6.29's numbers, write down the
+*Exercise 6.13.* (Composition.) Using Example 6.29's numbers, write down the
 schematic risk figure as a product of a per-query band-incidence probability and a
 per-event severity bound, and identify which factor Theorem 6.12 moves when `ε` is
 halved and which factor Chapter 5's geometry controls. State one deployment
 decision the figure could inform and one it cannot.
 
-**Exercise 6.14.** (Harder, open-ended.) The calibration bridge produces an
+*Exercise 6.14.* (Harder, open-ended.) The calibration bridge produces an
 interval `[-ε, 0)` and the degradation law produces a half-space `γ ≤ ε + 2 δ`.
 Formulate a single abstract statement, with a slack inserted at each idealized
 equality of a diagonal argument, that specializes to both. What would its
 `ε → 0` corner be, and which theorem of Chapter 1 would that corner reproduce?
 
-**Exercise 6.15.** Redo Example 6.8b with the truth field `δ(q) = q - 0.55`
+*Exercise 6.15.* Redo Example 6.8b with the truth field `δ(q) = q - 0.55`
 replaced by `δ(q) = 2(q - 0.55)`, keeping `conf(q) = 1 - q`, `c = 0.5`, and
 `ε = 0.1`. Recompute the coverage witnesses, verify faithfulness, find the forced
 `q₀`, and report its truth-distance. Explain why the located `q₀` is the same
 question as before but its truth-distance is different, and connect this to the
 unit-separation point of Section "Two-slack separation".
 
-**Exercise 6.16.** (Reading, harder.) Take the prompt-injection reading of Reading
+*Exercise 6.16.* (Reading, harder.) Take the prompt-injection reading of Reading
 6.33. State precisely what ε-coverage, ε-calibration, faithfulness, continuity, and
 connectedness each assert about a real defended system, and for each one give a
 concrete way it could fail in practice. Then identify which single failure a
@@ -1337,17 +1347,21 @@ determined adversary would most want to induce, and argue using Theorem 6.20 tha
 even a defense that avoids that failure still leaves a positive truth-slack band the
 adversary can aim at.
 
-**Exercise 6.17.** In Remark 6.27b the budget for a `K`-Lipschitz controller was
+*Exercise 6.17.* In Remark 6.27b the budget for a `K`-Lipschitz controller was
 `ε + (1 + K) δ`. Rederive it by rewalking the triangle in Theorem 6.25 and
 identify the exact leg whose bound changes from `δ` to `K δ`. Then determine the
 threshold value of `K` below which perfect universality and perfect transparency
 (`ε = δ = 0`) still permit a strictly positive controller margin, and interpret
 that value.
 
-**Exercise 6.18.** (Synthesis.) The chapter recovers two exact impossibilities as
+*Exercise 6.18.* (Synthesis.) The chapter recovers two exact impossibilities as
 zero-slack corners: the Hallucination Trilemma via `exact_from_approx` and the
 Mirror Trilemma via `strict_limit_recovers_trilemma`. Write a one-page essay
 identifying, for each, (i) which idealization was relaxed, (ii) which slack
 parameter measured the relaxation, (iii) the shape of the achievable region, and
 (iv) the geometric event, vertex or face, that the exact contradiction becomes at
 the origin. Conclude with the single structural feature both share.
+
+# References
+
+Banach, S. (1922). Sur les opérations dans les ensembles abstraits et leur application aux équations intégrales. _Fundamenta Mathematicae_ 3, 133–181.

@@ -6,6 +6,10 @@ set_option pp.rawOnError true
 
 #doc (Manual) "The Geometry of Attacks" =>
 
+*Abstract.* The diagonal yields a bad point but says nothing about how many there are, how large a region around them is, or what an attacker pays to reach one. This chapter supplies that quantitative half using analysis and measure. It studies alignment-deviation surfaces on metric spaces, the boundary as a fixed point of defense, steepness forcing oscillation, coarea and cone bounds, and the dimension of the boundary. It then examines how scale and dimension shift cost between attacker and defender.
+
+*Keywords:* Attack geometry, Lipschitz functions, Coarea bound, Concentration of measure, Adversarial examples
+
 The diagonal gives you one thing and refuses to give you anything else. It gives
 you a bad point. It builds, out of pure self-reference, an index the system
 cannot correctly name, and from that index it manufactures a contradiction. What
@@ -54,7 +58,7 @@ when `x` is aligned. Fix a real number `τ`, the safety threshold. This triple
 `(X, f, τ)` is the entire setting. Everything in the chapter is a statement about
 it.
 
-**Definition 5.1 (Regions).** The _safe region_ is `{x | f x < τ}`, the _unsafe
+*Definition 5.1 (Regions).* The _safe region_ is `{x | f x < τ}`, the _unsafe
 region_ or _vulnerability basin_ is `{x | f x > τ}`, and the _boundary_ is the
 level set `{x | f x = τ}`. The _failure manifold_ is the closed superlevel set
 `{x | f x ≥ τ}`. These are `SafeRegion`, `UnsafeRegion`, `Boundary`, and
@@ -81,7 +85,7 @@ that the two engines deliver the same kind of object: an unavoidable point of
 failure. The difference is that the analytic engine delivers it with metric
 content the diagonal never had.
 
-**Remark 5.2.** It helps to keep one picture in mind throughout. Imagine `f` as a
+*Remark 5.2.* It helps to keep one picture in mind throughout. Imagine `f` as a
 landscape, a height function over the behavior space `X`. The safe region is the
 lowland below sea level `τ`, the unsafe region is the land above it, and the
 boundary is the coastline. The questions of this chapter are geographic. How much
@@ -96,7 +100,7 @@ The first substantial results describe the vulnerability basin as a set. They ar
 soft, in the sense that they use only continuity and the order structure of `ℝ`,
 but they are the foundation for everything measure-theoretic that follows.
 
-**Theorem 5.3 (Basin openness).** _If `f` is continuous, the vulnerability basin
+*Theorem 5.3 (Basin openness).* _If `f` is continuous, the vulnerability basin
 `{x | f x > τ}` is open, and the safe region `{x | f x < τ}` is open. The boundary
 `{x | f x = τ}` and the sublevel set `{x | f x ≤ τ}` are closed._
 
@@ -113,7 +117,7 @@ immediate reading that matters for safety. If a behavior is unsafe, so is every
 behavior sufficiently close to it. Unsafety is not a razor-thin condition that a
 tiny perturbation removes; it comes with room around it.
 
-**Theorem 5.4 (Every unsafe point owns a ball).** _If `f` is continuous and
+*Theorem 5.4 (Every unsafe point owns a ball).* _If `f` is continuous and
 `f p > τ`, then there is a radius `r > 0` with the open ball `B(p, r)` contained in
 the basin._
 
@@ -127,7 +131,7 @@ hypothesis and is the subject of the next section. Hold the two apart in your mi
 Continuity gives you a ball of unknown size; Lipschitz continuity gives you a ball
 of known size.
 
-**Theorem 5.5 (Basins have positive measure).** _Let `μ` be any measure on `X` for
+*Theorem 5.5 (Basins have positive measure).* _Let `μ` be any measure on `X` for
 which nonempty open sets have positive measure (an `IsOpenPosMeasure`, which
 includes Lebesgue measure on `ℝ^n`). If `f` is continuous and there is a point `p`
 with `f p > τ`, then `μ({x | f x > τ}) > 0`._
@@ -144,7 +148,7 @@ random draw has a positive chance of landing there, and no finite set of safe
 examples can certify the region away. Existence upgrades to abundance the moment
 you add continuity and a measure.
 
-**Theorem 5.6 (Monotonicity in the threshold).** _If `τ₁ ≤ τ₂` then
+*Theorem 5.6 (Monotonicity in the threshold).* _If `τ₁ ≤ τ₂` then
 `{x | f x > τ₂} ⊆ {x | f x > τ₁}`, and consequently
 `μ({x | f x > τ₂}) ≤ μ({x | f x > τ₁})`. If `τ` sits strictly above the supremum of
 `f`, the basin is empty; if `τ` sits strictly below the infimum, the basin is the
@@ -169,7 +173,7 @@ Is the basin one region or many? The answer depends on the shape of `f`, and the
 distinction matters because an attacker who finds one component has found only that
 component, while a defender who patches one has patched only that one.
 
-**Theorem 5.7 (Components are open and countable).** _On a space where every point
+*Theorem 5.7 (Components are open and countable).* _On a space where every point
 has a connected neighborhood (a locally connected space, in particular `ℝ^n`), each
 connected component of the basin `{x | f x > τ}` is open. If in addition the space
 is second countable, there are at most countably many components._
@@ -219,7 +223,7 @@ cannot be dodged. If a path starts safe and ends unsafe, it crosses the boundary
 somewhere in between. There is no teleporting from lowland to highland without
 touching sea level.
 
-**Theorem 5.8 (Threshold crossing, one dimension).** _Let `f : ℝ → ℝ` be
+*Theorem 5.8 (Threshold crossing, one dimension).* _Let `f : ℝ → ℝ` be
 continuous, let `a ≤ b`, and suppose `f a < τ < f b`. Then there is a point
 `c ∈ [a, b]` with `f c = τ`._
 
@@ -234,7 +238,7 @@ subtle theorem; it is the IVT wearing a safety costume. What takes work is stati
 it in the generality the theory needs, which is arbitrary behavior spaces rather
 than the real line.
 
-**Theorem 5.9 (Threshold crossing along a path).** _Let `X` be any topological
+*Theorem 5.9 (Threshold crossing along a path).* _Let `X` be any topological
 space, `γ : ℝ → X` a continuous path, and `f : X → ℝ` continuous. If
 `f(γ a) < τ < f(γ b)` with `a ≤ b`, then there is `c ∈ [a, b]` with `f(γ c) = τ`._
 
@@ -262,7 +266,7 @@ Theorem 5.20 will show that even that thickens to positive volume once the
 defender's own uncertainty is accounted for. There is no moat, only a coastline,
 and coastlines are walked, not sealed.
 
-**Theorem 5.10 (No gap).** _Let `X` be connected and `f : X → ℝ` continuous. If
+*Theorem 5.10 (No gap).* _Let `X` be connected and `f : X → ℝ` continuous. If
 there exist a safe point (`f a < τ`) and an unsafe point (`f b > τ`), then the
 boundary `{x | f x = τ}` is nonempty._
 
@@ -279,7 +283,7 @@ crude classifier could separate them. Connectedness forbids it. As long as the m
 does both safe and unsafe things and its behavior varies continuously, there is a
 boundary, and the boundary is populated.
 
-**Theorem 5.11 (Separation is exactly the boundary).** _The closures of the safe and
+*Theorem 5.11 (Separation is exactly the boundary).* _The closures of the safe and
 unsafe regions meet only on the boundary:
 `closure(SafeRegion) ∩ closure(UnsafeRegion) ⊆ Boundary`._
 
@@ -303,7 +307,7 @@ _utility-preserving_ defense is one that is the identity on the safe region: it 
 not disturb behavior that was fine to begin with. The master theorem of the
 `ManifoldProofs` development shows such a defense always fails at the boundary.
 
-**Theorem 5.12 (Defense fixes a boundary point).** _Let `X` be a connected Hausdorff
+*Theorem 5.12 (Defense fixes a boundary point).* _Let `X` be a connected Hausdorff
 space, `f : X → ℝ` continuous, with both safe and unsafe points present. Let
 `D : X → X` be continuous and equal to the identity on the safe region. Then there is
 a boundary point `z` with `f z = τ` and `D z = z`. In particular `D` cannot make `z`
@@ -358,12 +362,12 @@ assumption, but a mild and defensible one. Neural networks with bounded weights 
 Lipschitz activations are Lipschitz, and the constant, though often large, is finite
 and estimable. With it, the qualitative ball of Theorem 5.4 becomes a quantitative one.
 
-**Definition 5.13 (Robustness radius).** For a point with value `f p` above threshold
+*Definition 5.13 (Robustness radius).* For a point with value `f p` above threshold
 `τ` and a Lipschitz constant `L > 0`, the _robustness radius_ is
 `robustnessRadius(f p, τ, L) = (f p − τ) / L`. This is `robustnessRadius` in
 `MoF_04_LipschitzBasin`.
 
-**Theorem 5.14 (Lipschitz basin ball).** _Let `f` be `L`-Lipschitz with `L > 0`, and
+*Theorem 5.14 (Lipschitz basin ball).* _Let `f` be `L`-Lipschitz with `L > 0`, and
 suppose `f p > τ`. If `dist(p', p) < (f p − τ) / L`, then `f p' > τ`. Equivalently, the
 open ball of radius `(f p − τ) / L` around `p` lies entirely inside the basin._
 
@@ -381,7 +385,7 @@ found a point well inside the unsafe region, an entire neighborhood of nearby be
 is unsafe too, so small changes in phrasing or encoding do not rescue the model. The
 positivity of the radius is `robustnessRadius_pos`.
 
-**Theorem 5.15 (Deeper points have larger basins).** _If `f p₁ ≤ f p₂`, both above `τ`,
+*Theorem 5.15 (Deeper points have larger basins).* _If `f p₁ ≤ f p₂`, both above `τ`,
 then `robustnessRadius(f p₁, τ, L) ≤ robustnessRadius(f p₂, τ, L)`._
 
 _Proof._ The radius `(v − τ)/L` is increasing in `v` for fixed `τ` and `L > 0`. ∎
@@ -390,7 +394,7 @@ This is `robustnessRadius_monotone`. The more deviant the behavior, the more rob
 is to perturbation, which is the opposite of what a defender would want and exactly what
 an attacker exploits by pushing deep rather than stopping at the first crossing.
 
-**Theorem 5.16 (Smoother models, larger basins per peak).** _Fix a peak value `f p > τ`.
+*Theorem 5.16 (Smoother models, larger basins per peak).* _Fix a peak value `f p > τ`.
 If `L₁ ≤ L₂`, both positive, then the robustness radius under `L₁` is at least that under
 `L₂`._
 
@@ -422,7 +426,7 @@ point, which is what Theorems 5.24 and 5.35 actually use, is often far smaller a
 The Lipschitz constant also bounds how much a function can wiggle, and this gives a lower
 bound on `L` for models that must do very different things at nearby inputs.
 
-**Theorem 5.17 (Oscillation needs steepness).** _Suppose `f : [0,1] → ℝ` is `L`-Lipschitz
+*Theorem 5.17 (Oscillation needs steepness).* _Suppose `f : [0,1] → ℝ` is `L`-Lipschitz
 with `f 0 = f 1 = 0` and `f t = M` for some `t ∈ [0,1]` and `M > 0`. Then `L ≥ 2M`._
 
 _Proof._ Apply the Lipschitz bound on both sides of the peak. From `0` to `t`:
@@ -466,10 +470,10 @@ The genuine coarea formula relates the volume of a band `{τ − ε ≤ f ≤ τ
 underlying library, so `ManifoldProofs` proves a self-contained substitute by inscribing a
 ball, which is enough to get a clean lower bound.
 
-**Definition 5.18 (The `ε`-band).** The band of width `ε` below the threshold is
+*Definition 5.18 (The `ε`-band).* The band of width `ε` below the threshold is
 `coareaBand(f, τ, ε) = {x | τ − ε ≤ f x ≤ τ}`. This is `coareaBand` in `MoF_17_CoareaBound`.
 
-**Theorem 5.19 (Ball inside the band).** _Let `f` be `L`-Lipschitz with `L > 0` and `ε > 0`.
+*Theorem 5.19 (Ball inside the band).* _Let `f` be `L`-Lipschitz with `L > 0` and `ε > 0`.
 If there is a center point `c` with `f c = τ − ε/2`, then the ball `B(c, ε/(4L))` is contained
 in the `ε`-band._
 
@@ -482,7 +486,7 @@ This is `lipschitz_ball_subset_band`. The center is chosen at the middle of the 
 so that a ball of radius `ε/(4L)` cannot escape either wall of the band, because the value can
 move by at most `ε/4` across the ball.
 
-**Theorem 5.20 (Coarea volume lower bound).** _Under the hypotheses of Theorem 5.19,
+*Theorem 5.20 (Coarea volume lower bound).* _Under the hypotheses of Theorem 5.19,
 `μ(coareaBand(f, τ, ε)) ≥ μ(B(c, ε/(4L)))` for any measure `μ`. In `ℝ` with Lebesgue measure this
 gives the explicit bound `μ(band) ≥ ε/(2L)`. In `ℝ^n` it gives `μ(band) ≥ vol(B(c, ε/(4L)))`, a
 positive quantity growing like `(ε/(4L))^n`._
@@ -500,7 +504,7 @@ space, if `f` dips below `τ − ε` somewhere and rises above `τ` somewhere, t
 computably bounded, measure. This is the quantitative form of "the boundary is populated." It is not
 a lonely level set; it is the spine of a slab of positive volume.
 
-**Remark 5.21.** The band volume scales as `ε/L` in one dimension and worsens the defender's
+*Remark 5.21.* The band volume scales as `ε/L` in one dimension and worsens the defender's
 position in a specific way. A defender's classifier, being imperfect, has an uncertainty band of some
 width `ε` around its estimate of the threshold. Theorem 5.20 says the true behaviors falling in that
 band occupy volume at least `ε/(2L)`. The wider the uncertainty and the smoother the model, the more
@@ -518,12 +522,12 @@ Model the defense as a `K`-Lipschitz map `D` that fixes a boundary point `z`, so
 distance. The key quantity is the local growth rate of `f` leaving `z`. If `f` climbs steeply enough
 away from `z`, no `K`-Lipschitz defense can drag the climbing behaviors back below `τ`.
 
-**Definition 5.22 (Steep region).** In `ℝ`, the _steep region_ around a boundary point `z` with slope
+*Definition 5.22 (Steep region).* In `ℝ`, the _steep region_ around a boundary point `z` with slope
 parameter `s` is `steepRegionR(f, τ, s, z) = {x | f x > τ + s · |x − z|}`. This is `steepRegionR` in
 `MoF_18_ConeBound`, with the general metric-space version `steepRegion` in `MoF_11_EpsilonRobust` and
 the refined form `steepRegionRefined` in `MoF_20_RefinedPersistence`.
 
-**Theorem 5.23 (Defense distortion bound).** _If `f` is `L`-Lipschitz, `D` is `K`-Lipschitz, and
+*Theorem 5.23 (Defense distortion bound).* _If `f` is `L`-Lipschitz, `D` is `K`-Lipschitz, and
 `D z = z`, then for all `x`, `f(D x) ≥ f x − L(K+1) · dist(x, z)`._
 
 _Proof._ First the defense moves `x` by a controlled amount. By the triangle inequality and the two
@@ -537,7 +541,7 @@ This is `defense_from_input_bound_R` (and `defense_from_input_bound` in `MoF_11`
 constant `L(K+1)` is the defense's maximum reach: how far below its input value the defense can pull
 the alignment score. If `f` rises faster than `L(K+1)` in some direction, the defense loses.
 
-**Theorem 5.24 (Cone measure bound).** _Suppose `f z = τ`, `D z = z`, and `f` grows from `z` at rate
+*Theorem 5.24 (Cone measure bound).* _Suppose `f z = τ`, `D z = z`, and `f` grows from `z` at rate
 `c > L(K+1)`, meaning `f(z + t) ≥ τ + c·t` for all `t ∈ (0, δ₀)`. Then, with slope `s = L(K+1)`:_
 
 _(1) the open interval `(z, z + δ₀)` is contained in the steep region;_
@@ -559,7 +563,7 @@ gave one surviving boundary point. This gives a set of positive measure, an enti
 every one of which remains unsafe after the defense has done its best. The impossibility is no longer a
 measure-zero curiosity. It is a slab of failure with volume you can bound from below.
 
-**Theorem 5.25 (Shallow boundaries can be defended).** _If instead `f` never rises faster than its own
+*Theorem 5.25 (Shallow boundaries can be defended).* _If instead `f` never rises faster than its own
 Lipschitz constant from `z`, that is `f x ≤ f z + L · dist(x, z)` for all `x`, then for every `K ≥ 0` the
 steep region is empty._
 
@@ -595,7 +599,7 @@ central fact of high-dimensional geometry, and the reason defense is hard in a w
 volume is cheap for attackers and ruinously expensive for defenders. This asymmetry is the curse of
 dimensionality, and `MoF_09_DimensionalScaling` states it precisely.
 
-**Theorem 5.26 (Grid explosion).** _Discretize each of `d` axes into `N` bins, giving a grid of
+*Theorem 5.26 (Grid explosion).* _Discretize each of `d` axes into `N` bins, giving a grid of
 `N^d` cells. For `N ≥ 2`, the grid size `N^d` grows without bound as `d → ∞`. Covering every cell
 requires at least `N^d` queries, and any fixed budget `B` is exceeded once `d` is large enough._
 
@@ -609,7 +613,7 @@ This is `grid_card`, `grid_exponential_growth`, `queries_lower_bound_surjective`
 the dimensions relevant to language models, where `d` is in the thousands, `N^d` is beyond astronomical.
 Exhaustive defense is not merely expensive; it is impossible at any budget.
 
-**Theorem 5.27 (Coverage collapse).** _A single defense patch covering a relative radius `r < 1` in each
+*Theorem 5.27 (Coverage collapse).* _A single defense patch covering a relative radius `r < 1` in each
 dimension covers a fraction `r^d` of the space, and `r^d → 0` as `d → ∞`. The number of patches needed to
 cover a fixed fraction `α` grows like `(1/r)^d → ∞`._
 
@@ -629,7 +633,7 @@ The basin has full dimension `d`; it is an open set. The boundary is one dimensi
 smooth case, a hypersurface of dimension `d − 1`. Full Hausdorff-dimension machinery is beyond the current
 library, so `MoF_Adv_02_BoundaryDimension` proves the achievable structural facts about the level set.
 
-**Theorem 5.28 (Boundary structure).** _The boundary `{x | f x = τ}` is closed, and its intersection with
+*Theorem 5.28 (Boundary structure).* _The boundary `{x | f x = τ}` is closed, and its intersection with
 any compact set is compact. It is empty exactly when `f` never equals `τ`, and nonempty on a connected space
 whenever `f` straddles `τ`. It is the preimage `f⁻¹({τ})`._
 
@@ -639,7 +643,7 @@ intersection of a closed set with a compact set. Emptiness and nonemptiness are 
 These are `boundary_is_closed`, `boundary_is_compact_on_compact`, `boundary_empty_of_no_crossing`,
 `boundary_nonempty_connected`, and `boundary_is_preimage_singleton`.
 
-**Theorem 5.29 (Regular points are isolated in one dimension).** _For `f : ℝ → ℝ`, if `f` has a nonzero
+*Theorem 5.29 (Regular points are isolated in one dimension).* _For `f : ℝ → ℝ`, if `f` has a nonzero
 derivative at a boundary point `z` (a regular value), then `z` is an isolated point of the level set: there
 is a punctured neighborhood of `z` on which `f ≠ τ`._
 
@@ -658,7 +662,7 @@ you account for classifier uncertainty.
 
 Function-class complexity, a proxy for model size, controls how intricate the basin can be.
 
-**Theorem 5.30 (Complexity and crossings).** _A constant model has a trivial basin, either empty or the
+*Theorem 5.30 (Complexity and crossings).* _A constant model has a trivial basin, either empty or the
 whole space. A monotone model crosses any threshold at most once. Making the basin oscillate, with many
 separated components, requires a large Lipschitz constant, quantitatively `L ≥ 2M` to reach height `M`
 between two zeros._
@@ -690,7 +694,7 @@ Random search finds the basin if it is large. Gradient attacks find it even when
 the slope of `f` uphill. This section formalizes why gradient ascent reliably reaches the unsafe region and
 then chains the local step into the global persistence result of the cone bound.
 
-**Theorem 5.31 (An ascent direction exists).** _Let `f : ℝ^n → ℝ` (or any real Hilbert space) be
+*Theorem 5.31 (An ascent direction exists).* _Let `f : ℝ^n → ℝ` (or any real Hilbert space) be
 differentiable at `x` with Fréchet derivative `f'`. If `f' ≠ 0`, then there is a direction `v` and a step
 size `ε > 0` with `f(x + ε·v) > f(x)`. In one dimension, if the derivative at `x` is positive, then `f`
 strictly increases just to the right of `x`._
@@ -708,7 +712,7 @@ away from critical points it does, there is always a way to nudge the input and 
 attacker never gets stuck except at a critical point, and critical points are exactly where the gradient
 vanishes (`critical_point_iff_fderiv_eq_zero`).
 
-**Theorem 5.32 (The gradient is the steepest direction).** _In a real inner product space, if `f` has
+*Theorem 5.32 (The gradient is the steepest direction).* _In a real inner product space, if `f` has
 gradient `g` at `x` (so `f' v = ⟨g, v⟩` for all `v`, the Riesz representation), then among unit directions the
 inner product `⟨g, v⟩` is maximized by `v = g/‖g‖`, giving directional derivative `‖g‖`._
 
@@ -727,7 +731,7 @@ matters connects the size of the gradient at a boundary point to the existence o
 measure unsafe region. This is the content of `MoF_21_GradientChain`, which closes the gap between the
 derivative and the cone bound.
 
-**Theorem 5.33 (Near-optimal direction from the gradient norm).** _If the derivative `f'` at `z` has
+*Theorem 5.33 (Near-optimal direction from the gradient norm).* _If the derivative `f'` at `z` has
 operator norm `‖f'‖ > c ≥ 0`, then there is a unit vector `v` with `f' v > c`._
 
 _Proof sketch._ By definition of the operator norm there is a vector of norm less than `1` on which `f'`
@@ -736,7 +740,7 @@ by something less than `1`, and choose the sign so that `f' v` is positive. ∎
 
 This is `near_optimal_direction`.
 
-**Theorem 5.34 (Derivative forces local growth).** _If `f` has derivative `f'` at `z`, `f z = τ`, `v` is a
+*Theorem 5.34 (Derivative forces local growth).* _If `f` has derivative `f'` at `z`, `f z = τ`, `v` is a
 unit vector, and `f' v > c`, then there is `δ > 0` such that `f(z + t·v) > τ + c·t` for all `t ∈ (0, δ)`._
 
 _Proof sketch._ Write `g(t) = f(z + t·v) − τ − c·t`. Its derivative at `0` is `f' v − c > 0`, and `g(0) = 0`.
@@ -745,7 +749,7 @@ A function with value zero and positive derivative at a point is strictly positi
 
 This is `deriv_implies_local_growth` and its strict form `deriv_implies_strict_local_growth`. Now assemble.
 
-**Theorem 5.35 (Gradient chain to persistence).** _Let `f` be differentiable at a boundary point `z`, with
+*Theorem 5.35 (Gradient chain to persistence).* _Let `f` be differentiable at a boundary point `z`, with
 `f z = τ`, and let the defense be `K`-Lipschitz. If the gradient norm satisfies `‖f'‖ > ℓ(K+1)` for the
 relevant Lipschitz constant `ℓ`, then the steep region `{x | f x > τ + ℓ(K+1)·dist(x, z)}` is nonempty, and
 in fact the persistent unsafe set `{x | f(D x) > τ}` has positive measure._
@@ -764,7 +768,7 @@ volume. The single number `‖∇f(z)‖`, the steepness of the alignment surfac
 the model is persistently attackable. This is the transversality condition `transversality_from_deriv` of
 `MoF_11` in its sharpest form.
 
-**Remark 5.36.** Compare this to the diagonal. Chapter 1's attack was a construction: build the liar query and
+*Remark 5.36.* Compare this to the diagonal. Chapter 1's attack was a construction: build the liar query and
 you are done, with no notion of effort. The gradient attack is a process: start somewhere, follow the slope,
 arrive. The diagonal's witness is exact and instantaneous but says nothing about cost. The gradient's witness
 is approximate and iterative but comes with a step count, `(τ − f(start))/gain` steps to cross, which is a real
@@ -782,7 +786,7 @@ Say two models have alignment surfaces `f` and `g` that are _δ-close in sup nor
 for all `x`. The number `δ` measures how differently the two models score the same behavior, the largest
 disagreement anywhere in the space.
 
-**Theorem 5.37 (Transfer with margin).** _If `|f x − g x| ≤ δ` everywhere and `f p > τ + δ`, then `g p > τ`._
+*Theorem 5.37 (Transfer with margin).* _If `|f x − g x| ≤ δ` everywhere and `f p > τ + δ`, then `g p > τ`._
 
 _Proof._ From `|f p − g p| ≤ δ` we get `g p ≥ f p − δ > (τ + δ) − δ = τ`. ∎
 
@@ -793,7 +797,7 @@ lower. An attack that clears `τ + δ` is guaranteed to transfer. Attackers know
 over-optimize, pushing the attack deep into the source basin rather than stopping at the edge; the geometry
 says over-optimization by `δ` is precisely what buys transfer.
 
-**Theorem 5.38 (Basin containment).** _Under δ-closeness, `{x | f x > τ + δ} ⊆ {x | g x > τ}`. If `δ = 0` the
+*Theorem 5.38 (Basin containment).* _Under δ-closeness, `{x | f x > τ + δ} ⊆ {x | g x > τ}`. If `δ = 0` the
 models agree pointwise and their basins are identical at every threshold._
 
 _Proof._ The containment is Theorem 5.37 applied at each point. If `δ = 0` then `f = g`, so the superlevel
@@ -805,7 +809,7 @@ This is `basin_containment` and `identical_models_identical_basins`, with the fr
 the outer one. The two-sided version, `pointwise_sandwich`, says each score traps the other in a band of width
 `δ`, so transfer runs in both directions with the same toll.
 
-**Theorem 5.39 (Transfer is computationally free).** _Given a δ-closeness certificate and a source-model
+*Theorem 5.39 (Transfer is computationally free).* _Given a δ-closeness certificate and a source-model
 success `f p > τ + δ`, the target-model success `g p > τ` follows by pure deduction, with zero additional
 evaluations of the target model `g`._
 
@@ -832,7 +836,7 @@ independence at the price of collateral refusals.
 
 Transfer needs `δ`, and `δ` must be estimated from samples, which is where concentration enters.
 
-**Theorem 5.40 (Empirical closeness underestimates the truth).** _If `|f xᵢ − g xᵢ| ≤ δ` at every sample point,
+*Theorem 5.40 (Empirical closeness underestimates the truth).* _If `|f xᵢ − g xᵢ| ≤ δ` at every sample point,
 then the empirical maximum disagreement over a finite nonempty sample set is at most `δ`. More samples give a
 larger, hence tighter, lower estimate of the true `δ`._
 
@@ -876,7 +880,7 @@ the ratio diverges.
 
 The first two layers turn radii into measure, the raw material of every later budget.
 
-**Theorem 5.41 (Ball volume is positive and monotone).** _In `ℝ^n` with Lebesgue measure, an open ball of
+*Theorem 5.41 (Ball volume is positive and monotone).* _In `ℝ^n` with Lebesgue measure, an open ball of
 positive radius has positive volume. Volume is monotone in the radius. In `ℝ` the ball of radius `r` has volume
 exactly `2r`._
 
@@ -885,7 +889,7 @@ larger volume by monotonicity. In `ℝ` the ball is an interval of length `2r`. 
 
 These are `ball_measure_pos`, `ball_measure_mono`, and `ball_measure_scale` in `MoF_Cost_01_BallVolume`.
 
-**Theorem 5.42 (Basin volume lower bound).** _If `f` is `L`-Lipschitz and `f p > τ`, the basin `{x | f x > τ}`
+*Theorem 5.42 (Basin volume lower bound).* _If `f` is `L`-Lipschitz and `f p > τ`, the basin `{x | f x > τ}`
 contains the robustness ball of radius `(f p − τ)/L` around `p`, so its measure is at least that of the ball. If
 `f` is merely continuous with an unsafe point, the basin still has strictly positive measure._
 
@@ -902,7 +906,7 @@ This is `robustness_ball_subset_basin`, `basin_measure_ge_ball`, and `basin_meas
 If the basin has probability `p` under the sampling distribution, how many random trials until a hit? The answer
 is the geometric distribution, and the cost layer proves its analytic core.
 
-**Theorem 5.43 (Random search hitting time).** _Suppose each independent trial lands in the basin with
+*Theorem 5.43 (Random search hitting time).* _Suppose each independent trial lands in the basin with
 probability `p`, `0 < p ≤ 1`. The probability of missing on all of the first `n` trials is `(1 − p)^n`, which
 decreases monotonically to `0`. The probability of at least one hit, `1 − (1 − p)^n`, increases to `1`. The
 expected number of trials to the first hit is `1/p`._
@@ -923,7 +927,7 @@ gradient attacks earn their keep by replacing random search's `1/p` with a linea
 
 The defender estimates `f` from finite samples and classifies by the estimate. Concentration controls the error.
 
-**Theorem 5.44 (Estimation margin).** _Suppose an estimate `f̂` satisfies `|f̂ x − f x| ≤ ε` everywhere. If
+*Theorem 5.44 (Estimation margin).* _Suppose an estimate `f̂` satisfies `|f̂ x − f x| ≤ ε` everywhere. If
 `f̂ x > τ + ε`, then truly `f x > τ`; if `f̂ x < τ − ε`, then truly `f x < τ`. The undecidable band is
 `{x | |f̂ x − τ| ≤ ε}`, and it shrinks as `ε` shrinks._
 
@@ -937,7 +941,7 @@ of Theorem 5.20, whose volume is at least `ε/(2L)` in one dimension. Estimation
 same phenomenon viewed twice: the band the classifier cannot resolve is the band the geometry says has positive
 volume.
 
-**Theorem 5.45 (Lipschitz interpolation from samples).** _For an `L`-Lipschitz `f`, knowing `f` at a sample `x₀`
+*Theorem 5.45 (Lipschitz interpolation from samples).* _For an `L`-Lipschitz `f`, knowing `f` at a sample `x₀`
 bounds `f` nearby: `|f x − f x₀| ≤ L · dist(x, x₀)`. To hold the estimation error below `ε` everywhere in
 `[0, 1]^d` you need samples no farther than `ε/L` apart, which forces on the order of `(L/ε)^d` samples._
 
@@ -956,7 +960,7 @@ loose exactly where it matters.
 
 Now the three budgets, each a corollary of the layers above.
 
-**Theorem 5.46 (Attack cost).** _An iterative attack gaining at least `δ > 0` per step, on a score bounded in
+*Theorem 5.46 (Attack cost).* _An iterative attack gaining at least `δ > 0` per step, on a score bounded in
 `[0, 1]`, reaches any threshold `τ` from a start `s₀` in at most `⌈(τ − s₀)/δ⌉ + 1` steps, and can take at most
 `⌈1/δ⌉` useful steps in all. On reaching `f > τ` with margin, the attacker gains a robustness ball of radius
 `(f − τ)/L`._
@@ -971,7 +975,7 @@ in `MoF_05_MonotoneConvergence`. The attack budget is `1/δ`, a constant indepen
 The attacker's cost does not grow with `d`, because the attacker follows a one-dimensional trajectory of steps and
 each step gains a fixed amount, regardless of how many dimensions surround the path.
 
-**Theorem 5.47 (Defense cost).** _A defender covering the space with patches of relative radius `r < 1` needs on
+*Theorem 5.47 (Defense cost).* _A defender covering the space with patches of relative radius `r < 1` needs on
 the order of `(1/r)^d` patches to cover a fixed fraction, and this grows without bound as `d → ∞`. For any budget
 `B` there is a critical dimension beyond which the defense cost exceeds `B`._
 
@@ -982,7 +986,7 @@ This is `patches_needed`, `defense_cost_exponential`, and `critical_dimension` i
 defense budget is `(1/r)^d`, exponential in dimension. Set this beside the attacker's constant `1/δ` and the
 asymmetry is stated.
 
-**Theorem 5.48 (Transfer cost).** _Porting an attack across two δ-close models costs zero target queries once the
+*Theorem 5.48 (Transfer cost).* _Porting an attack across two δ-close models costs zero target queries once the
 source attack has margin `δ`, and the closeness `δ` itself is estimated from samples at a cost that grows only with
 the desired precision, not with dimension._
 
@@ -995,12 +999,12 @@ essentially nothing to the attack budget while multiplying its reach across a mo
 
 The three budgets combine into one number that decides the contest.
 
-**Definition 5.49 (Cost ratio).** The _defense-to-attack cost ratio_ is
+*Definition 5.49 (Cost ratio).* The _defense-to-attack cost ratio_ is
 `costRatio(N, d, δ) = N^d · δ`, the defender's `N^d` cells divided by the attacker's `1/δ` steps. This is
 `costRatio` in `MoF_Cost_08_CostRatio`, and in bundled form `unifiedCostRatio` on the `CostParameters` structure of
 `MoF_Cost_10_UnifiedTheory`, where it simplifies to `δ · N^d` (`unifiedCostRatio_eq`).
 
-**Theorem 5.50 (Cost asymmetry, master theorem).** _For any fixed grid resolution `N ≥ 2` and attack gain
+*Theorem 5.50 (Cost asymmetry, master theorem).* _For any fixed grid resolution `N ≥ 2` and attack gain
 `δ > 0`, the cost ratio `δ · N^d` is positive, increases with `d`, and tends to infinity. For any willingness-to-pay
 ratio `R > 0`, however large, there is a critical dimension `d₀` beyond which the ratio exceeds `R`. The attacker's
 budget is independent of dimension; the defender's is exponential in it._
@@ -1023,7 +1027,7 @@ defender a dimension-exponential budget (defense cost). The ratio of the two div
 A defender might try to escape by tuning the defense's own smoothness `K`. The optimal-defense theory shows this
 only trades one failure mode for another.
 
-**Theorem 5.51 (No `K` wins).** _For an alignment surface with Lipschitz constant `L` and boundary growth rate
+*Theorem 5.51 (No `K` wins).* _For an alignment surface with Lipschitz constant `L` and boundary growth rate
 (transversality slope) `G`, and a `K`-Lipschitz defense, exactly one of two things holds for every `K ≥ 0`: either
 `G > L(K+1)`, in which case a persistent unsafe region of positive measure survives (Theorem 5.24), or
 `L(K+1) ≥ G`, in which case the failure band has width at least `G·δ`. When `G > L`, the critical value
@@ -1076,7 +1080,7 @@ section makes the concentration precise and draws out its two faces.
 Start with the crudest volume bound, which needs no smoothness at all, only nonnegativity and integrability of the
 alignment surface.
 
-**Theorem 5.52 (Markov bound on the basin).** _Let `f ≥ 0` be integrable against a measure `μ`. Then for any
+*Theorem 5.52 (Markov bound on the basin).* _Let `f ≥ 0` be integrable against a measure `μ`. Then for any
 `ε > 0`, `ε · μ({x | f x ≥ ε}) ≤ ∫ f dμ`. Equivalently, `μ({x | f x ≥ ε}) ≤ (1/ε) ∫ f dμ`._
 
 _Proof._ On the set `{f ≥ ε}` the integrand is at least `ε`, so
@@ -1092,7 +1096,7 @@ of any local patch, and driving it down means changing the model everywhere at o
 The Markov bound is one-sided and loose. The sharp phenomenon in high dimension is two-sided and tight, and it is
 about Lipschitz functions specifically.
 
-**The concentration phenomenon.** On the unit sphere in `ℝ^n`, or under a standard Gaussian on `ℝ^n`, an
+*The concentration phenomenon.* On the unit sphere in `ℝ^n`, or under a standard Gaussian on `ℝ^n`, an
 `L`-Lipschitz function `f` deviates from its median `m` by more than `t` with probability at most about
 `2 · exp(-c · t² / L²)` for a universal constant `c`. As `n` grows, the constant in the exponent works in the
 attacker's favor through the geometry, but the shape is the key: a Lipschitz function is nearly constant across
@@ -1110,7 +1114,7 @@ says a directed attacker skips the `1/p` wait entirely by climbing the gradient 
 hides the basin from random draws and does nothing to hide it from gradients. The attacker who knows this never
 samples at random.
 
-**Theorem 5.53 (Positive-measure failure band, full defense).** _Let `X` be a connected Hausdorff metric space with
+*Theorem 5.53 (Positive-measure failure band, full defense).* _Let `X` be a connected Hausdorff metric space with
 a positive-on-opens measure `μ`. Let `f` be `L`-Lipschitz and continuous with `L > 0`, let `D` be a `K`-Lipschitz
 continuous defense that fixes the safe region, and suppose the boundary is transverse in the sense that `f` grows
 from some fixed boundary point faster than `L(K+1)`. Then the set of behaviors that remain unsafe after defense,
@@ -1128,7 +1132,7 @@ cone bound (Theorem 5.24) gave a surviving interval in one dimension. This gives
 measure in full generality, under honest Lipschitz hypotheses on both the model and the defense. The impossibility
 is not a boundary artifact of measure zero. It is a region an adversary can enter.
 
-**Remark 5.54 (The two faces).** Concentration has a face turned toward the attacker and a face turned toward the
+*Remark 5.54 (The two faces).* Concentration has a face turned toward the attacker and a face turned toward the
 defender, and they are the same geometry. Toward the defender it says: your samples spread thin, the nearest sample
 to a random point is far (distance concentrates around a large value), so your interpolation bound `L · dist` from
 Theorem 5.45 is loose everywhere, and you cannot certify the space without exponentially many samples. Toward the
@@ -1168,7 +1172,7 @@ Model a multi-turn interaction as a sequence of alignment surfaces `f_t` and def
 attacker free to probe repeatedly. The relevant quantity is the running maximum of the scores achieved, since the
 attacker only needs to succeed once and can keep the best result.
 
-**Theorem 5.55 (The attacker's running edge).** _The running maximum of the attacker's scores over turns is
+*Theorem 5.55 (The attacker's running edge).* _The running maximum of the attacker's scores over turns is
 monotone nondecreasing: it never falls as turns accumulate. Under a capacity-parity model where the defense has a
 fixed number of correction slots and the attacker has one more configuration than there are slots, the pigeonhole
 principle forces the defense to collapse two distinct attacks to the same output, so at least one attack is not
@@ -1195,7 +1199,7 @@ formal shadow of the practical fact that long conversations erode guardrails.
 When the behavior space is a finite chain of tokens rather than a continuum, the intermediate value theorem is
 replaced by a discrete crossing lemma, and the master theorem by a discrete fixed-point argument.
 
-**Theorem 5.56 (Discrete crossing and the discrete trilemma).** _Let `f` be defined on a finite chain
+*Theorem 5.56 (Discrete crossing and the discrete trilemma).* _Let `f` be defined on a finite chain
 `0, 1, …, n+1` with `f 0 < τ` and `f(n+1) ≥ τ`. Then there is an adjacent pair `i, i+1` with `f i < τ` and
 `f(i+1) ≥ τ`: the score crosses the threshold across a single step. If a defense `D` fixes every safe point of the
 chain, it fixes such a crossing point, and cannot make it safe. More abstractly, for any `f`, threshold `τ`, defense
@@ -1216,7 +1220,7 @@ engines, analytic and diagonal, are visibly the same shape. The continuum route 
 connectedness and the IVT; the discrete route reaches it by pigeonhole; the self-referential route reaches it by
 diagonalization. Three proofs, one boundary.
 
-**Remark 5.57.** The discrete results are the bridge back to the book's spine. Chapter 1 built a query no boolean
+*Remark 5.57.* The discrete results are the bridge back to the book's spine. Chapter 1 built a query no boolean
 verdict answers, using self-reference. `MoF_12`'s `discrete_trilemma` builds an unsafe point no utility-preserving
 defense corrects, using order and counting. They are not the same theorem, but they are instances of one pattern:
 a system asked to classify a domain it is embedded in must leave a witness uncovered. The geometry chapters spent
@@ -1270,100 +1274,110 @@ companion Lean library, and where the prose and the Lean differ, the Lean is aut
 
 # Exercises
 
-**Exercise 5.1.** Verify directly that for the Gaussian bump `f(x) = M · exp(-‖x‖²/2)` on `ℝ^n` with `0 < τ < M`,
+*Exercise 5.1.* Verify directly that for the Gaussian bump `f(x) = M · exp(-‖x‖²/2)` on `ℝ^n` with `0 < τ < M`,
 the basin `{x | f x > τ}` is the ball of radius `√(2 ln(M/τ))`. Confirm the three soft predictions (openness,
 positive measure, connectedness) against Theorems 5.3, 5.5, and 5.7, and identify which `MoF_*` result each uses.
 
-**Exercise 5.2.** Show that Theorem 5.4 (every unsafe point owns a ball) gives no lower bound on the radius using
+*Exercise 5.2.* Show that Theorem 5.4 (every unsafe point owns a ball) gives no lower bound on the radius using
 continuity alone, by exhibiting a continuous but non-Lipschitz `f : ℝ → ℝ` and an unsafe point whose guaranteed
 ball can be made arbitrarily small. Then show that adding a Lipschitz hypothesis pins the radius to `(f p − τ)/L`
 via `lipschitz_basin_ball`.
 
-**Exercise 5.3.** Prove the no-gap theorem (Theorem 5.10) fails on a disconnected space by constructing an `f` on
+*Exercise 5.3.* Prove the no-gap theorem (Theorem 5.10) fails on a disconnected space by constructing an `f` on
 `X = [0, 1] ∪ [2, 3]` that is below `τ` on the first interval and above `τ` on the second, with empty boundary.
 Explain in one sentence why connectedness is the exact hypothesis `no_gap_theorem` requires.
 
-**Exercise 5.4.** In the affine example `f(x) = ⟨w, x⟩ + b` with `‖w‖ = L`, verify that the robustness ball of
+*Exercise 5.4.* In the affine example `f(x) = ⟨w, x⟩ + b` with `‖w‖ = L`, verify that the robustness ball of
 Theorem 5.14 is tight: it touches the boundary hyperplane at exactly one point and lies strictly inside the basin
 everywhere else. Compute that point in terms of `p`, `w`, and the margin.
 
-**Exercise 5.5.** Using `higher_lipschitz_more_oscillation` (Theorem 5.17), show that a model required to be safe
+*Exercise 5.5.* Using `higher_lipschitz_more_oscillation` (Theorem 5.17), show that a model required to be safe
 (`f = 0`) at two inputs a unit apart and grossly unsafe (`f = M`) at their midpoint must have Lipschitz constant at
 least `2M`. Then use `smoother_functions_larger_basins` to argue that lowering `L` to below `2M` is impossible
 without removing the unsafe spike, and interpret this as a no-free-lunch statement for smoothing.
 
-**Exercise 5.6.** Derive the one-dimensional coarea bound `μ(band) ≥ ε/(2L)` (Theorem 5.20) from the ball-in-band
+*Exercise 5.6.* Derive the one-dimensional coarea bound `μ(band) ≥ ε/(2L)` (Theorem 5.20) from the ball-in-band
 containment (Theorem 5.19) and the length formula for intervals. Then generalize the computation to `ℝ^n` and
 express the bound in terms of the volume of a Euclidean ball of radius `ε/(4L)`.
 
-**Exercise 5.7.** For the cone bound (Theorem 5.24), suppose `f` grows from a boundary point `z` at rate `c` and the
+*Exercise 5.7.* For the cone bound (Theorem 5.24), suppose `f` grows from a boundary point `z` at rate `c` and the
 defense has reach `s = L(K+1)`. Show that the surviving steep region on `(z, z + δ₀)` has measure exactly `δ₀` and
 that every point of it satisfies `f(D x) > τ` by at least `(c − s) · (x − z)`. Interpret the gap `(c − s)` as the
 defender's shortfall.
 
-**Exercise 5.8.** Prove the shallow-boundary escape (Theorem 5.25) and then show its converse direction: if the
+*Exercise 5.8.* Prove the shallow-boundary escape (Theorem 5.25) and then show its converse direction: if the
 steep region is nonempty for some `K`, then `f` rises faster than `L` in some direction from `z`. Match your
 argument to `persistence_implies_steep_direction` in `MoF_19`.
 
-**Exercise 5.9.** Compute the grid cost `N^d` and the coverage fraction `r^d` for `N = 4`, `r = 1/4`, `d = 10`, and
+*Exercise 5.9.* Compute the grid cost `N^d` and the coverage fraction `r^d` for `N = 4`, `r = 1/4`, `d = 10`, and
 `d = 30`. Verify numerically that a fixed defense budget of `10^6` patches is exhausted between these two
 dimensions, and identify the critical dimension `d₀` predicted by `no_fixed_budget_defense`.
 
-**Exercise 5.10.** Using `regular_value_boundary` (Theorem 5.29), show that a one-dimensional alignment surface with
+*Exercise 5.10.* Using `regular_value_boundary` (Theorem 5.29), show that a one-dimensional alignment surface with
 nonvanishing derivative has an isolated (locally singleton) boundary. Then construct an `f` with a degenerate
 critical point on its boundary whose level set `{f = τ}` contains an interval, showing that regularity is necessary
 for isolation.
 
-**Exercise 5.11.** From `ascent_direction_exists` (Theorem 5.31), prove that gradient ascent on a differentiable `f`
+*Exercise 5.11.* From `ascent_direction_exists` (Theorem 5.31), prove that gradient ascent on a differentiable `f`
 never halts except at a critical point, and connect this to `critical_point_iff_fderiv_eq_zero`. Then use Theorem
 5.32 to show that among all unit-step attacks, the gradient step maximizes the immediate gain in `f`.
 
-**Exercise 5.12.** Trace the full gradient chain (Theorem 5.35) on the affine surface `f(x) = ⟨w, x⟩` with
+*Exercise 5.12.* Trace the full gradient chain (Theorem 5.35) on the affine surface `f(x) = ⟨w, x⟩` with
 `‖w‖ = G`, against a `K`-Lipschitz defense. Determine exactly when `G > L(K+1)` fails and succeeds for `L = ‖w‖`,
 and reconcile your answer with the worked corner example of Section 6 (why affine surfaces alone cannot be
 persistently unsafe against their own Lipschitz constant).
 
-**Exercise 5.13.** For transfer (Theorem 5.37), suppose two models are `δ`-close with `δ = 0.2`. An attacker holds a
+*Exercise 5.13.* For transfer (Theorem 5.37), suppose two models are `δ`-close with `δ = 0.2`. An attacker holds a
 source-model success with margin `m`. For which `m` is transfer guaranteed, and for which `m` might it fail?
 Construct an explicit pair `f, g` with `|f − g| ≤ δ` and a point where transfer fails for `m < δ`, showing the
 margin condition of `transfer_attack` is sharp.
 
-**Exercise 5.14.** Using the hitting-time result (Theorem 5.43), compute the expected number of random trials to hit
+*Exercise 5.14.* Using the hitting-time result (Theorem 5.43), compute the expected number of random trials to hit
 a basin of probability `p = 10^-6`, and compare it to the step count of a gradient attack that gains `δ = 0.05` per
 step from a start `s₀ = τ − 1`. Explain, in terms of `1/p` versus `(τ − s₀)/δ`, why gradient attacks dominate random
 search when the basin is small.
 
-**Exercise 5.15.** Assemble the master cost asymmetry (Theorem 5.50) from its pieces: attack budget `1/δ` (constant),
+*Exercise 5.15.* Assemble the master cost asymmetry (Theorem 5.50) from its pieces: attack budget `1/δ` (constant),
 defense budget `N^d` (exponential), and the ratio `δ · N^d`. Prove the ratio exceeds any `R > 0` for large enough
 `d`, matching `MASTER_THEOREM_cost_asymmetry`, and state precisely which quantity's independence from `d` is the
 source of the asymmetry.
 
-**Exercise 5.16.** (Harder.) Combine the optimal-defense dilemma (Theorem 5.51) with the coarea bound (Theorem 5.20)
+*Exercise 5.16.* (Harder.) Combine the optimal-defense dilemma (Theorem 5.51) with the coarea bound (Theorem 5.20)
 to show that at the critical `K* = G/L − 1`, the failure band has width at least `G·δ` and volume at least
 proportional to `G·δ/L` in one dimension. Then argue that no choice of `K` simultaneously drives both the persistent
 cone measure and the band volume to zero when `G > L`, and interpret this as the quantitative form of the master
 theorem's single surviving boundary point.
 
-**Exercise 5.17.** (Open-ended.) The cost theory measures the attacker's budget in gradient steps and the defender's
+*Exercise 5.17.* (Open-ended.) The cost theory measures the attacker's budget in gradient steps and the defender's
 in grid cells, two different units. Propose a common currency (for instance, model evaluations, or wall-clock
 compute) in which both budgets can be expressed, and rederive the cost ratio in that currency. Does the asymmetry
 survive the change of units? Identify which theorem of this chapter would need restating and which would carry over
 unchanged.
 
-**Exercise 5.18.** (Open-ended.) Every quantitative result here assumes a metric and a measure on behavior space. For
+*Exercise 5.18.* (Open-ended.) Every quantitative result here assumes a metric and a measure on behavior space. For
 a discrete space of token sequences, neither is canonical. Speculate on what plays the role of the Lipschitz constant
 `L`, the ball, and the coarea band in a discrete setting, and consult `MoF_12_Discrete` for one formalized answer.
 Which of the cost-ratio conclusions do you expect to survive discretization, and which depend essentially on the
 continuum?
 
-**Exercise 5.19.** From the Markov basin bound (Theorem 5.52), derive an upper bound on the basin measure
+*Exercise 5.19.* From the Markov basin bound (Theorem 5.52), derive an upper bound on the basin measure
 `μ({f ≥ τ})` in terms of the average score `∫ f dμ` and `τ`, and contrast it with the lower bound from the coarea
 band (Theorem 5.20). For the Gaussian annulus example with `f(x) = ‖x‖` under a standard Gaussian, estimate both
 bounds and explain why the gradient attack ignores the smallness of the Markov upper bound. Relate the annulus
 picture to why random search costs `1/p` while the gradient attack costs a constant.
 
-**Exercise 5.20.** Using the running-maximum monotonicity and the pigeonhole step of Theorem 5.55, show that a
+*Exercise 5.20.* Using the running-maximum monotonicity and the pigeonhole step of Theorem 5.55, show that a
 defense with `n` correction slots facing `n + 1` distinct attacks must leave at least one uncorrected, and that
 over `T` turns the attacker's best score is nondecreasing. Then state the discrete crossing lemma (Theorem 5.56) as
 a discrete intermediate value theorem and prove it by taking the largest safe index. Finally, explain in one
 paragraph, without symbols, why the discrete trilemma and the diagonal of Chapter 1 are two proofs of one fact.
+
+# References
+
+Federer, H. (1969). _Geometric Measure Theory_. Springer, Berlin.
+
+Goodfellow, I. J., Shlens, J., Szegedy, C. (2015). Explaining and harnessing adversarial examples. In _International Conference on Learning Representations (ICLR)_.
+
+Ledoux, M. (2001). _The Concentration of Measure Phenomenon_. Mathematical Surveys and Monographs 89. American Mathematical Society, Providence, RI.
+
+Madry, A., Makelov, A., Schmidt, L., Tsipras, D., Vladu, A. (2018). Towards deep learning models resistant to adversarial attacks. In _International Conference on Learning Representations (ICLR)_.
