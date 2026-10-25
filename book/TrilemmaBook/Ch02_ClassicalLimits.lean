@@ -1298,7 +1298,7 @@ Seven theorems, one engine. Laid side by side, the classical limits differ only 
 the first four columns of the recipe and agree entirely in the fifth.
 
 | Theorem | `A` (indices) | `Y` | `t` | Wrapper (universality is...) |
-|---|---|---|---|---|
+|-|-|-|-|-|
 | Cantor | a set | `Bool` | `!` | a power-set surjection |
 | Russell | a universe of sets | `Bool` | `!` | unrestricted comprehension |
 | Gödel I | codes of formulas | `Bool` | `!` | representability plus completeness |

@@ -267,14 +267,16 @@ whether a scan shows a finding that needs urgent review. Suppose a confident wro
 thousand times what a refusal costs, since a refusal simply routes the scan to the
 normal radiologist queue. Suppose further that traffic near the model's truth
 boundary is one percent of volume, and that abstaining on the whole boundary shell
-removes ninety-five percent of the confident errors. Answering everywhere and
-accepting the boundary errors costs about `0.01 · 0.95 · 1000 = 9.5` refusal-units
-per hundred scans in expected error, against an abstention cost of about `1` per
-hundred scans, one refusal per hundred routed to the human queue. Abstention wins
-by roughly a factor of nine here, and the factor grows with the cost ratio. The
-number that could flip the decision is the boundary density: if only one scan in ten
-thousand approaches the boundary, the error cost falls to `0.095` per hundred and
-answering everywhere becomes cheaper than the refusals. The design decision is
+removes ninety-five percent of the confident errors. Per hundred scans, answering
+everywhere costs about `0.01 · 0.95 · 1000 · 100 = 950` refusal-units in expected
+error, against an abstention cost of about `1` per hundred scans, one refusal per
+hundred routed to the human queue. Abstention wins by roughly the cost ratio, here
+about `950` (that is `0.95 · Cerr/Cref`), and that ratio is set by `Cerr/Cref` and the
+in-band error fraction, not by the boundary density. Lowering the boundary density
+does not flip the decision: the reject region hugs the boundary, so the abstention
+cost falls with density exactly as the error cost does, and abstention stays cheaper
+by the same ratio. What the boundary density sets is the absolute cost of either
+corner, and how wide a reject region is worth placing. The design decision is
 downstream of a measurement, which is the recurring theme of this chapter.
 
 _The second-order cost, made concrete._ The `a · u` term is the direct loss, but a
@@ -1160,7 +1162,7 @@ reward accuracy do not price the confidence report, so they drift toward the
 decoupling corner for free (Proposition 7.8). Design a training objective or a
 regularizer that penalizes decoupling directly, and quantify the accuracy cost of
 maintaining calibration. This is the constructive counterpart to the warning of
-Section 3.
+Section 2.
 
 *Problem 7.27 (The full symmetry theorem).* The symmetry version of the boundary
 result replaces coverage with an antipodal condition and needs a vector Borsuk-Ulam
@@ -1295,7 +1297,7 @@ boundary density and one with near-zero boundary density, such that the same mod
 has a confident-error rate differing by a factor of a hundred. Explain why no
 benchmark can determine which distribution a deployment actually faces.
 
-*Exercise 7.10.* The measurement protocol of Section 6 histograms truth-field
+*Exercise 7.10.* The measurement protocol of Section 5 histograms truth-field
 distances on representative traffic. Suppose your truth field is a nonzero linear
 probe. Using the hyperplane boundary result of Chapter 4, write the distance from
 a query embedding to the boundary as an explicit formula, and explain why this

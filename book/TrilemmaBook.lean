@@ -26,7 +26,7 @@ set_option pp.rawOnError true
 #doc (Manual) "One Diagonal: Verified Limits of Trustworthy AI" =>
 
 %%%
-authors := ["Manish Bhatt", "Ken Huang"]
+authors := ["Manish Bhatt"]
 %%%
 
 These are lecture notes on a family of impossibility theorems for machine

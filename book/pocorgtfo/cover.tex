@@ -1,0 +1,110 @@
+%% KDP full-wrap cover for AI || PoC || GTFO, Issue 0x01, DARK edition.
+%% Trim 6x9, 420 pp white paper -> spine 420*0.002252 = 0.9458 in.
+%% Full cover: 0.125 + 6 + 0.9458 + 6 + 0.125 = 13.1958 in  x  9.25 in (0.125 bleed).
+\documentclass{article}
+\usepackage[paperwidth=13.1958in,paperheight=9.25in,margin=0in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{decorations.text,arrows.meta}
+\definecolor{darkbg}{RGB}{18,18,23}
+\definecolor{cream}{RGB}{245,241,232}
+\definecolor{seal}{RGB}{196,42,46}
+\definecolor{dim}{RGB}{176,170,158}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\newcommand{\pp}{\ensuremath{\mathbin{\|}}}
+\newcommand{\motto}{\(f\,a_0\,a_0 = \lnot(f\,a_0\,a_0)\)}
+
+\begin{document}
+\noindent\begin{tikzpicture}[x=1in,y=1in,remember picture,overlay]
+  \begin{scope}[shift={(current page.south west)}]
+  % ---------- dark background (covers full bleed)
+  \fill[darkbg] (0,0) rectangle (13.1958,9.25);
+  % faint spine fold guides
+  \draw[white!12,line width=0.2pt] (6.125,0) -- (6.125,9.25);
+  \draw[white!12,line width=0.2pt] (7.0708,0) -- (7.0708,9.25);
+
+  % ======================================================= FRONT (right)
+  \begin{scope}
+    \clip (7.0708,0) rectangle (13.0708,9.25);
+    \draw[cream,line width=1.6pt] (7.36,8.05) -- (12.82,8.05);
+    \node[cream,font=\scshape\large] at (10.0708,8.35)
+      {an epistle to the neighborly builders of oracles};
+    \node[cream,font=\bfseries\fontsize{52}{54}\selectfont] at (10.0708,7.35)
+      {Pick Two};
+    \node[cream,font=\itshape\large,align=center,text width=5.2in] at (10.0708,6.5)
+      {The Three Promises No Machine Keeps at Once};
+    \draw[cream,line width=1.6pt] (7.36,6.0) -- (12.82,6.0);
+    \node[dim,font=\scshape] at (10.0708,5.68) {Issue 0x01};
+
+    % ---- clean emblem, dark palette
+    \begin{scope}[shift={(10.0708,3.5)},scale=0.95]
+      \draw[line width=1.0pt,cream] (0,0) circle (1.62cm);
+      \draw[line width=0.4pt,cream] (0,0) circle (1.52cm);
+      \path[decorate,decoration={text along path,text align=center,
+            text={|\scshape\footnotesize\color{cream}|NO UNIVERSAL VERDICT  --  PROVE IT OR GET OUT  -- }}]
+            (0,0) ++(180:1.57cm) arc (180:-180:1.57cm);
+      \draw[line width=0.6pt,cream,dash pattern=on 2.5pt off 2pt] (-0.72,-0.72) -- (0.72,0.72);
+      \fill[cream] (0.72,0.72) circle (1.1pt);
+      \node[cream,anchor=south west,font=\tiny,inner sep=0.5pt] at (0.72,0.68) {$a_0$};
+      \draw[line width=1.9pt,seal,-{Stealth[length=3mm]}] (104:1.07cm) arc (104:-250:1.07cm);
+      \node[fill=darkbg,text=cream,inner sep=1.5pt,font=\itshape\small] at (0,0.26) {the liar};
+      \node[fill=darkbg,text=cream,inner sep=1.5pt,font=\scriptsize] at (0,-0.06) {\motto};
+    \end{scope}
+
+    \node[cream,font=\large] at (10.0708,1.25) {by \textsc{Manish Bhatt}};
+    \node[dim,font=\footnotesize] at (10.0708,0.78)
+      {Every proof machine-checked in Lean 4 \ \textbullet\ \ \texttt{sorry}-free};
+    \node[cream,font=\scshape] at (10.0708,0.42) {Shrewd Research};
+  \end{scope}
+
+  % ======================================================= SPINE
+  \begin{scope}
+    \clip (6.125,0) rectangle (7.0708,9.25);
+    \node[cream,rotate=-90,font=\bfseries\large] at (6.598,6.3) {Pick Two};
+    \node[dim,rotate=-90,font=\itshape] at (6.598,3.1) {No Universal Verdict};
+    \node[cream,rotate=-90,font=\scshape\small] at (6.598,1.7) {Manish Bhatt};
+    \node[dim,rotate=-90,font=\scriptsize\scshape] at (6.598,0.55) {Shrewd Research};
+    \node[dim,rotate=-90,font=\footnotesize] at (6.598,8.15) {0x01};
+  \end{scope}
+
+  % ======================================================= BACK (left)
+  \begin{scope}
+    \clip (0.125,0) rectangle (6.125,9.25);
+    \node[cream,font=\bfseries\Large] at (3.125,8.5)
+      {Prove It, or Get Out.};
+    \draw[cream,line width=1.0pt] (0.5,8.2) -- (5.75,8.2);
+    \node[cream,font=\normalsize,align=left,text width=5.1in,anchor=north] at (3.125,7.95)
+      {The AI-safety field keeps rediscovering the same wall. No model can be
+       faithful, calibrated, and covering at once. No prompt-injection defense can
+       be both complete and utility-preserving. No probe reads truth off a network
+       exactly. These look like three separate frustrations. They are the same
+       impossibility, wearing three masks.
+       \\[0.55em]
+       This book traces all of them to one theorem, Lawvere's 1969 diagonal
+       fixed point, the root of Cantor, G\"odel, Tarski, and Turing, plus the
+       intermediate value theorem. Three impossibilities, one argument, no fourth
+       escape. And every proof is machine-checked in Lean~4. Sorry-free.
+       \\[0.55em]
+       It stays honest about its reach: the mathematics has been settled since 1969;
+       the force rests on the modeling premises; it proves these limits \emph{exist},
+       not how often you will meet one.
+       \\[0.55em]
+       Read the liar query. Find the diagonal.};
+    \node[cream,font=\itshape\large] at (3.125,3.0) {Pick two. The third is a fixed point.};
+    \draw[cream,line width=1.0pt] (0.5,2.7) -- (5.75,2.7);
+    \node[dim,font=\footnotesize,align=left,text width=5.1in,anchor=north] at (3.125,2.5)
+      {Made in the spirit of the hacker zines; not affiliated with or endorsed by any
+       of them. The full text is free as a PDF, if you bought this, you bought the
+       artifact.};
+    % barcode safe zone (KDP overlays the barcode here; keep it light)
+    \fill[white] (3.95,0.35) rectangle (5.75,1.55);
+    \draw[dim,line width=0.3pt] (3.95,0.35) rectangle (5.75,1.55);
+    \node[gray,font=\tiny] at (4.85,0.95) {ISBN / barcode};
+    \node[dim,font=\footnotesize\scshape] at (1.9,0.55) {Shrewd Research \textbullet\ Issue 0x01 \textbullet\ 2026};
+  \end{scope}
+  \end{scope}
+\end{tikzpicture}
+\end{document}

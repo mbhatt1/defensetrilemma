@@ -541,6 +541,8 @@ This is `defense_from_input_bound_R` (and `defense_from_input_bound` in `MoF_11`
 constant `L(K+1)` is the defense's maximum reach: how far below its input value the defense can pull
 the alignment score. If `f` rises faster than `L(K+1)` in some direction, the defense loses.
 
+*Remark 5.23a (The operative reach is the defense-path Lipschitz constant).* The bound above used `f`'s global Lipschitz constant `L` for `|f(D x) − f x|`, but what truly governs the defense's reach is how fast `f` varies _along the defense's own displacements_: the defense-path Lipschitz constant `ℓ`, with `|f(D x) − f x| ≤ ℓ · dist(D x, x)` and `ℓ ≤ L`. The reach is then `ℓ(K+1)` and the steep condition is `G > ℓ(K+1)`. This is the crux: `f` can be _anisotropic_, steep in the growth direction (gradient `G`) yet smooth along defense-displacement paths, so that `ℓ < L` and `G > ℓ(K+1)` is achievable even for `K > 0`. When the surface is isotropic (`ℓ = L`) the steep region is empty and the defense always wins, which is exactly the shallow-boundary case of Theorem 5.25. The non-vacuous, refined statement is `persistent_unsafe_refined`, and the gradient criterion that makes the steep region nonempty is `gradient_norm_implies_steep_nonempty`. Read the reach `L(K+1)` in the persistence results below as this defense-path reach `ℓ(K+1)`.
+
 *Theorem 5.24 (Cone measure bound).* _Suppose `f z = τ`, `D z = z`, and `f` grows from `z` at rate
 `c > L(K+1)`, meaning `f(z + t) ≥ τ + c·t` for all `t ∈ (0, δ₀)`. Then, with slope `s = L(K+1)`:_
 
@@ -588,8 +590,8 @@ applies with any `δ₀ > 0`: the whole ray `(0, δ₀)` is a steep region of me
 defense. But here `L = G`, so `G > G(K+1)` requires `K + 1 < 1`, impossible for `K ≥ 0`. The corner is
 not steep _relative to its own Lipschitz constant_, so this particular `f` is defensible in principle, in
 line with Theorem 5.25. To get genuine persistence you need `f` to rise, near `z`, faster than it rises
-elsewhere, so that its local slope `G` exceeds `L(K+1)` with `L` the _global_ constant governing the
-defense's smoothing. That is precisely the regime the gradient chain of the next-but-one section reaches
+elsewhere, so that its local slope `G` exceeds `ℓ(K+1)`, where `ℓ ≤ L` is the _defense-path_ constant governing the
+defense's smoothing, strictly below the global `L` for an anisotropic surface. That is precisely the regime the gradient chain of the next-but-one section reaches
 by way of the derivative `‖∇f(z)‖`.
 
 # Dimensional scaling and the boundary's dimension
@@ -647,9 +649,9 @@ These are `boundary_is_closed`, `boundary_is_compact_on_compact`, `boundary_empt
 derivative at a boundary point `z` (a regular value), then `z` is an isolated point of the level set: there
 is a punctured neighborhood of `z` on which `f ≠ τ`._
 
-_Proof sketch._ A nonzero derivative makes `f` strictly monotone near `z`, so `f` takes the value `τ`
-exactly once nearby. Formally, the derivative being nonzero implies `f` is eventually different from `τ`
-away from `z`, which is exactly isolation. ∎
+_Proof sketch._ A nonzero derivative forces `f` off the value `τ` as `x` moves away from `z`: to first order
+`f(x) - τ = f'(z)(x - z) + o(x - z)`, which is nonzero for `x` near `z` with `x ≠ z`, so `f` attains
+`τ` only at `z` in a neighborhood, which is exactly isolation. ∎
 
 This is `regular_value_boundary` and `boundary_locally_finite_1d`. Where the boundary is regular, it is thin
 and well-behaved, a clean interface. Where the gradient degenerates, the boundary can thicken and fold, and
@@ -1324,7 +1326,7 @@ never halts except at a critical point, and connect this to `critical_point_iff_
 
 *Exercise 5.12.* Trace the full gradient chain (Theorem 5.35) on the affine surface `f(x) = ⟨w, x⟩` with
 `‖w‖ = G`, against a `K`-Lipschitz defense. Determine exactly when `G > L(K+1)` fails and succeeds for `L = ‖w‖`,
-and reconcile your answer with the worked corner example of Section 6 (why affine surfaces alone cannot be
+and reconcile your answer with the worked corner example of Section 5 (why affine surfaces alone cannot be
 persistently unsafe against their own Lipschitz constant).
 
 *Exercise 5.13.* For transfer (Theorem 5.37), suppose two models are `δ`-close with `δ = 0.2`. An attacker holds a

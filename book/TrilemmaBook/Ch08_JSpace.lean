@@ -536,8 +536,11 @@ realizing index that produces the contradiction, and it is the same evaluation
 `congrFun hp p` that {lean}`jspace_liar` performs. Of course no map from a
 two-element set can actually be surjective onto a four-element set, which is why the
 finite version refutes the _hypothesis_ rather than deriving a falsehood. That is
-the honest content for finite models, and Chapter 6 turns it into a quantitative
-statement about how far a finite probe must fall short of totality.
+the honest content for finite models: a finite probe simply cannot realize every
+pattern, so there is no contradiction, only a richness hypothesis that fails. How far a
+finite probe must fall short of the diagonal pattern in particular, as a function of its
+coverage, the diagonal engine does not say; it is not what Chapter 6's real-valued slack
+results bound, and that finite approximation question is open.
 
 ## The pipeline, not just the encoder
 
@@ -1173,7 +1176,7 @@ possible verdict patterns, the probe fails to be surjective by construction, so 
 liar is forced by counting alone. What Chapter 6 supplies is the observation that
 the diagonal pattern `q ↦ !(read (enc q) q)` is a specific, nameable target, and a
 probe that is expressive enough to be useful is expressive enough to come close to
-it on a nonneglible fraction of queries. The quantitative statement is not "there
+it on a nonnegligible fraction of queries. The quantitative statement is not "there
 is a liar" but "the fraction of queries on which the probe is forced to be wrong is
 bounded below by a quantity that grows with the probe's own coverage of verdict
 patterns." A probe that covers more patterns, that is more expressive, has a larger

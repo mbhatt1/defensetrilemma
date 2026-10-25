@@ -36,7 +36,7 @@ theorem of each file in view and says, in one line each, what that theorem asser
 A word on axioms before the tour, because the book makes a point of it. Lean's
 kernel admits exactly three standard axioms beyond its type theory: `propext`
 (propositional extensionality), `Classical.choice` (the axiom of choice), and
-`Quot.sound` (the computation rule for quotients). A proof that uses none of them is
+`Quot.sound` (the soundness axiom for quotients, identifying related elements). A proof that uses none of them is
 \_axiom-free\_ in the strict sense; a proof that uses only these three is \_classically
 clean\_, resting on nothing exotic. The rule of thumb for this corpus is simple. The
 combinatorial diagonal results, the ones whose outputs live in `Bool` or in a bare

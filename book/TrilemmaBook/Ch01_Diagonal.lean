@@ -78,8 +78,8 @@ function is the diagonal, and negation is the change that nothing can equal. Hol
 that translation in mind; it is Example 1.12, and it is the reason `bool_not_fpf`
 below is the entire content of Cantor's theorem.
 
-Cantor's earlier and more famous use of the diagonal, from 1874 and refined in
-1891, was to show the real numbers are uncountable, and it is the same argument
+Cantor's more famous use of the diagonal, also from 1891, was to show the real numbers are
+uncountable, and it is the same argument
 with the pool taken to be the natural numbers. Suppose a list `r₀, r₁, r₂, …`
 claims to enumerate every real in `[0,1]` by their decimal expansions. Build a new
 real whose `n`-th digit differs from the `n`-th digit of `rₙ`, say by replacing
