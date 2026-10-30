@@ -47,3 +47,12 @@ import Foundation.F_13_UnifiedTrilemmata
 
 -- J-space readout inherits the coupling impossibility.
 import Foundation.F_14_JSpace
+
+-- The diagonal trilemma on satisfiable, discrete universality.
+import Foundation.F_15_DiscreteDiagonal
+
+-- Three distinct domain trilemmata (hallucination, defense, coupling), one engine.
+import Foundation.F_16_DomainTrilemmata
+
+-- Reflectivity derived from universality (discrete Gödel/Tarski diagonal lemma).
+import Foundation.F_17_DiagonalLemma

@@ -1,0 +1,968 @@
+{"Verso.Genre.Manual.section":
+ {"title": "Sections or chapters of the manual",
+  "description": null,
+  "contents":
+  {"Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--What-this-leaves":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--What-this-leaves",
+     "data":
+     {"title": "What this leaves",
+      "shortTitle": null,
+      "sectionNum": "9.7.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title": "What this leaves", "shortTitle": null, "number": "7"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--The-runtime-assurance-fallback-rule":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--The-runtime-assurance-fallback-rule",
+     "data":
+     {"title": "The runtime-assurance fallback rule",
+      "shortTitle": null,
+      "sectionNum": "9.4.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title": "The runtime-assurance fallback rule",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--The-robust-failure-value-and-the-viability-kernel":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--The-robust-failure-value-and-the-viability-kernel",
+     "data":
+     {"title": "The robust failure value and the viability kernel",
+      "shortTitle": null,
+      "sectionNum": "9.1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title": "The robust failure value and the viability kernel",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--The-eight-item-empirical-identification-program":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--The-eight-item-empirical-identification-program",
+     "data":
+     {"title": "The eight-item empirical identification program",
+      "shortTitle": null,
+      "sectionNum": "9.6.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title": "The eight-item empirical identification program",
+        "shortTitle": null,
+        "number": "6"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--Tail-severity-and-adversarial-energy":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--Tail-severity-and-adversarial-energy",
+     "data":
+     {"title": "Tail severity and adversarial energy",
+      "shortTitle": null,
+      "sectionNum": "9.2.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title": "Tail severity and adversarial energy",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--Recoverability-as-a-probability___-and-the-hysteresis-prediction":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--Recoverability-as-a-probability___-and-the-hysteresis-prediction",
+     "data":
+     {"title": "Recoverability as a probability, and the hysteresis prediction",
+      "shortTitle": null,
+      "sectionNum": "9.3.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title":
+        "Recoverability as a probability, and the hysteresis prediction",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--Causal-incentive-analysis-and-the-Defense-Trilemma-reading":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why--Causal-incentive-analysis-and-the-Defense-Trilemma-reading",
+     "data":
+     {"title": "Causal-incentive analysis and the Defense Trilemma reading",
+      "shortTitle": null,
+      "sectionNum": "9.5.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"},
+       {"title": "Causal-incentive analysis and the Defense Trilemma reading",
+        "shortTitle": null,
+        "number": "5"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--What-Was-Cut___-and-Why",
+     "data":
+     {"title": "What Was Cut, and Why",
+      "shortTitle": null,
+      "sectionNum": "9.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "What Was Cut, and Why", "shortTitle": null, "number": "9"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Specification-Automaton--The-automaton":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Specification-Automaton--The-automaton",
+     "data":
+     {"title": "The automaton",
+      "shortTitle": null,
+      "sectionNum": "6.1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Specification Automaton",
+        "shortTitle": null,
+        "number": "6"},
+       {"title": "The automaton", "shortTitle": null, "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Specification-Automaton":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Specification-Automaton",
+     "data":
+     {"title": "The Specification Automaton",
+      "shortTitle": null,
+      "sectionNum": "6.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Specification Automaton",
+        "shortTitle": null,
+        "number": "6"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Shield___-and-Capability-Monotonicity--The-shield-interface":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Shield___-and-Capability-Monotonicity--The-shield-interface",
+     "data":
+     {"title": "The shield interface",
+      "shortTitle": null,
+      "sectionNum": "7.1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Shield, and Capability Monotonicity",
+        "shortTitle": null,
+        "number": "7"},
+       {"title": "The shield interface", "shortTitle": null, "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Shield___-and-Capability-Monotonicity--Capability-monotonicity":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Shield___-and-Capability-Monotonicity--Capability-monotonicity",
+     "data":
+     {"title": "Capability monotonicity",
+      "shortTitle": null,
+      "sectionNum": "7.2.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Shield, and Capability Monotonicity",
+        "shortTitle": null,
+        "number": "7"},
+       {"title": "Capability monotonicity",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Shield___-and-Capability-Monotonicity":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Shield___-and-Capability-Monotonicity",
+     "data":
+     {"title": "The Shield, and Capability Monotonicity",
+      "shortTitle": null,
+      "sectionNum": "7.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Shield, and Capability Monotonicity",
+        "shortTitle": null,
+        "number": "7"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--The-augmented-state":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--The-augmented-state",
+     "data":
+     {"title": "The augmented state",
+      "shortTitle": null,
+      "sectionNum": "5.1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Formal Model", "shortTitle": null, "number": "5"},
+       {"title": "The augmented state", "shortTitle": null, "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--Intervention-and-composition":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--Intervention-and-composition",
+     "data":
+     {"title": "Intervention and composition",
+      "shortTitle": null,
+      "sectionNum": "5.3.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Formal Model", "shortTitle": null, "number": "5"},
+       {"title": "Intervention and composition",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--Capability-ordering":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--Capability-ordering",
+     "data":
+     {"title": "Capability ordering",
+      "shortTitle": null,
+      "sectionNum": "5.4.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Formal Model", "shortTitle": null, "number": "5"},
+       {"title": "Capability ordering", "shortTitle": null, "number": "4"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--Belief-as-an-interface":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model--Belief-as-an-interface",
+     "data":
+     {"title": "Belief as an interface",
+      "shortTitle": null,
+      "sectionNum": "5.2.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Formal Model", "shortTitle": null, "number": "5"},
+       {"title": "Belief as an interface", "shortTitle": null, "number": "2"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--The-Formal-Model",
+     "data":
+     {"title": "The Formal Model",
+      "shortTitle": null,
+      "sectionNum": "5.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Formal Model", "shortTitle": null, "number": "5"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--What-this-chapter-does-not-place":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--What-this-chapter-does-not-place",
+     "data":
+     {"title": "What this chapter does not place",
+      "shortTitle": null,
+      "sectionNum": "4.4.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Related Work", "shortTitle": null, "number": "4"},
+       {"title": "What this chapter does not place",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--Specification-automata":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--Specification-automata",
+     "data":
+     {"title": "Specification automata",
+      "shortTitle": null,
+      "sectionNum": "4.2.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Related Work", "shortTitle": null, "number": "4"},
+       {"title": "Specification automata", "shortTitle": null, "number": "2"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--Hybrid-state-and-partial-observability":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--Hybrid-state-and-partial-observability",
+     "data":
+     {"title": "Hybrid state and partial observability",
+      "shortTitle": null,
+      "sectionNum": "4.1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Related Work", "shortTitle": null, "number": "4"},
+       {"title": "Hybrid state and partial observability",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--Capability-and-reachability":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work--Capability-and-reachability",
+     "data":
+     {"title": "Capability and reachability",
+      "shortTitle": null,
+      "sectionNum": "4.3.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Related Work", "shortTitle": null, "number": "4"},
+       {"title": "Capability and reachability",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Related-Work",
+     "data":
+     {"title": "Related Work",
+      "shortTitle": null,
+      "sectionNum": "4.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Related Work", "shortTitle": null, "number": "4"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--What-survives-the-rule":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--What-survives-the-rule",
+     "data":
+     {"title": "What survives the rule",
+      "shortTitle": null,
+      "sectionNum": "3.1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "3"},
+       {"title": "What survives the rule", "shortTitle": null, "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--What-does-not-survive":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--What-does-not-survive",
+     "data":
+     {"title": "What does not survive",
+      "shortTitle": null,
+      "sectionNum": "3.2.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "3"},
+       {"title": "What does not survive", "shortTitle": null, "number": "2"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--Thesis-statement___-scaled-to-what-remains":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--Thesis-statement___-scaled-to-what-remains",
+     "data":
+     {"title": "Thesis statement, scaled to what remains",
+      "shortTitle": null,
+      "sectionNum": "3.3.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "3"},
+       {"title": "Thesis statement, scaled to what remains",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--Structure":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction--Structure",
+     "data":
+     {"title": "Structure",
+      "shortTitle": null,
+      "sectionNum": "3.4.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "3"},
+       {"title": "Structure", "shortTitle": null, "number": "4"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Introduction",
+     "data":
+     {"title": "Introduction",
+      "shortTitle": null,
+      "sectionNum": "3.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "3"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--How-to-read-this-thesis":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--How-to-read-this-thesis",
+     "data":
+     {"title": "How to read this thesis",
+      "shortTitle": null,
+      "sectionNum": "2.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "How to read this thesis",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Conclusion":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Conclusion",
+     "data":
+     {"title": "Conclusion",
+      "shortTitle": null,
+      "sectionNum": "10.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Conclusion", "shortTitle": null, "number": "10"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Abstract":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--Abstract",
+     "data":
+     {"title": "Abstract",
+      "shortTitle": null,
+      "sectionNum": "1.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Abstract", "shortTitle": null, "number": "1"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--A-Recoverability-Monitor-Interface":
+   [{"id":
+     "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety--A-Recoverability-Monitor-Interface",
+     "data":
+     {"title": "A Recoverability-Monitor Interface",
+      "shortTitle": null,
+      "sectionNum": "8.",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null},
+       {"title": "A Recoverability-Monitor Interface",
+        "shortTitle": null,
+        "number": "8"}]},
+     "address": "/"}],
+   "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety":
+   [{"id": "Capability-Monotonicity-in-a-Formal-Skeleton-for-Agentic-AI-Safety",
+     "data":
+     {"title":
+      "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+      "shortTitle": null,
+      "sectionNum": "",
+      "context":
+      [{"title":
+        "Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "shortTitle": null,
+        "number": null}]},
+     "address": "/"}]}},
+ "Verso.Genre.Manual.example":
+ {"title": "Verso.Genre.Manual.example",
+  "description": null,
+  "contents":
+  {"crossedPointOfNoReturn":
+   [{"id": "crossedPointOfNoReturn",
+     "data":
+     {"/#crossedPointOfNoReturn":
+      {"display": "crossedPointOfNoReturn",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "A Recoverability-Monitor Interface"]}},
+     "address": "/"}],
+   "compose":
+   [{"id": "compose",
+     "data":
+     {"/#compose":
+      {"display": "compose",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "capability_reachable_subset":
+   [{"id": "capability_reachable_subset",
+     "data":
+     {"/#capability_reachable_subset":
+      {"display": "capability_reachable_subset",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "Capability monotonicity"]}},
+     "address": "/"}],
+   "SpecAutomaton.step":
+   [{"id": "SpecAutomaton___step",
+     "data":
+     {"/#SpecAutomaton___step":
+      {"display": "step",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Specification Automaton",
+        "The automaton"]}},
+     "address": "/"}],
+   "SpecAutomaton.run":
+   [{"id": "SpecAutomaton___run",
+     "data":
+     {"/#SpecAutomaton___run":
+      {"display": "SpecAutomaton.run",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Specification Automaton",
+        "The automaton"]}},
+     "address": "/"}],
+   "SpecAutomaton.reject":
+   [{"id": "SpecAutomaton___reject",
+     "data":
+     {"/#SpecAutomaton___reject":
+      {"display": "reject",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Specification Automaton",
+        "The automaton"]}},
+     "address": "/"}],
+   "SpecAutomaton.init":
+   [{"id": "SpecAutomaton___init",
+     "data":
+     {"/#SpecAutomaton___init":
+      {"display": "init",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Specification Automaton",
+        "The automaton"]}},
+     "address": "/"}],
+   "SpecAutomaton":
+   [{"id": "SpecAutomaton",
+     "data":
+     {"/#SpecAutomaton":
+      {"display": "SpecAutomaton",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Specification Automaton",
+        "The automaton"]}},
+     "address": "/"}],
+   "Shield.valueBound":
+   [{"id": "Shield___valueBound",
+     "data":
+     {"/#Shield___valueBound":
+      {"display": "valueBound",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "Shield.utility":
+   [{"id": "Shield___utility",
+     "data":
+     {"/#Shield___utility":
+      {"display": "utility",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "Shield.hardInvariant":
+   [{"id": "Shield___hardInvariant",
+     "data":
+     {"/#Shield___hardInvariant":
+      {"display": "hardInvariant",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "Shield.decide":
+   [{"id": "Shield___decide",
+     "data":
+     {"/#Shield___decide":
+      {"display": "Shield.decide",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "Shield.candidates":
+   [{"id": "Shield___candidates",
+     "data":
+     {"/#Shield___candidates":
+      {"display": "candidates",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "Shield.admissible":
+   [{"id": "Shield___admissible",
+     "data":
+     {"/#Shield___admissible":
+      {"display": "Shield.admissible",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "Shield":
+   [{"id": "Shield",
+     "data":
+     {"/#Shield":
+      {"display": "Shield",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "The shield interface"]}},
+     "address": "/"}],
+   "RecoverabilityMonitor.update":
+   [{"id": "RecoverabilityMonitor___update",
+     "data":
+     {"/#RecoverabilityMonitor___update":
+      {"display": "update",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "A Recoverability-Monitor Interface"]}},
+     "address": "/"}],
+   "RecoverabilityMonitor.estimate":
+   [{"id": "RecoverabilityMonitor___estimate",
+     "data":
+     {"/#RecoverabilityMonitor___estimate":
+      {"display": "estimate",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "A Recoverability-Monitor Interface"]}},
+     "address": "/"}],
+   "RecoverabilityMonitor":
+   [{"id": "RecoverabilityMonitor",
+     "data":
+     {"/#RecoverabilityMonitor":
+      {"display": "RecoverabilityMonitor",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "A Recoverability-Monitor Interface"]}},
+     "address": "/"}],
+   "ReachableIn.tail":
+   [{"id": "ReachableIn___tail",
+     "data":
+     {"/#ReachableIn___tail":
+      {"display": "tail",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "Capability monotonicity"]}},
+     "address": "/"}],
+   "ReachableIn.refl":
+   [{"id": "ReachableIn___refl",
+     "data":
+     {"/#ReachableIn___refl":
+      {"display": "refl",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "Capability monotonicity"]}},
+     "address": "/"}],
+   "ReachableIn":
+   [{"id": "ReachableIn",
+     "data":
+     {"/#ReachableIn":
+      {"display": "ReachableIn",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Shield, and Capability Monotonicity",
+        "Capability monotonicity"]}},
+     "address": "/"}],
+   "Intervention.sandbox":
+   [{"id": "Intervention___sandbox",
+     "data":
+     {"/#Intervention___sandbox":
+      {"display": "sandbox",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention.reducePrivilege":
+   [{"id": "Intervention___reducePrivilege",
+     "data":
+     {"/#Intervention___reducePrivilege":
+      {"display": "reducePrivilege",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention.modify":
+   [{"id": "Intervention___modify",
+     "data":
+     {"/#Intervention___modify":
+      {"display": "modify",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention.fallback":
+   [{"id": "Intervention___fallback",
+     "data":
+     {"/#Intervention___fallback":
+      {"display": "fallback",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention.deny":
+   [{"id": "Intervention___deny",
+     "data":
+     {"/#Intervention___deny":
+      {"display": "deny",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention.askHuman":
+   [{"id": "Intervention___askHuman",
+     "data":
+     {"/#Intervention___askHuman":
+      {"display": "askHuman",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention.allow":
+   [{"id": "Intervention___allow",
+     "data":
+     {"/#Intervention___allow":
+      {"display": "allow",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "Intervention":
+   [{"id": "Intervention",
+     "data":
+     {"/#Intervention":
+      {"display": "Intervention",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Intervention and composition"]}},
+     "address": "/"}],
+   "CapabilitySet.le":
+   [{"id": "CapabilitySet___le",
+     "data":
+     {"/#CapabilitySet___le":
+      {"display": "CapabilitySet.le",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Capability ordering"]}},
+     "address": "/"}],
+   "CapabilitySet.executable":
+   [{"id": "CapabilitySet___executable",
+     "data":
+     {"/#CapabilitySet___executable":
+      {"display": "executable",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Capability ordering"]}},
+     "address": "/"}],
+   "CapabilitySet":
+   [{"id": "CapabilitySet",
+     "data":
+     {"/#CapabilitySet":
+      {"display": "CapabilitySet",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Capability ordering"]}},
+     "address": "/"}],
+   "CTVGState.monitor":
+   [{"id": "CTVGState___monitor",
+     "data":
+     {"/#CTVGState___monitor":
+      {"display": "monitor",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "CTVGState.mode":
+   [{"id": "CTVGState___mode",
+     "data":
+     {"/#CTVGState___mode":
+      {"display": "mode",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "CTVGState.memory":
+   [{"id": "CTVGState___memory",
+     "data":
+     {"/#CTVGState___memory":
+      {"display": "memory",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "CTVGState.latent":
+   [{"id": "CTVGState___latent",
+     "data":
+     {"/#CTVGState___latent":
+      {"display": "latent",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "CTVGState.environment":
+   [{"id": "CTVGState___environment",
+     "data":
+     {"/#CTVGState___environment":
+      {"display": "environment",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "CTVGState.capability":
+   [{"id": "CTVGState___capability",
+     "data":
+     {"/#CTVGState___capability":
+      {"display": "capability",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "CTVGState":
+   [{"id": "CTVGState",
+     "data":
+     {"/#CTVGState":
+      {"display": "CTVGState",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "The augmented state"]}},
+     "address": "/"}],
+   "Belief.update":
+   [{"id": "Belief___update",
+     "data":
+     {"/#Belief___update":
+      {"display": "update",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Belief as an interface"]}},
+     "address": "/"}],
+   "Belief.estimate":
+   [{"id": "Belief___estimate",
+     "data":
+     {"/#Belief___estimate":
+      {"display": "estimate",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Belief as an interface"]}},
+     "address": "/"}],
+   "Belief":
+   [{"id": "Belief",
+     "data":
+     {"/#Belief":
+      {"display": "Belief",
+       "context":
+       ["Capability Monotonicity in a Formal Skeleton for Agentic AI Safety",
+        "The Formal Model",
+        "Belief as an interface"]}},
+     "address": "/"}]}},
+ "Verso.Genre.Manual.doc.tech":
+ {"title": "Terminology",
+  "description": "Definitions of technical terms",
+  "contents": {}},
+ "Verso.Genre.Manual.doc.tactic.conv":
+ {"title": "Conversion Tactics",
+  "description": "Tactics for performing targeted rewriting of subterms",
+  "contents": {}},
+ "Verso.Genre.Manual.doc.tactic":
+ {"title": "Tactic Documentation",
+  "description": "Detailed descriptions of tactics",
+  "contents": {}},
+ "Verso.Genre.Manual.doc.suggestion":
+ {"title": "Lean constant suggestions",
+  "description": "Search suggestions for Lean constants",
+  "contents": {}},
+ "Verso.Genre.Manual.doc.option":
+ {"title": "Compiler options", "description": null, "contents": {}},
+ "Verso.Genre.Manual.doc":
+ {"title": "Lean constant reference",
+  "description": "Documentation for Lean constants",
+  "contents": {}}}

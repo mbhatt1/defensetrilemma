@@ -1,0 +1,33 @@
+\contentsline {chapter}{Contents}{i}{section*.1}%
+\contentsline {chapter}{\chapternumberline {1}Abstract}{1}{chapter.1}%
+\contentsline {chapter}{\chapternumberline {2}How to read this thesis}{3}{chapter.2}%
+\contentsline {chapter}{\chapternumberline {3}Introduction}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}What survives the rule}{5}{section.3.1}%
+\contentsline {section}{\numberline {3.2}What does not survive}{5}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Thesis statement, scaled to what remains}{6}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Structure}{6}{section.3.4}%
+\contentsline {chapter}{\chapternumberline {4}Related Work}{7}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Hybrid state and partial observability}{7}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Specification automata}{7}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Capability and reachability}{8}{section.4.3}%
+\contentsline {section}{\numberline {4.4}What this chapter does not place}{8}{section.4.4}%
+\contentsline {chapter}{\chapternumberline {5}The Formal Model}{9}{chapter.5}%
+\contentsline {section}{\numberline {5.1}The augmented state}{9}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Belief as an interface}{9}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Intervention and composition}{10}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Capability ordering}{10}{section.5.4}%
+\contentsline {chapter}{\chapternumberline {6}The Specification Automaton}{13}{chapter.6}%
+\contentsline {section}{\numberline {6.1}The automaton}{13}{section.6.1}%
+\contentsline {chapter}{\chapternumberline {7}The Shield, and Capability Monotonicity}{15}{chapter.7}%
+\contentsline {section}{\numberline {7.1}The shield interface}{15}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Capability monotonicity}{16}{section.7.2}%
+\contentsline {chapter}{\chapternumberline {8}A Recoverability-Monitor Interface}{19}{chapter.8}%
+\contentsline {chapter}{\chapternumberline {9}What Was Cut, and Why}{21}{chapter.9}%
+\contentsline {section}{\numberline {9.1}The robust failure value and the viability kernel}{21}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Tail severity and adversarial energy}{21}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Recoverability as a probability, and the hysteresis prediction}{22}{section.9.3}%
+\contentsline {section}{\numberline {9.4}The runtime-assurance fallback rule}{22}{section.9.4}%
+\contentsline {section}{\numberline {9.5}Causal-incentive analysis and the Defense Trilemma reading}{22}{section.9.5}%
+\contentsline {section}{\numberline {9.6}The eight-item empirical identification program}{22}{section.9.6}%
+\contentsline {section}{\numberline {9.7}What this leaves}{23}{section.9.7}%
+\contentsline {chapter}{\chapternumberline {10}Conclusion}{25}{chapter.10}%

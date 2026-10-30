@@ -1,0 +1,45 @@
+%% Kindle eBook front cover for "Pick Two" — 6x9 trim, dark edition, no bleed/spine.
+\documentclass{article}
+\usepackage[paperwidth=6in,paperheight=9in,margin=0in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{decorations.text,arrows.meta}
+\definecolor{darkbg}{RGB}{18,18,23}
+\definecolor{cream}{RGB}{245,241,232}
+\definecolor{seal}{RGB}{196,42,46}
+\definecolor{dim}{RGB}{176,170,158}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\newcommand{\motto}{\(f\,a_0\,a_0 = \lnot(f\,a_0\,a_0)\)}
+\begin{document}
+\noindent\begin{tikzpicture}[x=1in,y=1in]
+  \fill[darkbg] (0,0) rectangle (6,9);
+  \draw[cream,line width=1.6pt] (0.2892,7.925) -- (5.7492,7.925);
+  \node[cream,font=\scshape\large] at (3.0,8.225)
+    {an epistle to the neighborly builders of oracles};
+  \node[cream,font=\bfseries\fontsize{52}{54}\selectfont] at (3.0,7.225) {Pick Two};
+  \node[cream,font=\itshape\large,align=center,text width=5.2in] at (3.0,6.375)
+    {The Three Promises No Machine Keeps at Once};
+  \draw[cream,line width=1.6pt] (0.2892,5.875) -- (5.7492,5.875);
+  \node[dim,font=\scshape] at (3.0,5.555) {Issue 0x01};
+  \begin{scope}[shift={(3.0,3.375)},scale=0.95]
+    \draw[line width=1.0pt,cream] (0,0) circle (1.62cm);
+    \draw[line width=0.4pt,cream] (0,0) circle (1.52cm);
+    \path[decorate,decoration={text along path,text align=center,
+          text={|\scshape\footnotesize\color{cream}|NO UNIVERSAL VERDICT  --  PROVE IT OR GET OUT  -- }}]
+          (0,0) ++(180:1.57cm) arc (180:-180:1.57cm);
+    \draw[line width=0.6pt,cream,dash pattern=on 2.5pt off 2pt] (-0.72,-0.72) -- (0.72,0.72);
+    \fill[cream] (0.72,0.72) circle (1.1pt);
+    \node[cream,anchor=south west,font=\tiny,inner sep=0.5pt] at (0.72,0.68) {$a_0$};
+    \draw[line width=1.9pt,seal,-{Stealth[length=3mm]}] (104:1.07cm) arc (104:-250:1.07cm);
+    \node[fill=darkbg,text=cream,inner sep=1.5pt,font=\itshape\small] at (0,0.26) {the liar};
+    \node[fill=darkbg,text=cream,inner sep=1.5pt,font=\scriptsize] at (0,-0.06) {\motto};
+  \end{scope}
+  \node[cream,font=\large] at (3.0,1.125) {by \textsc{Manish Bhatt}};
+  \node[dim,font=\footnotesize] at (3.0,0.655)
+    {Every proof machine-checked in Lean 4 \ \textbullet\ \ \texttt{sorry}-free};
+  \node[cream,font=\scshape] at (3.0,0.295) {Shrewd Research};
+\end{tikzpicture}
+\end{document}

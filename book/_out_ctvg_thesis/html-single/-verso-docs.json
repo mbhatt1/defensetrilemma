@@ -1,0 +1,131 @@
+{"9": "<code>Belief (S Y : Type) : Type</code>",
+ "82": "<code>Float</code>",
+ "81":
+ "<code>crossedPointOfNoReturn (eta prevEstimate newEstimate : Float) : Bool</code>",
+ "80":
+ "<code>RecoverabilityMonitor.update {Y : Type} (self : RecoverabilityMonitor Y) : Y → Float</code>",
+ "8":
+ "<code>CTVGState.monitor {X Q M C E RPhi : Type} (self : CTVGState X Q M C E RPhi) : RPhi</code>",
+ "79":
+ "<code>RecoverabilityMonitor.estimate {Y : Type} (self : RecoverabilityMonitor Y) : Float</code>",
+ "78":
+ "<code>RecoverabilityMonitor (Y : Type) : Type</code><span class=\"sep\"></span><code class=\"docstring\">An interface for a recoverability monitor: given a current estimate and\nan observation, produce the next estimate, and flag the event that the\nestimate has dropped from at or above a threshold to below it. Nothing here\ncomputes, bounds, or justifies `estimate`; the structure only fixes what a\ncaller would pass in and get back. </code>",
+ "77":
+ "<code>Membership.mem.{u, v} {α : outParam (Type u)} {γ : Type v} [self : Membership α γ] : γ → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The membership relation `a ∈ s : Prop` where `a : α`, `s : γ`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∈` in identifiers is `mem`.</code>",
+ "76":
+ "<code>Eq.{u_1} {α : Sort u_1} : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The equality relation. It has one introduction rule, `Eq.refl`.\nWe use `a = b` as notation for `Eq a b`.\nA fundamental property of equality is that it is an equivalence relation.\n```\nvariable (α : Type) (a b c d : α)\nvariable (hab : a = b) (hcb : c = b) (hcd : c = d)\n\nexample : a = d :=\n  Eq.trans (Eq.trans hab (Eq.symm hcb)) hcd\n```\nEquality is much more than an equivalence relation, however. It has the important property that every assertion\nrespects the equivalence, in the sense that we can substitute equal expressions without changing the truth value.\nThat is, given `h1 : a = b` and `h2 : p a`, we can construct a proof for `p b` using substitution: `Eq.subst h1 h2`.\nExample:\n```\nexample (α : Type) (a b : α) (p : α → Prop)\n        (h1 : a = b) (h2 : p a) : p b :=\n  Eq.subst h1 h2\n\nexample (α : Type) (a b : α) (p : α → Prop)\n    (h1 : a = b) (h2 : p a) : p b :=\n  h1 ▸ h2\n```\nThe triangle in the second presentation is a macro built on top of `Eq.subst` and `Eq.symm`, and you can enter it by typing `\\t`.\nFor more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)\n\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `=` in identifiers is `eq`.</code>",
+ "75": "<code>ReachableIn step c2 s0 s'✝</code>",
+ "74": "<code>s✝ ∈ step s'✝ a</code>",
+ "73": "<code>c1.executable a = true</code>",
+ "72": "<code>ReachableIn step c1 s0 s'✝</code>",
+ "71":
+ "<code class=\"docstring\">`exact e` closes the main goal if its target type matches that of `e`.\n</code>",
+ "70":
+ "<code class=\"docstring\">After `with`, there is an optional tactic that runs on all branches, and\nthen a list of alternatives.\n</code>",
+ "7":
+ "<code>CTVGState.environment {X Q M C E RPhi : Type} (self : CTVGState X Q M C E RPhi) : E</code>",
+ "69":
+ "<code class=\"docstring\">Assuming `x` is a variable in the local context with an inductive type,\n`induction x` applies induction on `x` to the main goal,\nproducing one goal for each constructor of the inductive type,\nin which the target is replaced by a general instance of that constructor\nand an inductive hypothesis is added for each recursive argument to the constructor.\nIf the type of an element in the local context depends on `x`,\nthat element is reverted and reintroduced afterward,\nso that the inductive hypothesis incorporates that hypothesis as well.\n\nFor example, given `n : Nat` and a goal with a hypothesis `h : P n` and target `Q n`,\n`induction n` produces one goal with hypothesis `h : P 0` and target `Q 0`,\nand one goal with hypotheses `h : P (Nat.succ a)` and `ih₁ : P a → Q a` and target `Q (Nat.succ a)`.\nHere the names `a` and `ih₁` are chosen automatically and are not accessible.\nYou can use `with` to provide the variables names for each constructor.\n- `induction e`, where `e` is an expression instead of a variable,\n  generalizes `e` in the goal, and then performs induction on the resulting variable.\n- `induction e using r` allows the user to specify the principle of induction that should be used.\n  Here `r` should be a term whose result type must be of the form `C t`,\n  where `C` is a bound variable and `t` is a (possibly empty) sequence of bound variables\n- `induction e generalizing z₁ ... zₙ`, where `z₁ ... zₙ` are variables in the local context,\n  generalizes over `z₁ ... zₙ` before applying the induction but then introduces them in each goal.\n  In other words, the net effect is that each inductive hypothesis is generalized.\n- Given `x : Nat`, `induction x with | zero =&gt; tac₁ | succ x' ih =&gt; tac₂`\n  uses tactic `tac₁` for the `zero` case, and `tac₂` for the `succ` case.\n</code>",
+ "68": "<code>ReachableIn step c1 s0 s</code>",
+ "67":
+ "<code class=\"docstring\">Introduces one or more hypotheses, optionally naming and/or pattern-matching them.\nFor each hypothesis to be introduced, the remaining main goal's target type must\nbe a `let` or function type.\n\n* `intro` by itself introduces one anonymous hypothesis, which can be accessed\n  by e.g. `assumption`. It is equivalent to `intro _`.\n* `intro x y` introduces two hypotheses and names them. Individual hypotheses\n  can be anonymized via `_`, given a type ascription, or matched against a pattern:\n  ```lean\n  -- ... ⊢ α × β → ...\n  intro (a, b)\n  -- ..., a : α, b : β ⊢ ...\n  ```\n* `intro rfl` is short for `intro h; subst h`, if `h` is an equality where the left-hand or right-hand side\n  is a variable.\n* Alternatively, `intro` can be combined with pattern matching much like `fun`:\n  ```lean\n  intro\n  | n + 1, 0 =&gt; tac\n  | ...\n  ```\n</code>",
+ "66":
+ "<code class=\"docstring\">`by tac` constructs a term of the expected type by running the tactic(s) `tac`. </code>",
+ "65": "<code>c1.le c2</code>",
+ "64":
+ "<code>capability_reachable_subset {State Action : Type} (step : State → Action → List State) (c1 c2 : CapabilitySet Action)\n  (h : c1.le c2) (s0 s : State) : ReachableIn step c1 s0 s → ReachableIn step c2 s0 s</code>",
+ "63":
+ "<code>ReachableIn.tail {State Action : Type} {step : State → Action → List State} {c : CapabilitySet Action} {s0 s' s : State}\n  (a : Action) : ReachableIn step c s0 s' → c.executable a = true → s ∈ step s' a → ReachableIn step c s0 s</code>",
+ "62": "<code>State</code>",
+ "61":
+ "<code>ReachableIn.refl {State Action : Type} {step : State → Action → List State} {c : CapabilitySet Action} (s : State) :\n  ReachableIn step c s s</code>",
+ "60": "<code>State → Action → List State</code>",
+ "6":
+ "<code>CTVGState.capability {X Q M C E RPhi : Type} (self : CTVGState X Q M C E RPhi) : C</code>",
+ "59":
+ "<code>ReachableIn {State Action : Type} (step : State → Action → List State) (c : CapabilitySet Action) : State → State → Prop</code>",
+ "58":
+ "<code>List.foldl.{u, v} {α : Type u} {β : Type v} (f : α → β → α) (init : α) : List β → α</code><span class=\"sep\"></span><code class=\"docstring\">Folds a function over a list from the left, accumulating a value starting with `init`. The\naccumulated value is combined with the each element of the list in order, using `f`.\n\nExamples:\n * `[a, b, c].foldl f z  = f (f (f z a) b) c`\n * `[1, 2, 3].foldl (· ++ toString ·) \"\" = \"123\"`\n * `[1, 2, 3].foldl (s!\"({·} {·})\") \"\" = \"((( 1) 2) 3)\"`\n</code>",
+ "57": "<code>List Action</code>",
+ "56":
+ "<code class=\"docstring\">`let` is used to declare a local definition. Example:\n```\nlet x := 1\nlet y := x + 1\nx + y\n```\nSince functions are first class citizens in Lean, you can use `let` to declare\nlocal functions too.\n```\nlet double := fun x =&gt; 2*x\ndouble (double 3)\n```\nFor recursive definitions, you should use `let rec`.\nYou can also perform pattern matching using `let`. For example,\nassume `p` has type `Nat × Nat`, then you can write\n```\nlet (x, y) := p\nx + y\n```\n\nThe *anaphoric let* `let := v` defines a variable called `this`.\n</code>",
+ "55":
+ "<code class=\"docstring\">`if c then t else e` is notation for `ite c t e`, \"if-then-else\", which decides to\nreturn `t` or `e` depending on whether `c` is true or false. The explicit argument\n`c : Prop` does not have any actual computational content, but there is an additional\n`[Decidable c]` argument synthesized by typeclass inference which actually\ndetermines how to evaluate `c` to true or false. Write `if h : c then t else e`\ninstead for a \"dependent if-then-else\" `dite`, which allows `t`/`e` to use the fact\nthat `c` is true/false.\n</code>",
+ "54": "<code>Bool</code>",
+ "53":
+ "<code>Shield.decide {Action : Type} (shield : Shield Action) (proposed : Action) (isProposedAdmissible : Bool) : Action</code>",
+ "52":
+ "<code>List.filter.{u} {α : Type u} (p : α → Bool) (l : List α) : List α</code><span class=\"sep\"></span><code class=\"docstring\">Returns the list of elements in `l` for which `p` returns `true`.\n\n`O(|l|)`.\n\nExamples:\n* `[1, 2, 5, 2, 7, 7].filter (· &gt; 2) = [5, 7, 7]`\n* `[1, 2, 5, 2, 7, 7].filter (fun _ =&gt; false) = []`\n* `[1, 2, 5, 2, 7, 7].filter (fun _ =&gt; true) = [1, 2, 5, 2, 7, 7]`\n</code>",
+ "51": "<code>Shield Action</code>",
+ "50":
+ "<code>Shield.admissible {Action : Type} (shield : Shield Action) : List Action</code>",
+ "5":
+ "<code>CTVGState.memory {X Q M C E RPhi : Type} (self : CTVGState X Q M C E RPhi) : M</code>",
+ "49":
+ "<code>Shield.candidates {Action : Type} (self : Shield Action) : List Action</code>",
+ "48":
+ "<code>Float : Type</code><span class=\"sep\"></span><code class=\"docstring\">64-bit floating-point numbers.\n\n`Float` corresponds to the IEEE 754 *binary64* format (`double` in C or `f64` in Rust).\nFloating-point numbers are a finite representation of a subset of the real numbers, extended with\nextra “sentinel” values that represent undefined and infinite results as well as separate positive\nand negative zeroes. Arithmetic on floating-point numbers approximates the corresponding operations\non the real numbers by rounding the results to numbers that are representable, propagating error and\ninfinite values.\n\nFloating-point numbers include [subnormal numbers](https://en.wikipedia.org/wiki/Subnormal_number).\nTheir special values are:\n * `NaN`, which denotes a class of “not a number” values that result from operations such as\n   dividing zero by zero, and\n * `Inf` and `-Inf`, which represent positive and infinities that result from dividing non-zero\n   values by zero.\n</code>",
+ "47":
+ "<code>Shield.utility {Action : Type} (self : Shield Action) : Action → Float</code>",
+ "46":
+ "<code>Shield.valueBound {Action : Type} (self : Shield Action) : Action → Bool</code>",
+ "45":
+ "<code>Shield.hardInvariant {Action : Type} (self : Shield Action) : Action → Bool</code>",
+ "44":
+ "<code>Shield (Action : Type) : Type</code><span class=\"sep\"></span><code class=\"docstring\">A shield interface: `hardInvariant` and `valueBound` are left abstract,\nso that this structure fixes only the control flow — check, then fall back\nto the best admissible alternative — not any concrete safety criterion. </code>",
+ "43": "<code>S</code>",
+ "42":
+ "<code class=\"docstring\">Pattern matching. `match e, ... with | p, ... =&gt; f | ...` matches each given\nterm `e` against each pattern `p` of a match alternative. When all patterns\nof an alternative match, the `match` term evaluates to the value of the\ncorresponding right-hand side `f` with the pattern variables bound to the\nrespective matched values.\nIf used as `match h : e, ... with | p, ... =&gt; f | ...`, `h : e = p` is available\nwithin `f`.\n\nWhen not constructing a proof, `match` does not automatically substitute variables\nmatched on in dependent variables' types. Use `match (generalizing := true) ...` to\nenforce this.\n\nSyntax quotations can also be used in a pattern match.\nThis matches a `Syntax` value against quotations, pattern variables, or `_`.\n\nQuoted identifiers only match identical identifiers - custom matching such as by the preresolved\nnames only should be done explicitly.\n\n`Syntax.atom`s are ignored during matching by default except when part of a built-in literal.\nFor users introducing new atoms, we recommend wrapping them in dedicated syntax kinds if they\nshould participate in matching.\nFor example, in\n```lean\nsyntax \"c\" (\"foo\" &lt;|&gt; \"bar\") ...\n```\n`foo` and `bar` are indistinguishable during matching, but in\n```lean\nsyntax foo := \"foo\"\nsyntax \"c\" (foo &lt;|&gt; \"bar\") ...\n```\nthey are not.\n</code>",
+ "41": "<code>List A</code>",
+ "40":
+ "<code>List.{u} (α : Type u) : Type u</code><span class=\"sep\"></span><code class=\"docstring\">Linked lists: ordered lists, in which each element has a reference to the next element.\n\nMost operations on linked lists take time proportional to the length of the list, because each\nelement must be traversed to find the next element.\n\n`List α` is isomorphic to `Array α`, but they are useful for different things:\n* `List α` is easier for reasoning, and `Array α` is modeled as a wrapper around `List α`.\n* `List α` works well as a persistent data structure, when many copies of the tail are shared. When\n  the value is not shared, `Array α` will have better performance because it can do destructive\n  updates.\n</code>",
+ "4":
+ "<code>CTVGState.mode {X Q M C E RPhi : Type} (self : CTVGState X Q M C E RPhi) : Q</code>",
+ "39": "<code>List S</code>",
+ "38": "<code>SpecAutomaton R S A</code>",
+ "37":
+ "<code>SpecAutomaton.run {R S A : Type} (spec : SpecAutomaton R S A) (states : List S) (actions : List A) : R</code><span class=\"sep\"></span><code class=\"docstring\">Running the automaton over a whole trajectory, so that a trajectory\nviolates the specification exactly when the automaton ends in a rejecting\nstate. </code>",
+ "36":
+ "<code>SpecAutomaton.reject {R S A : Type} (self : SpecAutomaton R S A) : R → Bool</code>",
+ "35":
+ "<code>SpecAutomaton.step {R S A : Type} (self : SpecAutomaton R S A) : R → S → A → S → R</code>",
+ "34":
+ "<code>SpecAutomaton.init {R S A : Type} (self : SpecAutomaton R S A) : R</code>",
+ "33": "<code>SpecAutomaton (R S A : Type) : Type</code>",
+ "32": "<code>LE.mk.{u} {α : Type u} (le : α → α → Prop) : LE α</code>",
+ "31":
+ "<code>LE.{u} (α : Type u) : Type u</code><span class=\"sep\"></span><code class=\"docstring\">`LE α` is the typeclass which supports the notation `x ≤ y` where `x y : α`.</code>",
+ "30":
+ "<code>Bool.true : Bool</code><span class=\"sep\"></span><code class=\"docstring\">The Boolean value `true`, not to be confused with the proposition `True`. </code>",
+ "3":
+ "<code>CTVGState.latent {X Q M C E RPhi : Type} (self : CTVGState X Q M C E RPhi) : X</code>",
+ "29": "<code>Action</code>",
+ "28":
+ "<code class=\"docstring\">The universe of propositions. `Prop ≡ Sort 0`.\n\nEvery proposition is propositionally equal to either `True` or `False`. </code>",
+ "27": "<code>CapabilitySet Action</code>",
+ "26":
+ "<code>CapabilitySet.le {Action : Type} (c1 c2 : CapabilitySet Action) : Prop</code>",
+ "25":
+ "<code>Bool : Type</code><span class=\"sep\"></span><code class=\"docstring\">The Boolean values, `true` and `false`.\n\nLogically speaking, this is equivalent to `Prop` (the type of propositions). The distinction is\npublic important for programming: both propositions and their proofs are erased in the code generator,\nwhile `Bool` corresponds to the Boolean type in most programming languages and carries precisely one\nbit of run-time information.\n</code>",
+ "24":
+ "<code>CapabilitySet.executable {Action : Type} (self : CapabilitySet Action) : Action → Bool</code>",
+ "23": "<code>CapabilitySet (Action : Type) : Type</code>",
+ "22": "<code>compose {A : Type} (proposed : A) : Intervention A → A</code>",
+ "21": "<code>Intervention.fallback {A : Type} : Intervention A</code>",
+ "20": "<code>Intervention.deny {A : Type} : Intervention A</code>",
+ "2":
+ "<code class=\"docstring\">A type universe. `Type ≡ Type 0`, `Type u ≡ Sort (u + 1)`. </code>",
+ "19": "<code>Intervention.askHuman {A : Type} : Intervention A</code>",
+ "18":
+ "<code>Intervention.reducePrivilege {A : Type} (a' : A) : Intervention A</code>",
+ "17": "<code>Intervention.sandbox {A : Type} (a' : A) : Intervention A</code>",
+ "16": "<code>A</code>",
+ "15": "<code>Intervention.modify {A : Type} (a' : A) : Intervention A</code>",
+ "14": "<code>Intervention.allow {A : Type} : Intervention A</code>",
+ "13": "<code>Intervention (A : Type) : Type</code>",
+ "12":
+ "<code class=\"docstring\">In Lean, every concrete type other than the universes\nand every type constructor other than dependent arrows\nis an instance of a general family of type constructions known as inductive types.\nIt is remarkable that it is possible to construct a substantial edifice of mathematics\nbased on nothing more than the type universes, dependent arrow types, and inductive types;\neverything else follows from those.\nIntuitively, an inductive type is built up from a specified list of constructors.\nFor example, `List α` is the list of elements of type `α`, and is defined as follows:\n```\ninductive List (α : Type u) where\n| nil\n| cons (head : α) (tail : List α)\n```\nA list of elements of type `α` is either the empty list, `nil`,\nor an element `head : α` followed by a list `tail : List α`.\nSee [Inductive types](https://lean-lang.org/theorem_proving_in_lean4/inductive_types.html)\nfor more information.\n</code>",
+ "11": "<code>Belief.update {S Y : Type} (self : Belief S Y) : Y → S</code>",
+ "10": "<code>Belief.estimate {S Y : Type} (self : Belief S Y) : S</code>",
+ "1": "<code>Type</code>",
+ "0": "<code>CTVGState (X Q M C E RPhi : Type) : Type</code>"}

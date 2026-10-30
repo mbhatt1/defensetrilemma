@@ -1,0 +1,25 @@
+/* Pick Two — Kindle reflowable stylesheet */
+body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.5; margin: 0 5%; }
+h1, h2, h3, h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: bold; line-height: 1.25; page-break-after: avoid; }
+h1 { font-size: 1.8em; margin: 1.4em 0 0.8em; text-align: left; }
+h2 { font-size: 1.45em; margin: 1.3em 0 0.6em; border-bottom: 2px solid #444; padding-bottom: 0.15em; }
+h3 { font-size: 1.15em; margin: 1.1em 0 0.4em; color: #222; }
+h4 { font-size: 1em; margin: 1em 0 0.3em; font-style: italic; }
+p { margin: 0 0 0.75em; text-align: justify; }
+em { font-style: italic; }
+strong { font-weight: bold; }
+a { color: #8a1218; text-decoration: none; }
+/* inline code */
+code { font-family: 'Courier New', monospace; font-size: 0.9em; }
+/* code / proof blocks */
+pre { font-family: 'Courier New', monospace; font-size: 0.82em; line-height: 1.35;
+      background: #f4f3ef; border-left: 3px solid #8a1218; padding: 0.6em 0.8em;
+      margin: 0.9em 0; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; }
+pre code { font-size: 1em; background: transparent; }
+blockquote { margin: 0.9em 1.2em; font-style: italic; color: #333; border-left: 2px solid #bbb; padding-left: 0.8em; }
+ul, ol { margin: 0.5em 0 0.9em 1.4em; }
+li { margin: 0.25em 0; }
+hr { border: none; border-top: 1px solid #ccc; margin: 1.5em 0; }
+table { border-collapse: collapse; margin: 1em 0; font-size: 0.9em; }
+th, td { border: 1px solid #999; padding: 0.3em 0.5em; text-align: left; }
+th { background: #eee; }

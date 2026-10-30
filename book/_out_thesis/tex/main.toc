@@ -1,0 +1,244 @@
+\contentsline {chapter}{Contents}{i}{section*.1}%
+\contentsline {chapter}{\chapternumberline {1}Abstract}{1}{chapter.1}%
+\contentsline {chapter}{\chapternumberline {2}How to read this thesis}{3}{chapter.2}%
+\contentsline {chapter}{\chapternumberline {3}Introduction}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Thesis statement}{5}{section.3.1}%
+\contentsline {section}{\numberline {3.2}What is not claimed}{6}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Contributions}{6}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Structure of the thesis}{7}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Declaration of collaborative work}{7}{section.3.5}%
+\contentsline {chapter}{\chapternumberline {4}Part I: Background}{9}{chapter.4}%
+\contentsline {chapter}{\chapternumberline {5}Preliminaries}{11}{chapter.5}%
+\contentsline {section}{\numberline {5.1}How to read the Lean 4}{11}{section.5.1}%
+\contentsline {subsection}{Types and terms}{11}{section*.2}%
+\contentsline {subsection}{Functions and application}{12}{section*.3}%
+\contentsline {subsection}{Currying and the shape A → A → Y}{12}{section*.4}%
+\contentsline {subsection}{∀ and ∃}{13}{section*.5}%
+\contentsline {subsection}{Negation, disjunction, the empty proposition}{13}{section*.6}%
+\contentsline {subsection}{Structures}{14}{section*.7}%
+\contentsline {subsection}{Inductive types}{14}{section*.8}%
+\contentsline {subsection}{Term mode and tactics}{15}{section*.9}%
+\contentsline {subsection}{Pattern matching}{15}{section*.10}%
+\contentsline {subsection}{Dot notation}{15}{section*.11}%
+\contentsline {subsection}{rfl and definitional equality}{15}{section*.12}%
+\contentsline {subsection}{congrFun}{16}{section*.13}%
+\contentsline {subsection}{decide}{16}{section*.14}%
+\contentsline {subsection}{What kernel checking means}{16}{section*.15}%
+\contentsline {subsection}{The axiom audit}{17}{section*.16}%
+\contentsline {subsection}{The engine in five lines}{17}{section*.17}%
+\contentsline {subsection}{Cantor, live}{17}{section*.18}%
+\contentsline {section}{\numberline {5.2}Sets and functions}{18}{section.5.2}%
+\contentsline {subsection}{Systems and universality}{18}{section*.19}%
+\contentsline {section}{\numberline {5.3}The minimum topology}{19}{section.5.3}%
+\contentsline {section}{\numberline {5.4}The two engines}{21}{section.5.4}%
+\contentsline {section}{\numberline {5.5}How this is verified and built}{21}{section.5.5}%
+\contentsline {chapter}{\chapternumberline {6}The Diagonal}{23}{chapter.6}%
+\contentsline {section}{\numberline {6.1}One move, five disguises}{23}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Systems that describe themselves}{25}{section.6.2}%
+\contentsline {subsection}{The finite case, by counting}{25}{section*.20}%
+\contentsline {section}{\numberline {6.3}Lawvere's fixed-point theorem}{26}{section.6.3}%
+\contentsline {section}{\numberline {6.4}The section and retract form}{27}{section.6.4}%
+\contentsline {section}{\numberline {6.5}The contrapositive is the impossibility}{28}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Three classical instances}{29}{section.6.6}%
+\contentsline {subsection}{What the flip needs}{30}{section*.21}%
+\contentsline {section}{\numberline {6.7}A partial-function preview: toward Rice}{30}{section.6.7}%
+\contentsline {section}{\numberline {6.8}The engine, named once}{31}{section.6.8}%
+\contentsline {section}{\numberline {6.9}What the diagonal cannot give}{32}{section.6.9}%
+\contentsline {section}{\numberline {6.10}Roadmap}{32}{section.6.10}%
+\contentsline {section}{\numberline {6.11}Historical notes}{33}{section.6.11}%
+\contentsline {chapter}{\chapternumberline {7}The Classical Limits}{35}{chapter.7}%
+\contentsline {section}{\numberline {7.1}The recipe}{35}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Cantor's theorem}{36}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Russell's paradox}{37}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Gödel's first incompleteness theorem}{38}{section.7.4}%
+\contentsline {subsection}{Representability as point-surjectivity}{39}{section*.22}%
+\contentsline {subsection}{Arithmetizing syntax}{39}{section*.23}%
+\contentsline {subsection}{The Gödel sentence}{40}{section*.24}%
+\contentsline {section}{\numberline {7.5}Gödel's second incompleteness theorem}{41}{section.7.5}%
+\contentsline {subsection}{The second theorem, machine-checked}{41}{section*.25}%
+\contentsline {section}{\numberline {7.6}Tarski's undefinability of truth}{44}{section.7.6}%
+\contentsline {subsection}{The hierarchy of metalanguages}{45}{section*.26}%
+\contentsline {section}{\numberline {7.7}Turing and the halting problem}{45}{section.7.7}%
+\contentsline {section}{\numberline {7.8}Rice's theorem}{46}{section.7.8}%
+\contentsline {subsection}{Rice–Shapiro and the shape of the undecidable}{47}{section*.27}%
+\contentsline {section}{\numberline {7.9}The categorical unification}{48}{section.7.9}%
+\contentsline {section}{\numberline {7.10}Interlude: the wrapper is the mathematics}{48}{section.7.10}%
+\contentsline {section}{\numberline {7.11}What varies, and what does not}{49}{section.7.11}%
+\contentsline {section}{\numberline {7.12}Historical notes}{49}{section.7.12}%
+\contentsline {chapter}{\chapternumberline {8}Related Work and Positioning}{51}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Unifications of the diagonal}{51}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Impossibility results in machine learning}{51}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Calibration and hallucination}{52}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Interpretability and probing}{52}{section.8.4}%
+\contentsline {section}{\numberline {8.5}Formal verification of machine learning}{53}{section.8.5}%
+\contentsline {section}{\numberline {8.6}Summary of the gap}{53}{section.8.6}%
+\contentsline {chapter}{\chapternumberline {9}Part II: The Two Engines}{55}{chapter.9}%
+\contentsline {chapter}{\chapternumberline {10}Three Trilemmata, One Theorem}{57}{chapter.10}%
+\contentsline {section}{\numberline {10.1}What "reflective" demands}{58}{section.10.1}%
+\contentsline {section}{\numberline {10.2}The Hallucination Trilemma}{58}{section.10.2}%
+\contentsline {subsection}{The desiderata}{58}{section*.28}%
+\contentsline {subsection}{Why the conditions make the verdict reflective}{59}{section*.29}%
+\contentsline {subsection}{The impossibility}{60}{section*.30}%
+\contentsline {subsection}{Reading the liar witness}{60}{section*.31}%
+\contentsline {subsection}{The three escapes}{60}{section*.32}%
+\contentsline {subsection}{Relation to statistical inevitability results}{61}{section*.33}%
+\contentsline {section}{\numberline {10.3}The Defense Trilemma}{61}{section.10.3}%
+\contentsline {subsection}{The desiderata}{61}{section*.34}%
+\contentsline {subsection}{The conditions}{62}{section*.35}%
+\contentsline {subsection}{Why the conditions make the verdict reflective}{62}{section*.36}%
+\contentsline {subsection}{The impossibility}{62}{section*.37}%
+\contentsline {subsection}{Reading the liar witness}{63}{section*.38}%
+\contentsline {subsection}{The real-valued score version}{63}{section*.39}%
+\contentsline {subsection}{The honest caveat}{63}{section*.40}%
+\contentsline {section}{\numberline {10.4}The Coupling Theorem}{64}{section.10.4}%
+\contentsline {subsection}{The desideratum}{64}{section*.41}%
+\contentsline {subsection}{The conditions}{64}{section*.42}%
+\contentsline {subsection}{Why the condition makes the verdict reflective}{64}{section*.43}%
+\contentsline {subsection}{The impossibility}{65}{section*.44}%
+\contentsline {subsection}{Reading the liar witness}{65}{section*.45}%
+\contentsline {subsection}{The geometry the diagonal cannot see}{65}{section*.46}%
+\contentsline {subsection}{The policy taxonomy}{66}{section*.47}%
+\contentsline {subsection}{Leaving the continuum}{66}{section*.48}%
+\contentsline {subsection}{The honest caveat}{66}{section*.49}%
+\contentsline {section}{\numberline {10.5}The Master Trilemma}{67}{section.10.5}%
+\contentsline {subsection}{Reading the corners as the three trilemmata}{68}{section*.50}%
+\contentsline {subsection}{Why it is a trilemma, not a dilemma}{69}{section*.51}%
+\contentsline {section}{\numberline {10.6}One proof term}{69}{section.10.6}%
+\contentsline {section}{\numberline {10.7}What the readings share, and where they part}{69}{section.10.7}%
+\contentsline {section}{\numberline {10.8}The template in four moves}{70}{section.10.8}%
+\contentsline {section}{\numberline {10.9}Axioms and trust}{70}{section.10.9}%
+\contentsline {section}{\numberline {10.10}What this chapter does not settle}{71}{section.10.10}%
+\contentsline {section}{\numberline {10.11}Historical notes}{71}{section.10.11}%
+\contentsline {chapter}{\chapternumberline {11}From Logic to Analysis}{73}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Why a second engine}{73}{section.11.1}%
+\contentsline {section}{\numberline {11.2}A topology primer}{74}{section.11.2}%
+\contentsline {subsection}{Connectedness as analytic self-reference}{76}{section*.52}%
+\contentsline {section}{\numberline {11.3}The model, analytically}{76}{section.11.3}%
+\contentsline {subsection}{Separation with slack}{77}{section*.53}%
+\contentsline {subsection}{The defense reading}{77}{section*.54}%
+\contentsline {section}{\numberline {11.4}The topological proof of the trilemma}{78}{section.11.4}%
+\contentsline {subsection}{The forced question is the analytic liar}{79}{section*.55}%
+\contentsline {section}{\numberline {11.5}A worked instance on the interval}{79}{section.11.5}%
+\contentsline {section}{\numberline {11.6}Quantitative shadows}{80}{section.11.6}%
+\contentsline {section}{\numberline {11.7}Symmetry in place of coverage}{80}{section.11.7}%
+\contentsline {section}{\numberline {11.8}The discrete core}{81}{section.11.8}%
+\contentsline {subsection}{Adding randomness}{83}{section*.56}%
+\contentsline {section}{\numberline {11.9}Where the two engines meet}{83}{section.11.9}%
+\contentsline {section}{\numberline {11.10}Where the two engines diverge}{84}{section.11.10}%
+\contentsline {section}{\numberline {11.11}The engine in one page}{85}{section.11.11}%
+\contentsline {section}{\numberline {11.12}Historical notes}{85}{section.11.12}%
+\contentsline {chapter}{\chapternumberline {12}The Geometry of Attacks}{87}{chapter.12}%
+\contentsline {section}{\numberline {12.1}From the diagonal to the boundary}{87}{section.12.1}%
+\contentsline {section}{\numberline {12.2}Decision basins}{88}{section.12.2}%
+\contentsline {section}{\numberline {12.3}The threshold-crossing theorem}{89}{section.12.3}%
+\contentsline {section}{\numberline {12.4}Lipschitz control}{90}{section.12.4}%
+\contentsline {section}{\numberline {12.5}The coarea and cone bounds}{91}{section.12.5}%
+\contentsline {section}{\numberline {12.6}Dimensional scaling}{92}{section.12.6}%
+\contentsline {section}{\numberline {12.7}Gradient attacks}{93}{section.12.7}%
+\contentsline {section}{\numberline {12.8}Transferability}{94}{section.12.8}%
+\contentsline {section}{\numberline {12.9}The cost theory}{95}{section.12.9}%
+\contentsline {section}{\numberline {12.10}Concentration of measure}{98}{section.12.10}%
+\contentsline {section}{\numberline {12.11}Iterated and discrete attacks}{99}{section.12.11}%
+\contentsline {section}{\numberline {12.12}The two halves, joined}{99}{section.12.12}%
+\contentsline {section}{\numberline {12.13}Historical notes}{100}{section.12.13}%
+\contentsline {chapter}{\chapternumberline {13}Approximate Bridges to Real Models}{101}{chapter.13}%
+\contentsline {section}{\numberline {13.1}What the exact theorems assume}{101}{section.13.1}%
+\contentsline {section}{\numberline {13.2}Two-sided ε-calibration}{102}{section.13.2}%
+\contentsline {section}{\numberline {13.3}The approximate trilemma}{103}{section.13.3}%
+\contentsline {section}{\numberline {13.4}Recovering the exact contradiction}{103}{section.13.4}%
+\contentsline {section}{\numberline {13.5}The tightening principle}{104}{section.13.5}%
+\contentsline {section}{\numberline {13.6}Localization to the transition band}{105}{section.13.6}%
+\contentsline {section}{\numberline {13.7}The discrete band constraint}{105}{section.13.7}%
+\contentsline {section}{\numberline {13.8}Two-slack separation}{106}{section.13.8}%
+\contentsline {section}{\numberline {13.9}The quantitative degradation law}{107}{section.13.9}%
+\contentsline {section}{\numberline {13.10}From existence to measure}{108}{section.13.10}%
+\contentsline {section}{\numberline {13.11}The reading is where the work is}{109}{section.13.11}%
+\contentsline {section}{\numberline {13.12}Historical notes}{109}{section.13.12}%
+\contentsline {chapter}{\chapternumberline {14}Part III: Application and Evidence}{111}{chapter.14}%
+\contentsline {chapter}{\chapternumberline {15}What It Means for AI Safety}{113}{chapter.15}%
+\contentsline {section}{\numberline {15.1}The constraint, stated as a triangle}{113}{section.15.1}%
+\contentsline {section}{\numberline {15.2}Three relaxations, three cost models}{114}{section.15.2}%
+\contentsline {subsection}{Relaxation I: drop coverage, and abstain}{114}{section*.57}%
+\contentsline {subsection}{Relaxation II: relax faithfulness, and price a band}{115}{section*.58}%
+\contentsline {subsection}{Relaxation III: weaken calibration, and decouple}{116}{section*.59}%
+\contentsline {subsection}{The corners side by side}{116}{section*.60}%
+\contentsline {section}{\numberline {15.3}The same menu for defense}{117}{section.15.3}%
+\contentsline {section}{\numberline {15.4}Reading a domain: which corner fits}{117}{section.15.4}%
+\contentsline {section}{\numberline {15.5}The one empirical unknown}{118}{section.15.5}%
+\contentsline {section}{\numberline {15.6}What the theorems do and do not claim}{119}{section.15.6}%
+\contentsline {section}{\numberline {15.7}An agenda of open problems}{120}{section.15.7}%
+\contentsline {section}{\numberline {15.8}The chapter in one constraint}{121}{section.15.8}%
+\contentsline {chapter}{\chapternumberline {16}J-Space, and Why It Does Not Escape}{123}{chapter.16}%
+\contentsline {section}{\numberline {16.1}What J-space is}{123}{section.16.1}%
+\contentsline {section}{\numberline {16.2}Two structural facts}{124}{section.16.2}%
+\contentsline {section}{\numberline {16.3}The diagonal engine: no intermediate space escapes}{125}{section.16.3}%
+\contentsline {section}{\numberline {16.4}The analytic engine: linearity is the liability}{128}{section.16.4}%
+\contentsline {section}{\numberline {16.5}Where the two engines meet, again}{129}{section.16.5}%
+\contentsline {section}{\numberline {16.6}What an escape would have to look like}{129}{section.16.6}%
+\contentsline {section}{\numberline {16.7}What this means for interpretability}{129}{section.16.7}%
+\contentsline {section}{\numberline {16.8}What this does not claim}{130}{section.16.8}%
+\contentsline {section}{\numberline {16.9}Historical notes}{130}{section.16.9}%
+\contentsline {chapter}{\chapternumberline {17}The Trace Is Not a Window}{131}{chapter.17}%
+\contentsline {section}{\numberline {17.1}The construction}{131}{section.17.1}%
+\contentsline {section}{\numberline {17.2}Faithfulness forces verbosity}{132}{section.17.2}%
+\contentsline {section}{\numberline {17.3}The diagonal, with the model holding the pen}{133}{section.17.3}%
+\contentsline {section}{\numberline {17.4}Selection destroys the signal}{134}{section.17.4}%
+\contentsline {section}{\numberline {17.5}The analytic engine}{135}{section.17.5}%
+\contentsline {section}{\numberline {17.6}What this does not claim}{136}{section.17.6}%
+\contentsline {chapter}{\chapternumberline {18}The Reporter Is Underdetermined}{137}{chapter.18}%
+\contentsline {section}{\numberline {18.1}The construction}{137}{section.18.1}%
+\contentsline {section}{\numberline {18.2}Underdetermination, without any diagonal}{138}{section.18.2}%
+\contentsline {section}{\numberline {18.3}The identifiability criterion}{139}{section.18.3}%
+\contentsline {section}{\numberline {18.4}Where the diagonal comes in}{140}{section.18.4}%
+\contentsline {section}{\numberline {18.5}The analytic engine}{141}{section.18.5}%
+\contentsline {section}{\numberline {18.6}What this does not claim}{141}{section.18.6}%
+\contentsline {chapter}{\chapternumberline {19}Watermarks, Paraphrase, and the Third Corner}{143}{chapter.19}%
+\contentsline {section}{\numberline {19.1}The construction}{143}{section.19.1}%
+\contentsline {section}{\numberline {19.2}The trilemma}{144}{section.19.2}%
+\contentsline {section}{\numberline {19.3}The diagonal, and why its price is low here}{146}{section.19.3}%
+\contentsline {section}{\numberline {19.4}The analytic engine, and the cost of an attack}{146}{section.19.4}%
+\contentsline {section}{\numberline {19.5}What this does not claim}{147}{section.19.5}%
+\contentsline {chapter}{\chapternumberline {20}Does the Constraint Bind? Measurements on Five Models}{149}{chapter.20}%
+\contentsline {section}{\numberline {20.1}What an experiment can and cannot do here}{149}{section.20.1}%
+\contentsline {section}{\numberline {20.2}The slack parameter is the quantity to measure}{150}{section.20.2}%
+\contentsline {section}{\numberline {20.3}Method}{150}{section.20.3}%
+\contentsline {section}{\numberline {20.4}Results}{151}{section.20.4}%
+\contentsline {section}{\numberline {20.5}Pythia-410m occupies a corner}{151}{section.20.5}%
+\contentsline {section}{\numberline {20.6}What the other two families inherit}{152}{section.20.6}%
+\contentsline {section}{\numberline {20.7}Threats to validity}{152}{section.20.7}%
+\contentsline {chapter}{\chapternumberline {21}Part IV: Assessment}{153}{chapter.21}%
+\contentsline {chapter}{\chapternumberline {22}Limitations}{155}{chapter.22}%
+\contentsline {section}{\numberline {22.1}The unification claim is not fully supported}{155}{section.22.1}%
+\contentsline {section}{\numberline {22.2}Continuity and connectedness of prompt space}{155}{section.22.2}%
+\contentsline {section}{\numberline {22.3}Pointwise calibration is stronger than the literature's}{156}{section.22.3}%
+\contentsline {section}{\numberline {22.4}The empirical claim rests on five checkpoints}{156}{section.22.4}%
+\contentsline {section}{\numberline {22.5}The most valuable missing experiment}{156}{section.22.5}%
+\contentsline {section}{\numberline {22.6}Deployment claims are not theorems}{156}{section.22.6}%
+\contentsline {section}{\numberline {22.7}What would falsify the thesis}{157}{section.22.7}%
+\contentsline {chapter}{\chapternumberline {23}Conclusion}{159}{chapter.23}%
+\contentsline {section}{\numberline {23.1}The claim worth carrying forward}{159}{section.23.1}%
+\contentsline {section}{\numberline {23.2}Future work}{160}{section.23.2}%
+\contentsline {chapter}{\chapternumberline {24}Exercises}{161}{chapter.24}%
+\contentsline {section}{\numberline {24.1}Preliminaries}{161}{section.24.1}%
+\contentsline {section}{\numberline {24.2}The Diagonal}{162}{section.24.2}%
+\contentsline {section}{\numberline {24.3}The Classical Limits}{162}{section.24.3}%
+\contentsline {section}{\numberline {24.4}Three Trilemmata}{163}{section.24.4}%
+\contentsline {section}{\numberline {24.5}From Logic to Analysis}{164}{section.24.5}%
+\contentsline {section}{\numberline {24.6}The Geometry of Attacks}{165}{section.24.6}%
+\contentsline {section}{\numberline {24.7}Approximate Bridges}{166}{section.24.7}%
+\contentsline {section}{\numberline {24.8}What It Means for AI Safety}{166}{section.24.8}%
+\contentsline {section}{\numberline {24.9}J-Space}{167}{section.24.9}%
+\contentsline {section}{\numberline {24.10}Chain-of-Thought Monitoring}{167}{section.24.10}%
+\contentsline {section}{\numberline {24.11}Latent Knowledge}{168}{section.24.11}%
+\contentsline {section}{\numberline {24.12}Watermarking}{168}{section.24.12}%
+\contentsline {chapter}{\chapternumberline {25}Appendices}{169}{chapter.25}%
+\contentsline {section}{\numberline {25.1}The Formal Corpus}{169}{section.25.1}%
+\contentsline {subsection}{Foundation: the core library (F\_01–F\_14)}{169}{section*.61}%
+\contentsline {subsection}{CCHProofs: the Control-Corner-Hallucination trilemma (CCH\_01–CCH\_Master)}{175}{section*.62}%
+\contentsline {subsection}{HallucinationProofs: the truth-boundary theory (HoF\_01–HoF\_Master)}{179}{section*.63}%
+\contentsline {subsection}{ManifoldProofs: the geometry of attack basins (\texttt {MoF})}{184}{section*.64}%
+\contentsline {subsection}{Reading the corpus as one argument}{185}{section*.65}%
+\contentsline {section}{\numberline {25.2}A Notation Glossary}{185}{section.25.2}%
+\contentsline {section}{\numberline {25.3}The Two Engines, Side by Side}{188}{section.25.3}%
+\contentsline {section}{\numberline {25.4}Annotated Bibliography}{188}{section.25.4}%
+\contentsline {section}{\numberline {25.5}Building and Checking This Thesis}{190}{section.25.5}%
